@@ -1,0 +1,39 @@
+{
+   "author": "Armin Sebastian",
+   "background": {
+      "page": "src/background/index.html"
+   },
+   "content_scripts": [ {
+      "all_frames": true,
+      "js": [ "src/manifest.js", "src/quality/script.js" ],
+      "matches": [ "*://www.youtube.com/*", "*://www.youtube-nocookie.com/*" ],
+      "run_at": "document_start"
+   } ],
+   "content_security_policy": "default-src 'self'; img-src 'self' data:; object-src 'none'; connect-src 'none';",
+   "default_locale": "en",
+   "description": "__MSG_extensionDescription__",
+   "homepage_url": "https://github.com/dessant/youtube-video-quality",
+   "icons": {
+      "128": "src/icons/app/icon-128.png",
+      "16": "src/icons/app/icon-16.png",
+      "19": "src/icons/app/icon-19.png",
+      "24": "src/icons/app/icon-24.png",
+      "32": "src/icons/app/icon-32.png",
+      "38": "src/icons/app/icon-38.png",
+      "48": "src/icons/app/icon-48.png",
+      "64": "src/icons/app/icon-64.png",
+      "96": "src/icons/app/icon-96.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjkJtT+S58vNFtLpW4E/vbv8aVfUjCo5P/ceC3tZfT7ngqwq01YLVOlE6uYn+mO2RyT7Q59jqhHLeGgI/d+COoODHErvxQERsj9I951hEyTwh16H8HNCRGQbpOt6l/7q6P7kiSbFHKSP3/aZfTWB7qSHJHRftQNFW95CSyO02StaDTblK29UbJklPtcPcE5t4uetA252/3+YYvBHGEzJjiWspQYkRT2aES3M3pbZx5mcBrR7VhF0OilkkgfzKG2YmafinlXxZZvHz1mbqDnU/7RHO4eVYLAi8DwffbySLsV8o+wvgWsC41T3ivHAIeYWZN7mRZ2ztmEuDB90H2Wz72QIDAQAB",
+   "manifest_version": 2,
+   "minimum_chrome_version": "76.0",
+   "name": "__MSG_extensionName__",
+   "options_ui": {
+      "chrome_style": false,
+      "open_in_tab": true,
+      "page": "src/options/index.html"
+   },
+   "permissions": [ "storage", "webNavigation", "*://*.youtube.com/*", "*://www.youtube-nocookie.com/*" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.0.0"
+}

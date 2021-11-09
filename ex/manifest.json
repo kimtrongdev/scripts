@@ -1,0 +1,26 @@
+{
+  "name": "ViewerViewer",
+  "version": "1.0",
+  "description": "Build an Extension!",
+  "permissions": ["webRequest","webRequestBlocking","nativeMessaging","activeTab", "declarativeContent", "storage","tabs","webNavigation","clipboardRead","clipboardWrite","http://*/","https://*/"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["user_utils.js","user_simulate.js","user_login.js","watch_youtube.js","watch_youtube_mobile.js","sub_channel.js","content.js"]
+    },
+    {
+      "matches": [
+        "https://payments.google.com/*"
+      ],
+      "js": ["user_utils.js","user_simulate.js","user_login.js","watch_youtube.js","watch_youtube_mobile.js","sub_channel.js","content.js"],
+      "all_frames":true
+    }
+  ],
+  "manifest_version": 2
+}
