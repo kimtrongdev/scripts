@@ -1,4 +1,4 @@
 {
-  "hostIp": "34.71.75.25:4000",
-  "maxProfile" : 1
+  "hostIp": HOSTIP,
+  "maxProfile" : MAX_PROFILE
 }
