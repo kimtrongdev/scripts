@@ -69,9 +69,9 @@ async function startChromeAction(action) {
     let userProxy = ''
     if (proxy && proxy[action.pid]) {
         console.log('set proxy')
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
-        action.proxy_username = proxy[action.pid].username
-        action.proxy_password = proxy[action.pid].password
+        //userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+        //action.proxy_username = proxy[action.pid].username
+       // action.proxy_password = proxy[action.pid].password
     }
 
     if (CUSTOM){
@@ -115,6 +115,8 @@ async function startChromeAction(action) {
 
         console.log('start chrome', action.pid)
         if (action.id == 'login') {
+            action.email = 'kim62999999@gmail.com'
+            action.password = 'pqpqpq0P'
             console.log('start chrome login', action.pid)
 
             await createProfile(action.pid)
