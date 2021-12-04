@@ -74,6 +74,11 @@ async function startChromeAction(action) {
        // action.proxy_password = proxy[action.pid].password
     }
 
+    if (action.id == 'login') {
+        action.email = 'kim62999999@gmail.com'
+        action.password = 'pqpqpq0P'
+    }
+
     if (CUSTOM){
         let profile = await request_api.getProfile(action.pid)
         if(profile.err) throw `GET_PROFILE_ERROR`
@@ -115,8 +120,6 @@ async function startChromeAction(action) {
 
         console.log('start chrome', action.pid)
         if (action.id == 'login') {
-            action.email = 'kim62999999@gmail.com'
-            action.password = 'pqpqpq0P'
             console.log('start chrome login', action.pid)
 
             await createProfile(action.pid)
