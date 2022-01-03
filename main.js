@@ -120,6 +120,13 @@ async function startChromeAction(action) {
             await createProfile(action.pid)
 
             setDisplay(action.pid)
+
+            let password = action.recover_phone
+            let recover_maill = action.password
+            
+            action.password = password
+            action.recover_maill = recover_maill
+
             exec(`google-chrome${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
             await utils.sleep(5000)
             // enter for asking default
