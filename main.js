@@ -67,13 +67,12 @@ function getProfileIds() {
 
 async function startChromeAction(action) {
     let userProxy = ''
-    if (proxy && proxy[action.pid]) {
-        //104.144.109.17:6102,lamsonbg,123123qq1Q
-        console.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="104.144.109.17:6102" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
-        action.proxy_username = 'lamsonbg'
-        action.proxy_password = '123123qq1Q'
-    }
+    // if (proxy && proxy[action.pid]) {
+    //     console.log('set proxy', proxy[action.pid])
+    //     userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+    //     action.proxy_username = proxy[action.pid].username
+    //     action.proxy_password = proxy[action.pid].password
+    // }
 
     if (CUSTOM){
         let profile = await request_api.getProfile(action.pid)
