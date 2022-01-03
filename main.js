@@ -68,10 +68,10 @@ function getProfileIds() {
 async function startChromeAction(action) {
     if (action.id == 'login') {
         let password = action.recover_phone
-        let recover_maill = action.password
+        let recover_mail = action.password
         
         action.password = password
-        action.recover_maill = recover_maill
+        action.recover_mail = recover_mail
     }
     let userProxy = ''
     // if (proxy && proxy[action.pid]) {
