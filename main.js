@@ -66,20 +66,13 @@ function getProfileIds() {
 }
 
 async function startChromeAction(action) {
-    if (action.id == 'login') {
-        let password = action.recover_phone
-        let recover_mail = action.password
-        
-        action.password = password
-        action.recover_mail = recover_mail
-    }
     let userProxy = ''
-    // if (proxy && proxy[action.pid]) {
-    //     console.log('set proxy', proxy[action.pid])
-    //     userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
-    //     action.proxy_username = proxy[action.pid].username
-    //     action.proxy_password = proxy[action.pid].password
-    // }
+    if (proxy && proxy[action.pid]) {
+        console.log('set proxy', proxy[action.pid])
+        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+        action.proxy_username = proxy[action.pid].username
+        action.proxy_password = proxy[action.pid].password
+    }
 
     if (CUSTOM){
         let profile = await request_api.getProfile(action.pid)
