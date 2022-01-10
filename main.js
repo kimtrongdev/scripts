@@ -3,6 +3,7 @@ require('log-timestamp')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
+const BROWSER = 'google-chrome'
 try {
     config = require('./config.json')
 }
@@ -69,9 +70,9 @@ async function startChromeAction(action) {
     let userProxy = ''
     if (proxy && proxy[action.pid]) {
         console.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
-        action.proxy_username = proxy[action.pid].username
-        action.proxy_password = proxy[action.pid].password
+       // userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+       // action.proxy_username = proxy[action.pid].username
+       // action.proxy_password = proxy[action.pid].password
     }
 
     if (CUSTOM){
@@ -121,7 +122,7 @@ async function startChromeAction(action) {
 
             setDisplay(action.pid)
 
-            exec(`google-chrome${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
             await utils.sleep(5000)
             // enter for asking default
             sendEnter(action.pid)
@@ -131,7 +132,7 @@ async function startChromeAction(action) {
         }
         else {
             setDisplay(action.pid)
-            exec(`google-chrome${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
             await utils.sleep(8000)
         }
         // if (fs.existsSync('ex.zip')) execSync('rm -rf ex quality')
