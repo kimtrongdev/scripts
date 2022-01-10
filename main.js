@@ -95,7 +95,7 @@ async function startChromeAction(action) {
     // kien code
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
-        action.mobile_percent = 1//systemConfig.browser_mobile_percent || 100;
+        action.mobile_percent = systemConfig.browser_mobile_percent || 100;
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
