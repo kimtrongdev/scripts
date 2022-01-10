@@ -70,9 +70,9 @@ async function startChromeAction(action) {
     let userProxy = ''
     if (proxy && proxy[action.pid]) {
         console.log('set proxy', proxy[action.pid])
-       // userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
-       // action.proxy_username = proxy[action.pid].username
-       // action.proxy_password = proxy[action.pid].password
+        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+        action.proxy_username = proxy[action.pid].username
+        action.proxy_password = proxy[action.pid].password
     }
 
     if (CUSTOM){
@@ -95,7 +95,7 @@ async function startChromeAction(action) {
     // kien code
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
-        action.mobile_percent = systemConfig.browser_mobile_percent || 100;
+        action.mobile_percent = 1//systemConfig.browser_mobile_percent || 100;
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
