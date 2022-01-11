@@ -877,7 +877,19 @@ function initExpress() {
             }
             else if (req.query.action == 'SELECT_MOBILE') {
                 console.log('open mobile simulator')
-                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (req.query.pid % 4)};sleep 0.5;xdotool click 1;sleep 1`)
+                let po = {
+                    0: 3, 
+                    1: 4, 
+                    2: 5, 
+                    3: 6, 
+                    4: 7, 
+                    5: 8, 
+                    6: 9, 
+                    7: 10, 
+                    8: 11, 
+                    9: 11, 
+                }
+                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (po[req.query.pid % 4])};sleep 0.5;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'SELECT_MOBILE_CUSTOM') {
                 console.log('open mobile simulator')

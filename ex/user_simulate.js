@@ -192,10 +192,12 @@ async function switchMobile(action){
         // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
         //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
 
-        action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
+        //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
+        action.zoom = [0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7, 0.8, 0.5, 0.5][action.pid%4]
         // ipse 78
         // xr 50
         // ip 12 pro 50
+
         // pixel 5 61
         // samsung s8 70
         // sam sung s20 57
