@@ -193,19 +193,19 @@ async function switchMobile(action){
         //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
 
         //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
-        action.zoom = [0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7, 0.8, 0.5, 0.5][action.pid%4]
-        // ipse 78
+        action.zoom = [0.68, 0.75, 0.63, 0.45, 0.5, 0.42, 0.8, 0.88, 0.5, 0.5][action.pid%10]
+        // ipse 86
         // xr 50
         // ip 12 pro 50
 
-        // pixel 5 61
-        // samsung s8 70
-        // sam sung s20 57
-        // ipad air 40
-        // ipad mini 50
-        // sur pro 7 38
-        // sur dou 70
-        // glx fold 80
+        // pixel 5 68 
+        // samsung s8 75 
+        // sam sung s20 63   
+        // ipad air 40 45 
+        // ipad mini 50  
+        // sur pro 7 38  42 
+        // sur dou 70 80  
+        // glx fold 88 --
         // samsung A51/71 50
 
         await setActionData(action)
