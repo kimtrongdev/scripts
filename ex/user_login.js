@@ -146,7 +146,6 @@ async function userLogin(action) {
             url.indexOf("RecycledEmailInterstitial") > -1 ||
             url.indexOf("gds.google.com/web/chip") > -1 ||
             url.indexOf("accounts.google.com/speedbump/gaplustos") > -1 ||
-            url.indexOf("accounts.google.com/speedbump/idvreenable") > -1 ||
             url.indexOf("youtube.com/") > -1) {
                 if(false && !action.updateInfo){
                     action.updateInfo = true
