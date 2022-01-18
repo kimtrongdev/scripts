@@ -19,3 +19,6 @@ static/google-shopping-feed.xml
 files
 coverage/
 tmp/
+profiles/
+error/
+screen/

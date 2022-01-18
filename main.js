@@ -3,7 +3,7 @@ require('log-timestamp')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
-const BROWSER = 'google-chrome'
+const BROWSER = 'brave-browser'
 try {
     config = require('./config.json')
 }
@@ -122,7 +122,7 @@ async function startChromeAction(action) {
 
             setDisplay(action.pid)
 
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040"`)
             await utils.sleep(5000)
             // enter for asking default
             sendEnter(action.pid)
@@ -132,7 +132,7 @@ async function startChromeAction(action) {
         }
         else {
             setDisplay(action.pid)
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040"`)
             await utils.sleep(8000)
         }
         // if (fs.existsSync('ex.zip')) execSync('rm -rf ex quality')
@@ -877,7 +877,7 @@ function initExpress() {
                     8: 12, 
                     9: 12, 
                 }
-                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (po[req.query.pid % 4])};sleep 1;xdotool click 1;sleep 1`)
+                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (po[req.query.pid % 10])};sleep 1;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'OPEN_MOBILE_CUSTOM') {
                 console.log('add custom mobile')
