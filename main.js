@@ -70,7 +70,7 @@ async function startChromeAction(action) {
     let userProxy = ''
     if (proxy && proxy[action.pid]) {
         console.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+        userProxy = ''//` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
@@ -877,7 +877,7 @@ function initExpress() {
                     8: 12, 
                     9: 12, 
                 }
-                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (po[req.query.pid % 10])};sleep 1;xdotool click 1;sleep 1`)
+                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * 12};sleep 1;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'OPEN_MOBILE_CUSTOM') {
                 console.log('add custom mobile')
@@ -901,7 +901,7 @@ function initExpress() {
                     8: 12, 
                     9: 12, 
                 }
-                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (po[req.query.pid % 10])};sleep 0.5;xdotool click 1;sleep 1`)
+                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * 12};sleep 0.5;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'SELECT_MOBILE_CUSTOM') {
                 console.log('open mobile simulator')
