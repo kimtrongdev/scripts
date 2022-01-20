@@ -46,6 +46,12 @@ chrome.runtime.onMessage.addListener(
           else if(request.type == 'SET_USER_AGENT'){ // trong code
             RE_SET_USER_AGENT = request.user_agent;
           }
+          else if (request.type == 'CLOSE_ADS_TAB') {
+            closeAdsTabs()
+          }
+          else if (request.type == 'GET_TOTAL_TABS') {
+            getTotalTabs()
+          }
           else{
               if(request.data.stop){
                     closeBrowser()
@@ -66,6 +72,23 @@ function closeBrowser(){
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.remove(tabs[i].id);
         }
+    });
+}
+
+function closeAdsTabs() {
+    chrome.tabs.query({}, function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+            if (i > 0) {
+                chrome.tabs.remove(tabs[i].id);
+            }
+        }
+    });
+}
+
+async function getTotalTabs () {
+
+    chrome.tabs.query({}, function (tabs) {
+        
     });
 }
 
