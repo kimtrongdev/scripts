@@ -568,6 +568,14 @@ async function watchingVideo(action){
             return
         }
 
+        // trick ads
+        let adsRand = Math.random()
+        let adsPercent = action.ads_percent || 20
+        let isViewAds = adsRand < adsPercent / 100
+        let checkedAds = false
+        if (isViewAds) {
+            checkedAds = await viewAds(action)
+        }
         await skipAds(true)
         
         if(i == 0 && url.indexOf('&t=') > -1){
@@ -745,6 +753,40 @@ async function skipAds(watchingCheck){
         await userClick(action.pid, 'button.ytp-ad-skip-button')
         await sleep(2000)
     }
+}
+
+async function viewAds(action) {
+    let adsTypes = [
+        '.ytp-ad-visit-advertiser-button',
+        '.ytd-promoted-sparkles-web-renderer',
+        '.ytp-ad-overlay-title',
+        '.ytp-ad-overlay-image',
+    ]
+    let isChecked = false
+    for await (let adsSelector of adsTypes) {
+        let adsElement = document.querySelector(adsSelector)
+        if (adsElement) {
+            try {
+                adsElement.click()
+                await sleep(1000)
+                //let countTabs = await getTotalTabs()
+
+                let randomScroll = randomRanger(3,7)
+                await userScroll(action.pid, randomScroll)
+                await sleep(1000)
+                randomScroll = randomRanger(3,7)
+                await userScroll(action.pid, randomScroll)
+
+                await sleep(action.ads_viewing_time || 35000)
+                await closeAdsTabs()
+                isChecked = true
+                break
+            } catch (error) {
+                
+            }
+        }
+    }
+    return isChecked
 }
 
 async function getReact(keyword,totalTime){

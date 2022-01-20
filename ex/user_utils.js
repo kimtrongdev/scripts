@@ -271,3 +271,19 @@ async function setUserAgent(pid) {
         resolve(response);
     }))
 }
+
+async function closeAdsTabs() {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'CLOSE_ADS_TAB',
+    }, function (response) {
+        resolve(response);
+    }))
+}
+
+async function getTotalTabs() {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'GET_TOTAL_TABS',
+    }, function (response) {
+        resolve(response);
+    }))
+}
