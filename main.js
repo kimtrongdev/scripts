@@ -42,6 +42,7 @@ global.processRunning = []
 global.proxy = null
 global.gui = false
 global.WIN_ENV = process.platform === "win32"
+global.IS_LOG_SCREEN = false
 let BACKUP = false
 let CUSTOM = false
 PR = [530810, 'abandondata7577@gmail.com', '8BTQ651e8cis', 'nCQFX4wh8340lzr@hotmail.com']
@@ -561,6 +562,10 @@ async function running() {
 }
 
 function initDir() {
+    if (!fs.existsSync(path.resolve('logscreen'))) {
+        fs.mkdirSync(path.resolve('logscreen'));
+    }
+
     if (!fs.existsSync(path.resolve('logs'))) {
         fs.mkdirSync(path.resolve('logs'));
     }
@@ -1293,6 +1298,21 @@ async function deleteBackup(pid,retry = 0) {
             await utils.sleep(10000)
             await deleteBackup(pid,retry+1)
         }
+    }
+}
+
+async function logScreen() {
+    try {
+        if (IS_LOG_SCREEN) {
+            //
+            utils.logScreenshot(req.query.pid + '_input')
+        }
+    }
+    catch (e) {
+        console.log('logScreen err: ', e)
+    }
+    finally {
+        setTimeout(logScreen, 10000)
     }
 }
 

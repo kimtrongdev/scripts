@@ -327,6 +327,22 @@ module.exports = {
             console.log('error','errorScreenshot: ', fileName, 'err: ', e)
         }
     },
+    logScreenshot: async function(fileName){
+        try{
+            let fullPath = path.join('logscreen',fileName+'_'+(+ new Date())+'.jpg')
+            console.log('Screenshot: ', fullPath)
+            if(WIN_ENV){
+                execSync('call screenCapture ' + fullPath)
+            }
+            else{
+                execSync('import -window root ' + fullPath)
+            }
+            // await page.screenshot({path: fullPath})
+        }
+        catch (e) {
+            console.log('error','errorScreenshot: ', fileName, 'err: ', e)
+        }
+    },
     checkVideoErr: async function(page, pid){
         let err = await page.$('#ytd-player .ytp-error.ytp-controls-on-error')
         if(err){
