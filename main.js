@@ -542,6 +542,7 @@ async function updateVmStatus() {
 
 async function profileManage() {
     try {
+        logScreen()
         updateVmStatus()
         profileRunningManage()
     }
@@ -1304,8 +1305,7 @@ async function deleteBackup(pid,retry = 0) {
 async function logScreen() {
     try {
         if (IS_LOG_SCREEN) {
-            //
-            utils.logScreenshot(req.query.pid + '_input')
+            utils.logScreenshot('log_sr_')
         }
     }
     catch (e) {
