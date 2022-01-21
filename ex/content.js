@@ -185,15 +185,10 @@ function setWatchParam(action){
     // init watch params
     action.other_videos = []
     action.channel_videos = []
-    action.home_percent = action.home_percent || 10
+    action.home_percent = action.home_percent || 0
     action.suggest_percent = action.suggest_percent || 0
     action.page_watch = action.page_watch || 0
     action.suggest_videos = ''
-    action.direct = action.page_watch == 100
-    //let direct = action.page_watch > 100 ? 15: 2
-    //let direct = action.page_watch > 100 ? 60: 15
-    let direct = action.direct_percent || 15
-    action.page_watch = action.page_watch > 100 ? action.page_watch - 100 : action.page_watch
 
     if(Math.random()<0.1){
         if(Math.random()<0.5){
@@ -204,20 +199,23 @@ function setWatchParam(action){
         }
     }
 
-    let rand = Math.random()
-
-    if(rand < action.home_percent/100){
+    let totalValue = action.home_percent +
+                     action.suggest_percent + 
+                     action.page_watch +
+                     action.direct_percent +
+                     action.search_percent
+    let watchTypeRand = randomRanger(0, totalValue)
+    if (watchTypeRand < action.home_percent) {
         action.home = true
-    }
-    else if(rand < (action.home_percent+action.suggest_percent)/100){
+    } else if (watchTypeRand < action.home_percent + action.suggest_percent) {
         action.suggest = true
-    }
-    else if(rand < (action.home_percent+action.suggest_percent+action.page_watch)/100){
+    } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch) {
         action.page = true
-    }
-    else if(rand < (action.home_percent+action.suggest_percent+action.page_watch + direct)/100){
+    } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
         action.preview = false
         action.direct = true
+    } else {
+        // search
     }
 
     // watch random after video
