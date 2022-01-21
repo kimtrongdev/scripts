@@ -43,6 +43,7 @@ global.proxy = null
 global.gui = false
 global.WIN_ENV = process.platform === "win32"
 global.IS_LOG_SCREEN = false
+global.is_show_ui = false
 let BACKUP = false
 let CUSTOM = false
 PR = [530810, 'abandondata7577@gmail.com', '8BTQ651e8cis', 'nCQFX4wh8340lzr@hotmail.com']
@@ -69,6 +70,7 @@ function getProfileIds() {
 
 async function startChromeAction(action) {
     let userProxy = ''
+    let windowPosition = '--window-position=0,0'
     if (proxy && proxy[action.pid]) {
         console.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -123,7 +125,7 @@ async function startChromeAction(action) {
 
             setDisplay(action.pid)
 
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040"`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040" ${windowPosition}`)
             await utils.sleep(5000)
             // enter for asking default
             sendEnter(action.pid)
@@ -133,7 +135,7 @@ async function startChromeAction(action) {
         }
         else {
             setDisplay(action.pid)
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040"`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040" ${windowPosition}`)
             await utils.sleep(8000)
         }
         // if (fs.existsSync('ex.zip')) execSync('rm -rf ex quality')
@@ -1203,7 +1205,7 @@ function stopDisplay(pid) {
 
 function setDisplay(pid) {
     try {
-        if (!WIN_ENV) {
+        if (!WIN_ENV && !is_show_ui) {
             process.env.DISPLAY = ':' + pid
         }
     }
@@ -1213,9 +1215,12 @@ function setDisplay(pid) {
 
 function sendEnter(pid) {
     try {
-        if (!WIN_ENV) {
+        if (!WIN_ENV ) {
             console.log('sendEnter', pid)
-            process.env.DISPLAY = ':' + pid
+            if (!is_show_ui) {
+                process.env.DISPLAY = ':' + pid
+            }
+            
             execSync(`xdotool key KP_Enter && sleep 3 && xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040 && sleep 1`)
         }
     }
@@ -1227,7 +1232,10 @@ function setChromeSize(pid) {
     try {
         if (!WIN_ENV) {
             console.log('setChromeSize', pid)
-            process.env.DISPLAY = ':' + pid
+            if (!is_show_ui) {
+                process.env.DISPLAY = ':' + pid
+            }
+            
             execSync(`xdotool windowsize $(xdotool search --onlyvisible --class chrome) 1920 1040`)
             execSync(`xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040`)
         }
