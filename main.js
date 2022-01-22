@@ -44,6 +44,7 @@ global.gui = false
 global.WIN_ENV = process.platform === "win32"
 global.IS_LOG_SCREEN = false
 global.is_show_ui = false
+global.fisrt_video = 0
 let BACKUP = false
 let CUSTOM = false
 PR = [530810, 'abandondata7577@gmail.com', '8BTQ651e8cis', 'nCQFX4wh8340lzr@hotmail.com']
@@ -71,6 +72,7 @@ function getProfileIds() {
 async function startChromeAction(action) {
     let userProxy = ''
     let windowPosition = '--window-position=0,0'
+    let windowSize = is_show_ui ? ' --start-maximized' : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid]) {
         console.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -101,6 +103,11 @@ async function startChromeAction(action) {
         action.mobile_percent = systemConfig.browser_mobile_percent || 100;
     }
 
+    if (fisrt_video < 3 && action.id != 'login') {
+        action.direct_percent = 1000
+        fisrt_video = fisrt_video + 1
+    }
+
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
@@ -125,7 +132,7 @@ async function startChromeAction(action) {
 
             setDisplay(action.pid)
 
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040" ${windowPosition}`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`)
             await utils.sleep(5000)
             // enter for asking default
             sendEnter(action.pid)
@@ -135,7 +142,7 @@ async function startChromeAction(action) {
         }
         else {
             setDisplay(action.pid)
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" --window-size="1920,1040" ${windowPosition}`)
+            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`)
             await utils.sleep(8000)
         }
         // if (fs.existsSync('ex.zip')) execSync('rm -rf ex quality')
@@ -544,7 +551,10 @@ async function updateVmStatus() {
 
 async function profileManage() {
     try {
-        logScreen()
+        if (!is_show_ui) {
+            logScreen()
+        }
+        
         updateVmStatus()
         profileRunningManage()
     }
