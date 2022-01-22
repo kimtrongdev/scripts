@@ -552,11 +552,11 @@ async function watchingVideo(action){
             return
         }
 
+        await skipAds(true)
+        
         if(i == 0 && url.indexOf('&t=') > -1){
             await sendKey(action.pid,"0")
         }
-
-        await skipAds(true)
 
         await clickPlayIfPause(action.pid)
 
