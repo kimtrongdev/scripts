@@ -313,6 +313,9 @@ module.exports = {
     },
     errorScreenshot: async function(fileName){
         try{
+            if (is_show_ui) {
+                return
+            }
             let fullPath = path.join('error',fileName+'_'+(+ new Date())+'.jpg')
             console.log('errorScreenshot: ', fullPath)
             if(WIN_ENV){
