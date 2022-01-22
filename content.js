@@ -118,7 +118,7 @@ async function initAction(){
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
 
-        let mobileRate = action.mobile_percent || 100; 
+        let mobileRate = Number(action.mobile_percent) || 100; 
         action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
         // trong code

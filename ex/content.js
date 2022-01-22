@@ -185,9 +185,11 @@ function setWatchParam(action){
     // init watch params
     action.other_videos = []
     action.channel_videos = []
-    action.home_percent = action.home_percent || 0
-    action.suggest_percent = action.suggest_percent || 0
-    action.page_watch = action.page_watch || 0
+    action.home_percent = Number(action.home_percent) || 0
+    action.suggest_percent = Number(action.suggest_percent) || 0
+    action.page_watch = Number(action.page_watch) || 0
+    action.direct_percent = Number(action.direct_percent) || 0
+    action.search_percent = Number(action.search_percent) || 0
     action.suggest_videos = ''
 
     if(Math.random()<0.1){
@@ -226,7 +228,6 @@ function setWatchParam(action){
     action.playlist_url = action.playlist_url.trim()
     action.url_type = action.url_type.trim().toLowerCase()
     action.suggest_videos = action.suggest_videos?action.suggest_videos.trim():undefined
-
 }
 
 function setSubParam(action){
