@@ -118,7 +118,7 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await beforeLoginSuccess(action) // login success
             return
         }
         else if (url.indexOf('myactivity.google.com/activitycontrols/youtube') > -1) {
@@ -138,7 +138,7 @@ async function userLogin(action) {
             return
         } else if (url.indexOf('youtube.com/feed/history')) {
             await pauseHistory()
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS, 'report_success')
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
         }
         else if(url != window.location.toString()) {
@@ -157,7 +157,7 @@ async function userLogin(action) {
                     await goToLocation(action.pid,'myaccount.google.com/gender')
                 }
                 else{
-                    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS,!action.relogin?"OK":undefined)
+                    await beforeLoginSuccess(action) // login success
                     return
                 }
         }
@@ -168,6 +168,11 @@ async function userLogin(action) {
         console.log('error', action.pid, e)
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, e.toString())
     }
+}
+
+async function beforeLoginSuccess (action) {
+    await goToLocation(action.pid,'youtube.com/feed/history')
+    await sleep(60000)
 }
 
 async function checkLogin(action) {
@@ -204,12 +209,12 @@ async function checkPremium(action){
         }
         else{
             console.log('unknown url',url)
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await beforeLoginSuccess(action) // login success
         }
     }
     catch(e){
         console.log('error',checkPremium,e)
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        await beforeLoginSuccess(action) // login success
     }
 }
 
@@ -239,12 +244,12 @@ async function checkCountry(action){
         }
         else{
             console.log('unknown url',url)
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await beforeLoginSuccess(action) // login success
         }
     }
     catch(e){
         console.log('error',checkPremium,e)
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        await beforeLoginSuccess(action) // login success
     }
 }
 
@@ -434,11 +439,11 @@ async function changePassword(action){
             await sleep(60000)
         }
         else{
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await beforeLoginSuccess(action) // login success
         }
     }
     catch(e){
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        await beforeLoginSuccess(action) // login success
     }
 }
 
@@ -694,7 +699,7 @@ async function userConfirm(action) {
             }
         }
         else if(url.indexOf('https://families.google.com/join/done') == 0){
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await beforeLoginSuccess(action) // login success
         }
         else if(url.indexOf('https://www.google.com/gmail/about') == 0){
             await goToLocation(action.pid,'gmail.com')
