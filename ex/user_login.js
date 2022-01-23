@@ -26,7 +26,7 @@ async function userLogin(action) {
 
         if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
             console.log('enter email')
-            await sleep(5000)
+            await sleep(3000)
             await waitForSelector('#identifierId')
             await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(60000)
@@ -135,6 +135,10 @@ async function userLogin(action) {
         }        
         else if (url.indexOf('https://myaccount.google.com/gender') == 0 || url.indexOf('https://myaccount.google.com/birthday') == 0) {
             await updateInfo(action)
+            return
+        } else if (url.indexOf('youtube.com/feed/history')) {
+            await pauseHistory()
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS, 'report_success')
             return
         }
         else if(url != window.location.toString()) {
@@ -349,36 +353,33 @@ async function updateInfo(action){
 
 async function pauseHistory(action){
     try{
-        let saved = document.querySelector('[d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-4-4 1.4-1.4 2.6 2.6 6.6-6.6L18 9l-8 8z"]')
-        if(!saved) return
-        await userClick(action.pid,'saved history button',saved)
+        let pauseIcon = document.querySelector("a > #button > yt-icon > svg > g > path[d='M11,16H9V8h2V16z M15,8h-2v8h2V8z M12,3c4.96,0,9,4.04,9,9s-4.04,9-9,9s-9-4.04-9-9S7.04,3,12,3 M12,2C6.48,2,2,6.48,2,12 s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2L12,2z']")
+        if(!pauseIcon) return
+        await userClick(action.pid,'saved history button',pauseIcon)
         await sleep(2000)
-        let historyOnInput = document.querySelector('[role="dialog"] input[checked]')
+        let historyOnInput = document.querySelector('.yt-confirm-dialog-renderer #confirm-button')
         if(historyOnInput){
             console.log('pauseHistory')
-            await userClick(action.pid,'[role="dialog"] input[checked]',historyOnInput)
-            await sleep(3000)
-            await userClick(action.pid,'[role="dialog"] button[jsname] span')
-            await sleep(3000)
-            await waitForSelector('[role="dialog"] input:not([checked])')
-            await userClick(action.pid,'[role="dialog"] button')
-            await sleep(3000)
-            if(document.querySelector('[role="list"] [role="listitem"]')){
-                await userClick(action.pid,'c-wiz[data-p*="activitycontrols"] > div > div > div:nth-child(2) > div:nth-child(2) button span')
-                await sleep(2000)
-                await userClick(action.pid,'[role="dialog"] ul > li:nth-child(3)')
-                await sleep(3000)
-                let btns = [...document.querySelectorAll('[role="dialog"] button:not([aria-label])')]
-                await userClick(action.pid,'delete history',btns[btns.length-1])
-                await sleep(5000)
-            }
+            await userClick(action.pid,'.yt-confirm-dialog-renderer #confirm-button',historyOnInput)
+            await sleep(2000)
+           // await userClick(action.pid,'[role="dialog"] button[jsname] span')
+           // await sleep(3000)
+           // await waitForSelector('[role="dialog"] input:not([checked])')
+           // await userClick(action.pid,'[role="dialog"] button')
+           // await sleep(3000)
+            // if(document.querySelector('[role="list"] [role="listitem"]')){
+            //     await userClick(action.pid,'c-wiz[data-p*="activitycontrols"] > div > div > div:nth-child(2) > div:nth-child(2) button span')
+            //     await sleep(2000)
+            //     await userClick(action.pid,'[role="dialog"] ul > li:nth-child(3)')
+            //     await sleep(3000)
+            //     let btns = [...document.querySelectorAll('[role="dialog"] button:not([aria-label])')]
+            //     await userClick(action.pid,'delete history',btns[btns.length-1])
+            //     await sleep(5000)
+            // }
         }
     }
     catch(e){
         console.log('error','pauseHistory',e)
-    }
-    finally{
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     }
 }
 

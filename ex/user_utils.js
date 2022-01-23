@@ -32,7 +32,14 @@ function subStatusReport(pid, channelId, vmId, status, preSub, postSub, note){
     }))
 }
 
-function updateActionStatus(pid, action, status, msg, stop = true){
+async function updateActionStatus(pid, action, status, msg, stop = true){
+    if (action === 'login' && status === 1) {
+        if (msg !== 'report_success') {
+            await goToLocation(pid,'youtube.com/feed/history')
+            await sleep(60000)
+            return
+        }
+    }
     console.log('updateActionStatus',pid,status)
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: {pid: pid, id: action, status: status, stop: stop, msg: msg}}, function (response) {
