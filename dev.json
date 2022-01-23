@@ -1,4 +1,5 @@
 {
   "hostIp": HOSTIP,
-  "maxProfile" : MAX_PROFILE
+  "maxProfile" : MAX_PROFILE,
+  "isShowUI": false
 }

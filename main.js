@@ -10,7 +10,18 @@ try {
 catch (e) {
     config = { vm_id: 2 }
 }
-let devJson = require('./dev.json')
+let devJson = {
+    "hostIp": "3.93.238.219:5000",
+    "maxProfile" : 1,
+    "isShowUI": false
+}
+
+try {
+    devJson = require('./dev.json')
+} catch (error) {
+    console.log('Error while load dev config file')
+}
+
 const request_api = require('./request_api')
 global.workingDir = getScriptDir()
 const path = require('path')
@@ -43,7 +54,7 @@ global.proxy = null
 global.gui = false
 global.WIN_ENV = process.platform === "win32"
 global.IS_LOG_SCREEN = false
-global.is_show_ui = false
+global.is_show_ui = devJson.isShowUI
 global.fisrt_video = 0
 let BACKUP = false
 let CUSTOM = false
