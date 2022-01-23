@@ -10,11 +10,22 @@ async function userWatch(action){
         console.log('start watch')
 
         let url = window.location.toString()
+        if (action.delete_history) {
+            await sleep(5000)
+            action.delete_history = false
+            await setActionData(action)
+            await sleep(3000)
+            await goToLocation(action.pid,'youtube.com/feed/history')
+            await sleep(60000)
+            return
+        }
 
         if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending') {
             await processHomePage(action)
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             await deleteHistory(action)
+            await goToLocation(action.pid,'https://www.youtube.com//')
+            await sleep(60000)
         } else if (url.indexOf('https://www.youtube.com/results') > -1) {
             await processSearchPage(action)
         }
@@ -884,34 +895,33 @@ function removeSuggest(){
 
 async function deleteHistory(action){
     try{
-        if(!action.delete_history){
-            let url = window.location.toString()
-            if(url.indexOf('youtube.com/feed/history') > -1){
-                await userClick(action.pid,'#contents > ytd-button-renderer:nth-of-type(1) a paper-button')
-                await sleep(2000)
-                let confirm = document.querySelector('yt-confirm-dialog-renderer #confirm-button')
-                if(confirm){
-                    await userClick(action.pid,'yt-confirm-dialog-renderer #confirm-button',confirm)
-                }
-                if(url.indexOf('youtube.com/feed/history/search_history') > -1){
-                    action.delete_history = true
-                    await setActionData(action)
-                    await userClick(action.pid,'#container a#logo')
-                }
-                else{
-                    await goToLocation(action.pid,'youtube.com/feed/history/search_history')
-                }
-            }
-            else{
-                await goToLocation(action.pid,'youtube.com/feed/history')
-            }
-        }
-        else{
-            return true
+        let pauseIcon = document.querySelector("a > #button > yt-icon > svg > g > path[d='M11,16H9V8h2V16z M15,8h-2v8h2V8z M12,3c4.96,0,9,4.04,9,9s-4.04,9-9,9s-9-4.04-9-9S7.04,3,12,3 M12,2C6.48,2,2,6.48,2,12 s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2L12,2z']")
+        if(!pauseIcon) return
+        await userClick(action.pid,'saved history button',pauseIcon)
+        await sleep(2000)
+        let historyOnInput = document.querySelector('.yt-confirm-dialog-renderer #confirm-button')
+        if(historyOnInput){
+            console.log('pauseHistory')
+            await userClick(action.pid,'.yt-confirm-dialog-renderer #confirm-button',historyOnInput)
+            await sleep(2000)
+           // await userClick(action.pid,'[role="dialog"] button[jsname] span')
+           // await sleep(3000)
+           // await waitForSelector('[role="dialog"] input:not([checked])')
+           // await userClick(action.pid,'[role="dialog"] button')
+           // await sleep(3000)
+            // if(document.querySelector('[role="list"] [role="listitem"]')){
+            //     await userClick(action.pid,'c-wiz[data-p*="activitycontrols"] > div > div > div:nth-child(2) > div:nth-child(2) button span')
+            //     await sleep(2000)
+            //     await userClick(action.pid,'[role="dialog"] ul > li:nth-child(3)')
+            //     await sleep(3000)
+            //     let btns = [...document.querySelectorAll('[role="dialog"] button:not([aria-label])')]
+            //     await userClick(action.pid,'delete history',btns[btns.length-1])
+            //     await sleep(5000)
+            // }
         }
     }
-    catch (e) {
-        console.log('deleteHistory',e)
+    catch(e){
+        console.log('error','pauseHistory',e)
     }
 }
 

@@ -115,6 +115,9 @@ async function startChromeAction(action) {
     }
 
     if (fisrt_video < 3 && action.id != 'login') {
+        if (fisrt_video === 0) {
+            action.delete_history = true
+        }
         action.direct_percent = 1000
         fisrt_video = fisrt_video + 1
     }

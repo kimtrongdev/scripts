@@ -136,7 +136,8 @@ async function userLogin(action) {
         else if (url.indexOf('https://myaccount.google.com/gender') == 0 || url.indexOf('https://myaccount.google.com/birthday') == 0) {
             await updateInfo(action)
             return
-        } else if (url.indexOf('youtube.com/feed/history')) {
+        } else if (url.indexOf('youtube.com/feed/history') > -1) {
+            console.log('------pauseHistory');
             await pauseHistory()
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
@@ -171,8 +172,10 @@ async function userLogin(action) {
 }
 
 async function beforeLoginSuccess (action) {
-    await goToLocation(action.pid,'youtube.com/feed/history')
-    await sleep(60000)
+    //console.log('beforeLoginSuccess');
+    //await goToLocation(action.pid,'youtube.com/feed/history')
+    //await sleep(60000)
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
 }
 
 async function checkLogin(action) {
