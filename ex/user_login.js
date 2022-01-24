@@ -126,7 +126,8 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('https://www.youtube.com/create_channel') == 0) {
-            await createChannel(action)
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            //await createChannel(action)
             return
         }        
         else if (url.indexOf('https://m.youtube.com/create_channel') == 0) {
@@ -175,6 +176,8 @@ async function beforeLoginSuccess (action) {
     //console.log('beforeLoginSuccess');
     //await goToLocation(action.pid,'youtube.com/feed/history')
     //await sleep(60000)
+    await goToLocation(action.pid, 'youtube.com/create_channel')
+    await sleep(60000)
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
 }
 
