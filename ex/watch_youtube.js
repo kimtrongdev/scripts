@@ -570,7 +570,7 @@ async function watchingVideo(action){
 
         // trick ads
         let adsRand = Math.random()
-        let adsPercent = action.ads_percent || 20
+        let adsPercent = 0//action.ads_percent || 20
         let isViewAds = adsRand < adsPercent / 100
         let checkedAds = false
         if (isViewAds) {
