@@ -3,7 +3,7 @@ require('log-timestamp')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
-const BROWSER = 'google-chrome'
+const BROWSER = 'brave-browser'
 try {
     config = require('./config.json')
 }
