@@ -114,7 +114,8 @@ async function userLogin(action) {
         }
         else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+           // await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
