@@ -113,10 +113,8 @@ async function processHomePage(action){
             return
         }
     }
-    if (action.google) {
-        await processSearchGoogle(action)
-    }
-    else if(action.preview == "home"){
+
+    if(action.preview == "home"){
         await userScroll(action.pid,randomRanger(5,15))
         await sleep(randomRanger(1000,5000))
         await userClickRandomVideo(action.pid)
@@ -134,11 +132,6 @@ async function processHomePage(action){
         await userTypeEnter(action.pid,'input#search',action.video)
     }
 
-    await sleep(3000)
-}
-
-async function processSearchGoogle(action) {
-    await goToLocation(action.pid, 'google.com/search?q=' + action.keyword)
     await sleep(3000)
 }
 

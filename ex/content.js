@@ -166,7 +166,12 @@ async function initAction(){
             if(action.mobile) await switchMobile(action)
             // await goToLocation(action.pid,'youtube.com/feed/history//')
             // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+            if (action.google) {
+                await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
+                await sleep(3000)
+            } else {
+                await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+            }
         }
 
         await sleep(5000)
