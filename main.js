@@ -56,6 +56,7 @@ global.WIN_ENV = process.platform === "win32"
 global.IS_LOG_SCREEN = false
 global.is_show_ui = devJson.isShowUI
 global.fisrt_video = 0
+global.active_devices = []
 let BACKUP = false
 let CUSTOM = false
 PR = [530810, 'abandondata7577@gmail.com', '8BTQ651e8cis', 'nCQFX4wh8340lzr@hotmail.com']
@@ -112,6 +113,10 @@ async function startChromeAction(action) {
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
         action.mobile_percent = systemConfig.browser_mobile_percent || 100;
+        active_devices = systemConfig.active_devices || []
+        if (active_devices.length) {
+            action.mobile_percent = 100
+        }
     }
 
     if (fisrt_video < 3 && action.id != 'login') {
@@ -909,7 +914,9 @@ function initExpress() {
                     8: 12, 
                     9: 12, 
                 }
-                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (po[req.query.pid % 10])};sleep 1;xdotool click 1;sleep 1`)
+                let devicePo = Number(active_devices[Number(req.query.pid) % active_devices.length])
+                devicePo -= 1
+                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'OPEN_MOBILE_CUSTOM') {
                 console.log('add custom mobile')
@@ -933,7 +940,9 @@ function initExpress() {
                     8: 12, 
                     9: 12, 
                 }
-                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * (po[req.query.pid % 10])};sleep 0.5;xdotool click 1;sleep 1`)
+                let devicePo = Number(active_devices[Number(req.query.pid) % active_devices.length])
+                devicePo -= 1
+                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'SELECT_MOBILE_CUSTOM') {
                 console.log('open mobile simulator')
