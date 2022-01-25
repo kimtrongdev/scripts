@@ -20,7 +20,11 @@ async function userWatch(action){
             return
         }
 
-        if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending') {
+        if (url.indexOf('google.com/search?q=') > -1) {
+            await sleep(2000)
+            await userClick(action.pid,'#search div h3')
+        }
+        else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending') {
             await processHomePage(action)
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             await deleteHistory(action)
@@ -109,7 +113,10 @@ async function processHomePage(action){
             return
         }
     }
-    if(action.preview == "home"){
+    if (action.google) {
+        await processSearchGoogle(action)
+    }
+    else if(action.preview == "home"){
         await userScroll(action.pid,randomRanger(5,15))
         await sleep(randomRanger(1000,5000))
         await userClickRandomVideo(action.pid)
@@ -122,11 +129,16 @@ async function processHomePage(action){
     }
     else if(action.suggest_videos){
         await userTypeEnter(action.pid,'input#search',action.suggest_videos)
-    }
+    } 
     else{
         await userTypeEnter(action.pid,'input#search',action.video)
     }
 
+    await sleep(3000)
+}
+
+async function processSearchGoogle(action) {
+    await goToLocation(action.pid, 'google.com/search?q=' + action.keyword)
     await sleep(3000)
 }
 

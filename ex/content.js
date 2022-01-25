@@ -189,6 +189,7 @@ function setWatchParam(action){
     action.suggest_percent = Number(action.suggest_percent) || 0
     action.page_watch = Number(action.page_watch) || 0
     action.direct_percent = Number(action.direct_percent) || 0
+    action.google_percent = Number(action.google_percent) || 0
     action.search_percent = Number(action.search_percent) || 0
     action.suggest_videos = ''
 
@@ -205,7 +206,9 @@ function setWatchParam(action){
                      action.suggest_percent + 
                      action.page_watch +
                      action.direct_percent +
+                     action.google_percent +
                      action.search_percent
+                     
     let watchTypeRand = randomRanger(0, totalValue)
     if (watchTypeRand < action.home_percent) {
         action.home = true
@@ -216,6 +219,8 @@ function setWatchParam(action){
     } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
         action.preview = false
         action.direct = true
+    } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
+        action.google = true
     } else {
         // search
     }
