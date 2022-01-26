@@ -10,15 +10,15 @@ async function userWatch(action){
         console.log('start watch')
 
         let url = window.location.toString()
-        if (action.delete_history) {
-            await sleep(5000)
-            action.delete_history = false
-            await setActionData(action)
-            await sleep(3000)
-            await goToLocation(action.pid,'youtube.com/feed/history')
-            await sleep(60000)
-            return
-        }
+        // if (action.delete_history) {
+        //     await sleep(5000)
+        //     action.delete_history = false
+        //     await setActionData(action)
+        //     await sleep(3000)
+        //     await goToLocation(action.pid,'youtube.com/feed/history')
+        //     await sleep(60000)
+        //     return
+        // }
 
         if (url.indexOf('google.com/search?q=') > -1) {
             await sleep(2000)
