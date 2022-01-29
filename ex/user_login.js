@@ -112,7 +112,8 @@ async function userLogin(action) {
             await userClick(action.pid, 'input[type="submit"]')
             await sleep(60000)
         }
-        else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1) {
+        else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
+        || url.indexOf('m.youtube.com/feed/library') > -1 ) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
@@ -177,7 +178,7 @@ async function beforeLoginSuccess (action) {
     //console.log('beforeLoginSuccess');
     //await goToLocation(action.pid,'youtube.com/feed/history')
     //await sleep(60000)
-    await goToLocation(action.pid, 'youtube.com/create_channel')
+    await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
     await sleep(60000)
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
 }
