@@ -81,6 +81,11 @@ function getProfileIds() {
     })
 }
 
+function getRndInteger(min, max) {
+return Math.floor(Math.random() * (max - min) ) + min;
+}
+
+  
 async function startChromeAction(action) {
     let userProxy = ''
     let windowPosition = '--window-position=0,0'
@@ -131,7 +136,7 @@ async function startChromeAction(action) {
         action.playlist_url = 'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje'
         action.playlist_percent = 100
         action.url_type = 'playlist'
-        action.total_times = 3
+        action.total_times = getRndInteger(35, 50)
         action.video = 'V_ipRI2Ir1A'
     }
 
