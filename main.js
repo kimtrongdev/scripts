@@ -127,6 +127,13 @@ async function startChromeAction(action) {
         fisrt_video = fisrt_video + 1
     }
 
+    if (action.id == 'watch') {
+        action.playlist_url = 'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje'
+        action.playlist_percent = 100
+        action.url_type = 'playlist'
+        action.total_times = 3
+    }
+
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 

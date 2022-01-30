@@ -102,6 +102,11 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
+    if (action.view_playlist) {
+        await goToLocation(action.pid,`https://www.youtube.com/watch?list=${action.playlist_url}`)
+        return 
+    }
+
     if(action.direct){
         if(action.url_type=='video'){
             await goToLocation(action.pid,'https://www.youtube.com/watch?v='+action.playlist_url)

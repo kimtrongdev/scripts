@@ -196,38 +196,43 @@ function setWatchParam(action){
     action.direct_percent = Number(action.direct_percent) || 0
     action.google_percent = Number(action.google_percent) || 0
     action.search_percent = Number(action.search_percent) || 0
+    action.playlist_percent = Number(action.playlist_percent) || 0
     action.suggest_videos = ''
 
-    if(Math.random()<0.1){
-        if(Math.random()<0.5){
-            action.preview = "home"
-        }
-        else{
-            action.preview = "search"
-        }
-    }
-
-    let totalValue = action.home_percent +
-                     action.suggest_percent + 
-                     action.page_watch +
-                     action.direct_percent +
-                     action.google_percent +
-                     action.search_percent
-                     
-    let watchTypeRand = randomRanger(0, totalValue)
-    if (watchTypeRand < action.home_percent) {
-        action.home = true
-    } else if (watchTypeRand < action.home_percent + action.suggest_percent) {
-        action.suggest = true
-    } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch) {
-        action.page = true
-    } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
-        action.preview = false
-        action.direct = true
-    } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
-        action.google = true
+    if (action.playlist_percent == 100) {
+        action.view_playlist = true
     } else {
-        // search
+        if(Math.random()<0.1){
+            if(Math.random()<0.5){
+                action.preview = "home"
+            }
+            else{
+                action.preview = "search"
+            }
+        }
+    
+        let totalValue = action.home_percent +
+                         action.suggest_percent + 
+                         action.page_watch +
+                         action.direct_percent +
+                         action.google_percent +
+                         action.search_percent
+                         
+        let watchTypeRand = randomRanger(0, totalValue)
+        if (watchTypeRand < action.home_percent) {
+            action.home = true
+        } else if (watchTypeRand < action.home_percent + action.suggest_percent) {
+            action.suggest = true
+        } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch) {
+            action.page = true
+        } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
+            action.preview = false
+            action.direct = true
+        } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
+            action.google = true
+        } else {
+            // search
+        }
     }
 
     // watch random after video
