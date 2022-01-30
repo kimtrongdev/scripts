@@ -132,6 +132,7 @@ async function startChromeAction(action) {
         action.playlist_percent = 100
         action.url_type = 'playlist'
         action.total_times = 3
+        action.video = 'V_ipRI2Ir1A'
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
