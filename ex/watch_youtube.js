@@ -532,14 +532,29 @@ async function preWatchingVideo(action){
     }
 
     if(action.total_times < 1000){
+        let videoTime
+        await sleep(2000)
         await skipAds()
-        // get video time
-        let videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
-        videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
-        if(action.url_type=='playlist' && videoTime > 3600){
-            videoTime = 3600
+
+        function loadVideoTime() {
+            videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
+            videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
+            if(action.url_type=='playlist' && videoTime > 3600){
+                videoTime = 3600
+            }
         }
+        loadVideoTime()
+        let countGetVideoTime = 0
+        // get video time
         console.log('videoTime:',videoTime)
+        while (videoTime < 31 && countGetVideoTime < 5) {
+            countGetVideoTime++
+            console.log('videoTime:',videoTime)
+            await skipAds()
+            loadVideoTime()
+            await sleep(1000)
+        }
+
         if(Math.random() < 0.2){
             action.watch_time = videoTime*1000*randomRanger(2,7)/10
         }
