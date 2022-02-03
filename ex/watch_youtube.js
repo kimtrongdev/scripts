@@ -558,12 +558,18 @@ async function preWatchingVideo(action){
             await sleep(1000)
         }
 
-        if(Math.random() < 0.2){
-            action.watch_time = videoTime*1000*randomRanger(2,7)/10
+        // if(Math.random() < 0.2){
+        //     action.watch_time = videoTime*1000*randomRanger(2,7)/10
+        // }
+        // else{
+        //     action.watch_time = videoTime*1000*randomRanger(7,9)/10
+        // }
+        if (action.viewed_ads) {
+            action.watch_time = randomRanger(31000,60000)
+        } else {
+            action.watch_time = 15000
         }
-        else{
-            action.watch_time = videoTime*1000*randomRanger(7,9)/10
-        }
+        
         // if(Math.random() < 0.2){
         //     action.watch_time = videoTime*1000*randomRanger(0,25)/100
         // }
@@ -731,7 +737,7 @@ async function viewAds(action, onlyVideoType = false) {
 async function afterWatchingVideo(action,finishVideo){
     let url = window.location.toString()
     if(action.url_type == 'playlist'){
-        if(action.playlist_index < 1 || url.indexOf(action.playlist_url) < 0){
+        if((action.playlist_index < 1 && action.viewed_ads) || url.indexOf(action.playlist_url) < 0){
             await updateActionStatus(action.pid, action.id, 0,'end playlist')
             return
         }
