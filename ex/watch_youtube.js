@@ -103,7 +103,7 @@ async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
     if (action.view_playlist) {
-        await goToLocation(action.pid,`https://www.youtube.com/playlist&list=${action.playlist_url}`)
+        await goToLocation(action.pid,`https://www.youtube.com/playlist?list=${action.playlist_url}`)
         return 
     }
 
