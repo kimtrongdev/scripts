@@ -235,6 +235,11 @@ function setWatchParam(action){
         }
     }
 
+    let adsPercent = action.ads_percent || 0
+    if (Math.random() < adsPercent / 100) {
+        action.is_view_ads = true
+    }
+
     // watch random after video
     action.after_video = Math.random() < 0.1
     let searchList = action.video.split(";;")

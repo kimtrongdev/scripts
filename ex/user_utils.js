@@ -280,7 +280,7 @@ async function closeAdsTabs() {
     }))
 }
 
-async function getTotalTabs() {
+function getTotalTabs() {
     return new Promise(resolve => chrome.runtime.sendMessage({
         type: 'GET_TOTAL_TABS',
     }, function (response) {

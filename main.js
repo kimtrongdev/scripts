@@ -122,6 +122,10 @@ async function startChromeAction(action) {
         if (active_devices.length) {
             action.mobile_percent = 100
         }
+
+        if (systemConfig.ads_percent) {
+            action.ads_percent = systemConfig.ads_percent
+        }
     }
 
     if (fisrt_video < 3 && action.id != 'login') {

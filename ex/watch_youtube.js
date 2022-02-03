@@ -516,13 +516,11 @@ async function preWatchingVideo(action){
         let randomVideoModeBtn = document.querySelector('.style-grey-text #button > yt-icon > svg > g > path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
         if (randomVideoModeBtn) {
             await userClick(action.pid,'', randomVideoModeBtn)
-            await sleep(1000)
         }
 
         let loopModeBtn = document.querySelector('.style-grey-text #button > yt-icon > svg > g > path[d="M21,13h1v5L3.93,18.03l2.62,2.62l-0.71,0.71L1.99,17.5l3.85-3.85l0.71,0.71l-2.67,2.67L21,17V13z M3,7l17.12-0.03 l-2.67,2.67l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71l2.62,2.62L2,6v5h1V7z"]')
         if (loopModeBtn) {
             await userClick(action.pid,'', loopModeBtn)
-            await sleep(1000)
         }
         
         action.playlist_index = action.playlist_index == undefined ? (action.total_times + randomRanger(0, 1)) : action.playlist_index
@@ -533,7 +531,7 @@ async function preWatchingVideo(action){
 
     if(action.total_times < 1000){
         let videoTime
-        await sleep(2000)
+        await viewAds(action, true)
         await skipAds()
 
         function loadVideoTime() {
@@ -601,13 +599,7 @@ async function watchingVideo(action){
         }
 
         // trick ads
-        let adsRand = Math.random()
-        let adsPercent = 0//action.ads_percent || 20
-        let isViewAds = adsRand < adsPercent / 100
-        let checkedAds = false
-        if (isViewAds) {
-            checkedAds = await viewAds(action)
-        }
+        await viewAds(action)
         await skipAds(true)
         
         if(i == 0 && url.indexOf('&t=') > -1){
@@ -663,36 +655,68 @@ async function watchingVideo(action){
     return true
 }
 
-async function viewAds(action) {
-    console.log('--start view ads');
+async function viewAds(action, onlyVideoType = false) {
+    if (action.viewed_ads && !action.is_view_ads) {
+        return
+    }
+
     let adsTypes = [
-        '#companion',
         '.ytp-ad-visit-advertiser-button',
-        '.ytd-promoted-sparkles-web-renderer',
+        '.ytp-ad-player-overlay-flyout-cta',
         '.ytp-ad-overlay-title',
+        '.ytd-promoted-sparkles-web-renderer',
         '.ytp-ad-overlay-image',
+        '#companion',
     ]
     let isChecked = false
     for await (let adsSelector of adsTypes) {
         let adsElement = document.querySelector(adsSelector)
         if (adsElement) {
+            if (adsSelector === '.ytp-ad-visit-advertiser-button') {
+                let btnPause = document.querySelector('path[d="M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"]')
+                if (btnPause) {
+                    await userClick(pid,'button.ytp-pause-button', btnPause)
+                }
+                adsElement = document.querySelector(adsSelector)
+                if (!adsElement) {
+                    continue
+                }
+                await sleep(1000)
+            } else if (onlyVideoType) {
+                return
+            }
+
             try {
                 await userClick(action.pid,'ads btn:' + adsSelector, adsElement)
                 await sleep(1000)
-                //let countTabs = await getTotalTabs()
+                let countTabs = await getTotalTabs()
+                if (countTabs > 1) {
+                    let randomScroll1 = randomRanger(3,7)
+                    let randomScroll2 = randomRanger(3,9)
+                    await userScroll(action.pid, randomScroll1)
+                    await sleep(randomRanger(3,7) * 1000)
+                    await userScroll(action.pid, randomScroll2)
+                    await sleep(randomRanger(3,7) * 1000)
+                    await userScroll(action.pid, -randomScroll1)
+                    await sleep(randomRanger(3,7) * 1000)
+                    await userScroll(action.pid, -randomScroll2)
+                    await sleep(randomRanger(3,7) * 1000)
 
-                let randomScroll = randomRanger(3,7)
-                await userScroll(action.pid, randomScroll)
-                await sleep(1000)
-                randomScroll = randomRanger(3,7)
-                await userScroll(action.pid, randomScroll)
+                    await sleep(action.ads_viewing_time || randomRanger(3,10) * 1000)
+                    await closeAdsTabs()
+                    isChecked = true
 
-                await sleep(action.ads_viewing_time || 35000)
-                await closeAdsTabs()
-                isChecked = true
-                break
+                    //handle view ads success
+                    //let promotionVideoName = document.querySelector('.ytp-ad-visit-advertiser-button > .ytp-ad-button-text').innerText
+                    //let promotionSuggestName = document.querySelector('#text > .ytd-action-companion-ad-renderer').innerText
+                    //let proBannerName = document.querySelector('.ytp-ad-overlay-link').innerText
+                    action.viewed_ads = true
+                    await setActionData(action)
+                    clickPlayIfPause(action.pid)
+                    break
+                }
             } catch (error) {
-                
+                console.log('---error while view ads: ', error)
             }
         }
     }

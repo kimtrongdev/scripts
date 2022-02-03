@@ -50,7 +50,10 @@ chrome.runtime.onMessage.addListener(
             closeAdsTabs()
           }
           else if (request.type == 'GET_TOTAL_TABS') {
-            getTotalTabs()
+            getTotalTabs().then(rs => {
+                sendResponse(rs)
+            })
+            return true
           }
           else{
               if(request.data.stop){
@@ -85,11 +88,12 @@ function closeAdsTabs() {
     });
 }
 
-async function getTotalTabs () {
-
-    chrome.tabs.query({}, function (tabs) {
-        
-    });
+function getTotalTabs () {
+    return new Promise((res, rej) => {
+        chrome.tabs.query({}, function (tabs) {
+            res(tabs.length)
+        });
+    })
 }
 
 // trong code
