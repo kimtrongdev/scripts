@@ -37,8 +37,8 @@ const MAX_CURRENT_ACC_CAL = process.platform === "win32" ? 1 : process.env.MAX_P
 const MAX_PROFILE_CAL = process.platform === "win32" ? 1 : process.env.MAX_PROFILE ? process.env.MAX_PROFILE : Math.min(DOCKER ? 4 : 100, Math.ceil(os.totalmem() / (600 * 1024 * 1024)))
 
 const MAX_PROFILE_TOTAL = devJson.maxProfile > 1 ? devJson.maxProfile : 1;
-const MAX_CURRENT_ACC = MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
-const MAX_PROFILE = MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
+const MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
+const MAX_PROFILE = MAX_CURRENT_ACC * 2 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
 const RUNNING_CHECK_INTERVAL = 45000     // 30 seconds
 const MAX_REPORT_TIME = 600000           // 10 minutes
@@ -137,11 +137,23 @@ async function startChromeAction(action) {
     }
 
     if (action.id == 'watch') {
-        action.playlist_url = 'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje'
+        let lists = [
+            {
+                playlist_url: 'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje',
+                video = 'V_ipRI2Ir1A'
+            },
+            {
+                playlist_url: 'PLc21mL3vVoTvYCb_dCUCOk1n-9wCEO9-Z',
+                video = 'RBR8pCsRS_0'
+            },
+        ]
+
+        let list = lists[getRndInteger(0, 1)]
+        action.playlist_url = list.playlist_url
+        action.video = list.video
         action.playlist_percent = 100
         action.url_type = 'playlist'
         action.total_times = getRndInteger(35, 50)
-        action.video = 'V_ipRI2Ir1A'
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
@@ -560,9 +572,12 @@ async function profileRunningManage() {
         console.log('subRunnings: ', subRunnings.map(x => x.pid), ' addnewRunnings: ', addnewRunnings.map(x => x.pid),
             ' watchRunnings: ', watchRunnings.map(x => [x.pid, JSON.stringify(x.playlist)]))
 
-        if (avaiSub > 0) {
-            newProfileManage()
-            runProfile()
+        if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
+            if (ids.length + addnewRunnings.length < MAX_PROFILE) {
+                newProfileManage()
+            } else {
+                runProfile()
+            }
         }
     }
     catch (e) {
