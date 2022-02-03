@@ -513,6 +513,7 @@ async function preWatchingVideo(action){
     await setActionData(action)
 
     if(action.url_type == 'playlist') {
+        await viewAds(action, true)
         let randomVideoModeBtn = document.querySelector('.style-grey-text #button > yt-icon > svg > g > path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
         if (randomVideoModeBtn) {
             await userClick(action.pid,'', randomVideoModeBtn)
@@ -531,7 +532,6 @@ async function preWatchingVideo(action){
 
     if(action.total_times < 1000){
         let videoTime
-        await viewAds(action, true)
         await skipAds()
 
         function loadVideoTime() {
@@ -656,7 +656,7 @@ async function watchingVideo(action){
 }
 
 async function viewAds(action, onlyVideoType = false) {
-    if (action.viewed_ads && !action.is_view_ads) {
+    if (action.viewed_ads || !action.is_view_ads) {
         return
     }
 
@@ -675,7 +675,7 @@ async function viewAds(action, onlyVideoType = false) {
             if (adsSelector === '.ytp-ad-visit-advertiser-button') {
                 let btnPause = document.querySelector('path[d="M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"]')
                 if (btnPause) {
-                    await userClick(pid,'button.ytp-pause-button', btnPause)
+                    await userClick(action.pid,'button.ytp-pause-button', btnPause)
                 }
                 adsElement = document.querySelector(adsSelector)
                 if (!adsElement) {
@@ -694,13 +694,13 @@ async function viewAds(action, onlyVideoType = false) {
                     let randomScroll1 = randomRanger(3,7)
                     let randomScroll2 = randomRanger(3,9)
                     await userScroll(action.pid, randomScroll1)
-                    await sleep(randomRanger(3,7) * 1000)
+                    await sleep(randomRanger(1,5) * 1000)
                     await userScroll(action.pid, randomScroll2)
-                    await sleep(randomRanger(3,7) * 1000)
+                    await sleep(randomRanger(1,5) * 1000)
                     await userScroll(action.pid, -randomScroll1)
-                    await sleep(randomRanger(3,7) * 1000)
+                    await sleep(randomRanger(1,5) * 1000)
                     await userScroll(action.pid, -randomScroll2)
-                    await sleep(randomRanger(3,7) * 1000)
+                    await sleep(randomRanger(1,5) * 1000)
 
                     await sleep(action.ads_viewing_time || randomRanger(3,10) * 1000)
                     await closeAdsTabs()
@@ -733,6 +733,8 @@ async function afterWatchingVideo(action,finishVideo){
         else{
             if(finishVideo){
                 // nex video
+                action.viewed_ads = false
+                await setActionData(action)
                 await nextVideo(action.pid)
             }
             return
