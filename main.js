@@ -141,7 +141,7 @@ async function startChromeAction(action) {
             'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje',
             'PLc21mL3vVoTvYCb_dCUCOk1n-9wCEO9-Z'
         ]
-        action.playlist_url = lists[Math.random() > 0.5 ? 1:0]
+        action.playlist_url = 'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje'//lists[Math.random() > 0.5 ? 1:0]
         action.playlist_percent = 100
         action.url_type = 'playlist'
         action.total_times = 1//getRndInteger(35, 50)

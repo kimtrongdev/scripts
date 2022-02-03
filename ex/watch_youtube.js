@@ -674,15 +674,18 @@ async function viewAds(action, onlyVideoType = false) {
     let adsTypes = [
         '.ytp-ad-visit-advertiser-button',
         '.ytp-ad-player-overlay-flyout-cta',
-        '.ytp-ad-overlay-title',
-        '.ytd-promoted-sparkles-web-renderer',
-        '.ytp-ad-overlay-image',
-        '#companion',
+        //'.ytp-ad-overlay-title',
+        //'.ytd-promoted-sparkles-web-renderer',
+        //'.ytp-ad-overlay-image',
+        //'#companion',
     ]
     let isChecked = false
     for await (let adsSelector of adsTypes) {
         let adsElement = document.querySelector(adsSelector)
         if (adsElement) {
+            action.viewed_ads = true
+            await setActionData(action)
+            return
             if (adsSelector === '.ytp-ad-visit-advertiser-button') {
                 let btnPause = document.querySelector('path[d="M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"]')
                 if (btnPause) {
@@ -737,7 +740,7 @@ async function viewAds(action, onlyVideoType = false) {
 async function afterWatchingVideo(action,finishVideo){
     let url = window.location.toString()
     if(action.url_type == 'playlist'){
-        if((action.playlist_index < 1 && action.viewed_ads) || url.indexOf(action.playlist_url) < 0){
+        if(action.viewed_ads || action.playlist_index <= -2 || url.indexOf(action.playlist_url) < 0){
             await updateActionStatus(action.pid, action.id, 0,'end playlist')
             return
         }
