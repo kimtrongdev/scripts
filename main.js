@@ -117,6 +117,7 @@ async function startChromeAction(action) {
     // kien code
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
+        console.log('systemConfig', systemConfig);
         action.mobile_percent = systemConfig.browser_mobile_percent
         active_devices = systemConfig.active_devices || []
         if (active_devices.length) {

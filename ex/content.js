@@ -118,7 +118,7 @@ async function initAction(){
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
 
-        let mobileRate = action.mobile_percent || 100; 
+        let mobileRate = action.mobile_percent 
         action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
         // trong code
@@ -200,6 +200,7 @@ function setWatchParam(action){
     action.suggest_videos = ''
     action.total_times_next_video = Number(action.total_times_next_video) || 3
     action.watching_time_non_ads = Number(action.watching_time_non_ads) || 15000
+    action.watching_time_non_ads -= 7000
     action.watching_time_start_ads = Number(action.watching_time_start_ads) || 31000
     action.watching_time_end_ads = Number(action.watching_time_end_ads) || 60000
 

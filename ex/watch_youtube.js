@@ -742,7 +742,7 @@ async function afterWatchingVideo(action,finishVideo){
     if(action.url_type == 'playlist'){
         await updateWatchedVideo(action.viewed_ads)
             
-        if(action.viewed_ads || Math.abs(action.playlist_index - 1) <= action.total_times_next_video || url.indexOf(action.playlist_url) < 0){
+        if(action.viewed_ads || Math.abs(action.playlist_index - 1) > action.total_times_next_video || url.indexOf(action.playlist_url) < 0){
             await updateActionStatus(action.pid, action.id, 0,'end playlist')
             return
         }
