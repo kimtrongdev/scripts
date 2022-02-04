@@ -37,8 +37,8 @@ const MAX_CURRENT_ACC_CAL = process.platform === "win32" ? 1 : process.env.MAX_P
 const MAX_PROFILE_CAL = process.platform === "win32" ? 1 : process.env.MAX_PROFILE ? process.env.MAX_PROFILE : Math.min(DOCKER ? 4 : 100, Math.ceil(os.totalmem() / (600 * 1024 * 1024)))
 
 const MAX_PROFILE_TOTAL = devJson.maxProfile > 1 ? devJson.maxProfile : 1;
-const MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
-const MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
+let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
+let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
 const RUNNING_CHECK_INTERVAL = 45000     // 30 seconds
 const MAX_REPORT_TIME = 600000           // 10 minutes
@@ -126,6 +126,26 @@ async function startChromeAction(action) {
         if (systemConfig.ads_percent) {
             action.ads_percent = systemConfig.ads_percent
         }
+
+        if (systemConfig.max_total_profiles) {
+            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+        }
+
+        if (systemConfig.playlists && action.id == 'watch') {
+            if (systemConfig.total_times_next_video) {
+                action.total_times_next_video = systemConfig.total_times_next_video
+            }
+            action.watching_time_end_ads = systemConfig.watching_time_end_ads
+            action.watching_time_start_ads = systemConfig.watching_time_start_ads
+
+            let items = systemConfig.playlists.split(',')
+            var playlist_id = items[Math.floor(Math.random()*items.length)];
+            action.playlist_url = playlist_id.trim()
+            action.playlist_percent = 100
+            action.url_type = 'playlist'
+            action.total_times = 1//getRndInteger(35, 50)
+            action.playlist_index = action.total_times
+        }
     }
 
     if (fisrt_video < 3 && action.id != 'login') {
@@ -134,18 +154,6 @@ async function startChromeAction(action) {
         }
         action.direct_percent = 1000
         fisrt_video = fisrt_video + 1
-    }
-
-    if (action.id == 'watch') {
-        let lists = [
-            'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje',
-            'PLc21mL3vVoTvYCb_dCUCOk1n-9wCEO9-Z'
-        ]
-        action.playlist_url = 'PLxHy7Ctwt3U1uOI-v7vTHY0Z1VkB1Htje'//lists[Math.random() > 0.5 ? 1:0]
-        action.playlist_percent = 100
-        action.url_type = 'playlist'
-        action.total_times = 1//getRndInteger(35, 50)
-        action.playlist_index = action.total_times
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
