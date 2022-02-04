@@ -7,6 +7,12 @@ async function userLogin(action) {
     try {
         await sleep(5000)
         let url = window.location.toString()
+
+        if (url.indexOf('accounts.google.com/b/0/PlusPageSignUp') > -1) {
+            await userCreateChannel(action)
+            return
+        }
+
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
@@ -112,6 +118,10 @@ async function userLogin(action) {
             await userClick(action.pid, 'input[type="submit"]')
             await sleep(60000)
         }
+        else if (url.indexOf('youtube.com/channel/') > -1) {
+            await goToLocation(action.pid,'youtube.com/feed/history')
+            return
+        }
         else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
@@ -128,7 +138,8 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('https://www.youtube.com/create_channel') == 0) {
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')           
+            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             //await createChannel(action)
             return
         }        
@@ -141,10 +152,22 @@ async function userLogin(action) {
             return
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             console.log('------pauseHistory');
-            await pauseHistory()
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await oldPauseHistory()
+            await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
         }
+        else if (url.indexOf('youtube.com/account') > -1) {
+            let channels = document.querySelectorAll('ytd-account-item-renderer')
+            let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
+            if (channels.length < 5 && btnCreateChannel) {
+                await userClick(action.pid,'',btnCreateChannel)
+            } else {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            }
+            return
+        }
+       
         else if(url != window.location.toString()) {
             return
         }
@@ -302,6 +325,17 @@ function getLoginError() {
     catch (e) {
         return url + ":" + e.toString()
     }
+}
+
+async function userCreateChannel(action){
+    await waitForSelector('#PlusPageName')
+    await userTypeEnter(action.pid, '#PlusPageName', makeName(9))
+
+    await sleep(1000)
+    await userClick(action.pid,'.consent-checkmark')
+    await sleep(1000)
+
+    await userClick(action.pid,'#submitbutton')
 }
 
 async function createChannelMobile(action){

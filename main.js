@@ -57,6 +57,7 @@ global.IS_LOG_SCREEN = false
 global.is_show_ui = devJson.isShowUI
 global.fisrt_video = 0
 global.active_devices = []
+let channelInfo = []
 let BACKUP = false
 let CUSTOM = false
 PR = [530810, 'abandondata7577@gmail.com', '8BTQ651e8cis', 'nCQFX4wh8340lzr@hotmail.com']
@@ -133,6 +134,18 @@ async function startChromeAction(action) {
         }
 
         if (systemConfig.playlists && action.id == 'watch') {
+            let channelPosition = channelInfo.find(c => c.pid == action.pid)
+            if (channelPosition) {
+                channelPosition.position += 1
+                action.channel_position = channelPosition.position
+            } else {
+                channelInfo.push({
+                    pid: action.pid,
+                    position: 0
+                })
+                action.channel_position = channelPosition.position
+            }
+
             if (systemConfig.total_times_next_video) {
                 action.total_times_next_video = systemConfig.total_times_next_video
             }

@@ -1,3 +1,14 @@
+function makeName(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
 async function userType(pid,selector,str,element,iframe){
     console.log('userType',selector,str)
     let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))

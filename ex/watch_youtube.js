@@ -19,8 +19,17 @@ async function userWatch(action){
         //     await sleep(60000)
         //     return
         // }
-
-        if (url.indexOf('google.com/search?q=') > -1) {
+        
+        if (url.indexOf('youtube.com/account') > -1) {
+            let channels = document.querySelectorAll('ytd-account-item-renderer')
+            if (channels[action.channel_position]) {
+                action.channel_position = null
+                await setActionData(action)
+                await userClick(action.pid,'', channels[action.channel_position])
+            }
+            return
+        }
+        else if (url.indexOf('google.com/search?q=') > -1) {
             await sleep(2000)
             await userClick(action.pid,'#search div h3')
         }
@@ -102,6 +111,11 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
+    if (action.channel_position >= 0 && action.channel_position !== null) {
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        return 
+    }
+
     if (action.view_playlist) {
         await goToLocation(action.pid,`https://www.youtube.com/playlist?list=${action.playlist_url}`)
         return 
