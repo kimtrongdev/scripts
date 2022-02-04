@@ -31,6 +31,9 @@ module.exports = {
         console.log('updateWatchingTime pid: ', pid, ', action: ', action, ', readingTime: ', readingTime, ', playlistTime: ', playlistTime, ', lastPlaylist: ', lastPlaylist)
         return await rq({method: 'POST',uri: SUB_URL + '/profile/update-watch-time',json: true, body: {pid: pid, action: action, reading_time: readingTime, playlist_time: playlistTime, last_playlist: lastPlaylist}})
     },
+    updateWatchedVideo: async function(pid, viewedAds){
+        return await rq({method: 'POST',uri: SUB_URL + '/profile/update-watched',json: true, body: {pid: pid, viewed_ads: viewedAds}})
+    },
     reportWatchingTime: async function(pid, time){
         return await rq({method: 'POST',uri: SUB_URL + '/profile/report-watching',json: true, body: {pid: pid, vmId: config.vm_id}})
     },

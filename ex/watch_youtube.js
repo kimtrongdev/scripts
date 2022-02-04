@@ -740,7 +740,9 @@ async function viewAds(action, onlyVideoType = false) {
 async function afterWatchingVideo(action,finishVideo){
     let url = window.location.toString()
     if(action.url_type == 'playlist'){
-        if(action.viewed_ads || action.playlist_index <= -2 || url.indexOf(action.playlist_url) < 0){
+        await updateWatchedVideo(action.viewed_ads)
+            
+        if(action.viewed_ads || action.playlist_index <= -4 || url.indexOf(action.playlist_url) < 0){
             await updateActionStatus(action.pid, action.id, 0,'end playlist')
             return
         }

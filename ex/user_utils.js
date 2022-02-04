@@ -25,6 +25,14 @@ function updateWatchingTime(pid, action, readingTime, playlistTime, lastPlaylist
     }))
 }
 
+
+function updateWatchedVideo(viewedAds){
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: {id: 'watched', viewedAds: viewedAds}}, function (response) {
+        resolve(response);
+    }))
+}
+
 function subStatusReport(pid, channelId, vmId, status, preSub, postSub, note){
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'POST', url: '/profile/sub-update',
         data: {pid: pid, vmId: vmId, channel_id: channelId, status: status, ip: '', pre_sub: preSub, post_sub: postSub, note: note}}, function (response) {

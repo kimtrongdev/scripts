@@ -770,7 +770,10 @@ function initExpress() {
 
     app.get('/report', (req, res) => {
         console.log(req.query)
-        if (req.query.id == 'login') {
+        if (req.query.id == 'watched'){
+            request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
+        }
+        else if (req.query.id == 'login') {
             if (req.query.status == 1) {
                 console.log(req.query.pid, 'login success')
                 let login = !req.query.msg
