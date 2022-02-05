@@ -57,7 +57,7 @@ global.IS_LOG_SCREEN = false
 global.is_show_ui = devJson.isShowUI
 global.fisrt_video = 0
 global.active_devices = []
-let channelInfo = []
+global.channelInfo = []
 let BACKUP = false
 let CUSTOM = false
 PR = [530810, 'abandondata7577@gmail.com', '8BTQ651e8cis', 'nCQFX4wh8340lzr@hotmail.com']
@@ -133,32 +133,42 @@ async function startChromeAction(action) {
             MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
         }
 
+        action.total_channel_created = Number(systemConfig.total_channel_created)
+
         if (systemConfig.playlists && action.id == 'watch') {
-            let channelPosition = channelInfo.find(c => c.pid == action.pid)
-            if (channelPosition) {
-                channelPosition.position += 1
-                action.channel_position = channelPosition.position
+            let infos = channelInfo
+            let channelPositionIndex = infos.findIndex(c => c.pid == action.pid)
+            if (channelPositionIndex > -1) {
+                infos[channelPositionIndex].position += 1
+                if (infos[channelPositionIndex].position >= action.total_channel_created) {
+                    infos[channelPositionIndex].position = 0
+                }
+
+                action.channel_position = infos[channelPositionIndex].position
+                channelInfo = infos
             } else {
                 channelInfo.push({
                     pid: action.pid,
                     position: 0
                 })
-                action.channel_position = channelPosition.position
+                action.channel_position = 0
             }
 
             if (systemConfig.total_times_next_video) {
                 action.total_times_next_video = systemConfig.total_times_next_video
             }
+           
+            action.watching_time_non_ads = systemConfig.watching_time_non_ads
             action.watching_time_end_ads = systemConfig.watching_time_end_ads
             action.watching_time_start_ads = systemConfig.watching_time_start_ads
 
-            let items = systemConfig.playlists.split(',')
-            var playlist_id = items[Math.floor(Math.random()*items.length)];
-            action.playlist_url = playlist_id.trim()
-            action.playlist_percent = 100
-            action.url_type = 'playlist'
-            action.total_times = 1//getRndInteger(35, 50)
-            action.playlist_index = action.total_times
+            // let items = systemConfig.playlists.split(',')
+            // var playlist_id = items[Math.floor(Math.random()*items.length)];
+            // action.playlist_url = playlist_id.trim()
+            // action.playlist_percent = 100
+            // action.url_type = 'playlist'
+            // action.total_times = 1//getRndInteger(35, 50)
+            // action.playlist_index = action.total_times
         }
     }
 

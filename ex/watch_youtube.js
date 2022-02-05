@@ -22,12 +22,19 @@ async function userWatch(action){
         
         if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
-            if (channels[action.channel_position]) {
+            let channel = channels.item(action.channel_position)
+            if (channel) {
                 action.channel_position = null
                 await setActionData(action)
-                await userClick(action.pid,'', channels[action.channel_position])
+                await userClick(action.pid, '', channel)
+            } else {
+                await goToLocation(action.pid,'https://www.youtube.com//')
             }
             return
+        }
+        else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
+            //action.
+
         }
         else if (url.indexOf('google.com/search?q=') > -1) {
             await sleep(2000)
@@ -111,7 +118,7 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    if (action.channel_position >= 0 && action.channel_position !== null) {
+    if (action.channel_position >= 0 && action.channel_position !== null && action.total_channel_created) {
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
     }
@@ -646,6 +653,14 @@ async function watchingVideo(action){
         if(react && react.sub_time > i && react.sub_time <= i + interval){
             await sleep(react.sub_time - i)
             await userClick(action.pid,'#top-row #subscribe-button paper-button.ytd-subscribe-button-renderer:not([subscribed])')
+        }
+
+        if (action.is_sub && i > 30000 && i <= 30000 + interval) {
+            if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+                // click sub document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
+                let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
+                await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
+            }
         }
 
         let sleepTime = action.watch_time - i > interval ? interval: action.watch_time - i

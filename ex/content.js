@@ -204,6 +204,7 @@ function setWatchParam(action){
     action.watching_time_start_ads = Number(action.watching_time_start_ads) || 31000
     action.watching_time_end_ads = Number(action.watching_time_end_ads) || 60000
     action.channel_position = Number(action.channel_position)
+    action.total_channel_created = Number(action.total_channel_created) || 20
     if (action.playlist_percent == 100) {
         action.view_playlist = true
     } else {

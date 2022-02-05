@@ -119,7 +119,12 @@ async function userLogin(action) {
             await sleep(60000)
         }
         else if (url.indexOf('youtube.com/channel/') > -1) {
-            await goToLocation(action.pid,'youtube.com/feed/history')
+            if (action.total_channel_created) {
+                await goToLocation(action.pid,'youtube.com/feed/history')
+            } else {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            }
+            
             return
         }
         else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
@@ -152,7 +157,7 @@ async function userLogin(action) {
             return
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             console.log('------pauseHistory');
-            await oldPauseHistory()
+            await oldPauseHistory(action)
             await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
@@ -160,7 +165,7 @@ async function userLogin(action) {
         else if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
             let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-            if (channels.length < 5 && btnCreateChannel) {
+            if (channels.length < action.total_channel_created && btnCreateChannel) {
                 await userClick(action.pid,'',btnCreateChannel)
             } else {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
