@@ -1,3 +1,10 @@
+async function updateTotalCreatedUsers(pid, count){
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: { id: 'total_created_users', pid, count }}, function (response) {
+        resolve(response);
+    }))
+}
+
 async function getActionData(){
     return new Promise(resolve => chrome.storage.sync.get('action', function(data) {
             resolve(data);

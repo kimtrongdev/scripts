@@ -38,7 +38,7 @@ const MAX_PROFILE_CAL = process.platform === "win32" ? 1 : process.env.MAX_PROFI
 
 const MAX_PROFILE_TOTAL = devJson.maxProfile > 1 ? devJson.maxProfile : 1;
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
-let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
+let MAX_PROFILE = MAX_CURRENT_ACC * 1000 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
 const RUNNING_CHECK_INTERVAL = 45000     // 30 seconds
 const MAX_REPORT_TIME = 600000           // 10 minutes
@@ -130,7 +130,7 @@ async function startChromeAction(action) {
         }
 
         if (systemConfig.max_total_profiles) {
-            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+            //MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
         }
 
         action.total_channel_created = Number(systemConfig.total_channel_created)
@@ -804,6 +804,9 @@ function initExpress() {
         console.log(req.query)
         if (req.query.id == 'watched'){
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
+        }
+        else if (req.query.id == 'total_created_users') {
+            request_api.updateTotalCreatedUsers(req.query.pid, req.query.count)
         }
         else if (req.query.id == 'login') {
             if (req.query.status == 1) {

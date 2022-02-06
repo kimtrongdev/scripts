@@ -165,6 +165,11 @@ async function userLogin(action) {
         else if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
             let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
+            if (channels.length) {
+                // update users count to server
+                updateTotalCreatedUsers(pid, count)
+            }
+
             if (channels.length < action.total_channel_created && btnCreateChannel) {
                 await userClick(action.pid,'',btnCreateChannel)
             } else {
