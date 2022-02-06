@@ -37,6 +37,10 @@ async function userLogin(action) {
             await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(60000)
         }
+        else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
+            //action.
+            throw 'PlusPageSignUpIdvChallenge'
+        }
         else if(url.indexOf('https://accounts.google.com/ServiceLogin/signinchooser') == 0){
             console.log('choose account')
             await waitForSelector('ul li[class]')
