@@ -167,7 +167,7 @@ async function userLogin(action) {
             let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
             if (channels.length) {
                 // update users count to server
-                updateTotalCreatedUsers(pid, count)
+                updateTotalCreatedUsers(action.pid, channels.length)
             }
 
             if (channels.length < action.total_channel_created && btnCreateChannel) {
