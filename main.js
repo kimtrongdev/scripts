@@ -317,7 +317,7 @@ async function newProfileManage() {
         if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         console.log('newProfileManage')
         // get new profile
-        let newProfile = await request_api.getNewProfile()
+        let newProfile = await request_api.getNewProfile('create_channel_type')
         // if(WIN_ENV) newProfile = {profile: {id: 130, email: 'drybattle8386@gmail.com', password: 'drybattle9177', recover_mail: 'drybattle4856@gmx.com'}}
         // if(WIN_ENV) newProfile = {profile: {id: PR[0], email: PR[1], password: PR[2], recover_mail: PR[3]}}
         console.log('newProfile: ', newProfile)
