@@ -1,5 +1,6 @@
 // config file
 require('log-timestamp')
+const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
@@ -30,7 +31,6 @@ const path = require('path')
 const del = require('del');
 const fs = require('fs')
 const version = fs.readFileSync(path.join(__dirname, 'version'), 'utf8')
-const utils = require('./utils')
 const publicIp = require('public-ip');
 const os = require('os');
 const DOCKER = process.platform === "win32" ? false : execSync('cat /proc/1/cgroup | grep docker | wc -l').toString().split('\n')[0] > 0
