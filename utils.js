@@ -257,6 +257,11 @@ module.exports = {
         'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
         'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.1805 Safari/537.36'
     ],
+    log: (...pr) => {
+        if (DEBUG) {
+            console.log(...pr)
+        }
+    },
     getAndroidAgent: function(pid){
         let agent = this.AGENTS[pid % this.AGENTS.length]
         console.log('pid:',pid,agent)
@@ -296,6 +301,9 @@ module.exports = {
         }, ms));
     },
     screenshot: async function(pid){
+        if (!DEBUG) {
+            return
+        }
         try{
             let fullPath = path.resolve('screen',pid+'_'+(+ new Date())+'.jpg')
             // console.log('screenshot: ', fullPath)
@@ -312,6 +320,9 @@ module.exports = {
         }
     },
     errorScreenshot: async function(fileName){
+        if (!DEBUG) {
+            return
+        }
         try{
             if (is_show_ui) {
                 return
@@ -331,6 +342,9 @@ module.exports = {
         }
     },
     logScreenshot: async function(fileName){
+        if (!DEBUG) {
+            return
+        }
         try{
             let fullPath = path.join('logscreen',fileName+'_'+(+ new Date())+'.jpg')
             console.log('Screenshot: ', fullPath)

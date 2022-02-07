@@ -13,14 +13,16 @@ catch (e) {
 let devJson = {
     "hostIp": "3.93.238.219:5000",
     "maxProfile" : 1,
-    "isShowUI": false
+    "isShowUI": false,
+    "debug": false,
 }
 
 try {
     devJson = require('./dev.json')
 } catch (error) {
-    console.log('Error while load dev config file')
+    utils.log('Error while load dev config file')
 }
+global.DEBUG = devJson.debug
 
 const request_api = require('./request_api')
 global.workingDir = getScriptDir()
@@ -92,7 +94,7 @@ async function startChromeAction(action) {
     let windowPosition = '--window-position=0,0'
     let windowSize = is_show_ui ? ' --start-maximized' : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid]) {
-        console.log('set proxy', proxy[action.pid])
+        utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
@@ -104,7 +106,7 @@ async function startChromeAction(action) {
         let hashCode = s => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
         let hashPid = hashCode(profile.profile.email)
         hashPid = hashPid > 0 ? hashPid : -hashPid
-        console.log('hashPid',hashPid)
+        utils.log('hashPid',hashPid)
         let nav = await request_api.getNavigator(hashPid,'Android','Chrome')
         if(nav && nav.screen){
             action.userAgent = nav.navigator.userAgent
@@ -118,7 +120,7 @@ async function startChromeAction(action) {
     // kien code
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
-        console.log('systemConfig', systemConfig);
+        utils.log('systemConfig', systemConfig);
         action.mobile_percent = systemConfig.browser_mobile_percent
         active_devices = systemConfig.active_devices || []
         if (active_devices.length) {
@@ -189,16 +191,16 @@ async function startChromeAction(action) {
         exec(`start chrome${userProxy} --lang=en-US,en --start-maximized --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
     }
     else {
-        console.log('startChromeAction', action.pid)
+        utils.log('startChromeAction', action.pid)
         closeChrome(action.pid)
         await utils.sleep(3000)
-        console.log('startDisplay')
+        utils.log('startDisplay')
         startDisplay(action.pid)
         await utils.sleep(3000)
 
-        console.log('start chrome', action.pid)
+        utils.log('start chrome', action.pid)
         if (action.id == 'login') {
-            console.log('start chrome login', action.pid)
+            utils.log('start chrome login', action.pid)
 
             await createProfile(action.pid)
 
@@ -210,7 +212,7 @@ async function startChromeAction(action) {
             sendEnter(action.pid)
             await utils.sleep(8000)
             // setChromeSize(action.pid)
-            console.log('process login')
+            utils.log('process login')
         }
         else {
             setDisplay(action.pid)
@@ -223,7 +225,7 @@ async function startChromeAction(action) {
 
 async function loginProfileChrome(profile) {
     try {
-        console.log('loginProfileChrome', profile)
+        utils.log('loginProfileChrome', profile)
         let action = profile
         action.pid = profile.id
         action.id = 'login'
@@ -235,13 +237,13 @@ async function loginProfileChrome(profile) {
         await startChromeAction(action)
     }
     catch (e) {
-        console.log('error', 'loginProfile', profile.id, e)
+        utils.log('error', 'loginProfile', profile.id, e)
     }
 }
 
 async function pauseWatchingProfile(pid, action) {
     try {
-        console.log('pauseWatchingProfile: ', pid)
+        utils.log('pauseWatchingProfile: ', pid)
 
         let removeWatch = null
         if(action == PLAYLIST_ACTION.SUB && subRunnings.filter(x => x.pid == pid).length) return false
@@ -249,11 +251,11 @@ async function pauseWatchingProfile(pid, action) {
 
         if (action < PLAYLIST_ACTION.SUB) {
             if (addnewRunnings.filter(x => x.pid == pid).length || subRunnings.filter(x => x.pid == pid).length || watchRunnings.filter(x => x.pid == pid && x.action >= action).length) {
-                console.log('warning', 'pid: ', pid, ' is in addnewRunnings/subRunnings/watchRunnings')
+                utils.log('warning', 'pid: ', pid, ' is in addnewRunnings/subRunnings/watchRunnings')
                 return false
             }
             if (addnewRunnings.length + subRunnings.length + watchRunnings.filter(x => x.action >= action).length >= MAX_CURRENT_ACC) {
-                console.log('info', 'pid: ', pid, ' cannot run, MAX_CURRENT_ACC')
+                utils.log('info', 'pid: ', pid, ' cannot run, MAX_CURRENT_ACC')
                 return false
             }
         }
@@ -261,7 +263,7 @@ async function pauseWatchingProfile(pid, action) {
         // stop watching own pid if has
         let ownRunnings = watchRunnings.filter(x => x.pid == pid && x.action < action)
         if (ownRunnings.length) {
-            console.log('remove own running: ', pid)
+            utils.log('remove own running: ', pid)
             removeWatch = ownRunnings[0]
         }
         else if (addnewRunnings.length + subRunnings.length + watchRunnings.length >= MAX_CURRENT_ACC) {
@@ -269,13 +271,13 @@ async function pauseWatchingProfile(pid, action) {
             tempRun.sort(function (a, b) {
                 return a.action - b.action
             })
-            console.log('running by order: ', tempRun.map(x => { return { pid: x.pid, action: x.action } }))
+            utils.log('running by order: ', tempRun.map(x => { return { pid: x.pid, action: x.action } }))
             // remove lowest running by action
             removeWatch = tempRun.shift()
         }
 
         if (removeWatch) {
-            console.log('remove pid: ', removeWatch.pid, ' action: ', removeWatch.action, ' for pid: ', pid, ' action: ', action)
+            utils.log('remove pid: ', removeWatch.pid, ' action: ', removeWatch.action, ' for pid: ', pid, ' action: ', action)
             watchRunnings = watchRunnings.filter(x => x.pid != removeWatch.pid)
             // close watching browser
             closeChrome(pid)
@@ -307,7 +309,7 @@ async function pauseWatchingProfile(pid, action) {
         return browser
     }
     catch (e) {
-        console.log('error', 'pauseWatchingProfile err: ', e)
+        utils.log('error', 'pauseWatchingProfile err: ', e)
         return false
     }
 }
@@ -315,20 +317,20 @@ async function pauseWatchingProfile(pid, action) {
 async function newProfileManage() {
     try {
         if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
-        console.log('newProfileManage')
+        utils.log('newProfileManage')
         // get new profile
         let newProfile = await request_api.getNewProfile()
         // if(WIN_ENV) newProfile = {profile: {id: 130, email: 'drybattle8386@gmail.com', password: 'drybattle9177', recover_mail: 'drybattle4856@gmx.com'}}
         // if(WIN_ENV) newProfile = {profile: {id: PR[0], email: PR[1], password: PR[2], recover_mail: PR[3]}}
-        console.log('newProfile: ', newProfile)
+        utils.log('newProfile: ', newProfile)
         if (!newProfile.err && newProfile.profile) {
             // copy main to clone profile
             let profile = newProfile.profile
             if (proxy) {
                 proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
-                console.log('pid', profile.id, 'proxy', proxy[profile.id])
+                utils.log('pid', profile.id, 'proxy', proxy[profile.id])
                 if (!proxy[profile.id]) {
-                    console.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
+                    utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
                     await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
                     return
                 }
@@ -336,7 +338,7 @@ async function newProfileManage() {
 
             let browser = await pauseWatchingProfile(profile.id, ADDNEW_ACTION)
             if (browser) {
-                console.log('addProfile: ', profile)
+                utils.log('addProfile: ', profile)
                 // login for profile
                 // loginProfile(profile, browser)
                 await loginProfileChrome(profile)
@@ -348,13 +350,13 @@ async function newProfileManage() {
         }
     }
     catch (e) {
-        console.log('newProfileManage err: ', e)
+        utils.log('newProfileManage err: ', e)
     }
 }
 
 async function checkSubRunningProfile() {
     try {
-        console.log('checkSubRunningProfile')
+        utils.log('checkSubRunningProfile')
         let subRunningLength = subRunnings.length
         for (let i = 0; i < subRunningLength; i++) {
             // calculate last report time
@@ -362,30 +364,30 @@ async function checkSubRunningProfile() {
             if (timeDiff > MAX_SUB_RUNNING_TIME) {
                 let pid = subRunnings[i].pid
                 try {
-                    console.log('error', 'pid: ', pid, ' runningTime exceed ', MAX_SUB_RUNNING_TIME)
+                    utils.log('error', 'pid: ', pid, ' runningTime exceed ', MAX_SUB_RUNNING_TIME)
                     closeChrome(pid)
                 }
                 catch (e) {
-                    console.log('checkSubRunningProfile release err: ', e)
+                    utils.log('checkSubRunningProfile release err: ', e)
                 }
                 finally {
                     // delete in sub running queue
                     subRunnings = subRunnings.filter(x => x.pid != pid)
                     subRunningLength -= 1
                     i -= 1
-                    console.log('checkSubRunningProfile subRunnings: ', subRunnings.length)
+                    utils.log('checkSubRunningProfile subRunnings: ', subRunnings.length)
                 }
             }
         }
     }
     catch (e) {
-        console.log('checkSubRunningProfile err: ', e)
+        utils.log('checkSubRunningProfile err: ', e)
     }
 }
 
 async function checkAddNewRunningProfile() {
     try {
-        console.log('checkAddNewRunningProfile')
+        utils.log('checkAddNewRunningProfile')
         let addnewRunningLength = addnewRunnings.length
         for (let i = 0; i < addnewRunningLength; i++) {
             // calculate last report time
@@ -393,32 +395,32 @@ async function checkAddNewRunningProfile() {
             if (timeDiff > MAX_ADDNEW_TIME) {
                 let pid = addnewRunnings[i].pid
                 try {
-                    console.log('error', 'pid: ', pid, ' addingTime exceed ', MAX_ADDNEW_TIME)
+                    utils.log('error', 'pid: ', pid, ' addingTime exceed ', MAX_ADDNEW_TIME)
                     // delete profile in system
                     await deleteProfile(pid)
                     closeChrome(pid)
                 }
                 catch (e) {
-                    console.log('checkAddNewRunningProfile release err:', e)
+                    utils.log('checkAddNewRunningProfile release err:', e)
                 }
                 finally {
                     // delete in add new running queue
                     addnewRunnings = addnewRunnings.filter(x => x.pid != pid)
                     addnewRunningLength -= 1
                     i -= 1
-                    console.log('addnewRunnings: ', addnewRunnings)
+                    utils.log('addnewRunnings: ', addnewRunnings)
                 }
             }
         }
     }
     catch (e) {
-        console.log('checkAddNewRunningProfile err: ', e)
+        utils.log('checkAddNewRunningProfile err: ', e)
     }
 }
 
 async function checkWatchingProfile() {
     try {
-        console.log('checkWatchingProfile: ', watchRunnings.length)
+        utils.log('checkWatchingProfile: ', watchRunnings.length)
         let watchingLength = watchRunnings.length
         for (let i = 0; i < watchingLength; i++) {
             // calculate last report time
@@ -426,46 +428,46 @@ async function checkWatchingProfile() {
             if (timeDiff > MAX_REPORT_TIME) {
                 let pid = watchRunnings[i].pid
                 try {
-                    console.log('error', 'pid: ', pid, ' lastReport exceed ', MAX_REPORT_TIME)
+                    utils.log('error', 'pid: ', pid, ' lastReport exceed ', MAX_REPORT_TIME)
                     closeChrome(pid)
                 }
                 catch (e) {
-                    console.log('error', 'checkWatchingProfile release err: ', e)
+                    utils.log('error', 'checkWatchingProfile release err: ', e)
                 }
                 finally {
                     // delete in watching queue
                     watchRunnings = watchRunnings.filter(x => x.pid != pid)
                     watchingLength -= 1
                     i -= 1
-                    console.log('checkWatchingProfile watchRunnings: ', watchRunnings.length)
+                    utils.log('checkWatchingProfile watchRunnings: ', watchRunnings.length)
                 }
             }
         }
     }
     catch (e) {
-        console.log('error', 'checkWatchingProfile err: ', e, ' watchRunnings: ', watchRunnings)
+        utils.log('error', 'checkWatchingProfile err: ', e, ' watchRunnings: ', watchRunnings)
     }
 }
 
 async function runProfile() {
     // get sub channel for profile
-    console.log('ids: ', ids)
+    utils.log('ids: ', ids)
     let pid = ids.shift()
     if (pid) {
         ids.push(pid)
         try {
-            console.log('check sub or run for profile: ', pid)
-            console.log('watchRunnings: ', watchRunnings.length)
+            utils.log('check sub or run for profile: ', pid)
+            utils.log('watchRunnings: ', watchRunnings.length)
 
             let channels = await request_api.getSubChannels(pid, config.vm_id, proxy ? true : false)
-            console.log('pid: ', pid, ' getSubChannels: ', channels)
+            utils.log('pid: ', pid, ' getSubChannels: ', channels)
             // if(WIN_ENV) if(watchRunnings.filter(x => x.pid == pid).length == 0) {channels = {err: 'CHECKCOUNTRY'} }else {channels = {action: 0, channels: []}}
             if (!channels.err) {
                 if (proxy) {
                     proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
-                    console.log('pid', pid, 'proxy', proxy[pid])
+                    utils.log('pid', pid, 'proxy', proxy[pid])
                     if (!proxy[pid]) {
-                        console.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
+                        utils.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
                         throw 'no proxy'
                     }
                 }
@@ -479,7 +481,7 @@ async function runProfile() {
                             action.id = 'sub'
                             action.vmId = config.vm_id
                             action.channels = channels.channels
-                            console.log(pid, action)
+                            utils.log(pid, action)
                             await startChromeAction(action)
                         }
                         else {
@@ -490,7 +492,7 @@ async function runProfile() {
                         }
                     }
                     catch (e) {
-                        console.log('error', pid, 'sub', e)
+                        utils.log('error', pid, 'sub', e)
                         subRunnings = subRunnings.filter(x => x.pid != pid)
                     }
                 }
@@ -500,7 +502,7 @@ async function runProfile() {
                     if (browser) {
                         try {
                             let playlist = await request_api.getPlaylist(pid, channels.action)
-                            console.log(pid, 'playlist', playlist)
+                            utils.log(pid, 'playlist', playlist)
 
                             if (playlist && !playlist.err && playlist.playlist.length) {
                                 let action = playlist.playlist[0]
@@ -508,7 +510,7 @@ async function runProfile() {
                                 action.id = 'watch'
                                 action.keyword = playlist.keyword && playlist.keyword.length ? playlist.keyword[0] : undefined
                                 // if(WIN_ENV) action.page_watch = 99
-                                console.log(pid, action)
+                                utils.log(pid, action)
                                 await startChromeAction(action)
                             }
                             else {
@@ -516,14 +518,14 @@ async function runProfile() {
                             }
                         }
                         catch (e) {
-                            console.log('pid: ', pid, ' reading err: ', e)
+                            utils.log('pid: ', pid, ' reading err: ', e)
                             watchRunnings = watchRunnings.filter(x => x.pid != pid)
                         }
                     }
                 }
             }
             else {
-                console.log('error', 'pid: ', pid, ' getSubChannels err: ', channels.err)
+                utils.log('error', 'pid: ', pid, ' getSubChannels err: ', channels.err)
                 if (channels.err == "PROFILE_INVALID") {
                     let runnings = watchRunnings.filter(x => x.pid == pid)
                     if (runnings.length) {
@@ -547,9 +549,9 @@ async function runProfile() {
                     watchRunnings = watchRunnings.filter(x => x.pid != pid)
                     if (proxy) {
                         proxy[pid] = await request_api.getProfileProxy(pid, channels.err == "CONFIRM"?CONFIRM_ACTION:PLAYLIST_ACTION.WATCH)
-                        console.log('pid', pid, `${channels.err} proxy`, proxy[pid])
+                        utils.log('pid', pid, `${channels.err} proxy`, proxy[pid])
                         if (!proxy[pid]) {
-                            console.log('error', 'pid:', pid, `get ${channels.err} proxy:`, proxy[pid])
+                            utils.log('error', 'pid:', pid, `get ${channels.err} proxy:`, proxy[pid])
                             throw 'no proxy'
                         }
                     }
@@ -557,7 +559,7 @@ async function runProfile() {
                     try {
                         if (browser) {
                             let profile = await request_api.getProfile(pid)
-                            console.log(profile)
+                            utils.log(profile)
                             // if(WIN_ENV) profile = {profile: {password: PR[2]}}
                             if(profile.err) throw `GET_PROFILE_${channels.err}_ERROR`
                             let action = {}
@@ -565,18 +567,18 @@ async function runProfile() {
                             action.id = channels.err.toLowerCase()
                             action.password = profile.profile.password
                             action.cardnumber = utils.GenCC("VISA",1)[0]
-                            console.log(pid, action)
+                            utils.log(pid, action)
                             await startChromeAction(action)
                         }
                     }
                     catch (e) {
-                        console.log('error', pid, channels.err, e)
+                        utils.log('error', pid, channels.err, e)
                     }
                 }
             }
         }
         catch (e) {
-            console.log('error', 'pid: ', pid, ' subProfile err: ', e)
+            utils.log('error', 'pid: ', pid, ' subProfile err: ', e)
         }
     }
 }
@@ -584,7 +586,7 @@ async function runProfile() {
 async function profileRunningManage() {
     try {
         await request_api.updateVmStatus()
-        console.log('profileRunningManage')
+        utils.log('profileRunningManage')
         // check sub running queue running time
         await checkSubRunningProfile()
         // check add new running queue running time
@@ -593,7 +595,7 @@ async function profileRunningManage() {
         await checkWatchingProfile()
         // check sub running queue
         let avaiSub = MAX_CURRENT_ACC - subRunnings.length - addnewRunnings.length
-        console.log('subRunnings: ', subRunnings.map(x => x.pid), ' addnewRunnings: ', addnewRunnings.map(x => x.pid),
+        utils.log('subRunnings: ', subRunnings.map(x => x.pid), ' addnewRunnings: ', addnewRunnings.map(x => x.pid),
             ' watchRunnings: ', watchRunnings.map(x => [x.pid, JSON.stringify(x.playlist)]))
 
         if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
@@ -605,7 +607,7 @@ async function profileRunningManage() {
         }
     }
     catch (e) {
-        console.log('profileRunningManage err: ', e)
+        utils.log('profileRunningManage err: ', e)
     }
     finally {
         setTimeout(profileRunningManage, RUNNING_CHECK_INTERVAL)
@@ -617,7 +619,7 @@ async function updateVmStatus() {
         await request_api.updateVmStatus()
     }
     catch (e) {
-        console.log('updateVmStatus err: ', e)
+        utils.log('updateVmStatus err: ', e)
     }
     finally {
         setTimeout(updateVmStatus, 120000)
@@ -634,7 +636,7 @@ async function profileManage() {
         profileRunningManage()
     }
     catch (e) {
-        console.log('error', 'profileManage:', e)
+        utils.log('error', 'profileManage:', e)
     }
 
 }
@@ -642,7 +644,7 @@ async function profileManage() {
 async function running() {
     // get profile ids
     ids = await getProfileIds()
-    console.log('ids: ', ids)
+    utils.log('ids: ', ids)
     ids.forEach(pid => startDisplay(pid))
 
     // manage profile actions
@@ -695,11 +697,11 @@ async function start() {
         running()
     }
     catch (e) {
-        console.log('error', 'start:', e)
+        utils.log('error', 'start:', e)
     }
     finally {
         let cleanup = async function () {
-            console.log('cleanup')
+            utils.log('cleanup')
             closeChrome()
             process.exit()
         }
@@ -710,7 +712,7 @@ async function start() {
 
 async function initConfig() {
     // load configuration
-    console.log('config: ', config)
+    utils.log('config: ', config)
     let ip = ''
     while(!ip || ip.length > 50){
         await utils.sleep(5000)
@@ -726,18 +728,18 @@ async function initConfig() {
             }
         }
         catch (e) {
-            console.log('error', 'get ip err')
+            utils.log('error', 'get ip err')
         }
     }
 
-    console.log('ip: ', ip)
+    utils.log('ip: ', ip)
     // check config
 
     ip = DOCKER ? os.hostname() + '_' + ip : ip
     // get vm_id from db
     try {
         let rs = await request_api.getVmFromIp(ip)
-        console.log('getVmFromIp: ', rs)
+        utils.log('getVmFromIp: ', rs)
         if (rs.err) return
         if (rs.vmId) {
             config.vm_id = rs.vmId
@@ -747,29 +749,29 @@ async function initConfig() {
         }
     }
     catch (e) {
-        console.log('getVmFromIp:', e)
+        utils.log('getVmFromIp:', e)
         config = { vm_id: 2 }
     }
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
         if (err) throw err;
-        console.log('update config.json');
+        utils.log('update config.json');
     })
 
-    console.log('version: ', version)
+    utils.log('version: ', version)
     // update version to db
     await request_api.updateVmVersion(config.vm_id, version, ip)
 }
 
 function initProxy() {
-    console.log('USE_PROXY:', process.env.USE_PROXY)
+    utils.log('USE_PROXY:', process.env.USE_PROXY)
     // if(process.env.USE_PROXY){
     if (true) {
         // proxy = await request_api.getProxy(config.vm_id)
         proxy = {}
     }
 
-    console.log('USE_GUI:', process.env.USE_GUI)
+    utils.log('USE_GUI:', process.env.USE_GUI)
     // if(process.env.USE_GUI=="true"){
     if (process.env.USE_GUI == "true") {
         gui = true
@@ -777,7 +779,7 @@ function initProxy() {
 }
 
 function getScriptDir() {
-    console.log('__dirname: ' + __dirname)
+    utils.log('__dirname: ' + __dirname)
     return __dirname
 }
 
@@ -786,13 +788,13 @@ function initExpress() {
     const app = express()
 
     app.get('/login', (req, res) => {
-        console.log(req.query)
+        utils.log(req.query)
         if (req.query.status == 1) {
-            console.log(req.query.pid, 'login success')
+            utils.log(req.query.pid, 'login success')
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED')
         }
         else {
-            console.log(req.query.pid, 'login error', req.query.msg)
+            utils.log(req.query.pid, 'login error', req.query.msg)
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
         }
         removePidAddnew(req.query.pid, req.query.status)
@@ -801,38 +803,38 @@ function initExpress() {
     })
 
     app.get('/report', (req, res) => {
-        console.log(req.query)
+        utils.log(req.query)
         if (req.query.id == 'watched'){
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
         else if (req.query.id == 'login') {
             if (req.query.status == 1) {
-                console.log(req.query.pid, 'login success')
+                utils.log(req.query.pid, 'login success')
                 let login = !req.query.msg
                 req.query.msg = req.query.msg == "OK" ? undefined : req.query.msg
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
                 backup(req.query.pid,login)
             }
             else {
-                console.log(req.query.pid, 'login error', req.query.msg)
+                utils.log(req.query.pid, 'login error', req.query.msg)
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
             }
             removePidAddnew(req.query.pid, req.query.status)
         }
         else if(req.query.id == 'logout'){
-            console.log(req.query.pid, 'logout ok')
+            utils.log(req.query.pid, 'logout ok')
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', 'disabled_logout')
             ids = ids.filter(x => x != req.query.pid)
             deleteProfile(req.query.pid)
         }
         else if(req.query.id == 'confirm'){
-            console.log(req.query.pid, 'confirm',req.query.status)
+            utils.log(req.query.pid, 'confirm',req.query.status)
             if (req.query.status == 1) {
-                console.log(req.query.pid, 'confirm success')
+                utils.log(req.query.pid, 'confirm success')
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', 'CONFIRM_SUCCESS')
             }
             else {
-                console.log(req.query.pid, 'confirm error', req.query.msg)
+                utils.log(req.query.pid, 'confirm error', req.query.msg)
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
             }
             watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
@@ -849,7 +851,7 @@ function initExpress() {
         }
         else if (req.query.id == 'watch') {
             if (req.query.status == 0) {
-                console.log(req.query.pid, 'stop')
+                utils.log(req.query.pid, 'stop')
                 watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
             }
             else {
@@ -864,12 +866,12 @@ function initExpress() {
         }
         else if (req.query.id == 'sub') {
             if (req.query.stop == 'true' || req.query.stop == true) {
-                console.log('remove pid from subRunnings', req.query.pid)
+                utils.log('remove pid from subRunnings', req.query.pid)
                 subRunnings = subRunnings.filter(x => x.pid != req.query.pid)
             }
         }
         if (req.query.msg && req.query.msg == 'NOT_LOGIN') {
-            console.log('error', req.query.pid, 'NOT_LOGIN')
+            utils.log('error', req.query.pid, 'NOT_LOGIN')
             deleteProfile(req.query.pid)
             ids = ids.filter(x => x != req.query.pid)
             deleteBackup(req.query.pid)
@@ -878,12 +880,12 @@ function initExpress() {
     })
 
     app.get('/action', (req, res) => {
-        console.log(req.query)
+        utils.log(req.query)
         res.send(JSON.stringify(req.query))
     })
 
     app.get('/input', (req, res) => {
-        console.log(req.query)
+        utils.log(req.query)
         watchRunnings = watchRunnings.map(x => {
             if (x.pid == req.query.pid) {
                 x.lastReport = Date.now()
@@ -960,7 +962,7 @@ function initExpress() {
                 execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
             }
             else if (req.query.action == 'OPEN_MOBILE') {
-                console.log('open mobile simulator')
+                utils.log('open mobile simulator')
                 let po = {
                     0: 4, 
                     1: 5, 
@@ -978,15 +980,15 @@ function initExpress() {
                 execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'OPEN_MOBILE_CUSTOM') {
-                console.log('add custom mobile')
+                utils.log('add custom mobile')
                 execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${req.query.x};xdotool key Tab;xdotool type ${req.query.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'REOPEN_MOBILE_CUSTOM') {
-                console.log('add custom mobile')
+                utils.log('add custom mobile')
                 execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${req.query.x};xdotool key Tab;xdotool type ${req.query.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'SELECT_MOBILE') {
-                console.log('open mobile simulator')
+                utils.log('open mobile simulator')
                 let po = {
                     0: 4, 
                     1: 5, 
@@ -1004,7 +1006,7 @@ function initExpress() {
                 execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'SELECT_MOBILE_CUSTOM') {
-                console.log('open mobile simulator')
+                utils.log('open mobile simulator')
                 execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
             }
             else if (req.query.action == 'SHOW_PAGE') {
@@ -1027,13 +1029,13 @@ function initExpress() {
     })
 
     app.listen(LOCAL_PORT, () => {
-        console.log('start app on', LOCAL_PORT)
+        utils.log('start app on', LOCAL_PORT)
     })
 }
 
 function removePidAddnew(pid, status) {
     try {
-        console.log('removePidAddnew', pid, status)
+        utils.log('removePidAddnew', pid, status)
         addnewRunnings = addnewRunnings.filter(x => x.pid != pid)
         if (status != 1) {
             // login error
@@ -1045,10 +1047,10 @@ function removePidAddnew(pid, status) {
                 ids.push(pid)
             }
         }
-        console.log(ids)
+        utils.log(ids)
     }
     catch (e) {
-        console.log('error', 'removePidAddnew', pid, status, addnewRunnings, ids, e)
+        utils.log('error', 'removePidAddnew', pid, status, addnewRunnings, ids, e)
     }
 }
 
@@ -1059,7 +1061,7 @@ async function deleteProfile(pid, retry = 0) {
         del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
     }
     catch (e) {
-        console.log('error', 'deleteProfile', pid, retry)
+        utils.log('error', 'deleteProfile', pid, retry)
         if (retry < 3) {
             await utils.sleep(3000)
             await deleteProfile(pid, retry + 1)
@@ -1086,14 +1088,14 @@ async function installExtension() {
             // open dev tool
             execSync(`input SEND_KEY "^+i"`)
             await utils.sleep(2000)
-            // show console
+            // show utils
             execSync(`input SEND_KEY "^+p"`)
             await utils.sleep(2000)
             execSync(`input TYPE_ENTER 0 0 "dock to right"`)
             await utils.sleep(2000)
             execSync(`input SEND_KEY "^+p"`)
             await utils.sleep(2000)
-            execSync(`input TYPE_ENTER 0 0 "show console"`)
+            execSync(`input TYPE_ENTER 0 0 "show utils"`)
             await utils.sleep(2000)
             await utils.screenshot('extensions')
             // copy info
@@ -1105,10 +1107,10 @@ async function installExtension() {
             execSync(`input SEND_KEY "^v{ENTER}"`)
             await utils.sleep(3000)
             let info = execSync(`input CLIP_GET`)
-            console.log('clipboard', info)
+            utils.log('clipboard', info)
             // let info = clipboardy.readSync()
             info = JSON.parse(info)
-            console.log(info)
+            utils.log(info)
             if (!info.installed) {
                 i++
                 if (info.px > 0) {
@@ -1119,20 +1121,20 @@ async function installExtension() {
                 execSync(`input CLICK ${info.x} ${info.y}`)
                 await utils.sleep(5000)
                 execSync(`input SELECT_EX "${path.resolve('ex')}"`)
-                console.log('install extension')
+                utils.log('install extension')
 
                 execSync(`input SEND_KEY "^+i"`)
                 await utils.sleep(2000)
 
             }
             else {
-                console.log('extension installed')
+                utils.log('extension installed')
                 await utils.screenshot('extension_installed')
                 break
             }
         }
         catch (e) {
-            console.log('error', 'install extension err', e)
+            utils.log('error', 'install extension err', e)
             await utils.errorScreenshot('extension_error')
             i++
         }
@@ -1147,7 +1149,7 @@ async function installExtension() {
 }
 
 async function installExtensionLinux() {
-    console.log('installExtensionLinux')
+    utils.log('installExtensionLinux')
 
     closeChrome()
     startupScript()
@@ -1163,7 +1165,7 @@ async function installExtensionLinux() {
             break
         }
         catch (e) {
-            console.log('active chrome fail', e)
+            utils.log('active chrome fail', e)
             closeChrome()
             startupScript()
             await utils.sleep(2000)
@@ -1178,7 +1180,7 @@ async function installExtensionLinux() {
     while (i < 3) {
         try {
             // go to extension
-            console.log('go to extension')
+            utils.log('go to extension')
             execSync(`xdotool key Control_L+l`)
             await utils.sleep(3000)
             execSync(`xdotool type --delay 100 "chrome://extensions/" && sleep 1 && xdotool key KP_Enter`)
@@ -1186,23 +1188,23 @@ async function installExtensionLinux() {
             // open dev tool
             execSync(`xdotool key Control_L+Shift+i`)
             await utils.sleep(2000)
-            // show console
+            // show utils
             execSync(`xdotool key Control_L+Shift+p`)
             await utils.sleep(2000)
             execSync(`xdotool type --delay 100 "dock to right" && sleep 1 && xdotool key KP_Enter`)
             await utils.sleep(2000)
             execSync(`xdotool key Control_L+Shift+p`)
             await utils.sleep(2000)
-            execSync(`xdotool type --delay 100 "show console" && sleep 1 && xdotool key KP_Enter`)
+            execSync(`xdotool type --delay 100 "show utils" && sleep 1 && xdotool key KP_Enter`)
             await utils.sleep(2000)
             await utils.screenshot('extensions')
             // copy info
             const clipboardy = require('clipboardy');
             // let scriptContent = fs.readFileSync(path.resolve(__dirname,'extension.js'),'utf8')
-            console.log('writeSync scriptContent')
+            utils.log('writeSync scriptContent')
             clipboardy.writeSync('function copyTextToClipboard(e){let o=document.createElement("textarea");o.value=e,o.style.top="0",o.style.left="0",o.style.position="fixed",document.body.appendChild(o),o.focus(),o.select(),document.execCommand("copy"),document.body.removeChild(o)}async function getExtensionInfo(){let e={},o=window.outerHeight-window.innerHeight,t=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelectorAll("extensions-item");if(Array.from(t).filter(e=>0==e.shadowRoot.querySelector("#name-and-version").textContent.indexOf("ViewerViewer")).length>0)return e.installed=!0,void copyTextToClipboard(JSON.stringify(e));let n=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#devMode");"false"==n.getAttribute("aria-pressed")&&(n.click(),await new Promise(e=>setTimeout(function(){e("ok")},3e3)));let i=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#loadUnpacked").getBoundingClientRect();e.x=i.left+window.screenX+.3*i.width,e.y=i.top+window.screenY+o+.3*i.height,copyTextToClipboard(JSON.stringify(e))}getExtensionInfo();')
             // execSync(`echo 'function copyTextToClipboard(e){let o=document.createElement("textarea");o.value=e,o.style.top="0",o.style.left="0",o.style.position="fixed",document.body.appendChild(o),o.focus(),o.select(),document.execCommand("copy"),document.body.removeChild(o)}async function getExtensionInfo(){let e={},o=window.outerHeight-window.innerHeight,t=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelectorAll("extensions-item");if(Array.from(t).filter(e=>0==e.shadowRoot.querySelector("#name-and-version").textContent.indexOf("ViewerViewer")).length>0)return e.installed=!0,void copyTextToClipboard(JSON.stringify(e));let n=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#devMode");"false"==n.getAttribute("aria-pressed")&&(n.click(),await new Promise(e=>setTimeout(function(){e("ok")},3e3)));let i=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#loadUnpacked").getBoundingClientRect();e.x=i.left+window.screenX+.3*i.width,e.y=i.top+window.screenY+o+.3*i.height,copyTextToClipboard(JSON.stringify(e))}getExtensionInfo();' | xclip -sel clip`)
-            console.log('writeSync scriptContent finish')
+            utils.log('writeSync scriptContent finish')
             await utils.sleep(2000)
             // execSync(`input CLIP_PUT_SCRIPT`)
             execSync(`xdotool key Control_L+v && sleep 1`)
@@ -1210,29 +1212,29 @@ async function installExtensionLinux() {
             await utils.sleep(7000)
             // let info = execSync(`input CLIP_GET`)
             let info = clipboardy.readSync()
-            console.log('clipboard', info)
+            utils.log('clipboard', info)
             info = JSON.parse(info)
-            console.log(info)
+            utils.log(info)
             if (!info.installed) {
                 i++
                 // add extension
                 execSync(`xdotool mousemove ${info.x} ${info.y} && sleep 1 && xdotool click 1`)
                 await utils.sleep(2000)
                 execSync(`xdotool type --delay 100 "${path.resolve('ex')}" && sleep 2 && xdotool key Tab && sleep 2 && xdotool key KP_Enter`)
-                console.log('install extension')
+                utils.log('install extension')
                 await utils.sleep(2000)
                 execSync(`xdotool key Control_L+Shift+i`)
                 await utils.sleep(2000)
                 await utils.screenshot('extension_install')
             }
             else {
-                console.log('extension installed')
+                utils.log('extension installed')
                 await utils.screenshot('extension_installed')
                 break
             }
         }
         catch (e) {
-            console.log('error', 'install extension err', e)
+            utils.log('error', 'install extension err', e)
             await utils.errorScreenshot('extension_error')
             await utils.sleep(2000)
             execSync(`xdotool key Control_L+Shift+i`)
@@ -1308,7 +1310,7 @@ function setDisplay(pid) {
 function sendEnter(pid) {
     try {
         if (!WIN_ENV ) {
-            console.log('sendEnter', pid)
+            utils.log('sendEnter', pid)
             if (!is_show_ui) {
                 process.env.DISPLAY = ':' + pid
             }
@@ -1323,7 +1325,7 @@ function sendEnter(pid) {
 function setChromeSize(pid) {
     try {
         if (!WIN_ENV) {
-            console.log('setChromeSize', pid)
+            utils.log('setChromeSize', pid)
             if (!is_show_ui) {
                 process.env.DISPLAY = ':' + pid
             }
@@ -1343,14 +1345,14 @@ function startupScript() {
         execSync('rm -rf core.*;for i in /home/runuser/.forever/*.log; do cat /dev/null > $i; done;rm -rf ~/.ssh/known_hosts')
     }
     catch (e) {
-        console.log('error', 'startupScript', e)
+        utils.log('error', 'startupScript', e)
     }
 }
 
 async function backup(pid,login,retry = 0) {
     try {
         return; 
-        console.log('backup',pid,login)
+        utils.log('backup',pid,login)
         if(!BACKUP || WIN_ENV || (execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') < 0 && !login)) return
         let profileDir = `profiles/${pid}`
         execSync(`cd /etc/dm; tar --exclude ${profileDir}/Default/Code* --exclude ${profileDir}/Default/Cache* --exclude ${profileDir}/Default/*Cache --exclude ${profileDir}/Default/History* --exclude ${profileDir}/Default/Extensions* --exclude ${profileDir}/Default/Storage --exclude "${profileDir}/Default/Service Worker/CacheStorage" -czvf backup/${pid}.tar ${profileDir}/Default`)
@@ -1358,7 +1360,7 @@ async function backup(pid,login,retry = 0) {
         if(execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') >= 0) throw result
     }
     catch (e) {
-        console.log('backup err: ', e)
+        utils.log('backup err: ', e)
         if(retry < 5){
             await utils.sleep(15000)
             await backup(pid,login,retry+1)
@@ -1369,7 +1371,7 @@ async function backup(pid,login,retry = 0) {
 async function createProfile(pid,retry = 0) {
     try {
         if(!BACKUP || WIN_ENV) return
-        console.log('createProfile', pid,retry)
+        utils.log('createProfile', pid,retry)
         // execSync(`sshpass -p DMYT@2020 scp -o "StrictHostKeyChecking=no" root@root@pf.dominhit.pro:/home/pf.dominhit.pro/public_html/seo_6/${pid}.tar backup`)
         // execSync(`sshpass -p "DMYT@2020" rsync -a -e "ssh -o StrictHostKeyChecking=no" root@35.236.64.121:/home/pf.dominhit.pro/public_html/seo_6/${pid} profiles/`)
         execSync(`curl -o backup/${pid}.tar http://pf.dominhit.pro/seo_6/${pid}.tar`)
@@ -1377,7 +1379,7 @@ async function createProfile(pid,retry = 0) {
         execSync(`tar -xzvf backup/${pid}.tar`)
     }
     catch (e) {
-        console.log('error','createProfile',e)
+        utils.log('error','createProfile',e)
         if(retry < 3){
             await utils.sleep(10000)
             await createProfile(pid,retry+1)
@@ -1389,12 +1391,12 @@ async function deleteBackup(pid,retry = 0) {
     try {
         return; 
         if(!BACKUP || WIN_ENV) return
-        console.log('deleteBackup', pid,retry)
+        utils.log('deleteBackup', pid,retry)
         execSync(`sshpass -p "DMYT@2020" ssh -o "StrictHostKeyChecking=no" root@35.236.64.121 'rm -f /home/pf.dominhit.pro/public_html/seo_6/${pid}.tar'`)
         if(execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') < 0) throw 'DELETE_ERROR'
     }
     catch (e) {
-        console.log('error','deleteBackup',e)
+        utils.log('error','deleteBackup',e)
         if(retry < 3){
             await utils.sleep(10000)
             await deleteBackup(pid,retry+1)
@@ -1409,7 +1411,7 @@ async function logScreen() {
         }
     }
     catch (e) {
-        console.log('logScreen err: ', e)
+        utils.log('logScreen err: ', e)
     }
     finally {
         setTimeout(logScreen, 10000)
