@@ -33,7 +33,7 @@ async function userWatch(action){
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
             } else {
-                await goToLocation(action.pid,'https://www.youtube.com//')
+                await updateActionStatus(action.pid, action.id, 0,'end playlist')
             }
             return
         }
