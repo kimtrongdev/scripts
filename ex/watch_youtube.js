@@ -22,9 +22,14 @@ async function userWatch(action){
         
         if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
+            if (channels.length <= action.channel_position) {
+                await updateActionStatus(action.pid, action.id, 0,'end playlist')
+                return
+            }
+
             let channel = channels.item(action.channel_position)
             if (channel) {
-                action.channel_position = null
+                action.channel_position += 1 
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
             } else {
@@ -78,6 +83,9 @@ async function userWatch(action){
         else if(window.location.toString().indexOf('youtube.com/oops') > -1 && document.querySelector('#alerts')){
             throw new Error('NOT_LOGIN_'+document.querySelector('#alerts .yt-alert-message').textContent)
         }
+        else if (url.indexOf('https://consent.youtube.com') > -1){
+            await updateActionStatus(action.pid, action.id, 0, 'consent.youtube.com')
+        }
     }
     catch (e) {
         console.log('error',action.pid,e)
@@ -118,7 +126,7 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    if (action.channel_position >= 0 && action.channel_position !== null && action.total_channel_created) {
+    if (action.channel_position == 0) {
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
     }
@@ -445,7 +453,7 @@ async function preWatchingVideo(action){
     let url = window.location.toString()
     // removeSuggest()
     if(url.indexOf(action.playlist_url) < 0) {
-        await skipAds()
+        await skipAds(false, action)
         await userScroll(action.pid,0)
         let randomSleep = randomRanger(18,36)
         for(let i = 0; i < randomSleep; i++){
@@ -558,7 +566,7 @@ async function preWatchingVideo(action){
 
     if(action.total_times < 1000){
         let videoTime
-        await skipAds()
+        await skipAds(false, action)
 
         function loadVideoTime() {
             videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
@@ -574,7 +582,7 @@ async function preWatchingVideo(action){
         while (videoTime < 31 && countGetVideoTime < 5) {
             countGetVideoTime++
             console.log('videoTime:',videoTime)
-            await skipAds()
+            await skipAds(false, action)
             loadVideoTime()
             await sleep(1000)
         }
@@ -606,7 +614,7 @@ async function preWatchingVideo(action){
         console.log('pid',action.pid,'video',action.playlist_url,'percent time:',action.watch_time)
     }
     else{
-        await skipAds()
+        await skipAds(false, action)
         action.watch_time = Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
     }
 
@@ -632,7 +640,7 @@ async function watchingVideo(action){
 
         // trick ads
         await viewAds(action)
-        await skipAds(true)
+        await skipAds(true, action)
         
         if(i == 0 && url.indexOf('&t=') > -1){
             await sendKey(action.pid,"0")
@@ -772,7 +780,11 @@ async function afterWatchingVideo(action,finishVideo){
         await updateWatchedVideo(action.viewed_ads)
             
         if(action.viewed_ads || Math.abs(action.playlist_index - 1) > action.total_times_next_video || url.indexOf(action.playlist_url) < 0){
-            await updateActionStatus(action.pid, action.id, 0,'end playlist')
+            //await updateActionStatus(action.pid, action.id, 0,'end playlist')
+           // action.channel_position += 1
+            action.viewed_ads = false
+            await setActionData(action)
+            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
             return
         }
         else{
@@ -851,7 +863,7 @@ async function processBrowserFeature(action){
     }
 }
 
-async function skipAds(watchingCheck){
+async function skipAds(watchingCheck, action = {}){
     if(!watchingCheck) await sleep(2000)
     while (document.querySelector('.ytp-ad-skip-ad-slot')) {
         console.log('skip ads')
@@ -888,6 +900,10 @@ async function skipAds(watchingCheck){
         await sleep(adWatchTime*1000)
         while(!document.querySelector('button.ytp-ad-skip-button') || !document.querySelector('button.ytp-ad-skip-button').getBoundingClientRect().x){
             await sleep(1000)
+        }
+        if (document.querySelector('button.ytp-ad-skip-button')) {
+            action.viewed_ads = true
+            await setActionData(action)
         }
         await userClick(action.pid, 'button.ytp-ad-skip-button')
         await sleep(2000)
