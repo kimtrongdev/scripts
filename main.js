@@ -4,7 +4,7 @@ const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
-const BROWSER = 'brave-browser'
+const BROWSER = 'google-chrome'
 try {
     config = require('./config.json')
 }
@@ -92,7 +92,7 @@ function getRndInteger(min, max) {
 async function startChromeAction(action) {
     let userProxy = ''
     let windowPosition = '--window-position=0,0'
-    let windowSize = is_show_ui ? ' --start-maximized' : ' --window-size="1920,1040"'
+    let windowSize = is_show_ui ? ' --window-size="2348,1288"' : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
