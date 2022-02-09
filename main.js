@@ -740,23 +740,25 @@ async function initConfig() {
     utils.log('ip: ', ip)
     // check config
 
-    ip = DOCKER ? os.hostname() + '_' + ip : ip
-    // get vm_id from db
-    try {
-        let rs = await request_api.getVmFromIp(ip)
-        utils.log('getVmFromIp: ', rs)
-        if (rs.err) return
-        if (rs.vmId) {
-            config.vm_id = rs.vmId
-        }
-        else {
-            config = { vm_id: 2 }
-        }
-    }
-    catch (e) {
-        utils.log('getVmFromIp:', e)
-        config = { vm_id: 2 }
-    }
+    // ip = DOCKER ? os.hostname() + '_' + ip : ip
+    // // get vm_id from db
+    // try {
+    //     let rs = await request_api.getVmFromIp(ip)
+    //     utils.log('getVmFromIp: ', rs)
+    //     if (rs.err) return
+    //     if (rs.vmId) {
+    //         config.vm_id = rs.vmId
+    //     }
+    //     else {
+    //         config = { vm_id: 2 }
+    //     }
+    // }
+    // catch (e) {
+    //     utils.log('getVmFromIp:', e)
+    //     config = { vm_id: 2 }
+    // }
+
+    config.vm_id = Date.now()
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
         if (err) throw err;
