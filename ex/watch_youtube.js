@@ -354,6 +354,13 @@ async function watchingVideo(action){
         let currentUrl = window.location.toString()
         // check current url
         if(currentUrl.indexOf(action.playlist_url) < 0 || currentUrl != url) {
+            if (action.url_type == 'playlist') {
+                action.playlist_index = 1
+                action.viewed_ads = false
+                await setActionData(action)
+                await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings') 
+                return
+            }
             console.log('not play video',action.playlist_url)
             return
         }
