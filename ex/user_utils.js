@@ -26,9 +26,9 @@ function updateWatchingTime(pid, action, readingTime, playlistTime, lastPlaylist
 }
 
 
-function updateWatchedVideo(viewedAds){
+function updateWatchedVideo(viewedAds, pid){
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {id: 'watched', viewedAds: viewedAds}}, function (response) {
+        data: {id: 'watched', viewedAds: viewedAds, pid}}, function (response) {
         resolve(response);
     }))
 }
