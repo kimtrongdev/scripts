@@ -369,19 +369,19 @@ async function watchingVideo(action){
         await clickPlayIfPause(action.pid)
 
         // like or comment
-        let react = action.react
-        if(react && react.like_time > i && react.like_time <= i + interval){
-            await sleep(react.like_time - i)
-            await LikeOrDisLikeYoutubeVideo(action.pid, react.like)
-        }
-        if(react && react.comment_time > i && react.comment_time <= i + interval){
-            await sleep(react.comment_time - i)
-            await CommentYoutubeVideo(action.pid, react.comment)
-        }
-        if(react && react.sub_time > i && react.sub_time <= i + interval){
-            await sleep(react.sub_time - i)
-            await userClick(action.pid,'#top-row #subscribe-button paper-button.ytd-subscribe-button-renderer:not([subscribed])')
-        }
+        // let react = action.react
+        // if(react && react.like_time > i && react.like_time <= i + interval){
+        //     await sleep(react.like_time - i)
+        //     await LikeOrDisLikeYoutubeVideo(action.pid, react.like)
+        // }
+        // if(react && react.comment_time > i && react.comment_time <= i + interval){
+        //     await sleep(react.comment_time - i)
+        //     await CommentYoutubeVideo(action.pid, react.comment)
+        // }
+        // if(react && react.sub_time > i && react.sub_time <= i + interval){
+        //     await sleep(react.sub_time - i)
+        //     await userClick(action.pid,'#top-row #subscribe-button paper-button.ytd-subscribe-button-renderer:not([subscribed])')
+        // }
 
         if (action.is_sub && i > 30000 && i <= 30000 + interval) {
             if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
@@ -396,12 +396,9 @@ async function watchingVideo(action){
 
         // report time
         if(i%300000==0) {
-            console.log('report time')
             let continueWatch = await updateWatchingTime(action.pid, 1, 0, i==0?20000:300000, {url: action.playlist_url,keyword: action.video})
-            console.log('updateWatchingTime',continueWatch)
             let finish = !continueWatch.err && !continueWatch.continue
             if(finish){
-                console.log('info','pid: ',action.pid,' finish watch: ',action.playlist_url)
                 action.playlist_index = 0
                 await setActionData(action)
                 return
