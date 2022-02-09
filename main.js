@@ -758,7 +758,7 @@ async function initConfig() {
     //     config = { vm_id: 2 }
     // }
 
-    config.vm_id = Date.now()
+    config.vm_id = (Date.now()+'').slice(0,8)
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
         if (err) throw err;
