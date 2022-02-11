@@ -8,6 +8,11 @@ async function userLogin(action) {
         await sleep(5000)
         let url = window.location.toString()
 
+        if (action.isChangePassword) {
+            await changePassword(action)
+            return
+        }
+        /////////
         if (url.indexOf('accounts.google.com/b/0/PlusPageSignUp') > -1) {
             await userCreateChannel(action)
             return
@@ -180,6 +185,33 @@ async function userLogin(action) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             }
             return
+        } else if (url.indexOf('https://myaccount.google.com/security') > -1) {
+            // if(!action.newRecoveryMail){
+            //     await userClick(action.pid,'a[href^="recovery/email"]')
+            // }
+            if(!action.newPassword){
+                await userClick(action.pid,'a[href^="signinoptions/password"]')
+            }
+            else{
+                //goto create channel affter change password
+                //todo -> update pass to server 
+                await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
+                //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS,'PASSWORD_'+action.newPassword)
+            }
+            return
+        } else if (url.indexOf('signinoptions/password') > -1) {
+            let newPassword = '123123qq1Q@Q'//Math.random().toString(36).slice(9).toLocaleUpperCase() + Math.random().toString(36).slice(randomRanger(2,5))
+            action.newPassword = newPassword
+            action.isChangePassword = false
+            await setActionData(action)
+            await userType(action.pid,'input[name="password"]',newPassword)
+            await sleep(randomRanger(3,5)*1000)
+            await userType(action.pid,'input[name="confirmation_password"]',newPassword)
+            await sleep(randomRanger(3,5)*1000)
+            await userClick(action.pid,'button[type="submit"]')
+            await sleep(10000)
+            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS,'PASSWORD_'+action.newPassword)
+            return
         }
        
         else if(url != window.location.toString()) {
@@ -215,6 +247,11 @@ async function beforeLoginSuccess (action) {
     //console.log('beforeLoginSuccess');
     //await goToLocation(action.pid,'youtube.com/feed/history')
     //await sleep(60000)
+    if (action.isChangePassword) {
+        await goToLocation(action.pid, 'https://myaccount.google.com/security')
+        return
+    }
+
     await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
     await sleep(60000)
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
