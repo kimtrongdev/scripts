@@ -132,7 +132,7 @@ async function processHomePage(action){
     }
 
     if (action.view_playlist) {
-        await goToLocation(action.pid,`https://www.youtube.com/playlist?list=${action.playlist_url}`)
+        await goToLocation(action.pid,`https://www.youtube.com/watch?v=sneglGVZvLE&list=PL4Ogq6OTrPwP8oLQSe1vPBRGpki_w-R8d`)
         return 
     }
 
