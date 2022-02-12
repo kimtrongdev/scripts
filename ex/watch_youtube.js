@@ -29,7 +29,7 @@ async function userWatch(action){
 
             let channel = channels.item(action.channel_position)
             if (channel) {
-                action.channel_position += 1 
+                action.channel_position = null
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
             } else {
@@ -126,7 +126,7 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    if (action.channel_position == 0) {
+    if (action.channel_position != null) {
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
     }
