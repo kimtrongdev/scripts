@@ -433,12 +433,12 @@ async function afterWatchingVideo(action,finishVideo){
         await updateWatchedVideo(action.viewed_ads, action.pid)
             
         if(action.viewed_ads || Math.abs(action.playlist_index - 1) > action.total_times_next_video || url.indexOf(action.playlist_url) < 0){
-            //await updateActionStatus(action.pid, action.id, 0,'end playlist')
+            await updateActionStatus(action.pid, action.id, 0,'end playlist')
            // action.channel_position += 1
-            action.playlist_index = 1
-            action.viewed_ads = false
-            await setActionData(action)
-            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+           // action.playlist_index = 1
+           // action.viewed_ads = false
+           // await setActionData(action)
+           // await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
             return
         }
         else{
