@@ -9,7 +9,7 @@ try {
     config = require('./config.json')
 }
 catch (e) {
-    config = { vm_id: 2 }
+    //config = { vm_id: 2 }
 }
 let devJson = {
     "hostIp": "3.93.238.219:5000",
@@ -43,7 +43,7 @@ let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PRO
 let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
 const RUNNING_CHECK_INTERVAL = 45000     // 30 seconds
-const MAX_REPORT_TIME = 600000           // 10 minutes
+const MAX_REPORT_TIME = 150000           // 5 minutes
 const MAX_SUB_RUNNING_TIME = 600000     // 10 minutes
 const MAX_ADDNEW_TIME = 600000           // 10 minutes
 const UPDATE_CHECK_TIME = 180000
@@ -155,7 +155,7 @@ async function startChromeAction(action) {
                 })
                 action.channel_position = 0
             }
-            
+
             //action.channel_position = 0
             if (systemConfig.total_times_next_video) {
                 action.total_times_next_video = systemConfig.total_times_next_video
@@ -759,7 +759,9 @@ async function initConfig() {
     //     config = { vm_id: 2 }
     // }
 
-    config.vm_id = (Date.now()+'').slice(0,8)
+    if (!config.vm_id) {
+        config.vm_id = (Date.now()+'').slice(0,8)
+    }
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
         if (err) throw err;
