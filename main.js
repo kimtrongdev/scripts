@@ -173,6 +173,10 @@ async function startChromeAction(action) {
             // action.url_type = 'playlist'
             // action.total_times = 1//getRndInteger(35, 50)
             // action.playlist_index = action.total_times
+
+            let data = action.playlist_url.split('&list=')
+            action.playlist_url = data[1]
+            action.playlist_video = data[0]
         }
     }
 

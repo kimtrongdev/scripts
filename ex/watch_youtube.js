@@ -131,13 +131,13 @@ async function processHomePage(action){
     //     return 
     // }
 
-    if (Number(action.total_loop_find_ads) > action._total_loop_find_ads) {
+    if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
         await updateActionStatus(action.pid, action.id, 0,'end playlist')
         return
     }
 
     if (action.view_playlist) {
-        await goToLocation(action.pid,`https://www.youtube.com/watch?${action.playlist_url}`)
+        await goToLocation(action.pid,`https://www.youtube.com/watch?${action.playlist_video}&list=${action.playlist_url}`)
         return 
     }
 
@@ -444,25 +444,27 @@ async function afterWatchingVideo(action,finishVideo){
            // action.viewed_ads = false
            // await setActionData(action)
            // await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-           if (Number(action.total_loop_find_ads) > action._total_loop_find_ads) {
-            await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-            return 
+           action._total_loop_find_ads += 1
+           await setActionData(action) 
+
+           if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
+                await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+                return 
            } else {
-                action._total_loop_find_ads += 1
+                action.playlist_index = 1
+                action.viewed_ads = false
                 await setActionData(action) 
-                await goToLocation(action.pid, 'youtube.com/')
+                await goToLocation(action.pid, 'youtube.com//')
            }
-
-
             return
         }
         else{
-            if(finishVideo){
+           // if(finishVideo){
                 // nex video
                 action.viewed_ads = false
                 await setActionData(action)
                 await nextVideo(action.pid)
-            }
+           // }
             return
         }
     }
@@ -596,10 +598,12 @@ async function skipAds(watchingCheck, action = {}){
         while(!document.querySelector('button.ytp-ad-skip-button') || !document.querySelector('button.ytp-ad-skip-button').getBoundingClientRect().x){
             await sleep(1000)
         }
-        if (document.querySelector('button.ytp-ad-skip-button')) {
-            action.viewed_ads = true
-            await setActionData(action)
-        }
+        // if (document.querySelector('button.ytp-ad-skip-button')) {
+        //     action.viewed_ads = true
+        //     await setActionData(action)
+        // }
+        action.viewed_ads = true
+        await setActionData(action)
         await userClick(action.pid, 'button.ytp-ad-skip-button')
         await sleep(2000)
     }
