@@ -151,12 +151,13 @@ async function startChromeAction(action) {
             } else {
                 channelInfo.push({
                     pid: action.pid,
-                    position: 0
+                    position: 1
                 })
-                action.channel_position = 0
+                action.channel_position = 1
             }
 
             //action.channel_position = 0
+            action.total_loop_find_ads = systemConfig.total_loop_find_ads
             if (systemConfig.total_times_next_video) {
                 action.total_times_next_video = systemConfig.total_times_next_video
             }
