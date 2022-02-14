@@ -466,14 +466,26 @@ async function runProfile() {
             utils.log('watchRunnings: ', watchRunnings.length)
 
             try {
-                let playlist = await request_api.getYTVideo(pid)
-                utils.log(pid, 'playlist', playlist)
+                let rs = await request_api.getYTVideo(pid)
+                utils.log(pid, 'playlist', rs.playlist)
 
                 if (playlist) {
                     let action = playlist
                     action.pid = pid
+                    action.video = ''
                     action.id = 'watch'
                     utils.log(pid, action)
+
+                    let startTime = Date.now()
+                    let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
+                    if (action == ADDNEW_ACTION) {
+                        addnewRunnings.push(actionRecord)
+                    } else {
+                        actionRecord.playlist = {}
+                        actionRecord.playlistTime = {}
+                        watchRunnings.push(actionRecord)
+                    }
+
                     await startChromeAction(action)
                 }
                 else {
