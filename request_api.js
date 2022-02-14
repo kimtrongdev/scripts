@@ -16,7 +16,7 @@ module.exports = {
         return await rq({method: 'POST',uri: SUB_URL + '/profile/update-total-created-users',json: true, body: {pid: pid, count: count}})
     },
     getNewProfile: async function getNewProfile(create_channel_type = false) {
-        return await rq({uri: SUB_URL + '/profile/get-new',json: true,qs: {vmId: config.vm_id, create_channel_type: create_channel_type}})
+        return await rq({uri: SUB_URL + '/profile/get-new',json: true,qs: {vmId: config.vm_id}})
     },
     getProfile: async function getProfile(pid) {
         return await rq({uri: SUB_URL + '/profile/get-profile',json: true,qs: {pid: pid}})
