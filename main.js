@@ -465,7 +465,27 @@ async function runProfile() {
             utils.log('check sub or run for profile: ', pid)
             utils.log('watchRunnings: ', watchRunnings.length)
 
-            let channels = await request_api.getSubChannels(pid, config.vm_id, proxy ? true : false)
+            try {
+                let playlist = await request_api.getYTVideo(pid)
+                utils.log(pid, 'playlist', playlist)
+
+                if (playlist) {
+                    let action = playlist
+                    action.pid = pid
+                    action.id = 'watch'
+                    utils.log(pid, action)
+                    await startChromeAction(action)
+                }
+                else {
+                    watchRunnings = watchRunnings.filter(x => x.pid != pid)
+                }
+            }
+            catch (e) {
+                utils.log('pid: ', pid, ' reading err: ', e)
+                watchRunnings = watchRunnings.filter(x => x.pid != pid)
+            }
+
+            /*let channels = await request_api.getSubChannels(pid, config.vm_id, proxy ? true : false)
             utils.log('pid: ', pid, ' getSubChannels: ', channels)
             // if(WIN_ENV) if(watchRunnings.filter(x => x.pid == pid).length == 0) {channels = {err: 'CHECKCOUNTRY'} }else {channels = {action: 0, channels: []}}
             if (!channels.err) {
@@ -581,7 +601,7 @@ async function runProfile() {
                         utils.log('error', pid, channels.err, e)
                     }
                 }
-            }
+            }*/
         }
         catch (e) {
             utils.log('error', 'pid: ', pid, ' subProfile err: ', e)
