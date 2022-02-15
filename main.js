@@ -138,25 +138,25 @@ async function startChromeAction(action) {
         action.total_channel_created = Number(systemConfig.total_channel_created)
 
         if (systemConfig.playlists && action.id == 'watch') {
-            let infos = channelInfo
-            let channelPositionIndex = infos.findIndex(c => c.pid == action.pid)
-            if (channelPositionIndex > -1) {
-                infos[channelPositionIndex].position += 1
-                if (infos[channelPositionIndex].position >= action.total_channel_created) {
-                    infos[channelPositionIndex].position = 0
-                }
+            // let infos = channelInfo
+            // let channelPositionIndex = infos.findIndex(c => c.pid == action.pid)
+            // if (channelPositionIndex > -1) {
+            //     infos[channelPositionIndex].position += 1
+            //     if (infos[channelPositionIndex].position >= action.total_channel_created) {
+            //         infos[channelPositionIndex].position = 0
+            //     }
 
-                action.channel_position = infos[channelPositionIndex].position
-                channelInfo = infos
-            } else {
-                channelInfo.push({
-                    pid: action.pid,
-                    position: 1
-                })
-                action.channel_position = 1
-            }
+            //     action.channel_position = infos[channelPositionIndex].position
+            //     channelInfo = infos
+            // } else {
+            //     channelInfo.push({
+            //         pid: action.pid,
+            //         position: 1
+            //     })
+            //     action.channel_position = 1
+            // }
 
-            //action.channel_position = 0
+            action.channel_position = 0
             action.total_loop_find_ads = systemConfig.total_loop_find_ads
             if (systemConfig.total_times_next_video) {
                 action.total_times_next_video = systemConfig.total_times_next_video
