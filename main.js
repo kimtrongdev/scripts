@@ -174,9 +174,7 @@ async function startChromeAction(action) {
             // action.total_times = 1//getRndInteger(35, 50)
             // action.playlist_index = action.total_times
 
-            let data = action.playlist_url.split('&list=')
-            action.playlist_url = data[1]
-            action.playlist_video = data[0]
+            action.playlist_data = action.playlist_url
         }
     }
 
@@ -455,8 +453,7 @@ async function checkWatchingProfile() {
     }
 }
 
-async function runProfile() {
-    // get sub channel for profile
+async function newRunProfile() {
     utils.log('ids: ', ids)
     let pid = ids.shift()
     if (pid) {
@@ -496,8 +493,23 @@ async function runProfile() {
                 utils.log('pid: ', pid, ' reading err: ', e)
                 watchRunnings = watchRunnings.filter(x => x.pid != pid)
             }
+        }
+        catch (e) {
+            utils.log('error', 'pid: ', pid, ' subProfile err: ', e)
+        }
+    }
+}
+async function runProfile() {
+    // get sub channel for profile
+    utils.log('ids: ', ids)
+    let pid = ids.shift()
+    if (pid) {
+        ids.push(pid)
+        try {
+            utils.log('check sub or run for profile: ', pid)
+            utils.log('watchRunnings: ', watchRunnings.length)
 
-            /*let channels = await request_api.getSubChannels(pid, config.vm_id, proxy ? true : false)
+            let channels = await request_api.getSubChannels(pid, config.vm_id, proxy ? true : false)
             utils.log('pid: ', pid, ' getSubChannels: ', channels)
             // if(WIN_ENV) if(watchRunnings.filter(x => x.pid == pid).length == 0) {channels = {err: 'CHECKCOUNTRY'} }else {channels = {action: 0, channels: []}}
             if (!channels.err) {
@@ -613,7 +625,7 @@ async function runProfile() {
                         utils.log('error', pid, channels.err, e)
                     }
                 }
-            }*/
+            }
         }
         catch (e) {
             utils.log('error', 'pid: ', pid, ' subProfile err: ', e)
@@ -972,10 +984,10 @@ function initExpress() {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
             }
             else if (req.query.action == 'TYPE_ENTER') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1 && xdotool key KP_Enter && sleep 1`)
+                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
             }
             else if (req.query.action == 'ONLY_TYPE_ENTER') {
-                execSync(`xdotool key Control_L+v && sleep 1 && xdotool key KP_Enter && sleep 1`)
+                execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
             }
             else if (req.query.action == 'CLICK_ENTER') {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)

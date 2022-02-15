@@ -29,7 +29,8 @@ async function userWatch(action){
 
             let channel = channels.item(action.channel_position)
             if (channel) {
-                action.channel_position = null
+                getPlaylistData(action)
+                action.channel_position += 1
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
             } else {
@@ -126,10 +127,10 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    // if (action.channel_position != null) {
-    //     await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-    //     return 
-    // }
+    if (action.channel_position == 0) {
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        return 
+    }
 
     // if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
     //     await updateActionStatus(action.pid, action.id, 0,'end playlist')
@@ -175,6 +176,7 @@ async function processHomePage(action){
 }
 
 async function preWatchingVideo(action){
+    await sleep(3000)
     let url = window.location.toString()
     // removeSuggest()
     if(url.indexOf(action.playlist_url) < 0) {
@@ -439,7 +441,7 @@ async function afterWatchingVideo(action,finishVideo){
             
         if(action.viewed_ads || Math.abs(action.playlist_index - 1) > action.total_times_next_video || url.indexOf(action.playlist_url) < 0){
            // await updateActionStatus(action.pid, action.id, 0,'end playlist')
-           action.channel_position += 1
+          // action.channel_position += 1
            action.playlist_index = 1
            action.viewed_ads = false
            await setActionData(action)

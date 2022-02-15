@@ -1,3 +1,11 @@
+function getPlaylistData (action) {
+    let items = action.playlist_data.split(',')
+    let playlist_id = items[Math.floor(Math.random()*items.length)];
+    let data = playlist_id.split('&list=')
+    action.playlist_url = data[1]
+    action.playlist_video = data[0]
+}
+
 async function getActionData(){
     return new Promise(resolve => chrome.storage.sync.get('action', function(data) {
             resolve(data);
