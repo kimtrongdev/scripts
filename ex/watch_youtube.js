@@ -29,6 +29,9 @@ async function userWatch(action){
 
             let channel = channels.item(action.channel_position)
             if (channel) {
+                if (action.channel_position < channels.length - 2) {
+                    reportPositionChannel(action.pid, action.channel_position)
+                }
                 getPlaylistData(action)
                 action.channel_position += 1
                 await setActionData(action)
@@ -127,7 +130,9 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    if (action.channel_position == 0) {
+    if (action.channel_position == 0 || action.fisrtStart) {
+        action.fisrtStart = false
+        await setActionData(action)
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
     }

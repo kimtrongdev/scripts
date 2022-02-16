@@ -188,6 +188,7 @@ async function initAction(){
 
 function setWatchParam(action){
     // init watch params
+    action.fisrtStart = true
     action.other_videos = []
     action.channel_videos = []
     action.home_percent = Number(action.home_percent) || 0

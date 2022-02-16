@@ -48,6 +48,7 @@ const MAX_SUB_RUNNING_TIME = 600000     // 10 minutes
 const MAX_ADDNEW_TIME = 600000           // 10 minutes
 const UPDATE_CHECK_TIME = 180000
 let ids = []
+global.usersPosition = []
 global.subRunnings = []
 global.watchRunnings = []
 global.addnewRunnings = []
@@ -155,8 +156,14 @@ async function startChromeAction(action) {
             //     })
             //     action.channel_position = 1
             // }
-
-            action.channel_position = 0
+            let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
+            if (oldUserPosition) {
+                action.channel_position = Number(oldUserPosition.position) + 1
+                usersPosition = usersPosition.filter(u => u.pid != action.pid)
+            } else {
+                action.channel_position = 0
+            }
+            
             action.total_loop_find_ads = systemConfig.total_loop_find_ads
             if (systemConfig.total_times_next_video) {
                 action.total_times_next_video = systemConfig.total_times_next_video
@@ -863,7 +870,19 @@ function initExpress() {
 
     app.get('/report', (req, res) => {
         utils.log(req.query)
-        if (req.query.id == 'watched'){
+
+        if (req.query.id == 'channel-position') {
+            let channel = usersPosition.find(u => u.pid == req.query.pid)
+            if (channel) {
+                channel.position = req.query.position
+            } else {
+                usersPosition.push({
+                    pid: req.query.pid,
+                    position: req.query.position,
+                })
+            }
+        }
+        else if (req.query.id == 'watched'){
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
         else if (req.query.id == 'login') {

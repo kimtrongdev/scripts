@@ -1,3 +1,10 @@
+function reportPositionChannel(pid, position) {
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: { id: 'channel-position', position, pid }}, function (response) {
+        resolve(response);
+    }))
+}
+
 function getPlaylistData (action) {
     let items = action.playlist_data.split(',')
     let playlist_id = items[Math.floor(Math.random()*items.length)];
