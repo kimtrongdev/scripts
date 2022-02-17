@@ -21,18 +21,21 @@ async function userLogin(action) {
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
-        if (url == 'https://www.youtube.com/') {
-            let avatar = document.querySelector('#avatar-btn')
-            if (avatar) {
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-                return
-            }
 
-            let signinBtn = document.querySelector('ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
-            if (signinBtn) {
-                await userClick(action.pid, 'ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
-                await sleep(60000)
-            }
+        if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com') {
+            await userClick(action.pid, '.button-layer #create-channel-button')
+            return
+            // let avatar = document.querySelector('#avatar-btn')
+            // if (avatar) {
+            //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            //     return
+            // }
+
+            // let signinBtn = document.querySelector('ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
+            // if (signinBtn) {
+            //     await userClick(action.pid, 'ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
+            //     await sleep(60000)
+            // }
         }
 
         if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
