@@ -471,9 +471,18 @@ async function newRunProfile() {
 
             try {
                 let rs = await request_api.getYTVideo(pid)
+                let playlist = rs.playlist
                 utils.log(pid, 'playlist', rs.playlist)
-
                 if (playlist) {
+                    if (proxy) {
+                        proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
+                        utils.log('pid', pid, 'proxy', proxy[pid])
+                        if (!proxy[pid]) {
+                            utils.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
+                            throw 'no proxy'
+                        }
+                    }
+                    
                     let action = playlist
                     action.pid = pid
                     action.video = ''
@@ -659,7 +668,7 @@ async function profileRunningManage() {
             if (ids.length + addnewRunnings.length < MAX_PROFILE) {
                 newProfileManage()
             } else {
-                runProfile()
+                newRunProfile()
             }
         }
     }
