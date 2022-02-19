@@ -415,13 +415,13 @@ async function watchingVideo(action){
 
         // report time
         if(i%300000==0) {
-            let continueWatch = await updateWatchingTime(action.pid, 1, 0, i==0?20000:300000, {url: action.playlist_url,keyword: action.video})
-            let finish = !continueWatch.err && !continueWatch.continue
-            if(finish){
-                action.playlist_index = 0
-                await setActionData(action)
-                return
-            }
+            // let continueWatch = await updateWatchingTime(action.pid, 1, 0, i==0?20000:300000, {url: action.playlist_url,keyword: action.video})
+            // let finish = !continueWatch.err && !continueWatch.continue
+            // if(finish){
+            //     action.playlist_index = 0
+            //     await setActionData(action)
+            //     return
+            // }
             if(Math.random() < 0.3){
                 let randomScroll = randomRanger(3,7)
                 await userScroll(action.pid, randomScroll)
