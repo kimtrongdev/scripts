@@ -1,5 +1,5 @@
 // config file
-const TIME_REPORT = 120000
+const TIME_REPORT = 110000
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
