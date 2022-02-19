@@ -684,9 +684,12 @@ async function profileRunningManage() {
 
 async function updateVmStatus() {
     try {
+        let _pids = await getProfileIds()
+        let pids = _pids.join(',')
         await request_api.updateVmStatus({
             vm_id: config.vm_id,
-            running: addnewRunnings.length + watchRunnings.length 
+            running: addnewRunnings.length + watchRunnings.length,
+            pids
         })
     }
     catch (e) {
