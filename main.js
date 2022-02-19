@@ -786,6 +786,17 @@ async function start() {
     }
 }
 
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
 async function initConfig() {
     // load configuration
     utils.log('config: ', config)
@@ -830,7 +841,7 @@ async function initConfig() {
     // }
 
     if (!config.vm_id) {
-        config.vm_id = (Date.now()+'').slice(0,9)
+        config.vm_id = makeid(9)//(Date.now()+'').slice(0,9)
     }
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
