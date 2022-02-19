@@ -840,9 +840,9 @@ async function initConfig() {
     //     config = { vm_id: 2 }
     // }
 
-    if (!config.vm_id) {
+    //if (!config.vm_id) {
         config.vm_id = makeid(9)//(Date.now()+'').slice(0,9)
-    }
+    //}
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
         if (err) throw err;
