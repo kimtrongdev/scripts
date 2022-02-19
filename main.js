@@ -851,7 +851,7 @@ async function initConfig() {
 
     utils.log('version: ', version)
     // update version to db
-    await request_api.updateVmVersion(config.vm_id, version, ip)
+    //await request_api.updateVmVersion(config.vm_id, version, ip)
 }
 
 function initProxy() {
