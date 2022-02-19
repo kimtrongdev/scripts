@@ -34,10 +34,10 @@ async function sendUserAction(action){
 }
 
 function updateWatchingTime(pid, action, readingTime, playlistTime, lastPlaylist){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'POST', url: '/profile/update-watch-time',
-            data: {pid: pid, action: action, reading_time: readingTime, playlist_time: playlistTime, last_playlist: lastPlaylist}}, function (response) {
-        resolve(response);
-    }))
+    // return new Promise(resolve => chrome.runtime.sendMessage({type: 'POST', url: '/profile/update-watch-time',
+    //         data: {pid: pid, action: action, reading_time: readingTime, playlist_time: playlistTime, last_playlist: lastPlaylist}}, function (response) {
+    //     resolve(response);
+    // }))
 }
 
 

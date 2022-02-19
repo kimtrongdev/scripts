@@ -1,4 +1,5 @@
 // config file
+const TIME_REPORT = 120000
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
@@ -9,7 +10,7 @@ try {
     config = require('./config.json')
 }
 catch (e) {
-    //config = { vm_id: 2 }
+    config = { }
 }
 let devJson = {
     "hostIp": "3.93.238.219:5000",
@@ -474,13 +475,14 @@ async function newRunProfile() {
                 let playlist = rs.playlist
                 utils.log(pid, 'playlist', rs.playlist)
                 if (playlist) {
-                    if (proxy) {
-                        proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
-                        utils.log('pid', pid, 'proxy', proxy[pid])
-                        if (!proxy[pid]) {
-                            utils.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
-                            throw 'no proxy'
-                        }
+                    if (!proxy) {
+                        proxy = {}
+                    }
+                    proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
+                    utils.log('pid', pid, 'proxy', proxy[pid])
+                    if (!proxy[pid]) {
+                        utils.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
+                        throw 'no proxy'
                     }
                     
                     let action = playlist
@@ -651,17 +653,17 @@ async function runProfile() {
 
 async function profileRunningManage() {
     try {
-        await request_api.updateVmStatus()
+        //await request_api.updateVmStatus()
         utils.log('profileRunningManage')
         // check sub running queue running time
-        await checkSubRunningProfile()
+        //await checkSubRunningProfile()
         // check add new running queue running time
         await checkAddNewRunningProfile()
         // check add new running queue running time
         await checkWatchingProfile()
         // check sub running queue
-        let avaiSub = MAX_CURRENT_ACC - subRunnings.length - addnewRunnings.length
-        utils.log('subRunnings: ', subRunnings.map(x => x.pid), ' addnewRunnings: ', addnewRunnings.map(x => x.pid),
+       // let avaiSub = MAX_CURRENT_ACC - subRunnings.length - addnewRunnings.length
+        utils.log(' addnewRunnings: ', addnewRunnings.map(x => x.pid),
             ' watchRunnings: ', watchRunnings.map(x => [x.pid, JSON.stringify(x.playlist)]))
 
         if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
@@ -682,13 +684,16 @@ async function profileRunningManage() {
 
 async function updateVmStatus() {
     try {
-        await request_api.updateVmStatus()
+        await request_api.updateVmStatus({
+            vm_id: config.vm_id,
+            running: addnewRunnings.length + watchRunnings.length 
+        })
     }
     catch (e) {
         utils.log('updateVmStatus err: ', e)
     }
     finally {
-        setTimeout(updateVmStatus, 120000)
+        setTimeout(updateVmStatus, TIME_REPORT)
     }
 }
 
@@ -825,7 +830,7 @@ async function initConfig() {
     // }
 
     if (!config.vm_id) {
-        config.vm_id = (Date.now()+'').slice(0,8)
+        config.vm_id = (Date.now()+'').slice(0,9)
     }
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
