@@ -1520,7 +1520,7 @@ async function logScreen() {
         utils.log('logScreen err: ', e)
     }
     finally {
-        setTimeout(logScreen, 10000)
+        setTimeout(logScreen, 600000)
     }
 }
 

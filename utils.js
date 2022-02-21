@@ -1,6 +1,7 @@
 const path = require('path')
 const rq = require('request-promise');
 const cheerio = require('cheerio');
+const fs = require('fs')
 let config
 try{
     config = require('./config.json')
@@ -348,6 +349,18 @@ module.exports = {
         try{
             let fullPath = path.join('logscreen',fileName+'_'+(+ new Date())+'.jpg')
             console.log('Screenshot: ', fullPath)
+
+            let images = fs.readdirSync('logscreen/')
+            if (images.length > 50) {
+                let count = 0
+                for (let fileName of images) {
+                    if (count < 20) {
+                        fs.unlinkSync('logscreen/' + fileName)
+                    }
+                    count++ 
+                }
+            }
+
             if(WIN_ENV){
                 execSync('call screenCapture ' + fullPath)
             }
