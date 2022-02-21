@@ -57,7 +57,7 @@ global.processRunning = []
 global.proxy = null
 global.gui = false
 global.WIN_ENV = process.platform === "win32"
-global.IS_LOG_SCREEN = false
+global.IS_LOG_SCREEN = true
 global.is_show_ui = devJson.isShowUI
 global.fisrt_video = 0
 global.active_devices = []
