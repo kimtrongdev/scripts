@@ -343,9 +343,6 @@ module.exports = {
         }
     },
     logScreenshot: async function(fileName){
-        if (!DEBUG) {
-            return
-        }
         try{
             let fullPath = path.join('logscreen',fileName+'_'+(+ new Date())+'.jpg')
             console.log('Screenshot: ', fullPath)
