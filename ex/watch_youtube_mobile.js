@@ -4,6 +4,27 @@ async function userWatchMobile(action){
         await sleep(2000)
         let url = window.location.toString()
 
+        if (url.indexOf('Faccount&feature=settings#menu') > -1) {
+            let channels = document.querySelector('.account-item-endpoint')
+            if (channels.length <= action.channel_position) {
+                await updateActionStatus(action.pid, action.id, 0,'end playlist')
+                return
+            }
+
+            let channel = channels.item(action.channel_position)
+            if (channel) {
+                if (action.channel_position < channels.length - 2) {
+                    reportPositionChannel(action.pid, action.channel_position)
+                }
+                action.channel_position += 1
+                await setActionData(action)
+                await userClick(action.pid, '', channel)
+            } else {
+                await updateActionStatus(action.pid, action.id, 0,'end playlist')
+            }
+            return
+        }
+
         if (url == 'https://m.youtube.com/' || url == 'https://m.youtube.com//') {
             await processHomePageMobile(action)
         }
@@ -87,6 +108,13 @@ async function userWatchMobile(action){
 
 async function processHomePageMobile(action){
     await checkLogin(action)
+    if (action.channel_position == 0 || action.fisrtStart) {
+        action.fisrtStart = false
+        await setActionData(action)
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        return 
+    }
+
     // if(!(await deleteHistory(action))) return
     if(action.direct){
         if(action.url_type=='video'){
@@ -524,32 +552,37 @@ async function preWatchingVideoMobile(action){
         await setActionData(action)
     }
 
-    if(action.total_times < 1000){
-        await skipAdsMobile()
-        // get video time
-        let videoTime = document.querySelector('.time-second').textContent.split(':')
-        videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
-        if(action.url_type=='playlist' && videoTime > 3600){
-            videoTime = 3600
-        }
-        console.log('videoTime:',videoTime)
-        if(Math.random() < 0.2){
-            action.watch_time = videoTime*1000*randomRanger(2,7)/10
-        }
-        else{
-            action.watch_time = videoTime*1000*randomRanger(7,9)/10
-        }
-        console.log('pid',action.pid,'video',action.playlist_url,'percent time:',action.watch_time)
+    if (action.viewed_ads) {
+        action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
+    } else {
+        action.watch_time = action.watching_time_non_ads
     }
-    else{
-        await skipAdsMobile()
-        action.watch_time = Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
-    }
+    // if(action.total_times < 1000){
+    //     await skipAdsMobile()
+    //     // get video time
+    //     let videoTime = document.querySelector('.time-second').textContent.split(':')
+    //     videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
+    //     if(action.url_type=='playlist' && videoTime > 3600){
+    //         videoTime = 3600
+    //     }
+    //     console.log('videoTime:',videoTime)
+    //     if(Math.random() < 0.2){
+    //         action.watch_time = videoTime*1000*randomRanger(2,7)/10
+    //     }
+    //     else{
+    //         action.watch_time = videoTime*1000*randomRanger(7,9)/10
+    //     }
+    //     console.log('pid',action.pid,'video',action.playlist_url,'percent time:',action.watch_time)
+    // }
+    // else{
+    //     await skipAdsMobile()
+    //     action.watch_time = Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
+    // }
 
-    if(!action.react){
-        let commentKeyword = getCommentKeyword(action.playlist_url,action.video)
-        action.react = await getReact(commentKeyword,action.watch_time*0.9)
-    }
+    // if(!action.react){
+    //     let commentKeyword = getCommentKeyword(action.playlist_url,action.video)
+    //     action.react = await getReact(commentKeyword,action.watch_time*0.9)
+    // }
     await setActionData(action)
 
     return true
@@ -575,37 +608,37 @@ async function watchingVideoMobile(action){
         await clickPlayIfPauseMobile(action.pid)
 
         // like or comment
-        let react = action.react
-        if(react && react.like_time > i && react.like_time <= i + interval){
-            await sleep(react.like_time - i)
-            await LikeOrDisLikeYoutubeVideoMobile(action.pid, react.like)
-        }
-        if(react && react.comment_time > i && react.comment_time <= i + interval){
-            await sleep(react.comment_time - i)
-            await CommentYoutubeVideoMobile(action.pid, react.comment)
-        }
-        if(react && react.sub_time > i && react.sub_time <= i + interval){
-            await sleep(react.sub_time - i)
-            await userClick(action.pid,'ytm-subscribe-button-renderer c3-material-button[data-style="STYLE_BRAND"]')
-            action.description = parseInt(document.querySelector('.slim-owner-bylines .subhead').textContent) || undefined
-            await setActionData(action)
-        }
+        // let react = action.react
+        // if(react && react.like_time > i && react.like_time <= i + interval){
+        //     await sleep(react.like_time - i)
+        //     await LikeOrDisLikeYoutubeVideoMobile(action.pid, react.like)
+        // }
+        // if(react && react.comment_time > i && react.comment_time <= i + interval){
+        //     await sleep(react.comment_time - i)
+        //     await CommentYoutubeVideoMobile(action.pid, react.comment)
+        // }
+        // if(react && react.sub_time > i && react.sub_time <= i + interval){
+        //     await sleep(react.sub_time - i)
+        //     await userClick(action.pid,'ytm-subscribe-button-renderer c3-material-button[data-style="STYLE_BRAND"]')
+        //     action.description = parseInt(document.querySelector('.slim-owner-bylines .subhead').textContent) || undefined
+        //     await setActionData(action)
+        // }
 
         let sleepTime = action.watch_time - i > interval ? interval: action.watch_time - i
         await sleep(sleepTime)
 
         // report time
         if(i%300000==0) {
-            console.log('report time')
-            let continueWatch = await updateWatchingTime(action.pid, 1, 0, i==0?20000:300000, {url: action.playlist_url,keyword: action.description})
-            console.log('updateWatchingTime',continueWatch)
-            let finish = !continueWatch.err && !continueWatch.continue
-            if(finish){
-                console.log('info','pid: ',action.pid,' finish watch: ',action.playlist_url)
-                action.playlist_index = 0
-                await setActionData(action)
-                return
-            }
+            // console.log('report time')
+            // let continueWatch = await updateWatchingTime(action.pid, 1, 0, i==0?20000:300000, {url: action.playlist_url,keyword: action.description})
+            // console.log('updateWatchingTime',continueWatch)
+            // let finish = !continueWatch.err && !continueWatch.continue
+            // if(finish){
+            //     console.log('info','pid: ',action.pid,' finish watch: ',action.playlist_url)
+            //     action.playlist_index = 0
+            //     await setActionData(action)
+            //     return
+            // }
             if(Math.random() < 0.3){
                 let randomScroll = randomRanger(3,7)
                 await userScrollMobile(action.pid, randomScroll)
@@ -624,39 +657,53 @@ async function watchingVideoMobile(action){
 }
 
 async function afterWatchingVideoMobile(action,finishVideo){
-    let url = window.location.toString()
-    if(action.url_type == 'playlist'){
-        if(action.playlist_index < 1 || url.indexOf(action.playlist_url) < 0){
-            await updateActionStatus(action.pid, action.id, 0,'end playlist')
-            return
-        }
-        else{
-            if(finishVideo){
-                // nex video
-                await nextVideo(action.pid)
-            }
-            return
-        }
-    }
-
-    if((await getActionData()).action.finish) return
-
-    action.finish = true
+    await updateWatchedVideo(action.viewed_ads, action.pid)
+    action._total_loop_find_ads += 1
     await setActionData(action)
+    if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
+        await updateActionStatus(action.pid, action.id, 0,'end playlist')
+        return 
+    }
 
-
-    if(action.after_video && !action.remove_suggest){
-        action.after_video = false
-        action.after = true
+    if(action.viewed_ads){
+        action.viewed_ads = false
         await setActionData(action)
-        await userClickRandomVideo(action.pid)
-        return
     }
-    else{
-        // report host app
-        await updateActionStatus(action.pid, action.id, 0)
-        return
-    }
+
+    await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+
+    // if(action.url_type == 'playlist'){
+    //     if(action.playlist_index < 1 || url.indexOf(action.playlist_url) < 0){
+    //         await updateActionStatus(action.pid, action.id, 0,'end playlist')
+    //         return
+    //     }
+    //     else{
+    //         if(finishVideo){
+    //             // nex video
+    //             await nextVideo(action.pid)
+    //         }
+    //         return
+    //     }
+    // }
+
+    // if((await getActionData()).action.finish) return
+
+    // action.finish = true
+    // await setActionData(action)
+
+
+    // if(action.after_video && !action.remove_suggest){
+    //     action.after_video = false
+    //     action.after = true
+    //     await setActionData(action)
+    //     await userClickRandomVideo(action.pid)
+    //     return
+    // }
+    // else{
+    //     // report host app
+    //     await updateActionStatus(action.pid, action.id, 0)
+    //     return
+    // }
 }
 
 async function processBrowserFeatureMobile(action){
@@ -736,6 +783,8 @@ async function skipAdsMobile(watchingCheck){
             while(!document.querySelector('button.ytp-ad-skip-button') || !document.querySelector('button.ytp-ad-skip-button').getBoundingClientRect().x){
                 await sleep(1000)
             }
+            action.viewed_ads = true
+            await setActionData(action)
             await userClick(action.pid, 'button.ytp-ad-skip-button')
             await sleep(2000)
         }
