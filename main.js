@@ -1511,16 +1511,17 @@ async function deleteBackup(pid,retry = 0) {
 }
 
 async function logScreen() {
+    if (!DEBUG) {
+        return
+    }
     try {
-        if (IS_LOG_SCREEN) {
-            utils.logScreenshot('log_sr_')
-        }
+        utils.logScreenshot('log_sr_')
     }
     catch (e) {
         utils.log('logScreen err: ', e)
     }
     finally {
-        setTimeout(logScreen, 10000)
+        setTimeout(logScreen, 5000)
     }
 }
 

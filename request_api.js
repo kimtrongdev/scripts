@@ -13,7 +13,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
     getYTVideo: async function getYTVideo(pid) {
-        return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
+        return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid, isGetMobile }})
     },
     getNewProfile: async function getNewProfile() {
         return await rq({uri: SUB_URL + '/profile/get-new',json: true,qs: {vmId: config.vm_id}})
@@ -72,7 +72,7 @@ module.exports = {
     },
     getSystemConfig: async function() {
         try{
-            return await rq({uri: SUB_URL + '/oam/api-system-config',json: true})
+            return await rq({uri: SUB_URL + '/oam/api-system-config',json: true, qs: { isGetMobile: true }})
         }
         catch (e) {
             console.log('getSystemConfig error')
