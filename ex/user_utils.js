@@ -1,3 +1,12 @@
+function closeTabs () {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+            type: 'CLOSE_OLD_TABS', 
+            url: '/report',
+        }, function (response) {
+        resolve(response);
+    }))
+}
+
 function reportPositionChannel(pid, position) {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: { id: 'channel-position', position, pid }}, function (response) {
