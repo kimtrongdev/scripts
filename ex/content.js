@@ -114,6 +114,7 @@ setInterval(function() {
 
 async function initAction(){
     if(window.location.toString().indexOf('localhost') > -1){
+        closeTabs()
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()

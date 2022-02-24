@@ -55,6 +55,9 @@ chrome.runtime.onMessage.addListener(
             })
             return true
           }
+          else if (request.type == 'CLOSE_OLD_TABS') {
+            closeOldTabs()
+          }
           else{
               if(request.data.stop){
                     closeBrowser()
@@ -74,6 +77,16 @@ function closeBrowser(){
     chrome.tabs.query({}, function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.remove(tabs[i].id);
+        }
+    });
+}
+
+function closeOldTabs() {
+    chrome.tabs.query({}, function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+            if (!tabs[i].active) {
+                chrome.tabs.remove(tabs[i].id);
+            }
         }
     });
 }
