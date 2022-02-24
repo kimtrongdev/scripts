@@ -369,7 +369,7 @@ module.exports = {
             // await page.screenshot({path: fullPath})
         }
         catch (e) {
-            console.log('error','errorScreenshot: ', fileName, 'err: ', e)
+            //console.log('error','errorScreenshot: ', fileName, 'err: ', e)
         }
     },
     checkVideoErr: async function(page, pid){

@@ -135,7 +135,7 @@ async function userLogin(action) {
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
+            await goToLocation(action.pid,'myactivity.google.com/product/youtube/controls')
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
@@ -144,6 +144,10 @@ async function userLogin(action) {
         }
         else if (url.indexOf('myactivity.google.com/activitycontrols/youtube') > -1) {
             await pauseHistory(action)
+            return
+        }
+        else if (url.indexOf('myactivity.google.com/product/youtube/controls') > -1) {
+            await pauseHistoryMobile(action)
             return
         }
         else if (url.indexOf('https://www.youtube.com/create_channel') == 0) {
@@ -404,6 +408,23 @@ async function updateInfo(action){
         else{
             await goToLocation(action.pid,'myaccount.google.com/birthday')
         }
+    }
+}
+
+async function pauseHistoryMobile(action) {
+    try {
+        await userClick(action.pid,'div[data-is-touch-wrapper] > button')
+        await sleep(1000)
+        await userScrollMobile(action.pid, 20)
+        let pause = document.querySelectorAll('div[jsslot] div[data-is-touch-wrapper] > button > span').item(1)
+        if (pause) {
+            await userClick(action.pid,'Pause btn', pause)
+        }
+        await sleep(2000)
+    } catch (error) {
+        
+    } finally {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     }
 }
 

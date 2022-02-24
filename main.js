@@ -5,7 +5,7 @@ const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
-const BROWSER = 'google-chrome'
+const BROWSER = 'brave-browser'
 try {
     config = require('./config.json')
 }
@@ -127,6 +127,10 @@ async function startChromeAction(action) {
         active_devices = systemConfig.active_devices || []
         if (active_devices.length) {
             action.mobile_percent = 100
+            let pos = active_devices[Number(action.pid) % active_devices.length]
+            pos = Number(pos) - 1
+            action.mobile_zoom = [0.5, 0.5, 0.5, 0.68, 0.75, 0.63, 0.45, 0.5, 0.42, 0.8, 0.88, 0.5, 0.5][pos]
+            console.log('mobile_zoom', action.mobile_zoom)
         }
 
         if (systemConfig.ads_percent) {

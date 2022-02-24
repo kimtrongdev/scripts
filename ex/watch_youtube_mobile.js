@@ -111,7 +111,7 @@ async function processHomePageMobile(action){
     if (action.channel_position == 0 || action.fisrtStart) {
         action.fisrtStart = false
         await setActionData(action)
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid,'m.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
     }
 
