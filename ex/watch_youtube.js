@@ -130,12 +130,12 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    if (action.channel_position == 0 || action.fisrtStart) {
-        action.fisrtStart = false
-        await setActionData(action)
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-        return 
-    }
+    // if (action.channel_position == 0 || action.fisrtStart) {
+    //     action.fisrtStart = false
+    //     await setActionData(action)
+    //     await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    //     return 
+    // }
 
     // if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
     //     await updateActionStatus(action.pid, action.id, 0,'end playlist')
