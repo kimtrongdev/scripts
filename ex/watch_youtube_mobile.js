@@ -5,7 +5,7 @@ async function userWatchMobile(action){
         let url = window.location.toString()
 
         if (url.indexOf('Faccount&feature=settings#menu') > -1) {
-            let channels = document.querySelector('.account-item-endpoint')
+            let channels = document.querySelectorAll('.account-item-endpoint')
             if (channels.length <= action.channel_position) {
                 await updateActionStatus(action.pid, action.id, 0,'end playlist')
                 return
@@ -25,7 +25,8 @@ async function userWatchMobile(action){
             return
         }
 
-        if (url == 'https://m.youtube.com/' || url == 'https://m.youtube.com//') {
+        if (url == 'https://m.youtube.com/' || url == 'https://m.youtube.com//' || 
+            url.indexOf('https://m.youtube.com/?next=%2Faccount&feature=settings&noapp=1') > -1) {
             await processHomePageMobile(action)
         }
         else if (url.indexOf('https://m.youtube.com/select_site') == 0) {
@@ -536,13 +537,13 @@ async function preWatchingVideoMobile(action){
     action.preview = undefined
     action.suggest_search = false
     action.suggest_videos = false
-    if(action.watched){
-        await updateActionStatus(action.pid, action.id, 0)
-        return
-    }
-    else{
-        action.watched = true
-    }
+    // if(action.watched){
+    //     await updateActionStatus(action.pid, action.id, 0)
+    //     return
+    // }
+    // else{
+    //     action.watched = true
+    // }
     await setActionData(action)
 
     if(action.url_type == 'playlist') {
@@ -670,7 +671,7 @@ async function afterWatchingVideoMobile(action,finishVideo){
         await setActionData(action)
     }
 
-    await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    await goToLocation(action.pid, 'm.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
 
     // if(action.url_type == 'playlist'){
     //     if(action.playlist_index < 1 || url.indexOf(action.playlist_url) < 0){
