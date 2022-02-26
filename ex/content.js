@@ -123,9 +123,9 @@ async function initAction(){
         action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
         // trong code
-        if(action.mobile){
-            await setUserAgent(action.pid);
-        }
+        // if(action.mobile){
+        //     await setUserAgent(action.pid);
+        // }
 
         if(action.id=='watch'){
             setWatchParam(action)

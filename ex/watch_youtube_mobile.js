@@ -4,6 +4,11 @@ async function userWatchMobile(action){
         await sleep(2000)
         let url = window.location.toString()
 
+        // check is mobile
+        if (!navigator.maxTouchPoints) {
+            await updateActionStatus(action.pid, action.id, 0,'not mobile')
+        }
+
         if (url.indexOf('Faccount&feature=settings#menu') > -1) {
             let channels = document.querySelectorAll('.account-item-endpoint')
             if (channels.length <= action.channel_position) {
@@ -601,6 +606,11 @@ async function watchingVideoMobile(action){
         }
 
         await skipAdsMobile(true)
+
+        if (action.viewed_ads) {
+            await sleep(5000)
+            return true
+        }
 
         if(i == 0 && url.indexOf('&t=') > -1){
             await sendKey(action.pid,"0")
