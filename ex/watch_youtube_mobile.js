@@ -553,26 +553,26 @@ async function preWatchingVideoMobile(action){
         await setActionData(action)
     }
 
-    if (action.viewed_ads) {
-        action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
-    } else {
-        action.watch_time = action.watching_time_non_ads
-    }
+    // if (action.viewed_ads) {
+    //     action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
+    // } else {
+    //     action.watch_time = action.watching_time_non_ads
+    // }
     // if(action.total_times < 1000){
-    //     await skipAdsMobile()
-    //     // get video time
-    //     let videoTime = document.querySelector('.time-second').textContent.split(':')
-    //     videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
-    //     if(action.url_type=='playlist' && videoTime > 3600){
-    //         videoTime = 3600
-    //     }
-    //     console.log('videoTime:',videoTime)
-    //     if(Math.random() < 0.2){
-    //         action.watch_time = videoTime*1000*randomRanger(2,7)/10
-    //     }
-    //     else{
-    //         action.watch_time = videoTime*1000*randomRanger(7,9)/10
-    //     }
+        await skipAdsMobile()
+        // get video time
+        let videoTime = document.querySelector('.time-second').textContent.split(':')
+        videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
+        if(action.url_type=='playlist' && videoTime > 3600){
+            videoTime = 3600
+        }
+        console.log('videoTime:',videoTime)
+        // if(Math.random() < 0.2){
+        //     action.watch_time = videoTime*1000*randomRanger(2,7)/10
+        // }
+        // else{
+            action.watch_time = videoTime*1000*randomRanger(7,10)/10
+        //}
     //     console.log('pid',action.pid,'video',action.playlist_url,'percent time:',action.watch_time)
     // }
     // else{
