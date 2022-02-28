@@ -21,7 +21,7 @@ async function userWatchMobile(action){
                 if (action.channel_position < channels.length - 2) {
                     reportPositionChannel(action.pid, action.channel_position)
                 }
-                await getNewVideoData(action)
+                //await getNewVideoData(action)
                 action.channel_position += 1
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
@@ -115,12 +115,12 @@ async function userWatchMobile(action){
 
 async function processHomePageMobile(action){
     await checkLogin(action)
-    if (action.channel_position == 0 || action.fisrtStart) {
-        action.fisrtStart = false
-        await setActionData(action)
-        await goToLocation(action.pid,'m.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-        return 
-    }
+    // if (action.channel_position == 0 || action.fisrtStart) {
+    //     action.fisrtStart = false
+    //     await setActionData(action)
+    //     await goToLocation(action.pid,'m.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    //     return 
+    // }
 
     // if(!(await deleteHistory(action))) return
     if(false && action.direct){
@@ -673,19 +673,20 @@ async function watchingVideoMobile(action){
 
 async function afterWatchingVideoMobile(action,finishVideo){
     await updateWatchedVideo(action.viewed_ads, action.pid)
-    action._total_loop_find_ads += 1
-    await setActionData(action)
-    if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
-        await updateActionStatus(action.pid, action.id, 0,'end playlist')
-        return 
-    }
+    await updateActionStatus(action.pid, action.id, 0)
+    // action._total_loop_find_ads += 1
+    // await setActionData(action)
+    // if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
+    //     await updateActionStatus(action.pid, action.id, 0,'end playlist')
+    //     return 
+    // }
 
-    if(action.viewed_ads){
-        action.viewed_ads = false
-        await setActionData(action)
-    }
+    // if(action.viewed_ads){
+    //     action.viewed_ads = false
+    //     await setActionData(action)
+    // }
 
-    await goToLocation(action.pid, 'm.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    // await goToLocation(action.pid, 'm.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
 
     // if(action.url_type == 'playlist'){
     //     if(action.playlist_index < 1 || url.indexOf(action.playlist_url) < 0){
