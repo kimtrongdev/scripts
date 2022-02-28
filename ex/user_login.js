@@ -413,14 +413,17 @@ async function updateInfo(action){
 
 async function pauseHistoryMobile(action) {
     try {
-        await userClick(action.pid,'div[data-is-touch-wrapper] > button')
-        await sleep(1000)
-        await userScrollMobile(action.pid, 20)
-        let pause = document.querySelectorAll('div[jsslot] div[data-is-touch-wrapper] > button > span').item(1)
-        if (pause) {
-            await userClick(action.pid,'Pause btn', pause)
+        let btnOff = document.querySelector('div[data-is-touch-wrapper] > button[data-is-on="true"]')
+        if (btnOff) {
+            await userClick(action.pid,'div[data-is-touch-wrapper] > button[data-is-on="true"]', btnOff)
+            await sleep(1000)
+            await userScrollMobile(action.pid, 20)
+            let pause = document.querySelectorAll('div[jsslot] div[data-is-touch-wrapper] > button > span').item(1)
+            if (pause) {
+                await userClick(action.pid,'Pause btn', pause)
+            }
+            await sleep(2000)
         }
-        await sleep(2000)
     } catch (error) {
         
     } finally {
