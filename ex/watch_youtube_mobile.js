@@ -21,7 +21,7 @@ async function userWatchMobile(action){
                 if (action.channel_position < channels.length - 2) {
                     reportPositionChannel(action.pid, action.channel_position)
                 }
-                await getNewVideoData(action)
+                //await getNewVideoData(action)
                 action.channel_position += 1
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
