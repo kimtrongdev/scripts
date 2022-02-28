@@ -142,7 +142,7 @@ async function startChromeAction(action) {
         }
 
         action.total_channel_created = Number(systemConfig.total_channel_created)
-
+        action.playlist_percent = 0
         if (systemConfig.playlists && action.id == 'watch') {
             // let infos = channelInfo
             // let channelPositionIndex = infos.findIndex(c => c.pid == action.pid)

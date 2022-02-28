@@ -122,7 +122,7 @@ async function processHomePageMobile(action){
     }
 
     // if(!(await deleteHistory(action))) return
-    if(action.direct){
+    if(false && action.direct){
         if(action.url_type=='video'){
             await goToLocation(action.pid,'https://m.youtube.com/watch?v='+action.playlist_url)
             return
@@ -133,12 +133,14 @@ async function processHomePageMobile(action){
             return
         }
     }
-    if(action.preview == "home"){
-        await userScrollMobile(action.pid,randomRanger(5,15))
-        await sleep(randomRanger(1000,5000))
-        await userClickRandomVideoMobile(action.pid)
-    }
-    else if(action.preview == "search"){
+
+    // if(action.preview == "home"){
+    //     await userScrollMobile(action.pid,randomRanger(5,15))
+    //     await sleep(randomRanger(1000,5000))
+    //     await userClickRandomVideoMobile(action.pid)
+    // }
+    // else 
+    if(action.preview == "search"){
         await searchMobile(action.pid,action.keyword)
     }
     else if(action.home){
@@ -148,7 +150,7 @@ async function processHomePageMobile(action){
         await searchMobile(action.pid,action.suggest_videos)
     }
     else{
-        await searchMobile(action.pid,action.video)
+        await searchMobile(action.pid,action.video || action.keyword)
     }
 
     await sleep(3000)
