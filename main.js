@@ -137,8 +137,8 @@ async function startChromeAction(action) {
             action.ads_percent = systemConfig.ads_percent
         }
 
-        if (systemConfig.max_total_profiles) {
-            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+        if (systemConfig.max_total_profiles_mobile) {
+            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles_mobile)
         }
 
         action.total_channel_created = Number(systemConfig.total_channel_created)
@@ -335,7 +335,15 @@ async function newProfileManage() {
         if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         utils.log('newProfileManage')
         // get new profile
-        let newProfile = await request_api.getNewProfile()
+        let newProfile = {
+            profile: {
+                id: 999,
+                email: 'godfreypooreodo@gmail.com',
+                password: '4NNggtgM',
+                recover_email: 'godfreypooreodolyl26@yahoo.com'
+            }
+        }
+         //await request_api.getNewProfile()
         // if(WIN_ENV) newProfile = {profile: {id: 130, email: 'drybattle8386@gmail.com', password: 'drybattle9177', recover_mail: 'drybattle4856@gmx.com'}}
         // if(WIN_ENV) newProfile = {profile: {id: PR[0], email: PR[1], password: PR[2], recover_mail: PR[3]}}
         utils.log('newProfile: ', newProfile)
@@ -758,8 +766,8 @@ function initDir() {
 async function start() {
     try {
         let systemConfig = await request_api.getSystemConfig();
-        if (systemConfig.max_total_profiles) {
-            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+        if (systemConfig.max_total_profiles_mobile) {
+            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles_mobile)
         }
         
         startupScript()
