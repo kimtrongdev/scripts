@@ -1,3 +1,13 @@
+function getNewVideoData(action) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'GET_NEW_VIDEO',
+    }, function (response) {
+        action.keyword = JSON.stringify(response)
+
+        resolve({});
+    }))
+}
+
 function closeTabs () {
     return new Promise(resolve => chrome.runtime.sendMessage({
             type: 'CLOSE_OLD_TABS', 

@@ -885,6 +885,21 @@ function initExpress() {
     const express = require('express')
     const app = express()
 
+    app.get('/server-log', async (req, res) => {
+        utils.log('--video--', req.query)
+        return res.json({success: true})
+    })
+
+    app.get('/get-new-video', async (req, res) => {
+        let rs = await request_api.getYTVideo()
+        let playlist = rs.playlist
+        utils.log('--video--', playlist)
+        if (playlist) {
+            return res.json(playlist)
+        }
+        return res.json({error: true})
+    })
+
     app.get('/login', (req, res) => {
         utils.log(req.query)
         if (req.query.status == 1) {

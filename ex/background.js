@@ -58,6 +58,20 @@ chrome.runtime.onMessage.addListener(
           else if (request.type == 'CLOSE_OLD_TABS') {
             closeOldTabs()
           }
+          else if (request.type == 'GET_NEW_VIDEO') {
+              fetch(REPORT_URL + '/get-new-video')
+                  //.then(response => response.json())
+                  .then(response => sendResponse(response))
+                  .catch(error => sendResponse({err: error}))
+                  return true
+          }
+          else if (request.type == 'SERVER_LOG') {
+            fetch(REPORT_URL + '/server-log?' + param)
+                .then(response => response.json())
+                .then(response => sendResponse(response))
+                .catch(error => sendResponse({err: error}))
+        }
+          
           else{
               if(request.data.stop){
                     closeBrowser()

@@ -12,7 +12,7 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
-    getYTVideo: async function getYTVideo(pid) {
+    getYTVideo: async function getYTVideo(pid = '') {
         return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid, isGetMobile: true }})
     },
     getNewProfile: async function getNewProfile() {
