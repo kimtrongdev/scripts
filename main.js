@@ -43,7 +43,7 @@ const MAX_PROFILE_TOTAL = devJson.maxProfile > 1 ? devJson.maxProfile : 1;
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
 let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
-const RUNNING_CHECK_INTERVAL = 45000     // 30 seconds
+const RUNNING_CHECK_INTERVAL = 15000     // 30 seconds
 const MAX_REPORT_TIME = 150000           // 5 minutes
 const MAX_SUB_RUNNING_TIME = 600000     // 10 minutes
 const MAX_ADDNEW_TIME = 600000           // 10 minutes
@@ -209,10 +209,10 @@ async function startChromeAction(action) {
     else {
         utils.log('startChromeAction', action.pid)
         closeChrome(action.pid)
-        await utils.sleep(3000)
+        //await utils.sleep(1000)
         utils.log('startDisplay')
         startDisplay(action.pid)
-        await utils.sleep(3000)
+        await utils.sleep(2000)
 
         utils.log('start chrome', action.pid)
         if (action.id == 'login') {
@@ -233,7 +233,7 @@ async function startChromeAction(action) {
         else {
             setDisplay(action.pid)
             exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`)
-            await utils.sleep(8000)
+            await utils.sleep(5000)
         }
         // if (fs.existsSync('ex.zip')) execSync('rm -rf ex quality')
     }

@@ -13,6 +13,11 @@ async function userLogin(action) {
             return
         }
 
+        if (document.querySelectorAll('.dialog-buttons button').item(1)) {
+            await userClick(action.pid, '', document.querySelectorAll('.dialog-buttons button').item(1))
+            return
+        }
+
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
