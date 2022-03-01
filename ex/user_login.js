@@ -180,6 +180,12 @@ async function userLogin(action) {
             }
             return
         }
+        else if (url.indexOf('https://consent.youtube.com') > -1){
+            let accept = document.querySelectorAll('div[data-is-touch-wrapper] > button').item(1)
+            if (accept) {
+                await userClick(action.pid,'Accept',accept)
+            }
+        }
        
         else if(url != window.location.toString()) {
             return
