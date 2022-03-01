@@ -9,6 +9,11 @@ async function userWatchMobile(action){
             await updateActionStatus(action.pid, action.id, 0,'not mobile')
         }
 
+        if (document.querySelectorAll('.dialog-buttons button').item(1)) {
+            await userClick(action.pid, '', document.querySelectorAll('.dialog-buttons button').item(1))
+            return
+        }
+
         if (url.indexOf('Faccount&feature=settings#menu') > -1) {
             let channels = document.querySelectorAll('.account-item-endpoint')
             if (channels.length <= action.channel_position) {
