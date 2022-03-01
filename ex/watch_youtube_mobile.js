@@ -59,14 +59,10 @@ async function userWatchMobile(action){
         else if(url.indexOf('youtube.com/oops') > -1 && document.querySelector('#alerts')){
             throw new Error('NOT_LOGIN_'+document.querySelector('#alerts .yt-alert-message').textContent)
         }
-        else if (url.indexOf('https://consent.youtube.com') == 0){
-            if(!action.login_retry){
-                action.login_retry = true
-                await setActionData(action)
-                await goToLocation(action.pid, 'accounts.google.com')
-            }
-            else{
-                throw 'NOT_LOGIN'
+        else if (url.indexOf('https://consent.youtube.com') > -1){
+            let accept = document.querySelectorAll('div[data-is-touch-wrapper] > button').item(1)
+            if (accept) {
+                await userClick(action.pid,'Accept',accept)
             }
         }
         else{
