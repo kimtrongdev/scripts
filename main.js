@@ -129,7 +129,7 @@ async function startChromeAction(action) {
             action.mobile_percent = 100
         }
 
-        if (systemConfig.ads_percent) {
+        if (systemConfig.ads_percent  && !Number(action.ads_percent)) {
             action.ads_percent = systemConfig.ads_percent
         }
 

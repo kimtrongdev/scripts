@@ -402,7 +402,7 @@ async function watchingVideo(action){
         //     await userClick(action.pid,'#top-row #subscribe-button paper-button.ytd-subscribe-button-renderer:not([subscribed])')
         // }
 
-        if (action.is_sub && i > 30000 && i <= 30000 + interval) {
+        if (action.is_sub && i > 20000 && i <= 20000 + interval) {
             if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
                 // click sub document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
                 let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
