@@ -139,24 +139,7 @@ async function startChromeAction(action) {
 
         action.total_channel_created = Number(systemConfig.total_channel_created)
 
-        if (systemConfig.playlists && action.id == 'watch') {
-            // let infos = channelInfo
-            // let channelPositionIndex = infos.findIndex(c => c.pid == action.pid)
-            // if (channelPositionIndex > -1) {
-            //     infos[channelPositionIndex].position += 1
-            //     if (infos[channelPositionIndex].position >= action.total_channel_created) {
-            //         infos[channelPositionIndex].position = 0
-            //     }
-
-            //     action.channel_position = infos[channelPositionIndex].position
-            //     channelInfo = infos
-            // } else {
-            //     channelInfo.push({
-            //         pid: action.pid,
-            //         position: 1
-            //     })
-            //     action.channel_position = 1
-            // }
+        if (action.id == 'watch') {
             let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
             if (oldUserPosition) {
                 action.channel_position = Number(oldUserPosition.position) + 1
@@ -166,21 +149,18 @@ async function startChromeAction(action) {
             }
             
             action.total_loop_find_ads = systemConfig.total_loop_find_ads
-            if (systemConfig.total_times_next_video) {
+            if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
                 action.total_times_next_video = systemConfig.total_times_next_video
             }
-           
-            action.watching_time_non_ads = systemConfig.watching_time_non_ads
-            action.watching_time_end_ads = systemConfig.watching_time_end_ads
-            action.watching_time_start_ads = systemConfig.watching_time_start_ads
-
-            // let items = systemConfig.playlists.split(',')
-            // var playlist_id = items[Math.floor(Math.random()*items.length)];
-            // action.playlist_url = playlist_id.trim()
-            // action.playlist_percent = 100
-            // action.url_type = 'playlist'
-            // action.total_times = 1//getRndInteger(35, 50)
-            // action.playlist_index = action.total_times
+            if (systemConfig.watching_time_non_ads && !Number(action.watching_time_non_ads)) {
+                action.watching_time_non_ads = systemConfig.watching_time_non_ads
+            }
+            if (systemConfig.watching_time_start_ads && !Number(action.watching_time_start_ads)) {
+                action.watching_time_start_ads = systemConfig.watching_time_start_ads
+            }
+            if (systemConfig.watching_time_end_ads && !Number(action.watching_time_end_ads)) {
+                action.watching_time_end_ads = systemConfig.watching_time_end_ads
+            }
 
             action.playlist_data = action.playlist_url
         }
