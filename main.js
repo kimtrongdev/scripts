@@ -43,7 +43,7 @@ const MAX_PROFILE_TOTAL = devJson.maxProfile > 1 ? devJson.maxProfile : 1;
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
 let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
-const RUNNING_CHECK_INTERVAL = 45000     // 30 seconds
+const RUNNING_CHECK_INTERVAL = 20000     // 30 seconds
 const MAX_REPORT_TIME = 150000           // 5 minutes
 const MAX_SUB_RUNNING_TIME = 600000     // 10 minutes
 const MAX_ADDNEW_TIME = 600000           // 10 minutes
@@ -857,6 +857,21 @@ function getScriptDir() {
     return __dirname
 }
 
+function handlePlaylistData (playlist) {
+    if (!playlist.total_times_next_video) {
+        delete playlist.total_times_next_video
+    }
+    if (!playlist.watching_time_non_ads) {
+        delete playlist.watching_time_non_ads
+    }
+    if (!playlist.watching_time_start_ads) {
+        delete playlist.watching_time_start_ads
+    }
+    if (!playlist.watching_time_end_ads) {
+        delete playlist.watching_time_end_ads
+    }
+}
+
 function initExpress() {
     const express = require('express')
     const app = express()
@@ -874,6 +889,13 @@ function initExpress() {
         removePidAddnew(req.query.pid, req.query.status)
 
         res.send({ rs: 'ok' })
+    })
+
+    app.get('/get-new-playlist', async (req, res) => {
+        let rs = await request_api.getYTVideo()
+        let playlist = rs.playlist
+        handlePlaylistData(playlist)
+        res.send(playlist)
     })
 
     app.get('/report', (req, res) => {

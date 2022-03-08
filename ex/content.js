@@ -200,7 +200,7 @@ function setWatchParam(action){
     action.search_percent = Number(action.search_percent) || 0
     action.playlist_percent = Number(action.playlist_percent) || 0
     action.suggest_videos = ''
-    action.total_times_next_video = Number(action.total_times_next_video) || 3
+    action.total_times_next_video = Number(action.total_times_next_video) || 0
     action.watching_time_non_ads = Number(action.watching_time_non_ads) || 15000
     action.watching_time_non_ads -= 7000
     action.watching_time_start_ads = Number(action.watching_time_start_ads) || 31000

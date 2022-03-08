@@ -1,3 +1,16 @@
+function getNewPlaylistData (action) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+            url: '/get-new-playlist',
+            data: {}
+        }, function (response) {
+        if (response && response.playlist_url) {
+            action.playlist_data = response.playlist_url
+            Object.assign(action, response)
+        }
+        resolve(action);
+    }))
+}
+
 function closeTabs () {
     return new Promise(resolve => chrome.runtime.sendMessage({
             type: 'CLOSE_OLD_TABS', 

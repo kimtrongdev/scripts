@@ -143,8 +143,9 @@ async function processHomePage(action){
     // }
 
     if (action.view_playlist) {
-        await goToLocation(action.pid,`https://www.youtube.com/watch?${action.playlist_video}&list=${action.playlist_url}`)
-        return 
+        await goToLocation(action.pid,'https://www.youtube.com/playlist?list='+action.playlist_url)
+        //await goToLocation(action.pid,`https://www.youtube.com/watch?${action.playlist_video}&list=${action.playlist_url}`)
+        return
     }
 
     if(action.direct){
@@ -181,7 +182,7 @@ async function processHomePage(action){
 }
 
 async function preWatchingVideo(action){
-    await sleep(1000)
+   // await sleep(1000)
     let url = window.location.toString()
     // removeSuggest()
     if(url.indexOf(action.playlist_url) < 0) {
@@ -457,6 +458,7 @@ async function afterWatchingVideo(action,finishVideo){
 
            action.playlist_index = 1
            action.viewed_ads = false
+           await getNewPlaylistData(action)
            await setActionData(action)
            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
 
