@@ -22,7 +22,9 @@ async function loadPage(){
 
         await dismissDialog(action.pid)
 
-        if (action.id == 'login') {
+        if (action.id == 'map') {
+            await scriptMap(action)
+        } else if (action.id == 'login') {
             console.log('login')
             await userLogin(action)
         }
@@ -138,33 +140,30 @@ async function initAction(){
         console.log(action)
         await setActionData(action)
 
-        if(action.id == 'login'){
-            if(action.mobile) await switchMobile(action)
+        if(action.mobile) await switchMobile(action)
+
+        if (action.id == 'map') {
+            await goToLocation(action.pid,'google.com/maps')
+        } else if(action.id == 'login'){
             await goToLocation(action.pid,'accounts.google.com')
         }
         else if(action.id == 'logout'){
-            if(action.mobile) await switchMobile(action)
             await goToLocation(action.pid,'accounts.google.com/logout')
         }
         else if(action.id == 'confirm'){
-            if(action.mobile) await switchMobile(action)
             // await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
             await goToLocation(action.pid,'families.google.com')
         }
         else if(action.id == 'changepass'){
-            if(action.mobile) await switchMobile(action)
             await goToLocation(action.pid,'myaccount.google.com/security')
         }
         else if(action.id == 'checkpremium'){
-            if(action.mobile) await switchMobile(action)
             await goToLocation(action.pid,'m.youtube.com//')
         }
         else if(action.id == 'checkcountry'){
-            if(action.mobile) await switchMobile(action)
             await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
         }
         else{
-            if(action.mobile) await switchMobile(action)
             // await goToLocation(action.pid,'youtube.com/feed/history//')
             // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
             if (action.google) {

@@ -12,6 +12,9 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    reportAndGetNewScript: async function reportAndGetNewScript(pid, serviceId = '') {
+        return await rq({uri: SUB_URL + '/api/script/report-and-get-new',json: true,qs: { _id: serviceId, pid: pid }})
+    },
     getYTVideo: async function getYTVideo(pid = '') {
         return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
     },

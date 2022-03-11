@@ -102,20 +102,20 @@ async function startChromeAction(action) {
         action.proxy_password = proxy[action.pid].password
     }
 
-    if (CUSTOM){
-        let profile = await request_api.getProfile(action.pid)
-        if(profile.err) throw `GET_PROFILE_ERROR`
-        let hashCode = s => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
-        let hashPid = hashCode(profile.profile.email)
-        hashPid = hashPid > 0 ? hashPid : -hashPid
-        utils.log('hashPid',hashPid)
-        let nav = await request_api.getNavigator(hashPid,'Android','Chrome')
-        if(nav && nav.screen){
-            action.userAgent = nav.navigator.userAgent
-            action.availHeight = nav.screen.availHeight
-            action.availWidth = nav.screen.availWidth
-        }
-    }
+    // if (CUSTOM){
+    //     let profile = await request_api.getProfile(action.pid)
+    //     if(profile.err) throw `GET_PROFILE_ERROR`
+    //     let hashCode = s => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
+    //     let hashPid = hashCode(profile.profile.email)
+    //     hashPid = hashPid > 0 ? hashPid : -hashPid
+    //     utils.log('hashPid',hashPid)
+    //     let nav = await request_api.getNavigator(hashPid,'Android','Chrome')
+    //     if(nav && nav.screen){
+    //         action.userAgent = nav.navigator.userAgent
+    //         action.availHeight = nav.screen.availHeight
+    //         action.availWidth = nav.screen.availWidth
+    //     }
+    // }
 
     action.backup = BACKUP
 
@@ -346,37 +346,6 @@ async function newProfileManage() {
     }
 }
 
-async function checkSubRunningProfile() {
-    try {
-        utils.log('checkSubRunningProfile')
-        let subRunningLength = subRunnings.length
-        for (let i = 0; i < subRunningLength; i++) {
-            // calculate last report time
-            let timeDiff = Date.now() - subRunnings[i].lastReport
-            if (timeDiff > MAX_SUB_RUNNING_TIME) {
-                let pid = subRunnings[i].pid
-                try {
-                    utils.log('error', 'pid: ', pid, ' runningTime exceed ', MAX_SUB_RUNNING_TIME)
-                    closeChrome(pid)
-                }
-                catch (e) {
-                    utils.log('checkSubRunningProfile release err: ', e)
-                }
-                finally {
-                    // delete in sub running queue
-                    subRunnings = subRunnings.filter(x => x.pid != pid)
-                    subRunningLength -= 1
-                    i -= 1
-                    utils.log('checkSubRunningProfile subRunnings: ', subRunnings.length)
-                }
-            }
-        }
-    }
-    catch (e) {
-        utils.log('checkSubRunningProfile err: ', e)
-    }
-}
-
 async function checkAddNewRunningProfile() {
     try {
         utils.log('checkAddNewRunningProfile')
@@ -447,205 +416,27 @@ async function newRunProfile() {
     if (pid) {
         ids.push(pid)
         try {
-            utils.log('check sub or run for profile: ', pid)
-            utils.log('watchRunnings: ', watchRunnings.length)
-
-            try {
-                let rs = await request_api.getYTVideo(pid)
-                let playlist = rs.playlist
-                utils.log(pid, 'playlist', rs.playlist)
-                if (playlist) {
-                    if (!proxy) {
-                        proxy = {}
-                    }
-                    proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
-                    utils.log('pid', pid, 'proxy', proxy[pid])
-                    if (!proxy[pid]) {
-                        utils.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
-                        throw 'no proxy'
-                    }
-                    
-                    let action = playlist
-                    action.pid = pid
-                    action.video = ''
-                    action.id = 'watch'
-                    utils.log(pid, action)
-
-                    let startTime = Date.now()
-                    let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
-                    if (action == ADDNEW_ACTION) {
-                        addnewRunnings.push(actionRecord)
-                    } else {
-                        actionRecord.playlist = {}
-                        actionRecord.playlistTime = {}
-                        watchRunnings.push(actionRecord)
-                    }
-
-                    await startChromeAction(action)
-                }
-                else {
-                    watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                }
-            }
-            catch (e) {
-                utils.log('pid: ', pid, ' reading err: ', e)
-                watchRunnings = watchRunnings.filter(x => x.pid != pid)
+            let action = await request_api.reportAndGetNewScript(pid, '')
+            if (action) {
+                let startTime = Date.now()
+                let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
+                watchRunnings.push(actionRecord)
+                action.id = action.script_code
+                action.pid = pid
+                await startChromeAction(action)
             }
         }
         catch (e) {
-            utils.log('error', 'pid: ', pid, ' subProfile err: ', e)
-        }
-    }
-}
-async function runProfile() {
-    // get sub channel for profile
-    utils.log('ids: ', ids)
-    let pid = ids.shift()
-    if (pid) {
-        ids.push(pid)
-        try {
-            utils.log('check sub or run for profile: ', pid)
-            utils.log('watchRunnings: ', watchRunnings.length)
-
-            let channels = await request_api.getSubChannels(pid, config.vm_id, proxy ? true : false)
-            utils.log('pid: ', pid, ' getSubChannels: ', channels)
-            // if(WIN_ENV) if(watchRunnings.filter(x => x.pid == pid).length == 0) {channels = {err: 'CHECKCOUNTRY'} }else {channels = {action: 0, channels: []}}
-            if (!channels.err) {
-                if (proxy) {
-                    proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
-                    utils.log('pid', pid, 'proxy', proxy[pid])
-                    if (!proxy[pid]) {
-                        utils.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
-                        throw 'no proxy'
-                    }
-                }
-                if (channels.channels.length) {
-                    // pause watching
-                    let browser = await pauseWatchingProfile(pid, channels.action)
-                    try {
-                        if (browser) {
-                            let action = {}
-                            action.pid = pid
-                            action.id = 'sub'
-                            action.vmId = config.vm_id
-                            action.channels = channels.channels
-                            utils.log(pid, action)
-                            await startChromeAction(action)
-                        }
-                        else {
-                            // report error
-                            for (let i = 0; i < channels.channels.length; i++) {
-                                request_api.subStatusReport(pid, channels.channels[i].channel_id, -1, null, null, null, 'pauseWatchingProfile timeout')
-                            }
-                        }
-                    }
-                    catch (e) {
-                        utils.log('error', pid, 'sub', e)
-                        subRunnings = subRunnings.filter(x => x.pid != pid)
-                    }
-                }
-                else {
-                    // pause watching
-                    let browser = await pauseWatchingProfile(pid, channels.action)
-                    if (browser) {
-                        try {
-                            let playlist = await request_api.getPlaylist(pid, channels.action)
-                            utils.log(pid, 'playlist', playlist)
-
-                            if (playlist && !playlist.err && playlist.playlist.length) {
-                                let action = playlist.playlist[0]
-                                action.pid = pid
-                                action.id = 'watch'
-                                action.keyword = playlist.keyword && playlist.keyword.length ? playlist.keyword[0] : undefined
-                                // if(WIN_ENV) action.page_watch = 99
-                                utils.log(pid, action)
-                                await startChromeAction(action)
-                            }
-                            else {
-                                watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                            }
-                        }
-                        catch (e) {
-                            utils.log('pid: ', pid, ' reading err: ', e)
-                            watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                        }
-                    }
-                }
-            }
-            else {
-                utils.log('error', 'pid: ', pid, ' getSubChannels err: ', channels.err)
-                if (channels.err == "PROFILE_INVALID") {
-                    let runnings = watchRunnings.filter(x => x.pid == pid)
-                    if (runnings.length) {
-                        watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                    }
-                    await deleteProfile(pid)
-                }
-                else if(channels.err == "LOGOUT") {
-                    // stop running
-                    closeChrome(pid)
-                    watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                    let action = {}
-                    action.pid = pid
-                    action.id = 'logout'
-                    await startChromeAction(action)
-                }
-                else if(channels.err == "CONFIRM" || channels.err) {
-                    // stop running
-                    closeChrome(pid)
-                    await utils.sleep(5000)
-                    watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                    if (proxy) {
-                        proxy[pid] = await request_api.getProfileProxy(pid, channels.err == "CONFIRM"?CONFIRM_ACTION:PLAYLIST_ACTION.WATCH)
-                        utils.log('pid', pid, `${channels.err} proxy`, proxy[pid])
-                        if (!proxy[pid]) {
-                            utils.log('error', 'pid:', pid, `get ${channels.err} proxy:`, proxy[pid])
-                            throw 'no proxy'
-                        }
-                    }
-                    let browser = await pauseWatchingProfile(pid, PLAYLIST_ACTION.WATCH)
-                    try {
-                        if (browser) {
-                            let profile = await request_api.getProfile(pid)
-                            utils.log(profile)
-                            // if(WIN_ENV) profile = {profile: {password: PR[2]}}
-                            if(profile.err) throw `GET_PROFILE_${channels.err}_ERROR`
-                            let action = {}
-                            action.pid = pid
-                            action.id = channels.err.toLowerCase()
-                            action.password = profile.profile.password
-                            action.cardnumber = utils.GenCC("VISA",1)[0]
-                            utils.log(pid, action)
-                            await startChromeAction(action)
-                        }
-                    }
-                    catch (e) {
-                        utils.log('error', pid, channels.err, e)
-                    }
-                }
-            }
-        }
-        catch (e) {
-            utils.log('error', 'pid: ', pid, ' subProfile err: ', e)
+            utils.log('error', 'pid: ', pid, 'run profile error: ', e)
         }
     }
 }
 
 async function profileRunningManage() {
     try {
-        //await request_api.updateVmStatus()
         utils.log('profileRunningManage')
-        // check sub running queue running time
-        //await checkSubRunningProfile()
-        // check add new running queue running time
         await checkAddNewRunningProfile()
-        // check add new running queue running time
         await checkWatchingProfile()
-        // check sub running queue
-       // let avaiSub = MAX_CURRENT_ACC - subRunnings.length - addnewRunnings.length
-        utils.log(' addnewRunnings: ', addnewRunnings.map(x => x.pid),
-            ' watchRunnings: ', watchRunnings.map(x => [x.pid, JSON.stringify(x.playlist)]))
-
         if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
             if (ids.length + addnewRunnings.length < MAX_PROFILE) {
                 newProfileManage()
@@ -737,22 +528,11 @@ async function start() {
         if (systemConfig.max_total_profiles) {
             MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
         }
-        
         startupScript()
-
-        // init dir
         initDir()
-
-        // init configuration
         await initConfig()
-
-        // init proxy
         initProxy()
-
         initExpress()
-
-        // WIN_ENV?await installExtension():await installExtensionLinux()
-
         running()
     }
     catch (e) {

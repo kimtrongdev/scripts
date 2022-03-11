@@ -12,7 +12,16 @@
       "matches": [
         "<all_urls>"
       ],
-      "js": ["user_utils.js","user_simulate.js","user_login.js","watch_youtube.js","watch_youtube_mobile.js","sub_channel.js","content.js"]
+      "js": [
+        "user_utils.js",
+        "user_simulate.js",
+        "user_login.js",
+        "watch_youtube.js",
+        "watch_youtube_mobile.js",
+        "sub_channel.js",
+        "content.js",
+        "./scripts/map.js"
+      ]
     },
     {
       "matches": [
