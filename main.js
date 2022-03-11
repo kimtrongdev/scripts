@@ -1386,6 +1386,23 @@ async function deleteBackup(pid,retry = 0) {
     }
 }
 
+async function logScreen() {
+    if (!IS_LOG_SCREEN) {
+        return
+    }
+    try {
+        if (IS_LOG_SCREEN) {
+            utils.logScreenshot('log_sr_')
+        }
+    }
+    catch (e) {
+        utils.log('logScreen err: ', e)
+    }
+    finally {
+        setTimeout(logScreen, 10000)
+    }
+}
+
 async function logScreenTest() {
     try {
         utils.logScreenshot('log_sr_')
