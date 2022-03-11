@@ -5,7 +5,7 @@ const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
-const BROWSER = 'google-chrome'
+const BROWSER = 'microsoft-edge'
 try {
     config = require('./config.json')
 }
@@ -92,9 +92,13 @@ function getRndInteger(min, max) {
 
   
 async function startChromeAction(action) {
+    let screenSize = {
+        width: is_show_ui ? 2348 : 1920,
+        height: is_show_ui ? 1288 : 1040
+    }
     let userProxy = ''
     let windowPosition = '--window-position=0,0'
-    let windowSize = is_show_ui ? ' --window-size="2348,1288"' : ' --window-size="1920,1040"'
+    let windowSize = ` --window-size="${screenSize.width},${screenSize.height}"`
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -119,7 +123,6 @@ async function startChromeAction(action) {
 
     action.backup = BACKUP
 
-    // kien code
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
         utils.log('systemConfig', systemConfig);
@@ -197,8 +200,12 @@ async function startChromeAction(action) {
             await createProfile(action.pid)
 
             setDisplay(action.pid)
-
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`)
+            let cmdRun = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            exec(cmdRun)
+            await utils.sleep(5000)
+            closeChrome(action.pid)
+            await utils.sleep(2000)
+            exec(cmdRun)
             await utils.sleep(5000)
             // enter for asking default
             sendEnter(action.pid)
@@ -490,139 +497,6 @@ async function newRunProfile() {
             catch (e) {
                 utils.log('pid: ', pid, ' reading err: ', e)
                 watchRunnings = watchRunnings.filter(x => x.pid != pid)
-            }
-        }
-        catch (e) {
-            utils.log('error', 'pid: ', pid, ' subProfile err: ', e)
-        }
-    }
-}
-async function runProfile() {
-    // get sub channel for profile
-    utils.log('ids: ', ids)
-    let pid = ids.shift()
-    if (pid) {
-        ids.push(pid)
-        try {
-            utils.log('check sub or run for profile: ', pid)
-            utils.log('watchRunnings: ', watchRunnings.length)
-
-            let channels = await request_api.getSubChannels(pid, config.vm_id, proxy ? true : false)
-            utils.log('pid: ', pid, ' getSubChannels: ', channels)
-            // if(WIN_ENV) if(watchRunnings.filter(x => x.pid == pid).length == 0) {channels = {err: 'CHECKCOUNTRY'} }else {channels = {action: 0, channels: []}}
-            if (!channels.err) {
-                if (proxy) {
-                    proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
-                    utils.log('pid', pid, 'proxy', proxy[pid])
-                    if (!proxy[pid]) {
-                        utils.log('error', 'pid:', pid, 'get proxy:', proxy[pid])
-                        throw 'no proxy'
-                    }
-                }
-                if (channels.channels.length) {
-                    // pause watching
-                    let browser = await pauseWatchingProfile(pid, channels.action)
-                    try {
-                        if (browser) {
-                            let action = {}
-                            action.pid = pid
-                            action.id = 'sub'
-                            action.vmId = config.vm_id
-                            action.channels = channels.channels
-                            utils.log(pid, action)
-                            await startChromeAction(action)
-                        }
-                        else {
-                            // report error
-                            for (let i = 0; i < channels.channels.length; i++) {
-                                request_api.subStatusReport(pid, channels.channels[i].channel_id, -1, null, null, null, 'pauseWatchingProfile timeout')
-                            }
-                        }
-                    }
-                    catch (e) {
-                        utils.log('error', pid, 'sub', e)
-                        subRunnings = subRunnings.filter(x => x.pid != pid)
-                    }
-                }
-                else {
-                    // pause watching
-                    let browser = await pauseWatchingProfile(pid, channels.action)
-                    if (browser) {
-                        try {
-                            let playlist = await request_api.getPlaylist(pid, channels.action)
-                            utils.log(pid, 'playlist', playlist)
-
-                            if (playlist && !playlist.err && playlist.playlist.length) {
-                                let action = playlist.playlist[0]
-                                action.pid = pid
-                                action.id = 'watch'
-                                action.keyword = playlist.keyword && playlist.keyword.length ? playlist.keyword[0] : undefined
-                                // if(WIN_ENV) action.page_watch = 99
-                                utils.log(pid, action)
-                                await startChromeAction(action)
-                            }
-                            else {
-                                watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                            }
-                        }
-                        catch (e) {
-                            utils.log('pid: ', pid, ' reading err: ', e)
-                            watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                        }
-                    }
-                }
-            }
-            else {
-                utils.log('error', 'pid: ', pid, ' getSubChannels err: ', channels.err)
-                if (channels.err == "PROFILE_INVALID") {
-                    let runnings = watchRunnings.filter(x => x.pid == pid)
-                    if (runnings.length) {
-                        watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                    }
-                    await deleteProfile(pid)
-                }
-                else if(channels.err == "LOGOUT") {
-                    // stop running
-                    closeChrome(pid)
-                    watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                    let action = {}
-                    action.pid = pid
-                    action.id = 'logout'
-                    await startChromeAction(action)
-                }
-                else if(channels.err == "CONFIRM" || channels.err) {
-                    // stop running
-                    closeChrome(pid)
-                    await utils.sleep(5000)
-                    watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                    if (proxy) {
-                        proxy[pid] = await request_api.getProfileProxy(pid, channels.err == "CONFIRM"?CONFIRM_ACTION:PLAYLIST_ACTION.WATCH)
-                        utils.log('pid', pid, `${channels.err} proxy`, proxy[pid])
-                        if (!proxy[pid]) {
-                            utils.log('error', 'pid:', pid, `get ${channels.err} proxy:`, proxy[pid])
-                            throw 'no proxy'
-                        }
-                    }
-                    let browser = await pauseWatchingProfile(pid, PLAYLIST_ACTION.WATCH)
-                    try {
-                        if (browser) {
-                            let profile = await request_api.getProfile(pid)
-                            utils.log(profile)
-                            // if(WIN_ENV) profile = {profile: {password: PR[2]}}
-                            if(profile.err) throw `GET_PROFILE_${channels.err}_ERROR`
-                            let action = {}
-                            action.pid = pid
-                            action.id = channels.err.toLowerCase()
-                            action.password = profile.profile.password
-                            action.cardnumber = utils.GenCC("VISA",1)[0]
-                            utils.log(pid, action)
-                            await startChromeAction(action)
-                        }
-                    }
-                    catch (e) {
-                        utils.log('error', pid, channels.err, e)
-                    }
-                }
             }
         }
         catch (e) {
@@ -1512,20 +1386,15 @@ async function deleteBackup(pid,retry = 0) {
     }
 }
 
-async function logScreen() {
-    if (!IS_LOG_SCREEN) {
-        return
-    }
+async function logScreenTest() {
     try {
-        if (IS_LOG_SCREEN) {
-            utils.logScreenshot('log_sr_')
-        }
+        utils.logScreenshot('log_sr_')
     }
     catch (e) {
         utils.log('logScreen err: ', e)
     }
     finally {
-        setTimeout(logScreen, 10000)
+        setTimeout(logScreenTest, 5000)
     }
 }
 
