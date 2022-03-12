@@ -137,6 +137,11 @@ async function processHomePage(action){
         return 
     }
 
+    if (isNonUser) {
+        getPlaylistData(action)
+        await setActionData(action)
+    }
+
     // if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
     //     await updateActionStatus(action.pid, action.id, 0,'end playlist')
     //     return
@@ -462,6 +467,8 @@ async function afterWatchingVideo(action,finishVideo){
            await setActionData(action)
 
            if (isNonUser) {
+            getPlaylistData(action)
+            await setActionData(action)
             await goToLocation(action.pid,'https://www.youtube.com/playlist?list='+action.playlist_url)
            } else {
             await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
