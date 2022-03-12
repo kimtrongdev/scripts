@@ -130,11 +130,16 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    if (action.channel_position == 0 || action.fisrtStart) {
+    if ((action.channel_position == 0 || action.fisrtStart) && !isNonUser) {
         action.fisrtStart = false
         await setActionData(action)
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
+    }
+
+    if (isNonUser) {
+        getPlaylistData(action)
+        await setActionData(action)
     }
 
     // if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
@@ -460,7 +465,14 @@ async function afterWatchingVideo(action,finishVideo){
            action.viewed_ads = false
            await getNewPlaylistData(action)
            await setActionData(action)
-           await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+
+           if (isNonUser) {
+            getPlaylistData(action)
+            await setActionData(action)
+            await goToLocation(action.pid,'https://www.youtube.com/playlist?list='+action.playlist_url)
+           } else {
+            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+           }
 
            //action._total_loop_find_ads += 1
            //await setActionData(action) 
