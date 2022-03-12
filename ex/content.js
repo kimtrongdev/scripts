@@ -22,7 +22,10 @@ async function loadPage(){
 
         await dismissDialog(action.pid)
 
-        if (action.id == 'map') {
+        if (action.id == 'search') {
+            await scriptSearch(action)
+        }
+        else if (action.id == 'map') {
             await scriptMap(action)
         } else if (action.id == 'login') {
             console.log('login')
@@ -142,7 +145,10 @@ async function initAction(){
 
         if(action.mobile) await switchMobile(action)
 
-        if (action.id == 'map') {
+        if (action.id == 'search') {
+            await goToLocation(action.pid, action.keyword)
+        }
+        else if (action.id == 'map') {
             await goToLocation(action.pid,'google.com/maps')
         } else if(action.id == 'login'){
             await goToLocation(action.pid,'accounts.google.com')

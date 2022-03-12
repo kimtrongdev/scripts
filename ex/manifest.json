@@ -20,7 +20,8 @@
         "watch_youtube_mobile.js",
         "sub_channel.js",
         "content.js",
-        "./scripts/map.js"
+        "./scripts/map.js",
+        "./scripts/search.js"
       ]
     },
     {
