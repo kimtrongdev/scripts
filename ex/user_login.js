@@ -210,9 +210,13 @@ async function beforeLoginSuccess (action) {
     //console.log('beforeLoginSuccess');
     //await goToLocation(action.pid,'youtube.com/feed/history')
     //await sleep(60000)
-    await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
-    await sleep(60000)
-    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    if (isNonUser) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    } else {
+        await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
+        await sleep(60000)
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    }
 }
 
 async function checkLogin(action) {
