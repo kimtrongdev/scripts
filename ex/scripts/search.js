@@ -9,8 +9,13 @@ async function scriptSearch(action) {
         await userClick(action.pid, '', linkEl)
       }
     }
-    else {
+    else if (url.indexOf(action.link) > -1) {
+      let randomScroll = randomRanger(7, 15)
+      await userScroll(action.pid, randomScroll)
+      await sleep(3000)
+      await userScroll(action.pid, -randomScroll)
 
+      await reportScript(action)
     } 
   } catch (error) {
     

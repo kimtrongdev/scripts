@@ -1,3 +1,10 @@
+function reportScript(action) {
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: { isScriptReport: true, service_id: action._id, pid: action.pid }}, function (response) {
+        resolve(response);
+    }))
+}
+
 function getNewPlaylistData (action) {
     return new Promise(resolve => chrome.runtime.sendMessage({
             url: '/get-new-playlist',

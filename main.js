@@ -701,8 +701,8 @@ function initExpress() {
         utils.log(req.query)
 
         if (req.query.isScriptReport) {
-            await closeChrome(req.query.pid)
-            
+            closeChrome(req.query.pid)
+            request_api.reportAndGetNewScript(action.pid, req.query.service_id)
         }
         else if (req.query.id == 'channel-position') {
             let channel = usersPosition.find(u => u.pid == req.query.pid)
