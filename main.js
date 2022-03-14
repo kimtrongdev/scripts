@@ -425,19 +425,29 @@ async function newRunProfile() {
     if (pid) {
         ids.push(pid)
         try {
-            let action = await request_api.reportAndGetNewScript(pid, '')
+            let action = await getScriptData(pid, true)
             if (action) {
-                let startTime = Date.now()
-                let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
-                watchRunnings.push(actionRecord)
-                action.id = action.script_code
-                action.pid = pid
                 await startChromeAction(action)
             }
         }
         catch (e) {
             utils.log('error', 'pid: ', pid, 'run profile error: ', e)
         }
+    }
+}
+
+async function getScriptData(pid, isNewProxy) {
+    let action = await request_api.reportAndGetNewScript(pid, '')
+    if (action) {
+        if (isNewProxy) {
+            proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
+        }
+        let startTime = Date.now()
+        let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
+        watchRunnings.push(actionRecord)
+        action.id = action.script_code
+        action.pid = pid
+        return action
     }
 }
 
@@ -690,7 +700,11 @@ function initExpress() {
     app.get('/report', (req, res) => {
         utils.log(req.query)
 
-        if (req.query.id == 'channel-position') {
+        if (req.query.isScriptReport) {
+            await closeChrome(req.query.pid)
+            
+        }
+        else if (req.query.id == 'channel-position') {
             let channel = usersPosition.find(u => u.pid == req.query.pid)
             if (channel) {
                 channel.position = req.query.position
