@@ -9,7 +9,7 @@ let checkMiniPlayerRef
 var windowWide
 var mobileMenuBarHeight
 var zoom
-var isNonUser = false
+var isNonUser = true
 async function loadPage(){
     try{
         await sleep(5000)
