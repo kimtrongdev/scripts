@@ -140,7 +140,7 @@ async function initAction(){
 
         if(action.id == 'login'){
             if(action.mobile) await switchMobile(action)
-            await goToLocation(action.pid,'accounts.google.com')
+            await goToLocation(action.pid,'accounts.google.com?abccc=tesstt')
         }
         else if(action.id == 'logout'){
             if(action.mobile) await switchMobile(action)
