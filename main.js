@@ -1354,17 +1354,18 @@ async function logScreen() {
 
 async function checkToUpdate () {
     try {
-        console.log('check to update')
-        let result = await request_api.checkToUpdate()
-        if (result && result.updating) {
-            runUpdateVps()
-        }
+        setTimeout(async () => {
+            console.log('check to update')
+            let result = await request_api.checkToUpdate()
+            if (result && result.updating) {
+                runUpdateVps()
+            } else {
+                checkToUpdate()
+            }
+        }, TIME_TO_CHECK_UPDATE)
     }
     catch (e) {
         utils.log('check to update err: ', e)
-    }
-    finally {
-        setTimeout(checkToUpdate, TIME_TO_CHECK_UPDATE)
     }
 }
 
