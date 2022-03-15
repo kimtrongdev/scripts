@@ -1,5 +1,6 @@
 const rq = require('request-promise')
 const fs = require('fs')
+let test = 0
 let config
 try{
     config = require('./config.json')
