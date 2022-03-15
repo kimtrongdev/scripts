@@ -13,6 +13,9 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    checkToUpdate: async function checkToUpdate() {
+        return await rq({uri: SUB_URL + '/get-to-update',json: true})
+    },
     getYTVideo: async function getYTVideo(pid = '') {
         return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
     },
