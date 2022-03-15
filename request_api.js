@@ -15,6 +15,9 @@ module.exports = {
     reportAndGetNewScript: async function reportAndGetNewScript(pid, serviceId = '') {
         return await rq({uri: SUB_URL + '/api/script/report-and-get-new',json: true,qs: { _id: serviceId, pid: pid }})
     },
+    checkToUpdate: async function checkToUpdate() {
+        return await rq({uri: SUB_URL + '/get-to-update',json: true})
+    },
     getYTVideo: async function getYTVideo(pid = '') {
         return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
     },

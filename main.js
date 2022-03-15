@@ -48,6 +48,7 @@ const MAX_REPORT_TIME = 150000           // 5 minutes
 const MAX_SUB_RUNNING_TIME = 600000     // 10 minutes
 const MAX_ADDNEW_TIME = 600000           // 10 minutes
 const UPDATE_CHECK_TIME = 180000
+const TIME_TO_CHECK_UPDATE = 600000
 let ids = []
 global.usersPosition = []
 global.subRunnings = []
@@ -74,6 +75,19 @@ const PLAYLIST_ACTION = {
 const ADDNEW_ACTION = 3
 const CONFIRM_ACTION = 4
 const LOCAL_PORT = 2000
+
+async function runUpdateVps () {
+    try {
+        execSync("git pull")
+        let pids = await getProfileIds()
+        for await (let pid of pids) {
+            closeChrome(pid)
+        }
+        execSync("rm -rf profiles && forever restart main.js") 
+    } catch (error) {
+        
+    }
+}
 
 function getProfileIds() {
     return new Promise((resolve, reject) => {
@@ -516,6 +530,7 @@ async function running() {
 }
 
 function initDir() {
+    checkToUpdate()
     if (!fs.existsSync(path.resolve('logscreen'))) {
         fs.mkdirSync(path.resolve('logscreen'));
     }
@@ -788,6 +803,11 @@ function initExpress() {
             deleteBackup(req.query.pid)
         }
         res.send({ rs: 'ok' })
+    })
+
+    app.get('/run-update-vps', (req, res) => {
+        runUpdateVps()
+        res.send({success: true})
     })
 
     app.get('/action', (req, res) => {
@@ -1329,6 +1349,22 @@ async function logScreen() {
     }
     finally {
         setTimeout(logScreen, 10000)
+    }
+}
+
+async function checkToUpdate () {
+    try {
+        console.log('check to update')
+        let result = await request_api.checkToUpdate()
+        if (result && result.updating) {
+            runUpdateVps()
+        }
+    }
+    catch (e) {
+        utils.log('check to update err: ', e)
+    }
+    finally {
+        setTimeout(checkToUpdate, TIME_TO_CHECK_UPDATE)
     }
 }
 
