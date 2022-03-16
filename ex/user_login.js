@@ -147,8 +147,8 @@ async function userLogin(action) {
             await pauseHistory(action)
             return
         }
-        else if (url.indexOf('myactivity.google.com/activitycontrols/youtube') > -1) {
-            await pauseHistory(action)
+        else if (url.indexOf('myactivity.google.com/activitycontrols') > -1) {
+            await pauseInfo(action)
             return
         }      
         else if (url.indexOf('https://m.youtube.com/create_channel') == 0) {
@@ -410,6 +410,26 @@ async function updateInfo(action){
     }
 }
 
+async function pauseInfo() {
+    try {
+        let btnOff = document.querySelector('div[data-is-touch-wrapper] > button[data-is-on="true"]')
+        if (btnOff) {
+            await userClick(action.pid,'div[data-is-touch-wrapper] > button[data-is-on="true"]', btnOff)
+            await sleep(1000)
+            await userScrollMobile(action.pid, 20)
+            let pause = document.querySelectorAll('div[jsslot] div[data-is-touch-wrapper] > button > span').item(1)
+            if (pause) {
+                await userClick(action.pid,'Pause btn', pause)
+            }
+            await sleep(2000)
+        }
+    } catch (error) {
+        
+    } finally {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    }
+}
+
 async function pauseHistory(action){
     try{
         try {
@@ -427,7 +447,7 @@ async function pauseHistory(action){
         } catch (error) {
             
         } finally {
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await goToLocation(action.pid, 'https://myactivity.google.com/activitycontrols')
         }
         
         // let saved = document.querySelector('[d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-4-4 1.4-1.4 2.6 2.6 6.6-6.6L18 9l-8 8z"]')
