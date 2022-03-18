@@ -94,6 +94,7 @@ async function userLogin(action) {
             await sleep(60000)
         }
         else if (url.indexOf("challenge/kpe") > -1) {
+            await sleep(4000)
             let emailInput = document.querySelector("input[name='email']")
             if (emailInput != null) {
                 await userTypeEnter(action.pid, "input[name='email']", emailRecovery)
