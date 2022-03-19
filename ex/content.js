@@ -140,6 +140,8 @@ async function initAction(){
         await setActionData(action)
 
         if(action.id == 'login'){
+            action.position_user_login = 0
+            await setActionData(action)
             if(action.mobile) await switchMobile(action)
             await goToLocation(action.pid,'accounts.google.com')
         }
@@ -209,7 +211,6 @@ function setWatchParam(action){
     action.channel_position = Number(action.channel_position)
     action.total_channel_created = Number(action.total_channel_created) || 20
     action._total_loop_find_ads = 0
-    action.position_user_login = 0
     if (action.playlist_percent == 100) {
         action.view_playlist = true
     } else {
