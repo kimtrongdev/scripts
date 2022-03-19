@@ -13,6 +13,13 @@ async function userLogin(action) {
             return
         }
 
+        if (isPauseWhileLogin) {
+            if (url == 'https://www.youtube.com') {
+                await goToLocation(action.pid,'youtube.com/feed/history')
+                return
+            }
+        }
+
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
@@ -161,18 +168,33 @@ async function userLogin(action) {
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             console.log('------pauseHistory');
             await oldPauseHistory(action)
+            // let viewedVideo = document.querySelector("#contents #contents ytd-video-renderer")
+            // if (viewedVideo) {
+
+            // }
             await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
         }
         else if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
-            let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-            if (channels.length < action.total_channel_created && btnCreateChannel) {
-                await userClick(action.pid,'',btnCreateChannel)
-            } else {
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            }
+           // let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
+            if (isPauseWhileLogin) {
+                if (action.position_user_login <= channels.length - 1) {
+                    let channel = channels.item(action.position_user_login)
+                    if (channel) {
+                        action.position_user_login += 1
+                        await setActionData(action)
+                        await userClick(action.pid,'',channel)
+                        return
+                    }
+                }
+            } 
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            // if (channels.length < action.total_channel_created && btnCreateChannel) {
+            //     await userClick(action.pid,'',btnCreateChannel)
+            // } else {
+            //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            // }
             return
         }
        

@@ -10,6 +10,7 @@ var windowWide
 var mobileMenuBarHeight
 var zoom
 var isNonUser = false
+var isPauseWhileLogin = true
 async function loadPage(){
     try{
         await sleep(5000)
@@ -208,6 +209,7 @@ function setWatchParam(action){
     action.channel_position = Number(action.channel_position)
     action.total_channel_created = Number(action.total_channel_created) || 20
     action._total_loop_find_ads = 0
+    action.position_user_login = 0
     if (action.playlist_percent == 100) {
         action.view_playlist = true
     } else {
