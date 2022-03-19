@@ -15,7 +15,7 @@ async function userLogin(action) {
 
         if (isPauseWhileLogin) {
             if (url == 'https://www.youtube.com' || url == 'https://www.youtube.com/') {
-                await goToLocation(action.pid,'youtube.com/feed/history')
+                await goToLocation(action.pid,'https://www.youtube.com/feed/history//')
                 return
             }
         }
