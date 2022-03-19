@@ -204,12 +204,20 @@ async function startChromeAction(action) {
 
             setDisplay(action.pid)
 
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`)
-            await utils.sleep(5000)
-            // enter for asking default
-            sendEnter(action.pid)
-            await utils.sleep(8000)
-            // setChromeSize(action.pid)
+            let cmdRun = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            exec(cmdRun)
+            if (BROWSER == 'microsoft-edge') {
+                await utils.sleep(5000)
+                closeChrome(action.pid)
+                await utils.sleep(2000)
+                exec(cmdRun)
+            } else {
+                await utils.sleep(5000)
+                // enter for asking default
+                sendEnter(action.pid)
+                await utils.sleep(8000)
+            }
+            
             console.log('process login')
         }
         else {
