@@ -86,9 +86,9 @@ module.exports = {
         catch (e) {
         }
     },
-    updateVmStatus: async function(){
+    updateVmStatus: async function(data = {}){
         try{
-            return await rq({uri: SUB_URL + '/manage/update-vm-status',json: true,qs: {vmId: config.vm_id}})
+            return await rq({uri: SUB_URL + '/manage/update-vm-status',json: true,qs: data})
         }
         catch (e) {
         }

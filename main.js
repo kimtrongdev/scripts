@@ -591,7 +591,7 @@ async function runProfile() {
 
 async function profileRunningManage() {
     try {
-        await request_api.updateVmStatus()
+        //await request_api.updateVmStatus()
         console.log('profileRunningManage')
         // check sub running queue running time
         await checkSubRunningProfile()
@@ -622,13 +622,19 @@ async function profileRunningManage() {
 
 async function updateVmStatus() {
     try {
-        await request_api.updateVmStatus()
+        let _pids = await getProfileIds()
+        let pids = _pids.join(',')
+        await request_api.updateVmStatus({
+            vm_id: config.vm_id,
+            running: addnewRunnings.length + watchRunnings.length,
+            pids
+        })
     }
     catch (e) {
-        console.log('updateVmStatus err: ', e)
+        utils.log('updateVmStatus err: ', e)
     }
     finally {
-        setTimeout(updateVmStatus, 120000)
+        setTimeout(updateVmStatus, 30000)
     }
 }
 
