@@ -43,7 +43,7 @@ const MAX_PROFILE_TOTAL = devJson.maxProfile > 1 ? devJson.maxProfile : 1;
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
 let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
-const RUNNING_CHECK_INTERVAL = 20000     // 30 seconds
+const RUNNING_CHECK_INTERVAL = 30000     // 30 seconds
 const MAX_REPORT_TIME = 150000           // 5 minutes
 const MAX_SUB_RUNNING_TIME = 600000     // 10 minutes
 const MAX_ADDNEW_TIME = 600000           // 10 minutes
@@ -440,7 +440,7 @@ async function newRunProfile() {
         ids.push(pid)
         try {
             let action = await getScriptData(pid, true)
-            if (action) {
+            if (action && action.script_code) {
                 await startChromeAction(action)
             }
         }
@@ -451,7 +451,7 @@ async function newRunProfile() {
 }
 
 async function getScriptData(pid, isNewProxy) {
-    let action = await request_api.reportAndGetNewScript(pid, '')
+    let action = await request_api.getNewScript(pid, '')
     if (action) {
         if (isNewProxy) {
             proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
@@ -717,7 +717,7 @@ function initExpress() {
 
         if (req.query.isScriptReport) {
             closeChrome(req.query.pid)
-            request_api.reportAndGetNewScript(action.pid, req.query.service_id)
+            request_api.reportScript(action.pid, req.query.service_id)
         }
         else if (req.query.id == 'channel-position') {
             let channel = usersPosition.find(u => u.pid == req.query.pid)
@@ -998,185 +998,6 @@ async function deleteProfile(pid, retry = 0) {
             await deleteProfile(pid, retry + 1)
         }
     }
-}
-
-async function installExtension() {
-    let info
-    let i = 0
-    while (i < 10) {
-        try {
-            // open chrome
-            await new Promise(resolve => {
-                exec('start chrome', _ => resolve('ok'))
-            })
-
-            await utils.sleep(5000)
-            // go to extension
-            execSync(`input SEND_KEY "^l"`)
-            await utils.sleep(2000)
-            execSync(`input TYPE_ENTER 0 0 "chrome://extensions/"`)
-            await utils.sleep(2000)
-            // open dev tool
-            execSync(`input SEND_KEY "^+i"`)
-            await utils.sleep(2000)
-            // show utils
-            execSync(`input SEND_KEY "^+p"`)
-            await utils.sleep(2000)
-            execSync(`input TYPE_ENTER 0 0 "dock to right"`)
-            await utils.sleep(2000)
-            execSync(`input SEND_KEY "^+p"`)
-            await utils.sleep(2000)
-            execSync(`input TYPE_ENTER 0 0 "show utils"`)
-            await utils.sleep(2000)
-            await utils.screenshot('extensions')
-            // copy info
-            // const clipboardy = require('clipboardy');
-            // let scriptContent = fs.readFileSync(path.resolve(__dirname,'extension.js'),'utf8')
-            // clipboardy.writeSync(scriptContent)
-
-            execSync(`input CLIP_PUT_SCRIPT`)
-            execSync(`input SEND_KEY "^v{ENTER}"`)
-            await utils.sleep(3000)
-            let info = execSync(`input CLIP_GET`)
-            utils.log('clipboard', info)
-            // let info = clipboardy.readSync()
-            info = JSON.parse(info)
-            utils.log(info)
-            if (!info.installed) {
-                i++
-                if (info.px > 0) {
-                    execSync(`input CLICK ${info.dx} ${info.dy}`)
-                    await utils.sleep(2000)
-                }
-                // add extension
-                execSync(`input CLICK ${info.x} ${info.y}`)
-                await utils.sleep(5000)
-                execSync(`input SELECT_EX "${path.resolve('ex')}"`)
-                utils.log('install extension')
-
-                execSync(`input SEND_KEY "^+i"`)
-                await utils.sleep(2000)
-
-            }
-            else {
-                utils.log('extension installed')
-                await utils.screenshot('extension_installed')
-                break
-            }
-        }
-        catch (e) {
-            utils.log('error', 'install extension err', e)
-            await utils.errorScreenshot('extension_error')
-            i++
-        }
-        finally {
-            closeChrome()
-            await utils.sleep(2000)
-        }
-    }
-    await utils.sleep(2000)
-    // close program
-    if (i >= 10) process.exit(1);
-}
-
-async function installExtensionLinux() {
-    utils.log('installExtensionLinux')
-
-    closeChrome()
-    startupScript()
-
-    let i = 0
-    while (i < 3) {
-        try {
-            // open chrome
-            exec('google-chrome')
-            await utils.sleep(15000)
-            execSync(`xdotool windowsize --sync $(xdotool search --onlyvisible --name chrome) 1920 1040 && sleep 1`)
-            await utils.sleep(2000)
-            break
-        }
-        catch (e) {
-            utils.log('active chrome fail', e)
-            closeChrome()
-            startupScript()
-            await utils.sleep(2000)
-            i++
-        }
-    }
-    if (i >= 3) throw 'INSTALL EXTENSION ERROR'
-    await utils.sleep(4000)
-
-    let info
-    i = 0
-    while (i < 3) {
-        try {
-            // go to extension
-            utils.log('go to extension')
-            execSync(`xdotool key Control_L+l`)
-            await utils.sleep(3000)
-            execSync(`xdotool type --delay 100 "chrome://extensions/" && sleep 1 && xdotool key KP_Enter`)
-            await utils.sleep(3000)
-            // open dev tool
-            execSync(`xdotool key Control_L+Shift+i`)
-            await utils.sleep(2000)
-            // show utils
-            execSync(`xdotool key Control_L+Shift+p`)
-            await utils.sleep(2000)
-            execSync(`xdotool type --delay 100 "dock to right" && sleep 1 && xdotool key KP_Enter`)
-            await utils.sleep(2000)
-            execSync(`xdotool key Control_L+Shift+p`)
-            await utils.sleep(2000)
-            execSync(`xdotool type --delay 100 "show utils" && sleep 1 && xdotool key KP_Enter`)
-            await utils.sleep(2000)
-            await utils.screenshot('extensions')
-            // copy info
-            const clipboardy = require('clipboardy');
-            // let scriptContent = fs.readFileSync(path.resolve(__dirname,'extension.js'),'utf8')
-            utils.log('writeSync scriptContent')
-            clipboardy.writeSync('function copyTextToClipboard(e){let o=document.createElement("textarea");o.value=e,o.style.top="0",o.style.left="0",o.style.position="fixed",document.body.appendChild(o),o.focus(),o.select(),document.execCommand("copy"),document.body.removeChild(o)}async function getExtensionInfo(){let e={},o=window.outerHeight-window.innerHeight,t=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelectorAll("extensions-item");if(Array.from(t).filter(e=>0==e.shadowRoot.querySelector("#name-and-version").textContent.indexOf("ViewerViewer")).length>0)return e.installed=!0,void copyTextToClipboard(JSON.stringify(e));let n=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#devMode");"false"==n.getAttribute("aria-pressed")&&(n.click(),await new Promise(e=>setTimeout(function(){e("ok")},3e3)));let i=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#loadUnpacked").getBoundingClientRect();e.x=i.left+window.screenX+.3*i.width,e.y=i.top+window.screenY+o+.3*i.height,copyTextToClipboard(JSON.stringify(e))}getExtensionInfo();')
-            // execSync(`echo 'function copyTextToClipboard(e){let o=document.createElement("textarea");o.value=e,o.style.top="0",o.style.left="0",o.style.position="fixed",document.body.appendChild(o),o.focus(),o.select(),document.execCommand("copy"),document.body.removeChild(o)}async function getExtensionInfo(){let e={},o=window.outerHeight-window.innerHeight,t=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-item-list").shadowRoot.querySelectorAll("extensions-item");if(Array.from(t).filter(e=>0==e.shadowRoot.querySelector("#name-and-version").textContent.indexOf("ViewerViewer")).length>0)return e.installed=!0,void copyTextToClipboard(JSON.stringify(e));let n=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#devMode");"false"==n.getAttribute("aria-pressed")&&(n.click(),await new Promise(e=>setTimeout(function(){e("ok")},3e3)));let i=document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-toolbar").shadowRoot.querySelector("#loadUnpacked").getBoundingClientRect();e.x=i.left+window.screenX+.3*i.width,e.y=i.top+window.screenY+o+.3*i.height,copyTextToClipboard(JSON.stringify(e))}getExtensionInfo();' | xclip -sel clip`)
-            utils.log('writeSync scriptContent finish')
-            await utils.sleep(2000)
-            // execSync(`input CLIP_PUT_SCRIPT`)
-            execSync(`xdotool key Control_L+v && sleep 1`)
-            execSync(`xdotool key KP_Enter`)
-            await utils.sleep(7000)
-            // let info = execSync(`input CLIP_GET`)
-            let info = clipboardy.readSync()
-            utils.log('clipboard', info)
-            info = JSON.parse(info)
-            utils.log(info)
-            if (!info.installed) {
-                i++
-                // add extension
-                execSync(`xdotool mousemove ${info.x} ${info.y} && sleep 1 && xdotool click 1`)
-                await utils.sleep(2000)
-                execSync(`xdotool type --delay 100 "${path.resolve('ex')}" && sleep 2 && xdotool key Tab && sleep 2 && xdotool key KP_Enter`)
-                utils.log('install extension')
-                await utils.sleep(2000)
-                execSync(`xdotool key Control_L+Shift+i`)
-                await utils.sleep(2000)
-                await utils.screenshot('extension_install')
-            }
-            else {
-                utils.log('extension installed')
-                await utils.screenshot('extension_installed')
-                break
-            }
-        }
-        catch (e) {
-            utils.log('error', 'install extension err', e)
-            await utils.errorScreenshot('extension_error')
-            await utils.sleep(2000)
-            execSync(`xdotool key Control_L+Shift+i`)
-            await utils.sleep(2000)
-            i++
-        }
-    }
-    await utils.sleep(2000)
-    // close window
-    execSync(`xdotool key Alt+F4`)
-    if (i >= 3) throw 'INSTALL EXTENSION ERROR'
 }
 
 function closeChrome(pid) {

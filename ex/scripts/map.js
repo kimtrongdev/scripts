@@ -5,6 +5,7 @@ async function scriptMap(action) {
     if (url.indexOf('google.com/maps/place') > -1) {
       await sleep(4000)
       await handleRating(action)
+      await reportScript(action)
     } else if (url.indexOf('google.com/maps/@') > -1) {
       if (!action.searched) {
         action.searched = true
@@ -48,8 +49,6 @@ async function handleRating (action) {
           await sleep(2000)
           let doneBtn = document.querySelectorAll('div[data-is-touch-wrapper] button').item(0)
           await userClick(action.pid, '', doneBtn, iframe)
-
-
           //report success
           break
         } 

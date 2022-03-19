@@ -421,7 +421,7 @@ async function pauseInfo() {
             if (pause) {
                 await userClick(action.pid,'Pause btn', pause)
             }
-            await sleep(2000)
+            await sleep(4000)
         }
     } catch (error) {
         
@@ -442,12 +442,13 @@ async function pauseHistory(action){
                 if (pause) {
                     await userClick(action.pid,'Pause btn', pause)
                 }
-                await sleep(2000)
+                await sleep(4000)
             }
         } catch (error) {
             
         } finally {
             await goToLocation(action.pid, 'https://myactivity.google.com/activitycontrols')
+            await sleep(60000)
         }
         
         // let saved = document.querySelector('[d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-4-4 1.4-1.4 2.6 2.6 6.6-6.6L18 9l-8 8z"]')
@@ -493,7 +494,7 @@ async function oldPauseHistory(action){
         if(historyOnInput){
             console.log('pauseHistory')
             await userClick(action.pid,'.yt-confirm-dialog-renderer #confirm-button',historyOnInput)
-            await sleep(2000)
+            await sleep(4000)
            // await userClick(action.pid,'[role="dialog"] button[jsname] span')
            // await sleep(3000)
            // await waitForSelector('[role="dialog"] input:not([checked])')

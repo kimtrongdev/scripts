@@ -12,8 +12,11 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
-    reportAndGetNewScript: async function reportAndGetNewScript(pid, serviceId = '') {
-        return await rq({uri: SUB_URL + '/api/script/report-and-get-new',json: true,qs: { _id: serviceId, pid: pid }})
+    reportScript: async function reportScript(pid, serviceId = '', status = true) {
+        return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})
+    },
+    getNewScript: async function getNewScript(pid) {
+        return await rq({uri: SUB_URL + '/api/script/get-new',json: true,qs: { pid: pid }})
     },
     checkToUpdate: async function checkToUpdate() {
         return await rq({uri: SUB_URL + '/get-to-update',json: true})
