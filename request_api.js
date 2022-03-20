@@ -13,6 +13,9 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    updateTotalCreatedUsers: async function(pid, count){
+        return await rq({method: 'POST',uri: SUB_URL + '/profile/update-total-created-users',json: true, body: {pid: pid, count: count}})
+    },
     checkToUpdate: async function checkToUpdate() {
         return await rq({uri: SUB_URL + '/get-to-update',json: true})
     },

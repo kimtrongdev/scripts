@@ -140,7 +140,7 @@ async function initAction(){
         await setActionData(action)
 
         if(action.id == 'login'){
-            action.position_user_login = 0
+            action.position_user_login = Number(action.total_created_users) || 0
             await setActionData(action)
             if(action.mobile) await switchMobile(action)
             await goToLocation(action.pid,'accounts.google.com')
