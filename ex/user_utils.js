@@ -1,3 +1,11 @@
+
+async function updateTotalCreatedUsers(pid, count){
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: { id: 'total_created_users', pid, count }}, function (response) {
+        resolve(response);
+    }))
+}
+
 function getNewPlaylistData (action) {
     return new Promise(resolve => chrome.runtime.sendMessage({
             url: '/get-new-playlist',

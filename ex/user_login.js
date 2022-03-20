@@ -185,6 +185,7 @@ async function userLogin(action) {
                     if (channel) {
                         action.position_user_login += 1
                         await setActionData(action)
+                        updateTotalCreatedUsers(action.pid, action.position_user_login)
                         await userClick(action.pid,'',channel)
                         return
                     }

@@ -936,6 +936,9 @@ function initExpress() {
                 })
             }
         }
+        else if (req.query.id == 'total_created_users') {
+            request_api.updateTotalCreatedUsers(req.query.pid, req.query.count)
+        }
         else if (req.query.id == 'watched'){
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
