@@ -15,7 +15,7 @@ async function userLogin(action) {
 
         if (isPauseWhileLogin) {
             if (url == 'https://www.youtube.com' || url == 'https://www.youtube.com/') {
-                await goToLocation(action.pid,'https://www.youtube.com/feed/history'+'?'+action.position_user_login)
+                await goToLocation(action.pid,'youtube.com/feed/history'+'?'+action.position_user_login)
                 await sleep(60000)
                 return
             }
@@ -220,7 +220,15 @@ async function userLogin(action) {
                 }
         }
         else {
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, getLoginError())
+            if (url.indexOf('feed/history') > -1
+                ||url.indexOf('bing.com') > -1
+                ||url.indexOf('be.com') > -1
+                ||url.indexOf('history') > -1
+            ) {
+                await goToLocation(action.pid,'youtube.com/feed/history'+'?'+action.position_user_login)
+            } else {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, getLoginError())
+            }
         }
     } catch (e) {
         console.log('error', action.pid, e)
