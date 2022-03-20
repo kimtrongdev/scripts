@@ -1093,7 +1093,7 @@ function initExpress() {
                 execSync(`xdotool type ${req.query.str}`)
             }
             else if (req.query.action == 'GO_ADDRESS') {
-                execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 2 && xdotool type "${req.query.str}" && sleep 0.5 && xdotool key KP_Enter`)
+                execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 1 && xdotool type "${req.query.str}" && sleep 2 && xdotool key KP_Enter`)
             }
             else if (req.query.action == 'OPEN_DEV') {
                 execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
