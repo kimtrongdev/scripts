@@ -5,32 +5,32 @@ async function scriptMap(action) {
     if (url.indexOf('google.com/maps/place') > -1) {
       await sleep(4000)
       await handleRating(action)
+      await sleep(2000)
       await reportScript(action)
     } else if (url.indexOf('google.com/maps/@') > -1) {
       if (!action.searched) {
         action.searched = true
         await setActionData(action)
-        await userTypeEnter(action.pid,'#searchboxinput',action.seach_data)
+
+        let searchData = action.seach_data
+        if (!searchData) {
+          searchData = makeName(3)
+        }
+        await userTypeEnter(action.pid,'#searchboxinput', searchData)
         await sleep(5000)
       }
       return
     } else if (url.indexOf('google.com/maps/search') > -1) {
       let searchRs = document.querySelectorAll('div[role="region"] div[data-js-log-root] div[jsaction] a')
       if (searchRs && searchRs.length) {
-        if (!action.position_map) action.position_map = 0
+        let randomPo = randomRanger(0, searchRs.length - 1)
 
-        if (action.position_map < searchRs.length) {
-          let itemMap = searchRs.item(action.position_map)
-          if (itemMap) {
-            action.position_map += 1
-            await setActionData(action)
-            await userClick(action.pid, '', itemMap)
-          }
-          return
+        let itemMap = searchRs.item(randomPo)
+        if (itemMap) {
+          await userClick(action.pid, '', itemMap)
         }
-        await reportScript(action)
+        return
       }
-
     } 
     else {
 
@@ -62,11 +62,15 @@ async function handleRating (action) {
           await sleep(1000)
           await userClick(action.pid, startSelector, '', iframe)
           await sleep(1000)
-          let postBtn = iframe.contentWindow.document.querySelectorAll('div[data-is-touch-wrapper] button').item(2)
+          let postBtn = iframe.contentWindow.document.querySelectorAll('div[data-is-touch-wrapper] button').item(1)
           await userClick(action.pid, '', postBtn, iframe)
           await sleep(2000)
-          let doneBtn = document.querySelectorAll('div[data-is-touch-wrapper] button').item(0)
-          await userClick(action.pid, '', doneBtn, iframe)
+
+          let backBtn = document.querySelectorAll('#omnibox-singlebox button img').item(0)
+          if (backBtn) {
+            await userClick(action.pid, '', backBtn)
+          }
+
           //report success
           break
         } 
