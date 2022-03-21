@@ -451,7 +451,7 @@ async function newRunProfile() {
 }
 
 async function getScriptData(pid, isNewProxy) {
-    let action = await request_api.getNewScript(pid, '')
+    let action = await request_api.getNewScript(pid)
     if (action) {
         if (isNewProxy) {
             proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)

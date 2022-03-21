@@ -14,7 +14,25 @@ async function scriptMap(action) {
         await sleep(5000)
       }
       return
-    } else {
+    } else if (url.indexOf('google.com/maps/search') > -1) {
+      let searchRs = document.querySelectorAll('div[role="region"] div[data-js-log-root] div[jsaction] a')
+      if (searchRs && searchRs.length) {
+        if (!action.position_map) action.position_map = 0
+
+        if (action.position_map < searchRs.length) {
+          let itemMap = searchRs.item(action.position_map)
+          if (itemMap) {
+            action.position_map += 1
+            await setActionData(action)
+            await userClick(action.pid, '', itemMap)
+          }
+          return
+        }
+        await reportScript(action)
+      }
+
+    } 
+    else {
 
     } 
   } catch (error) {

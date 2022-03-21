@@ -16,7 +16,7 @@ module.exports = {
         return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})
     },
     getNewScript: async function getNewScript(pid) {
-        return await rq({uri: SUB_URL + '/api/script/get-new',json: true,qs: { pid: pid }})
+        return await rq({uri: SUB_URL + '/api/script/get-new?pid='+pid, json: true})
     },
     checkToUpdate: async function checkToUpdate() {
         return await rq({uri: SUB_URL + '/get-to-update',json: true})
