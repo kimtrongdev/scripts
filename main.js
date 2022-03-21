@@ -341,26 +341,28 @@ async function newProfileManage() {
         if (!newProfile.err && newProfile.profile) {
             // copy main to clone profile
             let profile = newProfile.profile
-            if (proxy) {
-                proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
-                utils.log('pid', profile.id, 'proxy', proxy[profile.id])
-                if (!proxy[profile.id]) {
-                    utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
-                    await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
-                    return
+            if (profile.email) {
+                if (proxy) {
+                    proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
+                    utils.log('pid', profile.id, 'proxy', proxy[profile.id])
+                    if (!proxy[profile.id]) {
+                        utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
+                        await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
+                        return
+                    }
                 }
-            }
-
-            let browser = await pauseWatchingProfile(profile.id, ADDNEW_ACTION)
-            if (browser) {
-                utils.log('addProfile: ', profile)
-                // login for profile
-                // loginProfile(profile, browser)
-                await loginProfileChrome(profile)
-            }
-            else {
-                await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
-                await deleteProfile(profile.id)
+    
+                let browser = await pauseWatchingProfile(profile.id, ADDNEW_ACTION)
+                if (browser) {
+                    utils.log('addProfile: ', profile)
+                    // login for profile
+                    // loginProfile(profile, browser)
+                    await loginProfileChrome(profile)
+                }
+                else {
+                    await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
+                    await deleteProfile(profile.id)
+                }
             }
         }
     }
