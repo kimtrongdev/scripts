@@ -215,7 +215,7 @@ async function startChromeAction(action) {
             let cmdRun = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
             exec(cmdRun)
             if (BROWSER == 'microsoft-edge') {
-                await utils.sleep(5000)
+                await utils.sleep(8000)
                 closeChrome(action.pid)
                 await utils.sleep(15000)
                 exec(cmdRun)
