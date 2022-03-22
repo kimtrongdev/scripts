@@ -217,7 +217,7 @@ async function startChromeAction(action) {
             if (BROWSER == 'microsoft-edge') {
                 await utils.sleep(5000)
                 closeChrome(action.pid)
-                await utils.sleep(2000)
+                await utils.sleep(15000)
                 exec(cmdRun)
             } else {
                 await utils.sleep(5000)
