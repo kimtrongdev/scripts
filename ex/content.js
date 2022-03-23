@@ -10,7 +10,7 @@ var windowWide
 var mobileMenuBarHeight
 var zoom
 var isNonUser = false
-var isPauseWhileLogin = false
+var isPauseWhileLogin = true
 async function loadPage(){
     try{
         await sleep(5000)
