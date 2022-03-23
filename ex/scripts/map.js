@@ -3,7 +3,7 @@ async function scriptMap(action) {
     let url = window.location.toString()
       
     if (url.indexOf('google.com/maps/place') > -1) {
-      await sleep(4000)
+      await sleep(5000)
       let rs = await handleRating(action)
       await sleep(2000)
       if (rs) {
@@ -53,7 +53,7 @@ async function handleRating (action) {
     let btnSelector = 'div[role="main"] div[data-js-log-root] button img[alt="'+ alt +'"]'
     if (document.querySelector(btnSelector)) {
       await userClick(action.pid, btnSelector)
-      await sleep(5000)
+      await sleep(8000)
       let iframe = document.querySelector('iframe[name="goog-reviews-write-widget"]')
 
       for await (let star of startList[getRating(action)]) {
