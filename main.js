@@ -5,7 +5,7 @@ const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
-const BROWSER = 'microsoft-edge'
+const BROWSER = 'google-chrome'
 try {
     config = require('./config.json')
 }
