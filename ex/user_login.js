@@ -190,7 +190,12 @@ async function userLogin(action) {
                         return
                     }
                 }
+            } else {
+                if (channels) {
+                    updateTotalCreatedUsers(action.pid, channels.length)
+                }
             }
+
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             // if (channels.length < action.total_channel_created && btnCreateChannel) {
             //     await userClick(action.pid,'',btnCreateChannel)
