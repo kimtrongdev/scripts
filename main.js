@@ -231,7 +231,8 @@ async function startChromeAction(action) {
         }
         else {
             setDisplay(action.pid)
-            exec(`${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`)
+            let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            exec(run)
             await utils.sleep(8000)
         }
         // if (fs.existsSync('ex.zip')) execSync('rm -rf ex quality')
@@ -717,6 +718,7 @@ function initExpress() {
 
         if (req.query.isScriptReport) {
             closeChrome(req.query.pid)
+            watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
             request_api.reportScript(req.query.pid, req.query.service_id)
         }
         else if (req.query.id == 'channel-position') {
