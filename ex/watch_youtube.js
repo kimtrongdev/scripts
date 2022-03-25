@@ -325,17 +325,18 @@ async function preWatchingVideo(action){
             await sleep(1000)
         }
 
+        action.watch_time = videoTime*1000*randomRanger(9,10)/10
         // if(Math.random() < 0.2){
-        //     action.watch_time = videoTime*1000*randomRanger(2,7)/10
+        //     action.watch_time = videoTime*1000*randomRanger(9,10)/10
         // }
         // else{
         //     action.watch_time = videoTime*1000*randomRanger(7,9)/10
         // }
-        if (action.viewed_ads) {
-            action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
-        } else {
-            action.watch_time = action.watching_time_non_ads
-        }
+        // if (action.viewed_ads) {
+        //     action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
+        // } else {
+        //     action.watch_time = action.watching_time_non_ads
+        // }
         
         // if(Math.random() < 0.2){
         //     action.watch_time = videoTime*1000*randomRanger(0,25)/100

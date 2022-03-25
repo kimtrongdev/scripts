@@ -21,6 +21,29 @@ async function userLogin(action) {
             }
         }
 
+        if (url.indexOf('rewards/') > -1) {
+            let btnStartReward = document.querySelector('button[data-test-id]')
+            if (btnStartReward) {
+                await userClick(action.pid, 'button[data-test-id]', btnStartReward)
+                await sleep(1000)
+                await userClick(action.pid, '.nav-skip')
+                await userClick(action.pid, '.nav-forward')
+                await sleep(1000)
+                await userClick(action.pid, 'button svg[viewBox]')
+                await sleep(1000)
+                await userClick(action.pid, 'div[type="light"] div')
+                await sleep(1000)
+                
+                let rs = document.evaluate("//div[contains(text(), '10 ads per hour')]", document, null, XPathResult.ANY_TYPE, null );
+                let option = rs.iterateNext()
+                await userClick(action.pid, '10 ads per hour', option)
+                await sleep(1000)
+                
+            }
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            return
+        }
+
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
