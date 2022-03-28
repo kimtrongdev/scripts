@@ -1,5 +1,6 @@
 // config file
 const TIME_REPORT = 110000
+const IS_OPEN_PROFILE = false
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
@@ -468,9 +469,23 @@ async function checkWatchingProfile() {
 
 async function newRunProfile() {
     utils.log('ids: ', ids)
-    let pid = ids.shift()
+    let pid
+    if (IS_OPEN_PROFILE) {
+        let data = fs.readFileSync('profiles.txt');
+        let profiles = data.split(',')
+        pid = profiles.shift()
+        profiles = profiles.join(',')
+        profiles
+        fs.writeFileSync('./profiles.txt', profiles);
+    } else {
+        pid = ids.shift()
+    }
+
     if (pid) {
-        ids.push(pid)
+        if (!IS_OPEN_PROFILE) {
+            ids.push(pid)
+        }
+        
         try {
             utils.log('check sub or run for profile: ', pid)
             utils.log('watchRunnings: ', watchRunnings.length)

@@ -11,8 +11,12 @@ var mobileMenuBarHeight
 var zoom
 var isNonUser = false
 var isPauseWhileLogin = false
+var isOpenProfile = false
 async function loadPage(){
     try{
+        if (isOpenProfile) {
+            await sleep(120000)
+        }
         await sleep(5000)
 
         await initAction()
