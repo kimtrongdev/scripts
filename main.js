@@ -472,6 +472,11 @@ async function newRunProfile() {
     let pid
     if (IS_OPEN_PROFILE) {
         let data = fs.readFileSync('profiles.txt');
+        if (!data) {
+            let ppids = await getProfileIds()
+            ppids = ppids.join(',')
+            fs.writeFileSync('./profiles.txt', ppids);
+        }
         let profiles = data.split(',')
         pid = profiles.shift()
         profiles = profiles.join(',')
