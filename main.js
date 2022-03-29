@@ -189,6 +189,21 @@ async function startChromeAction(action) {
         fisrt_video = fisrt_video + 1
     }
 
+    if (action.id == 'login') {
+        startDisplay(action.pid)
+        await utils.sleep(3000)
+        let cmd2 = `${BROWSER} --window-size="2348,1288" --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+        exec(cmd2)
+        await utils.sleep(5000)
+        sendEnter(action.pid)
+        execSync(`xdotool mousemove 310 35 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(3000)
+        exec(cmd2)
+        await utils.sleep(5000)
+        execSync(`xdotool mousemove 2100 500 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(4000)
+    }
+
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
@@ -477,6 +492,7 @@ async function newRunProfile() {
             ppids = ppids.join(',')
             fs.writeFileSync('./profiles.txt', ppids);
         }
+        data = fs.readFileSync('profiles.txt');
         let profiles = data.split(',')
         pid = profiles.shift()
         profiles = profiles.join(',')
