@@ -21,7 +21,8 @@
         "sub_channel.js",
         "content.js",
         "./scripts/map.js",
-        "./scripts/search.js"
+        "./scripts/search.js",
+        "./scripts/youtube_sub.js"
       ]
     },
     {

@@ -27,7 +27,13 @@ async function loadPage(){
         }
         else if (action.id == 'map') {
             await scriptMap(action)
-        } else if (action.id == 'login') {
+        }
+        else if (action.id == 'youtube_sub') {
+            action.is_sub = true
+            await setActionData(action)
+            await scriptYoutubeSub(action)
+        } 
+        else if (action.id == 'login') {
             console.log('login')
             await userLogin(action)
         }
@@ -150,7 +156,11 @@ async function initAction(){
         }
         else if (action.id == 'map') {
             await goToLocation(action.pid,'google.com/maps')
-        } else if(action.id == 'login'){
+        }
+        else if (action.id == 'youtube_sub') {
+            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+        } 
+        else if(action.id == 'login'){
             await goToLocation(action.pid,'accounts.google.com')
         }
         else if(action.id == 'logout'){
