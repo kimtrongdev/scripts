@@ -194,7 +194,7 @@ async function startChromeAction(action) {
         await utils.sleep(3000)
         let cmd2 = `${BROWSER} --window-size="2348,1288" --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
         exec(cmd2)
-        await utils.sleep(5000)
+        await utils.sleep(7000)
         sendEnter(action.pid)
         execSync(`xdotool mousemove 310 35 && sleep 1 && xdotool click 1 && sleep 1`)
         await utils.sleep(3000)
