@@ -54,7 +54,7 @@ async function scriptYoutubeSub(action) {
     else if (url.indexOf('https://www.youtube.com/playlist?list=') > -1) {
       await processPlaylistPage(action)
     }
-    else if (url.indexOf('https://www.youtube.com/channel/') > -1) {
+    else if (url.indexOf('https://www.youtube.com/channel/' || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1) > -1) {
       await processWatchChannelPage(action)
     }
     else if (url.indexOf('https://www.youtube.com/create_channel') == 0) {
@@ -130,12 +130,7 @@ async function processHomePage(action) {
   // }
 
   if (action.channel_id) {
-    await goToLocation(action.pid, 'https://www.youtube.com/channel/' + action.channel_id)
-    return
-  }
-
-  if (action.channel_id) {
-    await goToLocation(action.pid, 'https://www.youtube.com/playlist?list=' + action.playlist_id)
+    await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id)
     return
   }
 
