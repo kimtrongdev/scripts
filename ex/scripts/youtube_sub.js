@@ -1,10 +1,3 @@
-const SKIP_ADS_PERCENT = 0.55   //0.7  //0.85
-const LIKE_PERCENT = 0.01
-const COMMENT_PERCENT = 0.0015
-const VIEW_SUB_PERCENT = 0  //0.002
-const SEARCH_SKIP = 0
-const CHANNEL_VIDEO_WATCH = 0
-
 async function scriptYoutubeSub(action) {
   try {
     console.log('start watch')
@@ -54,7 +47,11 @@ async function scriptYoutubeSub(action) {
     else if (url.indexOf('https://www.youtube.com/playlist?list=') > -1) {
       await processPlaylistPage(action)
     }
-    else if (url.indexOf('https://www.youtube.com/channel/' || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1) > -1) {
+    else if (
+      url.indexOf('https://www.youtube.com/channel/') > -1 || 
+      url.indexOf('https://www.youtube.com/user/') > -1 || 
+      url.indexOf('https://www.youtube.com/c/') > -1
+    ) {
       await processWatchChannelPage(action)
     }
     else if (url.indexOf('https://www.youtube.com/create_channel') == 0) {
@@ -188,6 +185,7 @@ async function watchingVideo(action) {
       if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
         let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
         await userClick(action.pid, '#subscribe-button ytd-subscribe-button-renderer', subBtn)
+        await sleep(4000)
       }
     }
 
@@ -474,71 +472,13 @@ async function processSearchPage(action) {
 }
 
 async function processWatchChannelPage(action) {
-  let url = window.location.toString()
-  if (url.indexOf('/videos') > -1) {
-    // if (action.page) {
-    //   // process videos page
-    //   let i = 50
-    //   while (i > 0 && !document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="' + action.playlist_url + '"]')) {
-    //     await userScroll(action.pid, 5)
-    //     await sleep(1000)
-    //     i--
-    //   }
-    //   let video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="' + action.playlist_url + '"]')
-    //   if (video) {
-    //     await userClick(action.pid, 'ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="' + action.playlist_url + '"]', video)
-    //     await sleep(2000)
-    //   }
-    //   else {
-    //     throw 'video in page not found'
-    //   }
-    // }
-    // else {
-      // watch other video for suggest or browser feature
-      //let watched_videos = action.other_videos.map(x => `:not([href*="${x}"])`).join("")
-      let videos = document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)
-      if (!videos.length) {
-        if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-          // click sub document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-          let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-          await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
-        }
-
-        await reportScript(action)
-        return
-      }
-      let randomVideoPosition = random()
-      let video = videos.item(randomVideoPosition)
-      if (video) {
-        await userClick(action.pid, '', video)
-      }
-      //let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail:not([href*="${action.playlist_url}"])${watched_videos}`)]
-      //let video
-      // if (videos.length) {
-      //   video = videos[randomRanger(0, videos.length - 1)]
-      //   action.other_videos.push(video.href.split('v=')[1].split('&')[0])
-      //   action.channel_videos = action.channel_videos.length ? action.channel_videos : videos.map(x => x.href.split('v=')[1].split('&')[0])
-      //   await setActionData(action)
-      // }
-      // else {
-      //   video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="' + action.playlist_url + '"]')
-      // }
-      //await userClick(action.pid, video.href, video)
-      await sleep(2000)
-    //}
+  if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+    let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
+    await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
+    await sleep(3000)  
   }
-  else {
-    // click videos tab
-    if (document.querySelector('#tabsContent > paper-tab:nth-of-type(2)')) {
-      await userClick(action.pid, '#tabsContent > paper-tab:nth-of-type(2)')
-    }
-    else if (document.querySelector('#title-text > a.yt-simple-endpoint[href*="/videos?"]')) {
-      await userClick(action.pid, '#title-text > a.yt-simple-endpoint[href*="/videos?"]')
-    }
-    else {
-      throw 'no videos link'
-    }
-  }
+  await reportScript(action)
+  return
 }
 
 async function processSearchSuggest(action) {
