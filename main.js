@@ -1,5 +1,6 @@
 // config file
 const TIME_REPORT = 110000
+const isAutoEnableReward = false
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
@@ -186,6 +187,43 @@ async function startChromeAction(action) {
         }
         action.direct_percent = 1000
         fisrt_video = fisrt_video + 1
+    }
+
+    if (action.id == 'login' && isAutoEnableReward) {
+        startDisplay(action.pid)
+        await utils.sleep(3000)
+        let cmd2 = `${BROWSER} --window-size="2348,1288" --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+        exec(cmd2)
+        await utils.sleep(7000)
+        sendEnter(action.pid)
+
+        // click menu browser
+        execSync(`xdotool mousemove 2008 75 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(2000)
+        // click brave reward
+        execSync(`xdotool mousemove 1757 216 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
+        // click start using btn
+        execSync(`xdotool mousemove 834 562 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
+
+        // click skip
+        let count = 0
+        while (count <= 10) {
+            execSync(`xdotool mousemove 983 753 && sleep 1 && xdotool click 1 && sleep 1`)
+            count++
+        }
+
+        // click setting ads/h
+        execSync(`xdotool mousemove 1029 377 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
+        // click selection
+        execSync(`xdotool mousemove 1100 451 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
+        // click 10ads/h
+        execSync(`xdotool mousemove 602 723 && sleep 1 && xdotool click 1 && sleep 1`)
+
+        await utils.sleep(4000)
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
