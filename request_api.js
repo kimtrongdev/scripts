@@ -12,6 +12,9 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    reportCurrentBAT: async function reportCurrentBAT({ bat, pid }) {
+        return await rq({method: 'POST', uri: SUB_URL + '/api/profile/report-current-bat',body: { pid: pid, bat: bat }, json: true})
+    },
     reportScript: async function reportScript(pid, serviceId = '', status = true) {
         return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})
     },

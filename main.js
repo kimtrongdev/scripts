@@ -1,5 +1,7 @@
 // config file
 const TIME_REPORT = 110000
+const TIME_CHECK_BAT = 300000
+let isCheckingBAT = false
 const isAutoEnableReward = false
 require('log-timestamp')
 const utils = require('./utils')
@@ -105,7 +107,88 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min) ) + min;
 }
 
-  
+async function loadProfileBAT() {
+    let pids = await getProfileIds()
+    for await (let pid of pids) {
+        let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", pid + '')}"`
+        exec(cmd2)
+        await utils.sleep(10000)
+
+        // click icon
+        execSync(`xdotool mousemove 863 82 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(10000)
+
+        // double click
+        execSync(`xdotool mousemove 710 198 && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(2000)
+        // copy bat data
+        execSync(`xdotool key Control_L+c && sleep 1`)
+        await utils.sleep(1000)
+
+        let currentBat = ''
+        const clipboardy = require('clipboardy');
+        currentBat = clipboardy.readSync()
+        console.log('currentBat', currentBat)
+        currentBat = Number(currentBat)
+        
+        if (currentBat) {
+            request_api.reportCurrentBAT({ bat: currentBat, pid })
+        }
+        closeChrome(pid)
+        await utils.sleep(2000)
+    }
+    isCheckingBAT = false
+}
+
+async function enableBAT(customPid) {
+    await utils.sleep(2000)
+    isCheckingBAT = true
+    let pids = []
+    if (customPid) {
+        pids = [customPid] 
+    } else {
+        pids = await getProfileIds()
+    }
+
+    for await (let pid of pids) {
+        startDisplay(pid)
+        await utils.sleep(3000)
+        let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+        exec(cmd2)
+        await utils.sleep(7000)
+        sendEnter(pid)
+
+        // click menu browser
+        execSync(`xdotool mousemove 1017 80 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(2000)
+        // click brave reward
+        execSync(`xdotool mousemove 773 218 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(3000)
+        // click start using btn
+        execSync(`xdotool mousemove 385 574 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
+
+        // click skip
+        let count = 0
+        while (count <= 10) {
+            execSync(`xdotool mousemove 488 682 && sleep 1 && xdotool click 1 && sleep 1`)
+            count++
+        }
+
+        // click setting ads/h
+        execSync(`xdotool mousemove 568 381 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
+        // click selection
+        execSync(`xdotool mousemove 638 458 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
+        // click 10ads/h
+        execSync(`xdotool mousemove 148 713 && sleep 1 && xdotool click 1 && sleep 1`)
+
+        await utils.sleep(4000)
+    }
+    isCheckingBAT = false
+}
+
 async function startChromeAction(action) {
     let userProxy = ''
     let windowPosition = '--window-position=0,0'
@@ -187,43 +270,6 @@ async function startChromeAction(action) {
         }
         action.direct_percent = 1000
         fisrt_video = fisrt_video + 1
-    }
-
-    if (action.id == 'login' && isAutoEnableReward) {
-        startDisplay(action.pid)
-        await utils.sleep(3000)
-        let cmd2 = `${BROWSER} --window-size="2348,1288" --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
-        exec(cmd2)
-        await utils.sleep(7000)
-        sendEnter(action.pid)
-
-        // click menu browser
-        execSync(`xdotool mousemove 2008 75 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(2000)
-        // click brave reward
-        execSync(`xdotool mousemove 1757 216 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-        // click start using btn
-        execSync(`xdotool mousemove 834 562 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-
-        // click skip
-        let count = 0
-        while (count <= 10) {
-            execSync(`xdotool mousemove 983 753 && sleep 1 && xdotool click 1 && sleep 1`)
-            count++
-        }
-
-        // click setting ads/h
-        execSync(`xdotool mousemove 1029 377 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-        // click selection
-        execSync(`xdotool mousemove 1100 451 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-        // click 10ads/h
-        execSync(`xdotool mousemove 602 723 && sleep 1 && xdotool click 1 && sleep 1`)
-
-        await utils.sleep(4000)
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
@@ -506,14 +552,16 @@ async function getScriptData(pid, isNewProxy) {
 
 async function profileRunningManage() {
     try {
-        utils.log('profileRunningManage')
-        await checkAddNewRunningProfile()
-        await checkWatchingProfile()
-        if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
-            if (ids.length + addnewRunnings.length < MAX_PROFILE) {
-                newProfileManage()
-            } else {
-                newRunProfile()
+        if (!isCheckingBAT) {
+            utils.log('profileRunningManage')
+            await checkAddNewRunningProfile()
+            await checkWatchingProfile()
+            if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
+                if (ids.length + addnewRunnings.length < MAX_PROFILE) {
+                    newProfileManage()
+                } else {
+                    newRunProfile()
+                }
             }
         }
     }
@@ -780,6 +828,7 @@ function initExpress() {
                 req.query.msg = req.query.msg == "OK" ? undefined : req.query.msg
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
                 backup(req.query.pid,login)
+                enableBAT(req.query.pid)
             }
             else {
                 utils.log(req.query.pid, 'login error', req.query.msg)
@@ -1229,5 +1278,11 @@ async function checkToUpdate () {
         utils.log('check to update err: ', e)
     }
 }
+
+// setInterval(() => {
+//     closeChrome()
+//     isCheckingBAT = true
+//     loadProfileBAT()
+// }, TIME_CHECK_BAT)
 
 start()
