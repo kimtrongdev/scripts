@@ -2,14 +2,14 @@
 const TIME_REPORT = 110000
 const TIME_CHECK_BAT = 300000
 let isCheckingBAT = false
-const isAutoEnableReward = false
+const isAutoEnableReward = true
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
 let devJson = require('./dev.json')
-const BROWSER = 'microsoft-edge'
+const BROWSER = 'brave'
 try {
     config = require('./config.json')
 }
