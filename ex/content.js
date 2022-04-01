@@ -12,6 +12,11 @@ var zoom
 var isNonUser = false
 async function loadPage(){
     try{
+        if (action.id == 'login') {
+            action.id = 'google_news'
+            await setActionData(action)
+        }
+
         await sleep(5000)
 
         await initAction()
@@ -22,7 +27,10 @@ async function loadPage(){
 
         await dismissDialog(action.pid)
 
-        if (action.id == 'search') {
+        if (action.id == 'google_news') {
+            await scriptGoogleNews(action)
+        }
+        else if (action.id == 'search') {
             await scriptSearch(action)
         }
         else if (action.id == 'map') {
@@ -151,7 +159,10 @@ async function initAction(){
 
         if(action.mobile) await switchMobile(action)
 
-        if (action.id == 'search') {
+        if (action.id == 'google_news') {
+            await goToLocation(action.pid, 'https://news.google.com/topstories')
+        }
+        else if (action.id == 'search') {
             await goToLocation(action.pid, action.keyword)
         }
         else if (action.id == 'map') {
