@@ -179,7 +179,7 @@ async function enableBAT(customPid) {
 async function startChromeAction(action) {
     let userProxy = ''
     let windowPosition = '--window-position=0,0'
-    let windowSize = is_show_ui ? ' --window-size="2348,1288"' : ' --window-size="1920,1040"'
+    let windowSize = is_show_ui ? ' --window-size="1500,900"' : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -301,11 +301,6 @@ async function loginProfileChrome(profile) {
         let action = profile
         action.pid = profile.id
         action.id = 'login'
-
-        // if (!fs.existsSync(path.resolve('profiles',action.pid+''))){
-        //     fs.mkdirSync(path.resolve('profiles',action.pid+''));
-        // }
-
         await startChromeAction(action)
     }
     catch (e) {
@@ -392,8 +387,6 @@ async function newProfileManage() {
         utils.log('newProfileManage')
         // get new profile
         let newProfile = await request_api.getNewProfile()
-        // if(WIN_ENV) newProfile = {profile: {id: 130, email: 'drybattle8386@gmail.com', password: 'drybattle9177', recover_mail: 'drybattle4856@gmx.com'}}
-        // if(WIN_ENV) newProfile = {profile: {id: PR[0], email: PR[1], password: PR[2], recover_mail: PR[3]}}
         utils.log('newProfile: ', newProfile)
         if (!newProfile.err && newProfile.profile) {
             // copy main to clone profile
@@ -411,8 +404,6 @@ async function newProfileManage() {
             let browser = await pauseWatchingProfile(profile.id, ADDNEW_ACTION)
             if (browser) {
                 utils.log('addProfile: ', profile)
-                // login for profile
-                // loginProfile(profile, browser)
                 await loginProfileChrome(profile)
             }
             else {
@@ -685,28 +676,7 @@ async function initConfig() {
 
     utils.log('ip: ', ip)
     // check config
-
-    // ip = DOCKER ? os.hostname() + '_' + ip : ip
-    // // get vm_id from db
-    // try {
-    //     let rs = await request_api.getVmFromIp(ip)
-    //     utils.log('getVmFromIp: ', rs)
-    //     if (rs.err) return
-    //     if (rs.vmId) {
-    //         config.vm_id = rs.vmId
-    //     }
-    //     else {
-    //         config = { vm_id: 2 }
-    //     }
-    // }
-    // catch (e) {
-    //     utils.log('getVmFromIp:', e)
-    //     config = { vm_id: 2 }
-    // }
-
-    //if (!config.vm_id) {
-        config.vm_id = makeid(9)//(Date.now()+'').slice(0,9)
-    //}
+    config.vm_id = makeid(9)//(Date.now()+'').slice(0,9)
 
     fs.writeFile("config.json", JSON.stringify(config), (err) => {
         if (err) throw err;
@@ -714,8 +684,6 @@ async function initConfig() {
     })
 
     utils.log('version: ', version)
-    // update version to db
-    //await request_api.updateVmVersion(config.vm_id, version, ip)
 }
 
 function initProxy() {
