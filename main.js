@@ -8,6 +8,7 @@ const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
+let devJson = require('./dev.json')
 const BROWSER = 'microsoft-edge'
 try {
     config = require('./config.json')
@@ -15,18 +16,7 @@ try {
 catch (e) {
     config = { }
 }
-let devJson = {
-    "hostIp": "3.93.238.219:5000",
-    "maxProfile" : 1,
-    "isShowUI": false,
-    "debug": false,
-}
 
-try {
-    devJson = require('./dev.json')
-} catch (error) {
-    utils.log('Error while load dev config file')
-}
 global.DEBUG = devJson.debug
 
 const request_api = require('./request_api')
@@ -36,13 +26,6 @@ const del = require('del');
 const fs = require('fs')
 const version = fs.readFileSync(path.join(__dirname, 'version'), 'utf8')
 const publicIp = require('public-ip');
-const os = require('os');
-const DOCKER = process.platform === "win32" ? false : execSync('cat /proc/1/cgroup | grep docker | wc -l').toString().split('\n')[0] > 0
-
-const MAX_CURRENT_ACC_CAL = process.platform === "win32" ? 1 : process.env.MAX_PROFILE ? process.env.MAX_PROFILE : Math.min(DOCKER ? 4 : 100, Math.ceil(os.totalmem() / (600 * 1024 * 1024)))
-const MAX_PROFILE_CAL = process.platform === "win32" ? 1 : process.env.MAX_PROFILE ? process.env.MAX_PROFILE : Math.min(DOCKER ? 4 : 100, Math.ceil(os.totalmem() / (600 * 1024 * 1024)))
-
-const MAX_PROFILE_TOTAL = devJson.maxProfile > 1 ? devJson.maxProfile : 1;
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
 let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
@@ -76,8 +59,15 @@ const PLAYLIST_ACTION = {
     SUB: 2
 }
 const ADDNEW_ACTION = 3
-const CONFIRM_ACTION = 4
 const LOCAL_PORT = 2000
+
+async function runDailyCheckBAT() {
+    setInterval(() => {
+        closeChrome()
+        isCheckingBAT = true
+        loadProfileBAT()
+    }, TIME_CHECK_BAT)
+}
 
 async function runUpdateVps () {
     try {
@@ -103,10 +93,6 @@ function getProfileIds() {
     })
 }
 
-function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
-}
-
 async function loadProfileBAT() {
     let pids = await getProfileIds()
     for await (let pid of pids) {
@@ -116,7 +102,7 @@ async function loadProfileBAT() {
 
         // click icon
         execSync(`xdotool mousemove 863 82 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(10000)
+        await utils.sleep(15000)
 
         // double click
         execSync(`xdotool mousemove 710 198 && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
@@ -153,17 +139,17 @@ async function enableBAT(customPid) {
     for await (let pid of pids) {
         startDisplay(pid)
         await utils.sleep(3000)
-        let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+        let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", pid + '')}"`
         exec(cmd2)
         await utils.sleep(7000)
         sendEnter(pid)
 
         // click menu browser
         execSync(`xdotool mousemove 1017 80 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(2000)
+        await utils.sleep(3000)
         // click brave reward
         execSync(`xdotool mousemove 773 218 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(3000)
+        await utils.sleep(5000)
         // click start using btn
         execSync(`xdotool mousemove 385 574 && sleep 1 && xdotool click 1 && sleep 1`)
         await utils.sleep(1000)
@@ -185,6 +171,7 @@ async function enableBAT(customPid) {
         execSync(`xdotool mousemove 148 713 && sleep 1 && xdotool click 1 && sleep 1`)
 
         await utils.sleep(4000)
+        closeChrome(pid)
     }
     isCheckingBAT = false
 }
@@ -199,21 +186,6 @@ async function startChromeAction(action) {
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
-
-    // if (CUSTOM){
-    //     let profile = await request_api.getProfile(action.pid)
-    //     if(profile.err) throw `GET_PROFILE_ERROR`
-    //     let hashCode = s => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
-    //     let hashPid = hashCode(profile.profile.email)
-    //     hashPid = hashPid > 0 ? hashPid : -hashPid
-    //     utils.log('hashPid',hashPid)
-    //     let nav = await request_api.getNavigator(hashPid,'Android','Chrome')
-    //     if(nav && nav.screen){
-    //         action.userAgent = nav.navigator.userAgent
-    //         action.availHeight = nav.screen.availHeight
-    //         action.availWidth = nav.screen.availWidth
-    //     }
-    // }
 
     action.backup = BACKUP
 
@@ -577,11 +549,19 @@ async function updateVmStatus() {
     try {
         let _pids = await getProfileIds()
         let pids = _pids.join(',')
-        await request_api.updateVmStatus({
+        let rs = await request_api.updateVmStatus({
             vm_id: config.vm_id,
             running: addnewRunnings.length + watchRunnings.length,
             pids
         })
+
+        if (rs && rs.removePid) {
+            let removePID = Number(rs.removePid)
+            closeChrome(removePID)
+            execSync("rm -rf profiles/" + removePID)
+            watchRunnings = watchRunnings.filter(i => i != removePID)
+            ids = ids.filter(i => i != removePID)
+        }
     }
     catch (e) {
         utils.log('updateVmStatus err: ', e)
@@ -828,7 +808,10 @@ function initExpress() {
                 req.query.msg = req.query.msg == "OK" ? undefined : req.query.msg
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
                 backup(req.query.pid,login)
-                enableBAT(req.query.pid)
+                if (isAutoEnableReward) {
+                    isCheckingBAT = true
+                    enableBAT(req.query.pid)
+                }
             }
             else {
                 utils.log(req.query.pid, 'login error', req.query.msg)
@@ -1278,11 +1261,4 @@ async function checkToUpdate () {
         utils.log('check to update err: ', e)
     }
 }
-
-// setInterval(() => {
-//     closeChrome()
-//     isCheckingBAT = true
-//     loadProfileBAT()
-// }, TIME_CHECK_BAT)
-
 start()
