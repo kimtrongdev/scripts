@@ -2,14 +2,15 @@
 const TIME_REPORT = 110000
 const TIME_CHECK_BAT = 300000
 let isCheckingBAT = false
-const isAutoEnableReward = false
+const isAutoEnableReward = true
+let countNews = 0
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
 let devJson = require('./dev.json')
-const BROWSER = 'microsoft-edge'
+const BROWSER = 'brave'
 try {
     config = require('./config.json')
 }
@@ -126,7 +127,8 @@ async function loadProfileBAT() {
     isCheckingBAT = false
 }
 
-async function enableBAT(customPid) {
+async function enableBAT(customPid = '') {
+    closeChrome()
     await utils.sleep(2000)
     isCheckingBAT = true
     let pids = []
@@ -362,7 +364,7 @@ async function pauseWatchingProfile(pid, action) {
         let startTime = Date.now()
         let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: browser, action: action }
         if (action == ADDNEW_ACTION) {
-            addnewRunnings.push(actionRecord)
+            watchRunnings.push(actionRecord)
         }
         else if (action == PLAYLIST_ACTION.SUB) {
             subRunnings.push(actionRecord)
@@ -499,7 +501,7 @@ async function newRunProfile() {
 }
 
 async function getScriptData(pid, isNewProxy) {
-    let action = await request_api.getNewScript(pid)
+    let action = { script_code: 'google_news' }//wait request_api.getNewScript(pid)
     if (action) {
         if (isNewProxy) {
             proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
@@ -517,8 +519,18 @@ async function profileRunningManage() {
     try {
         if (!isCheckingBAT) {
             utils.log('profileRunningManage')
-            await checkAddNewRunningProfile()
-            await checkWatchingProfile()
+            //await checkAddNewRunningProfile()
+            //await checkWatchingProfile()
+            if (countNews != null) {
+                if (countNews == MAX_PROFILE) {
+                    countNews = null
+                    enableBAT()
+                    return
+                } else {
+                    countNews++
+                }
+            }
+
             if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
                 if (ids.length + addnewRunnings.length < MAX_PROFILE) {
                     newProfileManage()
@@ -753,7 +765,7 @@ function initExpress() {
         if (req.query.isScriptReport) {
             closeChrome(req.query.pid)
             watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
-            request_api.reportScript(req.query.pid, req.query.service_id)
+            //request_api.reportScript(req.query.pid, req.query.service_id)
         }
         else if (req.query.id == 'channel-position') {
             let channel = usersPosition.find(u => u.pid == req.query.pid)
