@@ -22,7 +22,7 @@ async function userWatch(action){
 
         if (url == 'https://www.youtube.com/') {
             let videosEl = document.querySelectorAll('ytd-rich-grid-media')
-            let ranPo = randomRanger(0, videosEl.length - 1)
+            let ranPo = randomRanger(0, 7)
             await userClick(action.pid, '', videosEl.item(ranPo))
             await sleep(10000)
             return
@@ -206,7 +206,7 @@ async function preWatchingVideo(action){
    // await sleep(1000)
     let url = window.location.toString()
     // removeSuggest()
-    action.watch_time = 60000
+    action.watch_time = randomRanger(20000, 60000)
     await skipAds(false, action)
 
     action.preview = undefined
@@ -258,26 +258,28 @@ async function watchingVideo(action){
         i += sleepTime
     }
 
-    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
-
-    let randomScroll = randomRanger(1,4)
-    let randomScroll2 = randomRanger(1,3)
-    await userScroll(action.pid, randomScroll)
-    await sleep(1000)
-    await userScroll(action.pid, randomScroll2)
-    await sleep(1000)
     return true
 }
 
 async function afterWatchingVideo(action,finishVideo){
-    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
+    let randomScroll = randomRanger(0,8)
 
-    let randomScroll = randomRanger(1,4)
-    let randomScroll2 = randomRanger(1,3)
+    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
+    await sleep(3000)
+    await updateUserInput(action.pid,'CLICK', 1530,923,0,0,"",'click')
+    await sleep(2000)
+    await updateUserInput(action.pid,'CLICK', 1530,390,0,0,"",'click')
+    await sleep(5000)
     await userScroll(action.pid, randomScroll)
-    await sleep(1000)
-    await userScroll(action.pid, randomScroll2)
-    await sleep(1000)
+    
+    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
+    await sleep(3000)
+    await updateUserInput(action.pid,'CLICK', 1530,923,0,0,"",'click')
+    await sleep(2000)
+    await updateUserInput(action.pid,'CLICK', 1530,390,0,0,"",'click')
+    await sleep(5000)
+    randomScroll = randomRanger(0,8)
+    await userScroll(action.pid, randomScroll)
 
     reportScript(action)
     return

@@ -12,11 +12,6 @@ var zoom
 var isNonUser = false
 async function loadPage(){
     try{
-        if (action.id == 'login') {
-            action.id = 'google_news'
-            await setActionData(action)
-        }
-
         await sleep(5000)
 
         await initAction()

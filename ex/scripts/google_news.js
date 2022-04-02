@@ -21,7 +21,7 @@ async function scriptGoogleNews(action) {
       await sleep(60000)
     }
 
-    if (action.countViewed >= 1) {
+    if (action.countViewed >= 3) {
       action.id = 'watch'
       action.view_type = 'random'
       await setActionData(action)
