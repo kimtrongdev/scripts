@@ -19,6 +19,14 @@ async function userWatch(action){
         //     await sleep(60000)
         //     return
         // }
+
+        if (url == 'https://www.youtube.com/') {
+            let videosEl = document.querySelectorAll('ytd-rich-grid-media')
+            let ranPo = randomRanger(0, videosEl.length - 1)
+            await userClick(action.pid, '', videosEl.item(ranPo))
+            await sleep(10000)
+            return
+        }
         
         if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
@@ -133,7 +141,7 @@ async function processHomePage(action){
     if (action.view_type == 'random') {
         let videosEl = document.querySelectorAll('ytd-rich-grid-media')
         let ranPo = randomRanger(0, videosEl.length - 1)
-        await userClick(action.pid, '', videosEl[ranPo])
+        await userClick(action.pid, '', videosEl.item(ranPo))
         return
     }
     
@@ -221,7 +229,7 @@ async function watchingVideo(action){
             await sendKey(action.pid,"0")
         }
 
-        await clickPlayIfPause(action.pid)
+        //await clickPlayIfPause(action.pid)
 
         let sleepTime = action.watch_time - i > interval ? interval: action.watch_time - i
         await sleep(sleepTime)
@@ -249,10 +257,28 @@ async function watchingVideo(action){
 
         i += sleepTime
     }
+
+    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
+
+    let randomScroll = randomRanger(1,4)
+    let randomScroll2 = randomRanger(1,3)
+    await userScroll(action.pid, randomScroll)
+    await sleep(1000)
+    await userScroll(action.pid, randomScroll2)
+    await sleep(1000)
     return true
 }
 
 async function afterWatchingVideo(action,finishVideo){
+    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
+
+    let randomScroll = randomRanger(1,4)
+    let randomScroll2 = randomRanger(1,3)
+    await userScroll(action.pid, randomScroll)
+    await sleep(1000)
+    await userScroll(action.pid, randomScroll2)
+    await sleep(1000)
+
     reportScript(action)
     return
 }

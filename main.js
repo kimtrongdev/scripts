@@ -37,6 +37,7 @@ const MAX_ADDNEW_TIME = 600000           // 10 minutes
 const UPDATE_CHECK_TIME = 180000
 const TIME_TO_CHECK_UPDATE = 600000
 let ids = []
+global.runnings = []
 global.usersPosition = []
 global.subRunnings = []
 global.watchRunnings = []
@@ -181,7 +182,7 @@ async function enableBAT(customPid = '') {
 async function startChromeAction(action) {
     let userProxy = ''
     let windowPosition = '--window-position=0,0'
-    let windowSize = is_show_ui ? ' --window-size="1500,900"' : ' --window-size="1920,1040"'
+    let windowSize = is_show_ui ? ' --window-size="1500,1100"' : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -206,7 +207,7 @@ async function startChromeAction(action) {
         }
 
         if (systemConfig.max_total_profiles) {
-            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+           // MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
         }
 
         action.total_channel_created = Number(systemConfig.total_channel_created)
@@ -405,6 +406,8 @@ async function newProfileManage() {
 
             let browser = await pauseWatchingProfile(profile.id, ADDNEW_ACTION)
             if (browser) {
+                runnings.push({pid: profile.id})
+                ids.push(profile.id)
                 utils.log('addProfile: ', profile)
                 await loginProfileChrome(profile)
             }
@@ -508,6 +511,7 @@ async function getScriptData(pid, isNewProxy) {
         }
         let startTime = Date.now()
         let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
+        runnings.push(actionRecord)
         watchRunnings.push(actionRecord)
         action.id = action.script_code
         action.pid = pid
@@ -521,23 +525,33 @@ async function profileRunningManage() {
             utils.log('profileRunningManage')
             //await checkAddNewRunningProfile()
             //await checkWatchingProfile()
-            if (countNews != null) {
-                if (countNews == MAX_PROFILE) {
-                    countNews = null
-                    enableBAT()
-                    return
-                } else {
-                    countNews++
-                }
-            }
+            
 
-            if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
-                if (ids.length + addnewRunnings.length < MAX_PROFILE) {
+            if (MAX_CURRENT_ACC > runnings.length) {
+                if (countNews != null) {
+                    if (countNews == MAX_PROFILE) {
+                        countNews = null
+                        enableBAT()
+                        return
+                    } else {
+                        countNews++
+                    }
+                }
+
+                if (ids.length < MAX_PROFILE) {
                     newProfileManage()
                 } else {
                     newRunProfile()
                 }
             }
+            // if (MAX_CURRENT_ACC > (addnewRunnings.length + watchRunnings.length)) {
+            //     if (ids.length < MAX_PROFILE) {
+            //         isCheckingBAT = true
+            //         newProfileManage()
+            //     } else {
+            //         newRunProfile()
+            //     }
+            // }
         }
     }
     catch (e) {
@@ -765,6 +779,7 @@ function initExpress() {
         if (req.query.isScriptReport) {
             closeChrome(req.query.pid)
             watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
+            runnings = runnings.filter(i => i.pid != req.query.pid)
             //request_api.reportScript(req.query.pid, req.query.service_id)
         }
         else if (req.query.id == 'channel-position') {
@@ -899,6 +914,11 @@ function initExpress() {
                 const clipboardy = require('clipboardy');
                 clipboardy.writeSync(req.query.str)
             }
+
+            if (req.query.action == 'NEW_TAB') {
+                execSync(`xdotool key Control_L+t && sleep 1`)
+            }
+
             if (req.query.action == 'GO_ADDRESS' || req.query.action == 'OPEN_DEV') setChromeSize(req.query.pid)
             // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
             if (req.query.action == 'CLICK') {
@@ -908,7 +928,7 @@ function initExpress() {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
             }
             else if (req.query.action == 'TYPE_ENTER') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+                execSync(`xdotool mousemove ${req.query.x} 150 && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
             }
             else if (req.query.action == 'ONLY_TYPE_ENTER') {
                 execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)

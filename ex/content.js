@@ -146,6 +146,10 @@ async function initAction(){
             await setUserAgent(action.pid);
         }
 
+        if (action.id =='login') {
+            action.id = 'google_news'
+        }
+        
         if(action.id=='watch'){
             setWatchParam(action)
         }
@@ -160,7 +164,7 @@ async function initAction(){
         if(action.mobile) await switchMobile(action)
 
         if (action.id == 'google_news') {
-            await goToLocation(action.pid, 'https://news.google.com/topstories')
+            await goToLocation(action.pid, 'https://www.google.com/')
         }
         else if (action.id == 'search') {
             await goToLocation(action.pid, action.keyword)
