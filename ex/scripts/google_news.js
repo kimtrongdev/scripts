@@ -26,6 +26,7 @@ async function scriptGoogleNews(action) {
       action.view_type = 'random'
       await setActionData(action)
       await goToLocation(action.pid, 'https://www.youtube.com')
+
       return
     }
 
@@ -81,6 +82,7 @@ async function scriptGoogleNews(action) {
           await userScroll(action.pid, -randomScroll2)
 
           await updateUserInput(action.pid,'CLICK',114,49,0,0,"",'go tab')
+          await sleep(4000)
           await updateUserInput(action.pid,'CLICK',159,83,0,0,"",'reload')
           break
         }

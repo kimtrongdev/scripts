@@ -209,6 +209,24 @@ async function preWatchingVideo(action){
     action.watch_time = randomRanger(20000, 60000)
     await skipAds(false, action)
 
+    let videoTime
+    function loadVideoTime() {
+        videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
+        videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
+        if(action.url_type=='playlist' && videoTime > 3600){
+            videoTime = 3600
+        }
+    }
+    loadVideoTime()
+    let countGetVideoTime = 0
+    // get video time
+    while (videoTime < 31 && countGetVideoTime < 5) {
+        countGetVideoTime++
+        await skipAds(false, action)
+        loadVideoTime()
+        await sleep(1000)
+    }
+
     action.preview = undefined
     action.suggest_search = false
     action.suggest_videos = false
@@ -358,11 +376,11 @@ async function viewAds(action, onlyVideoType = false) {
 
 async function skipAds(watchingCheck, action = {}){
     if(!watchingCheck) await sleep(2000)
-    while (document.querySelector('.ytp-ad-preview-slot')) {
-        action.viewed_ads = true
-        await setActionData(action)
-        await sleep(2000)
+    let skipBtn = document.querySelector('button.ytp-ad-skip-button')
+    if (skipBtn) {
+        await userClick(action.pid, 'button.ytp-ad-skip-button', skipBtn)
     }
+    return
     while (document.querySelector('.ytp-ad-skip-ad-slot')) {
         console.log('skip ads')
         let adTimeCurrent = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-current').textContent)
@@ -405,6 +423,10 @@ async function skipAds(watchingCheck, action = {}){
         // }
         action.viewed_ads = true
         await setActionData(action)
+        let skipBtn = document.querySelector('button.ytp-ad-skip-button')
+        if (skipBtn) {
+            await userClick(action.pid, 'button.ytp-ad-skip-button', skipBtn)
+        }
         await userClick(action.pid, 'button.ytp-ad-skip-button')
         await sleep(2000)
     }

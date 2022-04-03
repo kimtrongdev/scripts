@@ -129,6 +129,10 @@ async function loadProfileBAT() {
 }
 
 async function enableBAT(customPid = '') {
+    if (!isAutoEnableReward) {
+        isCheckingBAT = false
+        return
+    }
     closeChrome()
     await utils.sleep(2000)
     isCheckingBAT = true
