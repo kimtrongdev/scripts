@@ -34,7 +34,6 @@ async function loadPage(){
         else if (action.id == 'youtube_sub') {
             action.is_sub = true
             await setActionData(action)
-            await scriptYoutubeSub(action)
         } 
         else if (action.id == 'login') {
             console.log('login')

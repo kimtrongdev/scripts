@@ -173,7 +173,13 @@ async function enableBAT(customPid = '') {
         // click 10ads/h
         execSync(`xdotool mousemove 148 713 && sleep 1 && xdotool click 1 && sleep 1`)
 
-        await utils.sleep(4000)
+        await utils.sleep(1000)
+        execSync(`xdotool key Control_L+t && sleep 1`)
+        await utils.sleep(3000)
+        execSync(`xdotool mousemove 1033 818 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(2000)
+        execSync(`xdotool mousemove 543 650 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(5000)
         closeChrome(pid)
     }
     isCheckingBAT = false
@@ -519,13 +525,40 @@ async function getScriptData(pid, isNewProxy) {
     }
 }
 
+function checkRunningProfiles () {
+    try {
+        utils.log('runnings: ', runnings.length)
+        let watchingLength = runnings.length
+        for (let i = 0; i < watchingLength; i++) {
+            // calculate last report time
+            let timeDiff = Date.now() - runnings[i].lastReport
+            if (timeDiff > 300000) {
+                let pid = runnings[i].pid
+                try {
+                    closeChrome(pid)
+                }
+                catch (e) { }
+                finally {
+                    // delete in watching queue
+                    runnings = runnings.filter(x => x.pid != pid)
+                    watchingLength -= 1
+                    i -= 1
+                }
+            }
+        }
+    }
+    catch (e) {
+        utils.log('error', 'checkWatchingProfile err: ', e, ' watchRunnings: ', watchRunnings)
+    }
+}
+
 async function profileRunningManage() {
     try {
         if (!isCheckingBAT) {
             utils.log('profileRunningManage')
             //await checkAddNewRunningProfile()
             //await checkWatchingProfile()
-            
+            await checkRunningProfiles()
 
             if (MAX_CURRENT_ACC > runnings.length) {
                 if (countNews != null) {
@@ -644,7 +677,7 @@ async function start() {
     try {
         let systemConfig = await request_api.getSystemConfig();
         if (systemConfig.max_total_profiles) {
-            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+            //MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
         }
         startupScript()
         initDir()
