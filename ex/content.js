@@ -12,7 +12,7 @@ var zoom
 var isNonUser = false
 async function loadPage(){
     try{
-        await sleep(5000)
+        await sleep(4000)
 
         await initAction()
 

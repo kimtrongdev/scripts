@@ -302,6 +302,7 @@ async function afterWatchingVideo(action,finishVideo){
     await userScroll(action.pid, randomScroll)
 
     await updateUserInput(action.pid,'END_SCRIPT', scrollX - 15,390,0,0,"",'close browser')
+    await sleep(15000)
     reportScript(action)
     return
 }

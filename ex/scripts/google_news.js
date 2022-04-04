@@ -62,7 +62,7 @@ async function scriptGoogleNews(action) {
       let random = randomRanger(0, articles.length - 1)
       
       await sleep(2000)
-      await userClick(action.pid, '', articles.item(random))
+      await userClick(action.pid, 'article[ve-visible="true"] h3', articles.item(random))
 
       await sleep(60000)
     }
@@ -76,8 +76,6 @@ async function scriptGoogleNews(action) {
     
           action.countViewed++
           await setActionData(action)
-          
-          await sleep(2000)
           let randomScroll = randomRanger(3,10)
 
           await userScroll(action.pid, randomScroll)
