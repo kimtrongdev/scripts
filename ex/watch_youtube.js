@@ -282,26 +282,28 @@ async function watchingVideo(action){
 async function afterWatchingVideo(action,finishVideo){
     let randomScroll = randomRanger(0,8)
 
-    let scrollX = Number(action.screenWidth) + 40
+    let positionSize = Number(action.positionSize)
+    let scroll1Sizes = [1033, 1133, 1233, 1333]
+    let closeSizes = [1025, 1125, 1225, 1325]
 
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scrollX - 5,923,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
     await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scrollX - 5,390,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
     await sleep(5000)
     await userScroll(action.pid, randomScroll)
 
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scrollX - 5,923,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
     await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scrollX - 5,390,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
     await sleep(5000)
     randomScroll = randomRanger(0,8)
     await userScroll(action.pid, randomScroll)
 
-    await updateUserInput(action.pid,'END_SCRIPT', scrollX - 15,390,0,0,"",'close browser')
+    await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
     await sleep(15000)
     reportScript(action)
     return

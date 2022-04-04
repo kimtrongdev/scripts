@@ -190,10 +190,13 @@ async function enableBAT(customPid = '') {
 }
 
 async function startChromeAction(action) {
+    let widthSizes = [1000, 1100, 1200, 1300]
     let userProxy = ''
-    let screenWidth = utils.getRndInteger(1000, 2000)
-    let screenHeight = utils.getRndInteger(700, 1300)
+    let positionSize = utils.getRndInteger(0, 3)
+    let screenWidth = widthSizes[positionSize]
+    let screenHeight = utils.getRndInteger(950, 1200)
 
+    action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
     action['screenHeight'] = screenHeight
 
