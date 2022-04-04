@@ -954,6 +954,8 @@ function initExpress() {
 
             if (req.query.action == 'NEW_TAB') {
                 execSync(`xdotool key Control_L+t && sleep 1`)
+            } else if (req.query.action == 'RELOAD_PAGE') {
+                execSync(`xdotool key F5 && sleep 1`)
             }
 
             if (req.query.action == 'GO_ADDRESS' || req.query.action == 'OPEN_DEV') setChromeSize(req.query.pid)

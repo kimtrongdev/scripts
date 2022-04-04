@@ -83,7 +83,8 @@ async function scriptGoogleNews(action) {
 
           await updateUserInput(action.pid,'CLICK',114,49,0,0,"",'go tab')
           await sleep(4000)
-          await updateUserInput(action.pid,'CLICK',159,83,0,0,"",'reload')
+         // await updateUserInput(action.pid,'CLICK',159,83,0,0,"",'reload')
+          await updateUserInput(action.pid,'RELOAD_PAGE',0,0,0,0,"",'reload')
           break
         }
       }
