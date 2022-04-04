@@ -3,6 +3,7 @@ const TIME_REPORT = 110000
 const TIME_CHECK_BAT = 300000
 let isCheckingBAT = false
 const isAutoEnableReward = true
+const isReportBAT = false
 let countNews = 0
 require('log-timestamp')
 const utils = require('./utils')
@@ -28,7 +29,7 @@ const fs = require('fs')
 const version = fs.readFileSync(path.join(__dirname, 'version'), 'utf8')
 const publicIp = require('public-ip');
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
-let MAX_PROFILE = 2//MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
+let MAX_PROFILE = 5//MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
 const RUNNING_CHECK_INTERVAL = 15000     // 30 seconds
 const MAX_REPORT_TIME = 150000           // 5 minutes
@@ -63,7 +64,7 @@ const PLAYLIST_ACTION = {
 const ADDNEW_ACTION = 3
 const LOCAL_PORT = 2000
 
-async function runDailyCheckBAT() {
+function runDailyCheckBAT() {
     setInterval(() => {
         closeChrome()
         isCheckingBAT = true
@@ -596,6 +597,9 @@ async function running() {
 }
 
 function initDir() {
+    if (isReportBAT) {
+        runDailyCheckBAT()
+    }
     checkToUpdate()
     if (!fs.existsSync(path.resolve('logscreen'))) {
         fs.mkdirSync(path.resolve('logscreen'));
