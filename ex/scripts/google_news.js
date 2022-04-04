@@ -24,7 +24,14 @@ async function scriptGoogleNews(action) {
     let url = window.location.toString()
     
     if (url.indexOf('https://www.google.com/') > -1) {
-      await goToLocation(action.pid, 'https://news.google.com/topstories')
+      if (action.isSearched) {
+        await goToLocation(action.pid, 'https://news.google.com/topstories')
+      } else {
+        action.isSearched = true
+        await setActionData(action)
+        await userTypeEnter(action.pid,'input', 'long lam 369')
+      }
+      
       await sleep(60000)
     }
 
