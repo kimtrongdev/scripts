@@ -30,7 +30,7 @@ const publicIp = require('public-ip');
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
 let MAX_PROFILE = 2//MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
-const RUNNING_CHECK_INTERVAL = 30000     // 30 seconds
+const RUNNING_CHECK_INTERVAL = 15000     // 30 seconds
 const MAX_REPORT_TIME = 150000           // 5 minutes
 const MAX_SUB_RUNNING_TIME = 600000     // 10 minutes
 const MAX_ADDNEW_TIME = 600000           // 10 minutes
@@ -438,70 +438,6 @@ async function newProfileManage() {
     }
     catch (e) {
         utils.log('newProfileManage err: ', e)
-    }
-}
-
-async function checkAddNewRunningProfile() {
-    try {
-        utils.log('checkAddNewRunningProfile')
-        let addnewRunningLength = addnewRunnings.length
-        for (let i = 0; i < addnewRunningLength; i++) {
-            // calculate last report time
-            let timeDiff = Date.now() - addnewRunnings[i].lastReport
-            if (timeDiff > MAX_ADDNEW_TIME) {
-                let pid = addnewRunnings[i].pid
-                try {
-                    utils.log('error', 'pid: ', pid, ' addingTime exceed ', MAX_ADDNEW_TIME)
-                    // delete profile in system
-                    await deleteProfile(pid)
-                    closeChrome(pid)
-                }
-                catch (e) {
-                    utils.log('checkAddNewRunningProfile release err:', e)
-                }
-                finally {
-                    // delete in add new running queue
-                    addnewRunnings = addnewRunnings.filter(x => x.pid != pid)
-                    addnewRunningLength -= 1
-                    i -= 1
-                    utils.log('addnewRunnings: ', addnewRunnings)
-                }
-            }
-        }
-    }
-    catch (e) {
-        utils.log('checkAddNewRunningProfile err: ', e)
-    }
-}
-
-async function checkWatchingProfile() {
-    try {
-        utils.log('checkWatchingProfile: ', watchRunnings.length)
-        let watchingLength = watchRunnings.length
-        for (let i = 0; i < watchingLength; i++) {
-            // calculate last report time
-            let timeDiff = Date.now() - watchRunnings[i].lastReport
-            if (timeDiff > MAX_REPORT_TIME) {
-                let pid = watchRunnings[i].pid
-                try {
-                    utils.log('error', 'pid: ', pid, ' lastReport exceed ', MAX_REPORT_TIME)
-                    closeChrome(pid)
-                }
-                catch (e) {
-                    utils.log('error', 'checkWatchingProfile release err: ', e)
-                }
-                finally {
-                    // delete in watching queue
-                    watchRunnings = watchRunnings.filter(x => x.pid != pid)
-                    watchingLength -= 1
-                    i -= 1
-                    utils.log('checkWatchingProfile watchRunnings: ', watchRunnings.length)
-                }
-            }
-        }
-    }
-    catch (e) {
-        utils.log('error', 'checkWatchingProfile err: ', e, ' watchRunnings: ', watchRunnings)
     }
 }
 

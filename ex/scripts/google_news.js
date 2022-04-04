@@ -65,11 +65,11 @@ async function scriptGoogleNews(action) {
         await sleep(10000)
       }
 
-      let articles = document.querySelectorAll('article[ve-visible="true"] time')
+      let articles = document.querySelectorAll('article[ve-visible="true"]')
       let random = randomRanger(0, articles.length - 1)
       
       await sleep(2000)
-      await userClick(action.pid, 'article[ve-visible="true"] time', articles.item(random))
+      await userClick(action.pid, 'article[ve-visible="true"] - ' + random, articles.item(random))
 
       await sleep(60000)
     }
