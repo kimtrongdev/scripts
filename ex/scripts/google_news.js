@@ -8,7 +8,6 @@ var newsNames = [
   "thehindu.com",
   "politico.com",
   "nbcnews.com",
-  "abc10.com",
   "click2houston.com",
   "kktv.com",
   "wsbtv.com",
@@ -29,7 +28,7 @@ async function scriptGoogleNews(action) {
       await sleep(60000)
     }
 
-    if (action.countViewed >= 2) {
+    if (action.countViewed >= 1) {
       action.id = 'watch'
       action.view_type = 'random'
       await setActionData(action)
@@ -58,11 +57,19 @@ async function scriptGoogleNews(action) {
       await sleep(60000)
     } 
     else if (url.indexOf('https://news.google.com/search') > -1) {
-      let articles = document.querySelectorAll('article[ve-visible="true"] h3')
+      if (action.reSearch) {
+        action.reSearch = false
+        await setActionData(action)
+        let randomPoSite = randomRanger(0, newsNames.length - 1)
+        await userTypeEnter(action.pid,'form', newsNames[randomPoSite])
+        await sleep(10000)
+      }
+
+      let articles = document.querySelectorAll('article[ve-visible="true"] time')
       let random = randomRanger(0, articles.length - 1)
       
       await sleep(2000)
-      await userClick(action.pid, 'article[ve-visible="true"] h3', articles.item(random))
+      await userClick(action.pid, 'article[ve-visible="true"] time', articles.item(random))
 
       await sleep(60000)
     }
@@ -75,6 +82,7 @@ async function scriptGoogleNews(action) {
           }
     
           action.countViewed++
+          action.reSearch = true
           await setActionData(action)
           let randomScroll = randomRanger(3,10)
 
