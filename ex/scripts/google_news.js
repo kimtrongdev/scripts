@@ -6,10 +6,18 @@ var newsNames = [
   "inquirer.com",
   "npr.org",
   "thehindu.com",
-  "foxnews.com",
   "politico.com",
   "nbcnews.com",
-  "news.yahoo.com",
+  "abc10.com",
+  "click2houston.com",
+  "kktv.com",
+  "wsbtv.com",
+  "al.com",
+  "fox5atlanta.com",
+  "sltrib.com",
+  "pennlive.com",
+  "kiro7.com",
+  "wsfa.com",
 ]
 
 async function scriptGoogleNews(action) {
@@ -21,7 +29,7 @@ async function scriptGoogleNews(action) {
       await sleep(60000)
     }
 
-    if (action.countViewed >= 3) {
+    if (action.countViewed >= 2) {
       action.id = 'watch'
       action.view_type = 'random'
       await setActionData(action)
@@ -69,20 +77,15 @@ async function scriptGoogleNews(action) {
           action.countViewed++
           await setActionData(action)
           
-          await sleep(5000)
+          await sleep(2000)
           let randomScroll = randomRanger(3,10)
-          let randomScroll2 = randomRanger(3,10)
 
           await userScroll(action.pid, randomScroll)
           await sleep(1000)
-          await userScroll(action.pid, randomScroll2)
-          await sleep(1000)
           await userScroll(action.pid, -randomScroll)
-          await sleep(1000)
-          await userScroll(action.pid, -randomScroll2)
 
           await updateUserInput(action.pid,'CLICK',114,49,0,0,"",'go tab')
-          await sleep(4000)
+          await sleep(2000)
          // await updateUserInput(action.pid,'CLICK',159,83,0,0,"",'reload')
           await updateUserInput(action.pid,'RELOAD_PAGE',0,0,0,0,"",'reload')
           break

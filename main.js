@@ -28,7 +28,7 @@ const fs = require('fs')
 const version = fs.readFileSync(path.join(__dirname, 'version'), 'utf8')
 const publicIp = require('public-ip');
 let MAX_CURRENT_ACC = Number(devJson.maxProfile) //MAX_CURRENT_ACC_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_CURRENT_ACC_CAL;
-let MAX_PROFILE = MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
+let MAX_PROFILE = 2//MAX_CURRENT_ACC * 3 //MAX_PROFILE_CAL > MAX_PROFILE_TOTAL ? MAX_PROFILE_TOTAL : MAX_PROFILE_CAL;
 
 const RUNNING_CHECK_INTERVAL = 30000     // 30 seconds
 const MAX_REPORT_TIME = 150000           // 5 minutes
@@ -191,8 +191,14 @@ async function enableBAT(customPid = '') {
 
 async function startChromeAction(action) {
     let userProxy = ''
+    let screenWidth = utils.getRndInteger(1000, 2000)
+    let screenHeight = utils.getRndInteger(700, 1300)
+
+    action['screenWidth'] = screenWidth
+    action['screenHeight'] = screenHeight
+
     let windowPosition = '--window-position=0,0'
-    let windowSize = is_show_ui ? ' --window-size="1500,1100"' : ' --window-size="1920,1040"'
+    let windowSize = is_show_ui ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -956,12 +962,18 @@ function initExpress() {
                 execSync(`xdotool key Control_L+t && sleep 1`)
             } else if (req.query.action == 'RELOAD_PAGE') {
                 execSync(`xdotool key F5 && sleep 1`)
+            } else if (req.query.action == 'END_SCRIPT') {
+                watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
+                runnings = runnings.filter(i => i.pid != req.query.pid)
+                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
             }
 
             if (req.query.action == 'GO_ADDRESS' || req.query.action == 'OPEN_DEV') setChromeSize(req.query.pid)
             // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
             if (req.query.action == 'CLICK') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
+                if (req.query.x > 65) {
+                    execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
+                }
             }
             if (req.query.action == 'TYPE') {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)

@@ -206,7 +206,7 @@ async function preWatchingVideo(action){
    // await sleep(1000)
     let url = window.location.toString()
     // removeSuggest()
-    action.watch_time = randomRanger(20000, 60000)
+    action.watch_time = randomRanger(5000, 10000)
     await skipAds(false, action)
 
     let videoTime
@@ -282,23 +282,26 @@ async function watchingVideo(action){
 async function afterWatchingVideo(action,finishVideo){
     let randomScroll = randomRanger(0,8)
 
-    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
+    let scrollX = Number(action.screenWidth) + 40
+
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', 1530,923,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scrollX - 5,923,0,0,"",'click')
     await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', 1530,390,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scrollX - 5,390,0,0,"",'click')
     await sleep(5000)
     await userScroll(action.pid, randomScroll)
-    
-    await updateUserInput(action.pid,'NEW_TAB', 500,500,0,0,"",'New TAB')
+
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', 1530,923,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scrollX - 5,923,0,0,"",'click')
     await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', 1530,390,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scrollX - 5,390,0,0,"",'click')
     await sleep(5000)
     randomScroll = randomRanger(0,8)
     await userScroll(action.pid, randomScroll)
 
+    await updateUserInput(action.pid,'END_SCRIPT', scrollX - 15,390,0,0,"",'close browser')
     reportScript(action)
     return
 }
