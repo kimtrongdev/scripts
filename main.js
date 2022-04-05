@@ -1,9 +1,12 @@
 // config file
 const TIME_REPORT = 110000
-const TIME_CHECK_BAT = 300000
 let isCheckingBAT = false
 const isAutoEnableReward = true
 const isReportBAT = false
+
+const totalRoundsForCheckBAT = 5
+let countRoundsForCheckBAT = 0
+
 let countNews = 0
 require('log-timestamp')
 const utils = require('./utils')
@@ -93,14 +96,6 @@ async function profileRunningManage() {
     }
 }
 
-function runDailyCheckBAT() {
-    setInterval(() => {
-        closeChrome()
-        isCheckingBAT = true
-        loadProfileBAT()
-    }, TIME_CHECK_BAT)
-}
-
 async function runUpdateVps () {
     try {
         execSync("git pull")
@@ -127,10 +122,37 @@ function getProfileIds() {
 
 async function loadProfileBAT() {
     let pids = await getProfileIds()
+
+    async function execNewTab () {
+        // new tab
+        execSync(`xdotool key Control_L+t && sleep 1`)
+        await utils.sleep(6000)
+        //scroll to ads 2th
+        execSync(`xdotool mousemove 1034 792 && sleep 1 && xdotool click 1 && sleep 1`)
+        execSync(`xdotool mousemove 1034 312 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(2000)
+        //click on ads 2th
+        let xPos = utils.getRndInteger(300, 800)
+        let yPos = utils.getRndInteger(380, 540)
+        execSync(`xdotool mousemove ${xPos} ${yPos} && sleep 1 && xdotool click 1 && sleep 1`)
+
+        // handle view news or ads
+        await utils.sleep(2000)
+        let pageNumber = Math.ceil(utils.getRndInteger(5, 15) / 5)
+        while (pageNumber > 0) {
+            execSync(`xdotool key Page_Down && sleep 1`)
+            pageNumber--
+        }
+    }
+
     for await (let pid of pids) {
         let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", pid + '')}"`
         exec(cmd2)
         await utils.sleep(10000)
+
+        // handle view ads
+        await execNewTab()
+        await execNewTab()
 
         // click icon
         execSync(`xdotool mousemove 863 82 && sleep 1 && xdotool click 1 && sleep 1`)
@@ -152,7 +174,9 @@ async function loadProfileBAT() {
         if (currentBat) {
             request_api.reportCurrentBAT({ bat: currentBat, pid })
         }
-        closeChrome(pid)
+
+        execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
+        execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
         await utils.sleep(2000)
     }
     isCheckingBAT = false
@@ -475,6 +499,16 @@ async function newRunProfile() {
     utils.log('ids: ', ids)
     let pid = ids.shift()
     if (pid) {
+        if (countRoundsForCheckBAT >= totalRoundsForCheckBAT * MAX_PROFILE && isReportBAT) {
+            closeChrome()
+            isCheckingBAT = true
+            countRoundsForCheckBAT = 0
+            loadProfileBAT()
+            return 
+        } else {
+            countRoundsForCheckBAT++
+        }
+
         ids.push(pid)
         try {
             let action = await getScriptData(pid, true)
@@ -583,9 +617,6 @@ async function running() {
 }
 
 function initDir() {
-    if (isReportBAT) {
-        runDailyCheckBAT()
-    }
     checkToUpdate()
     if (!fs.existsSync(path.resolve('logscreen'))) {
         fs.mkdirSync(path.resolve('logscreen'));
