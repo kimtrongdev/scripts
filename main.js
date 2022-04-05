@@ -4,8 +4,8 @@ let isCheckingBAT = false
 const isAutoEnableReward = true
 const isReportBAT = false
 
-const totalRoundsForCheckBAT = 6
-let countRoundsForCheckBAT = 0
+const totalRoundsForCheatBAT = 7
+let countRun = 0
 
 let countNews = 0
 require('log-timestamp')
@@ -83,7 +83,13 @@ async function profileRunningManage() {
                 if (ids.length < MAX_PROFILE) {
                     newProfileManage()
                 } else {
-                    newRunProfile()
+                    let totalRound = totalRoundsForCheatBAT * MAX_PROFILE
+                    countRun++
+                    if (countRun % totalRound  > 0 &&  countRun % totalRound < MAX_PROFILE) {
+                        runCheatBAT()
+                    } else {
+                        newRunProfile()
+                    }
                 }
             }
         }
@@ -96,37 +102,17 @@ async function profileRunningManage() {
     }
 }
 
-async function runUpdateVps () {
-    try {
-        execSync("git pull")
-        let pids = await getProfileIds()
-        for await (let pid of pids) {
-            closeChrome(pid)
-        }
-        execSync("rm -rf profiles && forever restart main.js") 
-    } catch (error) {
-        
-    }
-}
+async function runCheatBAT () {
+    runnings.push({  })
 
-function getProfileIds() {
-    return new Promise((resolve, reject) => {
-        let directoryPath = path.resolve("profiles")
-        fs.readdir(directoryPath, function (err, files) {
-            if (err) reject(err)
-            // else resolve(files.map(x => {return {id: x, time : 0}}))    // mapping add time field for computing reading for resume
-            else resolve(files)    // mapping add time field for computing reading for resume
-        })
-    })
-}
-
-async function loadProfileBAT() {
     let pids = await getProfileIds()
-
+    if (pidCustom) {
+        pids = [pidCustom]
+    }
     async function execNewTab () {
         // new tab
         execSync(`xdotool key Control_L+t && sleep 1`)
-        await utils.sleep(6000)
+        await utils.sleep(7000)
         //scroll to ads 2th
         execSync(`xdotool mousemove 1034 792 && sleep 1 && xdotool click 1 && sleep 1`)
         await utils.sleep(1000)
@@ -155,6 +141,58 @@ async function loadProfileBAT() {
         await execNewTab()
         await execNewTab()
 
+        // handle view youtube
+        execSync(`xdotool key Control_L+t && sleep 1`)
+        await utils.sleep(5000)
+        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5 && xdotool type "https://www.youtube.com/" && sleep 0.5 && xdotool key KP_Enter`)
+        execSync(`xdotool mousemove 324 638 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(10000)
+
+        execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
+        execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(2000)
+    }
+    isCheckingBAT = false
+
+
+    runnings.pop()
+} 
+
+async function runUpdateVps () {
+    try {
+        execSync("git pull")
+        let pids = await getProfileIds()
+        for await (let pid of pids) {
+            closeChrome(pid)
+        }
+        execSync("rm -rf profiles && forever restart main.js") 
+    } catch (error) {
+        
+    }
+}
+
+function getProfileIds() {
+    return new Promise((resolve, reject) => {
+        let directoryPath = path.resolve("profiles")
+        fs.readdir(directoryPath, function (err, files) {
+            if (err) reject(err)
+            // else resolve(files.map(x => {return {id: x, time : 0}}))    // mapping add time field for computing reading for resume
+            else resolve(files)    // mapping add time field for computing reading for resume
+        })
+    })
+}
+
+async function loadProfileBAT(pidCustom) {
+    let pids = await getProfileIds()
+    if (pidCustom) {
+        pids = [pidCustom]
+    }
+
+    for await (let pid of pids) {
+        let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", pid + '')}"`
+        exec(cmd2)
+        await utils.sleep(10000)
+        execSync(`xdotool key Escape`)
         // click icon
         execSync(`xdotool mousemove 863 82 && sleep 1 && xdotool click 1 && sleep 1`)
         await utils.sleep(15000)
@@ -223,14 +261,16 @@ async function enableBAT(customPid = '') {
             count++
         }
 
+        // turn off ads
+        execSync(`xdotool mousemove 639 381 && sleep 1 && xdotool click 1 && sleep 1`)
         // click setting ads/h
-        execSync(`xdotool mousemove 568 381 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
+        //execSync(`xdotool mousemove 568 381 && sleep 1 && xdotool click 1 && sleep 1`)
+        //await utils.sleep(1000)
         // click selection
-        execSync(`xdotool mousemove 638 458 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
+        //execSync(`xdotool mousemove 638 458 && sleep 1 && xdotool click 1 && sleep 1`)
+        //await utils.sleep(1000)
         // click 10ads/h
-        execSync(`xdotool mousemove 148 713 && sleep 1 && xdotool click 1 && sleep 1`)
+        //execSync(`xdotool mousemove 148 713 && sleep 1 && xdotool click 1 && sleep 1`)
 
         await utils.sleep(1000)
         execSync(`xdotool key Control_L+t && sleep 1`)
@@ -502,17 +542,21 @@ async function newRunProfile() {
     let pid = ids.shift()
     if (pid) {
         ids.push(pid)
-        if (countRoundsForCheckBAT >= totalRoundsForCheckBAT * MAX_PROFILE && isReportBAT) {
-            closeChrome()
-            isCheckingBAT = true
-            countRoundsForCheckBAT = 0
-            loadProfileBAT()
-            return 
-        } else {
-            countRoundsForCheckBAT++
-        }
+        // if (countRoundsForCheckBAT >= totalRoundsForCheckBAT * MAX_PROFILE && isReportBAT) {
+        //     closeChrome()
+        //     isCheckingBAT = true
+        //     countRoundsForCheckBAT = 0
+        //     loadProfileBAT(pid)
+        //     return 
+        // } else {
+        //     countRoundsForCheckBAT++
+        // }
 
         try {
+            if (isReportBAT) {
+                loadProfileBAT(pid)
+            }
+            
             let action = await getScriptData(pid, true)
             if (action && action.script_code) {
                 await startChromeAction(action)
