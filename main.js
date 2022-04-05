@@ -4,7 +4,7 @@ let isCheckingBAT = false
 const isAutoEnableReward = true
 const isReportBAT = false
 
-const totalRoundsForCheckBAT = 5
+const totalRoundsForCheckBAT = 6
 let countRoundsForCheckBAT = 0
 
 let countNews = 0
@@ -129,8 +129,9 @@ async function loadProfileBAT() {
         await utils.sleep(6000)
         //scroll to ads 2th
         execSync(`xdotool mousemove 1034 792 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(1000)
         execSync(`xdotool mousemove 1034 312 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(2000)
+        await utils.sleep(3000)
         //click on ads 2th
         let xPos = utils.getRndInteger(300, 800)
         let yPos = utils.getRndInteger(380, 540)
@@ -149,7 +150,7 @@ async function loadProfileBAT() {
         let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", pid + '')}"`
         exec(cmd2)
         await utils.sleep(10000)
-
+        execSync(`xdotool key Escape`)
         // handle view ads
         await execNewTab()
         await execNewTab()
@@ -246,9 +247,9 @@ async function enableBAT(customPid = '') {
 async function startChromeAction(action) {
     let widthSizes = [1000, 1100, 1200, 1300]
     let userProxy = ''
-    let positionSize = utils.getRndInteger(0, 3)
+    let positionSize = action.isNew ? 1 : utils.getRndInteger(0, 3)
     let screenWidth = widthSizes[positionSize]
-    let screenHeight = utils.getRndInteger(950, 1200)
+    let screenHeight = action.isNew ? 1100 : utils.getRndInteger(950, 1200)
 
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
@@ -377,6 +378,7 @@ async function loginProfileChrome(profile) {
         let action = profile
         action.pid = profile.id
         action.id = 'login'
+        action.isNew = true
         await startChromeAction(action)
     }
     catch (e) {
@@ -499,6 +501,7 @@ async function newRunProfile() {
     utils.log('ids: ', ids)
     let pid = ids.shift()
     if (pid) {
+        ids.push(pid)
         if (countRoundsForCheckBAT >= totalRoundsForCheckBAT * MAX_PROFILE && isReportBAT) {
             closeChrome()
             isCheckingBAT = true
@@ -509,7 +512,6 @@ async function newRunProfile() {
             countRoundsForCheckBAT++
         }
 
-        ids.push(pid)
         try {
             let action = await getScriptData(pid, true)
             if (action && action.script_code) {
@@ -645,10 +647,10 @@ function initDir() {
 
 async function start() {
     try {
-        let systemConfig = await request_api.getSystemConfig();
-        if (systemConfig.max_total_profiles) {
-            //MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
-        }
+        // let systemConfig = await request_api.getSystemConfig();
+        // if (systemConfig.max_total_profiles) {
+        //     MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+        // }
         startupScript()
         initDir()
         await initConfig()

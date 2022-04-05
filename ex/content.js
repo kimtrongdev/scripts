@@ -140,8 +140,24 @@ async function initAction(){
             await setUserAgent(action.pid);
         }
 
+        // if (action.isNew) {
+        //     await updateUserInput(action.pid,'CLICK', 1118,79,0,0,"",'click')
+        //     await sleep(2000)
+        //     await updateUserInput(action.pid,'CLICK', 858,223,0,0,"",'click')
+        //     await sleep(2000)
+        //     await updateUserInput(action.pid,'CLICK', 390,130,0,0,"",'click setting')
+        //     await sleep(3000)
+        //     await updateUserInput(action.pid,'CLICK', 209,400,0,0,"",'click shields')
+        //     await sleep(1000)
+        //     await updateUserInput(action.pid,'CLICK', 926,894,0,0,"",'click select')
+        //     await updateUserInput(action.pid,'CLICK', 908,914,0,0,"",'click option')
+        //     await updateUserInput(action.pid,'CLICK', 912,694,0,0,"",'click Trackers & ads blocking')
+        //     await updateUserInput(action.pid,'CLICK', 900,757,0,0,"",'click disable')
+        //     await updateUserInput(action.pid,'CLICK', 152,50,0,0,"",'go main tab')
+        // }
+
         if (action.id =='login') {
-            action.id = 'google_news'
+           action.id = 'google_news'
         }
         
         if(action.id=='watch'){

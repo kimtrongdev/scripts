@@ -787,10 +787,10 @@ async function processSearchSuggest(action){
 
 async function processWatchPage(action){
     let watchVideo = await preWatchingVideo(action)
-    if(watchVideo){
-        let finishVideo = await watchingVideo(action)
-        await afterWatchingVideo(action,finishVideo)
-    }
+    // if(watchVideo){
+    //     let finishVideo = await watchingVideo(action)
+    //     await afterWatchingVideo(action,finishVideo)
+    // }
 }
 
 async function getReact(keyword,totalTime){
