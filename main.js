@@ -551,7 +551,7 @@ async function updateVmStatus() {
         let pids = _pids.join(',')
         let rs = await request_api.updateVmStatus({
             vm_id: config.vm_id,
-            running: addnewRunnings.length + watchRunnings.length,
+            running: runnings.length,
             pids
         })
 
@@ -559,7 +559,7 @@ async function updateVmStatus() {
             let removePID = Number(rs.removePid)
             closeChrome(removePID)
             execSync("rm -rf profiles/" + removePID)
-            watchRunnings = watchRunnings.filter(i => i != removePID)
+            runnings = runnings.filter(i => i != removePID)
             ids = ids.filter(i => i != removePID)
         }
     }
