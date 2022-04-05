@@ -922,7 +922,7 @@ function initExpress() {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
             }
             else if (req.query.action == 'TYPE_ENTER') {
-                execSync(`xdotool mousemove ${req.query.x} 150 && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
             }
             else if (req.query.action == 'ONLY_TYPE_ENTER') {
                 execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
