@@ -4,7 +4,7 @@ let isCheckingBAT = false
 const isAutoEnableReward = true
 const isReportBAT = false
 
-const totalRoundForChangeProxy = 2
+const totalRoundForChangeProxy = 5
 const totalRoundsForCheckBAT = 6
 let countRoundsForCheckBAT = 0
 
@@ -67,9 +67,9 @@ const LOCAL_PORT = 2000
 
 async function profileRunningManage() {
     try {
+        await checkRunningProfiles()
         if (!isCheckingBAT) {
             utils.log('profileRunningManage')
-            await checkRunningProfiles()
 
             if (MAX_CURRENT_ACC > runnings.length) {
                 if (countNews != null) {
@@ -531,7 +531,7 @@ async function getScriptData(pid, isNewProxy) {
     let action = { script_code: 'google_news' }//wait request_api.getNewScript(pid)
     if (action) {
         if (isNewProxy) {
-            let isLoadNewProxy = false 
+            let isLoadNewProxy = '' 
             let totalRound = totalRoundForChangeProxy * MAX_PROFILE
             if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE) {
                 isLoadNewProxy = true

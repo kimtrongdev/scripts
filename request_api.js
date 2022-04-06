@@ -66,7 +66,7 @@ module.exports = {
     getProxy: async function getProxy(vmId) {
         return await rq({uri: SUB_URL + '/manage/get-proxy',json: true,qs: {vmId: vmId}})
     },
-    getProfileProxy: async function getProxy(pid,action, isLoadNewProxy = false) {
+    getProfileProxy: async function getProxy(pid,action, isLoadNewProxy = '') {
         return await rq({uri: SUB_URL + '/api/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
     },
     getVmFromIp: async function getVmFromIp(ip) {
