@@ -2,7 +2,7 @@ async function trickAds (action) {
     let randomScroll = randomRanger(0,8)
     let positionSize = Number(action.positionSize)
     let scroll1Sizes = [1033, 1133, 1233, 1333]
-    
+
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await sleep(3000)
     await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
@@ -22,12 +22,15 @@ async function trickAds (action) {
 }
 
 async function checkBAT (action) {
-    // click icon
-    await updateUserInput(action.pid,'CLICK', 863,82,0,0,"",'click')
-    await sleep(15000)
+    let positionSize = Number(action.positionSize)
+    // click menu
+    let iconPosition = [1019, 1118, 1217, 1318]
+    await updateUserInput(action.pid,'CLICK', iconPosition[positionSize],82,0,0,"",'click')
+    await sleep(8000)
 
     // double click
-    await updateUserInput(action.pid,'DOUBLE_CLICK', 710,198,0,0,"",'click')
+    let textBAT = [946, 958, 1012, 1062]
+    await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],242,0,0,"",'click')
     await sleep(2000)
     // copy bat data
     await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')
@@ -67,6 +70,7 @@ async function enableBAT (action) {
     await sleep(2000)
     // click show brave ads
     await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
+    await sleep(4000)
 }
 
 function reportScript(action) {

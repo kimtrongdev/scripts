@@ -759,7 +759,7 @@ function initExpress() {
         res.send(JSON.stringify(req.query))
     })
 
-    app.get('/input', (req, res) => {
+    app.get('/input', async (req, res) => {
         utils.log(req.query)
         watchRunnings = watchRunnings.map(x => {
             if (x.pid == req.query.pid) {

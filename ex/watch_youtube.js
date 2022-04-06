@@ -208,7 +208,7 @@ async function preWatchingVideo(action){
     let closeSizes = [1025, 1125, 1225, 1325]
 
     if (action.checkBAT) {
-       await checkBAT()
+       await checkBAT(action)
     }
     else if (action.enableBAT) {
         await enableBAT(action)
