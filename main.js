@@ -4,9 +4,11 @@ let isCheckingBAT = false
 const isAutoEnableReward = true
 const isReportBAT = false
 
+const totalRoundForChangeProxy = 2
 const totalRoundsForCheckBAT = 6
 let countRoundsForCheckBAT = 0
 
+let countRun = 0
 let countNews = 0
 require('log-timestamp')
 const utils = require('./utils')
@@ -83,6 +85,7 @@ async function profileRunningManage() {
                 if (ids.length < MAX_PROFILE) {
                     newProfileManage()
                 } else {
+                    countRun++
                     newRunProfile()
                 }
             }
@@ -528,7 +531,14 @@ async function getScriptData(pid, isNewProxy) {
     let action = { script_code: 'google_news' }//wait request_api.getNewScript(pid)
     if (action) {
         if (isNewProxy) {
-            proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH)
+            let isLoadNewProxy = false 
+            let totalRound = totalRoundForChangeProxy * MAX_PROFILE
+            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE) {
+                isLoadNewProxy = true
+                console.log('Load new proxy for pid')
+            }
+
+            proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
         }
         let startTime = Date.now()
         let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
