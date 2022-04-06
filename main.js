@@ -4,7 +4,7 @@ let isCheckingBAT = false
 const isAutoEnableReward = true
 const isReportBAT = false
 
-const totalRoundsForCheatBAT = 7
+const totalRoundsForCheatBAT = 1
 let countRun = 0
 
 let countNews = 0
@@ -83,13 +83,7 @@ async function profileRunningManage() {
                 if (ids.length < MAX_PROFILE) {
                     newProfileManage()
                 } else {
-                    let totalRound = totalRoundsForCheatBAT * MAX_PROFILE
-                    countRun++
-                    if (countRun % totalRound  > 0 &&  countRun % totalRound < MAX_PROFILE) {
-                        runCheatBAT()
-                    } else {
-                        newRunProfile()
-                    }
+                    newRunProfile()
                 }
             }
         }
@@ -102,8 +96,8 @@ async function profileRunningManage() {
     }
 }
 
-async function runCheatBAT () {
-    runnings.push({  })
+async function runCheatBAT (pidCustom) {
+    runnings.push({ pid: pidCustom })
 
     let pids = await getProfileIds()
     if (pidCustom) {
@@ -112,11 +106,13 @@ async function runCheatBAT () {
     async function execNewTab () {
         // new tab
         execSync(`xdotool key Control_L+t && sleep 1`)
-        await utils.sleep(7000)
+        await utils.sleep(8000)
         //scroll to ads 2th
         execSync(`xdotool mousemove 1034 792 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-        execSync(`xdotool mousemove 1034 312 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(4000)
+        execSync(`xdotool mousemove 1034 792 && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(3000)
+        execSync(`xdotool mousemove 1034 792 && sleep 1 && xdotool click 1 && sleep 1`)
         await utils.sleep(3000)
         //click on ads 2th
         let xPos = utils.getRndInteger(300, 800)
@@ -145,8 +141,9 @@ async function runCheatBAT () {
         execSync(`xdotool key Control_L+t && sleep 1`)
         await utils.sleep(5000)
         execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5 && xdotool type "https://www.youtube.com/" && sleep 0.5 && xdotool key KP_Enter`)
+        await utils.sleep(4000)
         execSync(`xdotool mousemove 324 638 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(10000)
+        await utils.sleep(15000)
 
         execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
         execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
@@ -542,6 +539,15 @@ async function newRunProfile() {
     let pid = ids.shift()
     if (pid) {
         ids.push(pid)
+
+        let totalRound = totalRoundsForCheatBAT * MAX_PROFILE
+        countRun++
+        if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE) {
+            
+        } else {
+            runCheatBAT(pid)
+            return
+        }
         // if (countRoundsForCheckBAT >= totalRoundsForCheckBAT * MAX_PROFILE && isReportBAT) {
         //     closeChrome()
         //     isCheckingBAT = true

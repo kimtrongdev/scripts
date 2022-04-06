@@ -203,29 +203,9 @@ async function processHomePage(action){
 }
 
 async function preWatchingVideo(action){
-    await sleep(randomRanger(5000, 10000))
-    let randomScroll = randomRanger(0,8)
-
+    await sleep(randomRanger(20000, 30000))
     let positionSize = Number(action.positionSize)
-    let scroll1Sizes = [1033, 1133, 1233, 1333]
     let closeSizes = [1025, 1125, 1225, 1325]
-
-    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-    await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
-    await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
-    await sleep(5000)
-    await userScroll(action.pid, randomScroll)
-
-    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-    await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
-    await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
-    await sleep(5000)
-    randomScroll = randomRanger(0,8)
-    await userScroll(action.pid, randomScroll)
 
     await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
     await sleep(3000)
