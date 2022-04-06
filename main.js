@@ -6,10 +6,8 @@ const isReportBAT = false
 
 const totalRoundForChangeProxy = 5
 const totalRoundsForCheckBAT = 6
-let countRoundsForCheckBAT = 0
 
 let countRun = 0
-let countNews = 0
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
@@ -72,16 +70,6 @@ async function profileRunningManage() {
             utils.log('profileRunningManage')
 
             if (MAX_CURRENT_ACC > runnings.length) {
-                if (countNews != null) {
-                    if (countNews == MAX_PROFILE) {
-                        countNews = null
-                        enableBAT()
-                        return
-                    } else {
-                        countNews++
-                    }
-                }
-
                 if (ids.length < MAX_PROFILE) {
                     newProfileManage()
                 } else {
@@ -123,136 +111,12 @@ function getProfileIds() {
     })
 }
 
-async function loadProfileBAT() {
-    let pids = await getProfileIds()
-
-    async function execNewTab () {
-        // new tab
-        execSync(`xdotool key Control_L+t && sleep 1`)
-        await utils.sleep(6000)
-        //scroll to ads 2th
-        execSync(`xdotool mousemove 1034 792 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-        execSync(`xdotool mousemove 1034 312 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(3000)
-        //click on ads 2th
-        let xPos = utils.getRndInteger(300, 800)
-        let yPos = utils.getRndInteger(380, 540)
-        execSync(`xdotool mousemove ${xPos} ${yPos} && sleep 1 && xdotool click 1 && sleep 1`)
-
-        // handle view news or ads
-        await utils.sleep(2000)
-        let pageNumber = Math.ceil(utils.getRndInteger(5, 15) / 5)
-        while (pageNumber > 0) {
-            execSync(`xdotool key Page_Down && sleep 1`)
-            pageNumber--
-        }
-    }
-
-    for await (let pid of pids) {
-        let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", pid + '')}"`
-        exec(cmd2)
-        await utils.sleep(10000)
-        execSync(`xdotool key Escape`)
-        // handle view ads
-        await execNewTab()
-        await execNewTab()
-
-        // click icon
-        execSync(`xdotool mousemove 863 82 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(15000)
-
-        // double click
-        execSync(`xdotool mousemove 710 198 && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(2000)
-        // copy bat data
-        execSync(`xdotool key Control_L+c && sleep 1`)
-        await utils.sleep(1000)
-
-        let currentBat = ''
-        const clipboardy = require('clipboardy');
-        currentBat = clipboardy.readSync()
-        console.log('currentBat', currentBat)
-        currentBat = Number(currentBat)
-        
-        if (currentBat) {
-            request_api.reportCurrentBAT({ bat: currentBat, pid })
-        }
-
-        execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
-        execSync(`xdotool mousemove 1025 46 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(2000)
-    }
-    isCheckingBAT = false
-}
-
-async function enableBAT(customPid = '') {
-    if (!isAutoEnableReward) {
-        isCheckingBAT = false
-        return
-    }
-    closeChrome()
-    await utils.sleep(2000)
-    isCheckingBAT = true
-    let pids = []
-    if (customPid) {
-        pids = [customPid] 
-    } else {
-        pids = await getProfileIds()
-    }
-
-    for await (let pid of pids) {
-        startDisplay(pid)
-        await utils.sleep(3000)
-        let cmd2 = `${BROWSER} --window-size="1000,1000" --window-position="0,0" --user-data-dir="${path.resolve("profiles", pid + '')}"`
-        exec(cmd2)
-        await utils.sleep(7000)
-        sendEnter(pid)
-
-        // click menu browser
-        execSync(`xdotool mousemove 1017 80 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(3000)
-        // click brave reward
-        execSync(`xdotool mousemove 773 218 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(5000)
-        // click start using btn
-        execSync(`xdotool mousemove 385 574 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-
-        // click skip
-        let count = 0
-        while (count <= 10) {
-            execSync(`xdotool mousemove 488 682 && sleep 1 && xdotool click 1 && sleep 1`)
-            count++
-        }
-
-        // click setting ads/h
-        execSync(`xdotool mousemove 568 381 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-        // click selection
-        execSync(`xdotool mousemove 638 458 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(1000)
-        // click 10ads/h
-        execSync(`xdotool mousemove 148 713 && sleep 1 && xdotool click 1 && sleep 1`)
-
-        await utils.sleep(1000)
-        execSync(`xdotool key Control_L+t && sleep 1`)
-        await utils.sleep(3000)
-        execSync(`xdotool mousemove 1033 818 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(2000)
-        execSync(`xdotool mousemove 543 650 && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(5000)
-        closeChrome(pid)
-    }
-    isCheckingBAT = false
-}
-
 async function startChromeAction(action) {
     let widthSizes = [1000, 1100, 1200, 1300]
     let userProxy = ''
-    let positionSize = action.isNew ? 1 : utils.getRndInteger(0, 3)
+    let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 3)
     let screenWidth = widthSizes[positionSize]
-    let screenHeight = action.isNew ? 1100 : utils.getRndInteger(950, 1200)
+    let screenHeight = action.isNew ? 1000 : utils.getRndInteger(950, 1200)
 
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
@@ -382,6 +246,11 @@ async function loginProfileChrome(profile) {
         action.pid = profile.id
         action.id = 'login'
         action.isNew = true
+
+        if (isAutoEnableReward) {
+            action.enableBAT = true
+        }
+        
         await startChromeAction(action)
     }
     catch (e) {
@@ -505,18 +374,15 @@ async function newRunProfile() {
     let pid = ids.shift()
     if (pid) {
         ids.push(pid)
-        if (countRoundsForCheckBAT >= totalRoundsForCheckBAT * MAX_PROFILE && isReportBAT) {
-            closeChrome()
-            isCheckingBAT = true
-            countRoundsForCheckBAT = 0
-            loadProfileBAT()
-            return 
-        } else {
-            countRoundsForCheckBAT++
-        }
-
         try {
             let action = await getScriptData(pid, true)
+
+            let totalRound = totalRoundsForCheckBAT * MAX_PROFILE
+            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && isReportBAT) {
+                console.log('check BAT')
+                action.checkBAT = true
+            }
+
             if (action && action.script_code) {
                 await startChromeAction(action)
             }
@@ -818,10 +684,6 @@ function initExpress() {
                 req.query.msg = req.query.msg == "OK" ? undefined : req.query.msg
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
                 backup(req.query.pid,login)
-                if (isAutoEnableReward) {
-                    isCheckingBAT = true
-                    enableBAT(req.query.pid)
-                }
             }
             else {
                 utils.log(req.query.pid, 'login error', req.query.msg)
@@ -930,7 +792,24 @@ function initExpress() {
                 clipboardy.writeSync(req.query.str)
             }
 
-            if (req.query.action == 'NEW_TAB') {
+            if (req.query.action == 'COPY_BAT') {
+                execSync(`xdotool key Control_L+c && sleep 1`)
+                await utils.sleep(1000)
+
+                let currentBat = ''
+                const clipboardy = require('clipboardy');
+                currentBat = clipboardy.readSync()
+                console.log('currentBat', currentBat)
+                currentBat = Number(currentBat)
+                
+                if (currentBat) {
+                    request_api.reportCurrentBAT({ bat: currentBat, pid: req.query.pid })
+                }
+            }
+            else if (req.query.action == 'DOUBLE_CLICK') {
+                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+            }
+            else if (req.query.action == 'NEW_TAB') {
                 execSync(`xdotool key Control_L+t && sleep 1`)
             } else if (req.query.action == 'RELOAD_PAGE') {
                 execSync(`xdotool key F5 && sleep 1`)

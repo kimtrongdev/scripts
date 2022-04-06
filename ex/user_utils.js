@@ -1,3 +1,74 @@
+async function trickAds (action) {
+    let randomScroll = randomRanger(0,8)
+    let positionSize = Number(action.positionSize)
+    let scroll1Sizes = [1033, 1133, 1233, 1333]
+    
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await sleep(3000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
+    await sleep(2000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
+    await sleep(5000)
+    await userScroll(action.pid, randomScroll)
+
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await sleep(3000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
+    await sleep(2000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
+    await sleep(5000)
+    randomScroll = randomRanger(0,8)
+    await userScroll(action.pid, randomScroll)
+}
+
+async function checkBAT (action) {
+    // click icon
+    await updateUserInput(action.pid,'CLICK', 863,82,0,0,"",'click')
+    await sleep(15000)
+
+    // double click
+    await updateUserInput(action.pid,'DOUBLE_CLICK', 710,198,0,0,"",'click')
+    await sleep(2000)
+    // copy bat data
+    await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')
+}
+
+async function enableBAT (action) {
+    // click menu browser
+    await updateUserInput(action.pid,'CLICK', 1017,80,0,0,"",'click')
+    await sleep(3000)
+    // click brave reward
+    await updateUserInput(action.pid,'CLICK', 773,218,0,0,"",'click')
+    await sleep(5000)
+    // click start using btn
+    await updateUserInput(action.pid,'CLICK', 385,574,0,0,"",'click')
+    await sleep(1000)
+
+    // click skip
+    let count = 0
+    while (count <= 10) {
+        await updateUserInput(action.pid,'CLICK', 488,682,0,0,"",'click')
+        count++
+    }
+
+    // click setting ads/h
+    await updateUserInput(action.pid,'CLICK', 568,381,0,0,"",'click')
+    await sleep(1000)
+    // click selection
+    await updateUserInput(action.pid,'CLICK', 638,458,0,0,"",'click')
+    await sleep(1000)
+    // click 10ads/h
+    await updateUserInput(action.pid,'CLICK', 148,713,0,0,"",'click')
+
+    await sleep(1000)
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'click')
+    await sleep(3000)
+    await updateUserInput(action.pid,'CLICK', 1033,818,0,0,"",'click')
+    await sleep(2000)
+    // click show brave ads
+    await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
+}
+
 function reportScript(action) {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: { isScriptReport: true, service_id: action._id, pid: action.pid }}, function (response) {
