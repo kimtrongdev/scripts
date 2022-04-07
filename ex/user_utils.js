@@ -20,10 +20,10 @@ var newsNames = [
   ]
 
 async function handleBeforeTrickAds (action) {
-    function viewNews () {
+    async function viewNews () {
         await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
         let randomPoSite = randomRanger(0, newsNames.length - 1)
-        await goToLocation(action.pid, newsNames[randomPoSite])
+        await goToLocation(action.pid, `https://www.${newsNames[randomPoSite]}/`)
         await sleep(4000)
         let randomScroll = randomRanger(0,10)
         await userScroll(action.pid, randomScroll)
@@ -33,32 +33,41 @@ async function handleBeforeTrickAds (action) {
     }
 
     let count = 0
-    while (count <= Number(action.brave_view_news_count)) {
+    while (count < Number(action.brave_view_news_count)) {
         await viewNews()
         count++ 
     }
 
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await goToLocation(action.pid, 'https://www.youtube.com/')
-    await updateUserInput(action.pid,'CLICK', 500,300,0,0,"",'click')
+    await sleep(8000)
+    await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
 
-    await sleep(randomRanger(5000, 10000))
+    await sleep(randomRanger(10000, 15000))
     let positionSize = Number(action.positionSize)
     let closeSizes = [1025, 1125, 1225, 1325]
 
-    if (action.checkBAT) {
-       await checkBAT(action)
-    }
-    else if (action.enableBAT) {
+    if (action.enableBAT) {
         await enableBAT(action)
+        await trickAds(action)
     } else {
         await trickAds(action)
+        await checkBAT(action)
     }
+
+    // if (action.checkBAT) {
+    //    await checkBAT(action)
+    // }
+    // else if (action.enableBAT) {
+    //     await enableBAT(action)
+    // } else {
+    //     await trickAds(action)
+    // }
 
     await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
     await sleep(3000)
     await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
-    reportScript(action)
+   // reportScript(action)
 }
 
 async function trickAds (action) {
@@ -68,18 +77,28 @@ async function trickAds (action) {
 
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+    await sleep(7000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
     await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
-    await sleep(5000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+    await sleep(2000)
+    // click on news
+    await updateUserInput(action.pid,'CLICK', 650, 400,0,0,"",'click')
+    await sleep(3000)
     await userScroll(action.pid, randomScroll)
 
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],923,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+    await sleep(7000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
     await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],390,0,0,"",'click')
-    await sleep(5000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+    await sleep(2000)
+
+    await updateUserInput(action.pid,'CLICK', 650, 400,0,0,"",'click')
+    await sleep(3000)
     randomScroll = randomRanger(0,8)
     await userScroll(action.pid, randomScroll)
 }
@@ -102,8 +121,9 @@ async function checkBAT (action) {
     // copy bat data
     let rs = await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')
     if (rs.disable_ads || rs.enable_ads) {
-        let xPos = []
-        await updateUserInput(action.pid,'CLICK', xPos[positionSize],390,0,0,"",'click')
+        let xPos = [638, 654, 702, 754]
+        await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
+        await sleep(3000)
     }
 }
 
@@ -141,7 +161,7 @@ async function enableBAT (action) {
     await sleep(2000)
     // click show brave ads
     await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
-    await sleep(20000)
+    await sleep(25000)
 }
 
 function reportScript(action) {
