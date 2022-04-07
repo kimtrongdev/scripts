@@ -1,11 +1,11 @@
 // config file
 const TIME_REPORT = 110000
-let isCheckingBAT = false
+//let isCheckingBAT = false
 const isAutoEnableReward = true
-const isReportBAT = false
+//const isReportBAT = false
 
 const totalRoundForChangeProxy = 5
-const totalRoundsForCheckBAT = 6
+//const totalRoundsForCheckBAT = 6
 
 let countRun = 0
 require('log-timestamp')
@@ -66,7 +66,7 @@ const LOCAL_PORT = 2000
 async function profileRunningManage() {
     try {
         await checkRunningProfiles()
-        if (!isCheckingBAT) {
+        //if (!isCheckingBAT) {
             utils.log('profileRunningManage')
 
             if (MAX_CURRENT_ACC > runnings.length) {
@@ -77,7 +77,7 @@ async function profileRunningManage() {
                     newRunProfile()
                 }
             }
-        }
+        //}
     }
     catch (e) {
         utils.log('profileRunningManage err: ', e)
@@ -379,11 +379,11 @@ async function newRunProfile() {
         try {
             let action = await getScriptData(pid, true)
 
-            let totalRound = totalRoundsForCheckBAT * MAX_PROFILE
-            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && isReportBAT && countRun > MAX_PROFILE) {
-                console.log('check BAT')
-                action.checkBAT = true
-            }
+            // let totalRound = totalRoundsForCheckBAT * MAX_PROFILE
+            // if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && isReportBAT && countRun > MAX_PROFILE) {
+            //     console.log('check BAT')
+            //     action.checkBAT = true
+            // }
 
             if (action && action.script_code) {
                 await startChromeAction(action)
@@ -406,7 +406,12 @@ async function getScriptData(pid, isNewProxy) {
                 console.log('Load new proxy for pid')
             }
 
-            proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+            if (isLoadNewProxy) {
+                proxy[pid] = undefined
+                await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+            } else {
+                proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+            }
         }
         let startTime = Date.now()
         let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
