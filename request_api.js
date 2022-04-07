@@ -12,8 +12,14 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
-    reportCurrentBAT: async function reportCurrentBAT({ bat, pid }) {
-        return await rq({method: 'POST', uri: SUB_URL + '/api/profile/report-current-bat',body: { pid: pid, bat: bat }, json: true})
+    updateProfileData: async function updateProfileData(data) {
+        return await rq({method: 'POST', uri: SUB_URL + '/api/profile/update-data', body: data, json: true})
+    },
+    getBraveInfo: async function (pid) {
+        return await rq({uri: SUB_URL + '/api/profile/get-brave-info?pid='+pid, json: true})
+    },
+    getRandomKeyWord: async function getRandomKeyWord() {
+        return await rq({uri: 'https://random-data-api.com/api/commerce/random_commerce',json: true})
     },
     reportScript: async function reportScript(pid, serviceId = '', status = true) {
         return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})

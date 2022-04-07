@@ -1,3 +1,66 @@
+var newsNames = [
+    "cnn.com",
+    "theguardian.com",
+    "news18.com",
+    "kyma.com",
+    "inquirer.com",
+    "npr.org",
+    "thehindu.com",
+    "politico.com",
+    "nbcnews.com",
+    "click2houston.com",
+    "kktv.com",
+    "wsbtv.com",
+    "al.com",
+    "fox5atlanta.com",
+    "sltrib.com",
+    "pennlive.com",
+    "kiro7.com",
+    "wsfa.com",
+  ]
+
+async function handleBeforeTrickAds (action) {
+    function viewNews () {
+        await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+        let randomPoSite = randomRanger(0, newsNames.length - 1)
+        await goToLocation(action.pid, newsNames[randomPoSite])
+        await sleep(4000)
+        let randomScroll = randomRanger(0,10)
+        await userScroll(action.pid, randomScroll)
+        await sleep(2000)
+        await userScroll(action.pid, randomScroll)
+        await sleep(2000)
+    }
+
+    let count = 0
+    while (count <= Number(action.brave_view_news_count)) {
+        await viewNews()
+        count++ 
+    }
+
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await goToLocation(action.pid, 'https://www.youtube.com/')
+    await updateUserInput(action.pid,'CLICK', 500,300,0,0,"",'click')
+
+    await sleep(randomRanger(5000, 10000))
+    let positionSize = Number(action.positionSize)
+    let closeSizes = [1025, 1125, 1225, 1325]
+
+    if (action.checkBAT) {
+       await checkBAT(action)
+    }
+    else if (action.enableBAT) {
+        await enableBAT(action)
+    } else {
+        await trickAds(action)
+    }
+
+    await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
+    await sleep(3000)
+    await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
+    reportScript(action)
+}
+
 async function trickAds (action) {
     let randomScroll = randomRanger(0,8)
     let positionSize = Number(action.positionSize)
@@ -24,16 +87,24 @@ async function trickAds (action) {
 async function checkBAT (action) {
     let positionSize = Number(action.positionSize)
     // click menu
-    let iconPosition = [1019, 1118, 1217, 1318]
-    await updateUserInput(action.pid,'CLICK', iconPosition[positionSize],82,0,0,"",'click')
-    await sleep(8000)
+    // let iconPosition = [1019, 1118, 1217, 1318]
+    // await updateUserInput(action.pid,'CLICK', iconPosition[positionSize],82,0,0,"",'click')
+    // await sleep(8000)
+
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await goToLocation(action.pid,'brave://rewards/')
+    await sleep(3000)
 
     // double click
     let textBAT = [946, 958, 1012, 1062]
-    await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],242,0,0,"",'click')
+    await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],299,0,0,"",'click')
     await sleep(2000)
     // copy bat data
-    await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')
+    let rs = await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')
+    if (rs.disable_ads || rs.enable_ads) {
+        let xPos = []
+        await updateUserInput(action.pid,'CLICK', xPos[positionSize],390,0,0,"",'click')
+    }
 }
 
 async function enableBAT (action) {
@@ -70,7 +141,7 @@ async function enableBAT (action) {
     await sleep(2000)
     // click show brave ads
     await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
-    await sleep(4000)
+    await sleep(20000)
 }
 
 function reportScript(action) {

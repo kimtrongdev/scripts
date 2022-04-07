@@ -126,7 +126,7 @@ async function startChromeAction(action) {
     let windowSize = is_show_ui ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
@@ -137,6 +137,8 @@ async function startChromeAction(action) {
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
         utils.log('systemConfig', systemConfig);
+        Object.assign(action, systemConfig)
+
         action.mobile_percent = systemConfig.browser_mobile_percent
         active_devices = systemConfig.active_devices || []
         if (active_devices.length) {
@@ -378,7 +380,7 @@ async function newRunProfile() {
             let action = await getScriptData(pid, true)
 
             let totalRound = totalRoundsForCheckBAT * MAX_PROFILE
-            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && isReportBAT) {
+            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && isReportBAT && countRun > MAX_PROFILE) {
                 console.log('check BAT')
                 action.checkBAT = true
             }
@@ -803,7 +805,23 @@ function initExpress() {
                 currentBat = Number(currentBat)
                 
                 if (currentBat) {
-                    request_api.reportCurrentBAT({ bat: currentBat, pid: req.query.pid })
+                    let braveInfo = await request_api.getBraveInfo(req.query.pid)
+                    if (braveInfo) {
+                        if (braveInfo.total_bat) {
+                            if (!braveInfo.is_disabled_ads) {
+                                if (braveInfo.total_bat == currentBat) {
+                                    await request_api.updateProfileData({ is_disabled_ads: true, pid: req.query.pid, count_brave_rounds: 0 })
+                                    return res.send({ disable_ads: true })
+                                }
+                            } else {
+                                if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
+                                    await request_api.updateProfileData({ is_disabled_ads: false, pid: req.query.pid })
+                                    return res.send({ enable_ads: true })
+                                }
+                            }
+                        }
+                    }
+                    await request_api.updateProfileData({ total_bat: currentBat, pid: req.query.pid, '$inc': { count_brave_rounds: 1} })
                 }
             }
             else if (req.query.action == 'DOUBLE_CLICK') {
