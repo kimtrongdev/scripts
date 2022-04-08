@@ -12,6 +12,9 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    getProxyV4: async function getProxyV4() {
+        return await rq({uri: SUB_URL + '/api/proxy/get-proxy-v4', json: true})
+    },
     updateProfileData: async function updateProfileData(data) {
         return await rq({method: 'POST', uri: SUB_URL + '/api/profile/update-data', body: data, json: true})
     },

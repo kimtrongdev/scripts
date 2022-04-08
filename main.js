@@ -4,7 +4,7 @@ const TIME_REPORT = 110000
 const isAutoEnableReward = true
 //const isReportBAT = false
 
-const totalRoundForChangeProxy = 5
+let totalRoundForChangeProxy = 5
 //const totalRoundsForCheckBAT = 6
 
 let countRun = 0
@@ -125,8 +125,8 @@ async function startChromeAction(action) {
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
-        action.proxy_username = proxy[action.pid].username
-        action.proxy_password = proxy[action.pid].password
+        //action.proxy_username = proxy[action.pid].username
+        //action.proxy_password = proxy[action.pid].password
     }
 
     action.backup = BACKUP
@@ -134,6 +134,10 @@ async function startChromeAction(action) {
     // kien code
     if(action.mobile_percent === undefined || action.mobile_percent === null){
         let systemConfig = await request_api.getSystemConfig();
+        if (systemConfig.total_rounds_for_change_proxy) {
+            totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
+        }
+        
         utils.log('systemConfig', systemConfig);
         Object.assign(action, systemConfig)
 
@@ -394,10 +398,13 @@ async function getScriptData(pid, isNewProxy) {
             }
 
             if (isLoadNewProxy) {
-                proxy[pid] = undefined
-                await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-            } else {
-                proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                let proxyV4 = await request_api.getProxyV4()
+                if (proxyV4 && proxyV4.server) {
+                    proxy[pid] = proxyV4
+                } else {
+                    console.log('Cannot get proxy')
+                    return null
+                }
             }
         }
         let startTime = Date.now()
