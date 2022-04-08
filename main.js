@@ -66,18 +66,16 @@ const LOCAL_PORT = 2000
 async function profileRunningManage() {
     try {
         await checkRunningProfiles()
-        //if (!isCheckingBAT) {
-            utils.log('profileRunningManage')
+        utils.log('profileRunningManage')
 
-            if (MAX_CURRENT_ACC > runnings.length) {
-                if (ids.length < MAX_PROFILE) {
-                    newProfileManage()
-                } else {
-                    countRun++
-                    newRunProfile()
-                }
+        if (MAX_CURRENT_ACC > runnings.length) {
+            if (ids.length < MAX_PROFILE) {
+                newProfileManage()
+            } else {
+                countRun++
+                newRunProfile()
             }
-        //}
+        }
     }
     catch (e) {
         utils.log('profileRunningManage err: ', e)
@@ -223,12 +221,9 @@ async function startChromeAction(action) {
                 exec(cmdRun)
             } else {
                 await utils.sleep(5000)
-                // enter for asking default
                 sendEnter(action.pid)
                 await utils.sleep(8000)
             }
-
-            // setChromeSize(action.pid)
             utils.log('process login')
         }
         else {
@@ -237,7 +232,6 @@ async function startChromeAction(action) {
             exec(run)
             await utils.sleep(8000)
         }
-        // if (fs.existsSync('ex.zip')) execSync('rm -rf ex quality')
     }
 }
 
@@ -378,13 +372,6 @@ async function newRunProfile() {
         ids.push(pid)
         try {
             let action = await getScriptData(pid, true)
-
-            // let totalRound = totalRoundsForCheckBAT * MAX_PROFILE
-            // if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && isReportBAT && countRun > MAX_PROFILE) {
-            //     console.log('check BAT')
-            //     action.checkBAT = true
-            // }
-
             if (action && action.script_code) {
                 await startChromeAction(action)
             }
@@ -503,13 +490,13 @@ async function running() {
 
 function initDir() {
     checkToUpdate()
-    if (!fs.existsSync(path.resolve('logscreen'))) {
-        fs.mkdirSync(path.resolve('logscreen'));
-    }
+    // if (!fs.existsSync(path.resolve('logscreen'))) {
+    //     fs.mkdirSync(path.resolve('logscreen'));
+    // }
 
-    if (!fs.existsSync(path.resolve('logs'))) {
-        fs.mkdirSync(path.resolve('logs'));
-    }
+    // if (!fs.existsSync(path.resolve('logs'))) {
+    //     fs.mkdirSync(path.resolve('logs'));
+    // }
 
     if (!fs.existsSync('screen')) {
         fs.mkdirSync('screen');
@@ -523,9 +510,9 @@ function initDir() {
         fs.mkdirSync('error');
     }
 
-    if (!fs.existsSync('backup')) {
-        fs.mkdirSync('backup');
-    }
+    // if (!fs.existsSync('backup')) {
+    //     fs.mkdirSync('backup');
+    // }
 }
 
 async function start() {
@@ -816,6 +803,7 @@ function initExpress() {
                             if (!braveInfo.is_disabled_ads) {
                                 if (braveInfo.total_bat == currentBat) {
                                     await request_api.updateProfileData({ is_disabled_ads: true, pid: req.query.pid, count_brave_rounds: 0 })
+                                    await request_api.getProfileProxy(req.query.pid, PLAYLIST_ACTION.WATCH, true)
                                     return res.send({ disable_ads: true })
                                 }
                             } else {

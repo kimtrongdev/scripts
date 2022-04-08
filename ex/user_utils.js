@@ -19,12 +19,28 @@ var newsNames = [
     "wsfa.com",
   ]
 
+async function scrollForViewAds (action) {
+    let positionSize = Number(action.positionSize)
+    let scroll1Sizes = [1033, 1133, 1233, 1333]
+    await sleep(1000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+    await sleep(12000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+    await sleep(4000)
+    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+    await sleep(2000)
+}
+
 async function handleBeforeTrickAds (action) {
+    let positionSize = Number(action.positionSize)
     async function viewNews () {
         await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+
+        await scrollForViewAds(action)
+
         let randomPoSite = randomRanger(0, newsNames.length - 1)
         await goToLocation(action.pid, `https://www.${newsNames[randomPoSite]}/`)
-        await sleep(4000)
+        await sleep(7000)
         let randomScroll = randomRanger(0,10)
         await userScroll(action.pid, randomScroll)
         await sleep(2000)
@@ -39,19 +55,21 @@ async function handleBeforeTrickAds (action) {
     }
 
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+
+    await scrollForViewAds(action)
+
     await goToLocation(action.pid, 'https://www.youtube.com/')
     await sleep(8000)
     await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
 
     await sleep(randomRanger(10000, 15000))
-    let positionSize = Number(action.positionSize)
     let closeSizes = [1025, 1125, 1225, 1325]
 
     if (action.enableBAT) {
         await enableBAT(action)
         await trickAds(action)
     } else {
-        await trickAds(action)
+        //await trickAds(action)
         await checkBAT(action)
     }
 
