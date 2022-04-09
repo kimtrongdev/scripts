@@ -174,6 +174,7 @@ async function initAction(){
         if(action.mobile) await switchMobile(action)
 
         if (action.id == 'google_news') {
+            await sleep(3000)
             await goToLocation(action.pid, 'https://www.google.com/')
         }
         else if (action.id == 'search') {

@@ -137,7 +137,7 @@ async function startChromeAction(action) {
         if (systemConfig.total_rounds_for_change_proxy) {
             totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
         }
-        
+
         utils.log('systemConfig', systemConfig);
         Object.assign(action, systemConfig)
 
@@ -342,7 +342,13 @@ async function newProfileManage() {
             // copy main to clone profile
             let profile = newProfile.profile
             if (proxy) {
-                proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
+                let proxyV4 = await request_api.getProxyV4()
+                if (proxyV4 && proxyV4.server) {
+                    proxy[profile.id] = proxyV4
+                } else {
+                    console.log('Cannot get proxy')
+                    return null
+                }
                 utils.log('pid', profile.id, 'proxy', proxy[profile.id])
                 if (!proxy[profile.id]) {
                     utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
@@ -353,7 +359,7 @@ async function newProfileManage() {
 
             let browser = await pauseWatchingProfile(profile.id, ADDNEW_ACTION)
             if (browser) {
-                runnings.push({pid: profile.id})
+                runnings.push({pid: profile.id, lastReport: Date.now()})
                 ids.push(profile.id)
                 utils.log('addProfile: ', profile)
                 await loginProfileChrome(profile)
@@ -397,14 +403,16 @@ async function getScriptData(pid, isNewProxy) {
                 console.log('Load new proxy for pid')
             }
 
-            if (isLoadNewProxy) {
-                let proxyV4 = await request_api.getProxyV4()
-                if (proxyV4 && proxyV4.server) {
-                    proxy[pid] = proxyV4
-                } else {
-                    console.log('Cannot get proxy')
-                    return null
-                }
+            let queryData = null
+            if (proxy[pid]) {
+                queryData = { api_id: proxy[pid].api_id, isLoadNewProxy: isLoadNewProxy }
+            }
+            let proxyV4 = await request_api.getProxyV4(queryData)
+            if (proxyV4 && proxyV4.server) {
+                proxy[pid] = proxyV4
+            } else {
+                console.log('Cannot get proxy')
+                return null
             }
         }
         let startTime = Date.now()
