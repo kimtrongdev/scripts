@@ -125,8 +125,8 @@ async function startChromeAction(action) {
     if (proxy && proxy[action.pid]) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
-        //action.proxy_username = proxy[action.pid].username
-        //action.proxy_password = proxy[action.pid].password
+        action.proxy_username = proxy[action.pid].username
+        action.proxy_password = proxy[action.pid].password
     }
 
     action.backup = BACKUP
@@ -342,13 +342,7 @@ async function newProfileManage() {
             // copy main to clone profile
             let profile = newProfile.profile
             if (proxy) {
-                let proxyV4 = await request_api.getProxyV4()
-                if (proxyV4 && proxyV4.server) {
-                    proxy[profile.id] = proxyV4
-                } else {
-                    console.log('Cannot get proxy')
-                    return null
-                }
+                proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
                 utils.log('pid', profile.id, 'proxy', proxy[profile.id])
                 if (!proxy[profile.id]) {
                     utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
@@ -403,16 +397,11 @@ async function getScriptData(pid, isNewProxy) {
                 console.log('Load new proxy for pid')
             }
 
-            let queryData = null
-            if (proxy[pid]) {
-                queryData = { api_id: proxy[pid].api_id, isLoadNewProxy: isLoadNewProxy }
-            }
-            let proxyV4 = await request_api.getProxyV4(queryData)
-            if (proxyV4 && proxyV4.server) {
-                proxy[pid] = proxyV4
+            if (isLoadNewProxy) {
+                //proxy[pid] = undefined
+                proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             } else {
-                console.log('Cannot get proxy')
-                return null
+                proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
         }
         let startTime = Date.now()
