@@ -132,17 +132,25 @@ async function checkBAT (action) {
     await goToLocation(action.pid,'brave://rewards/')
     await sleep(3000)
 
+    let xPos = [638, 654, 702, 754]
+    await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
+    await sleep(2000)
+    await updateUserInput(action.pid,'RELOAD_PAGE',0,0,0,0,"",'reload')
+    await sleep(3000)
     // double click
     let textBAT = [946, 958, 1012, 1062]
     await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],299,0,0,"",'click')
     await sleep(2000)
+
     // copy bat data
     let rs = await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')
-    if (rs.disable_ads || rs.enable_ads) {
-        let xPos = [638, 654, 702, 754]
-        await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
-        await sleep(3000)
-    }
+
+    await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
+    // if (rs.disable_ads || rs.enable_ads) {
+    //     let xPos = [638, 654, 702, 754]
+    //     await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
+    //     await sleep(3000)
+    // }
 }
 
 async function enableBAT (action) {
@@ -163,14 +171,17 @@ async function enableBAT (action) {
         count++
     }
 
-    // click setting ads/h
-    await updateUserInput(action.pid,'CLICK', 568,381,0,0,"",'click')
-    await sleep(1000)
-    // click selection
-    await updateUserInput(action.pid,'CLICK', 638,458,0,0,"",'click')
-    await sleep(1000)
-    // click 10ads/h
-    await updateUserInput(action.pid,'CLICK', 148,713,0,0,"",'click')
+    // // click setting ads/h
+    // await updateUserInput(action.pid,'CLICK', 568,381,0,0,"",'click')
+    // await sleep(1000)
+    // // click selection
+    // await updateUserInput(action.pid,'CLICK', 638,458,0,0,"",'click')
+    // await sleep(1000)
+    // // click 10ads/h
+    // await updateUserInput(action.pid,'CLICK', 148,713,0,0,"",'click')
+
+    await updateUserInput(action.pid,'CLICK', 638,380,0,0,"",'click')
+    await sleep(2000)
 
     await sleep(1000)
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'click')

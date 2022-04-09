@@ -801,23 +801,23 @@ function initExpress() {
                 currentBat = Number(currentBat)
                 
                 if (currentBat) {
-                    let braveInfo = await request_api.getBraveInfo(req.query.pid)
-                    if (braveInfo) {
-                        if (braveInfo.total_bat) {
-                            if (!braveInfo.is_disabled_ads) {
-                                if (braveInfo.total_bat == currentBat) {
-                                    await request_api.updateProfileData({ is_disabled_ads: true, pid: req.query.pid, count_brave_rounds: 0 })
-                                    await request_api.getProfileProxy(req.query.pid, PLAYLIST_ACTION.WATCH, true)
-                                    return res.send({ disable_ads: true })
-                                }
-                            } else {
-                                if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
-                                    await request_api.updateProfileData({ is_disabled_ads: false, pid: req.query.pid })
-                                    return res.send({ enable_ads: true })
-                                }
-                            }
-                        }
-                    }
+                    // let braveInfo = await request_api.getBraveInfo(req.query.pid)
+                    // if (braveInfo) {
+                    //     if (braveInfo.total_bat) {
+                    //         if (!braveInfo.is_disabled_ads) {
+                    //             if (braveInfo.total_bat == currentBat) {
+                    //                 await request_api.updateProfileData({ is_disabled_ads: true, pid: req.query.pid, count_brave_rounds: 0 })
+                    //                 await request_api.getProfileProxy(req.query.pid, PLAYLIST_ACTION.WATCH, true)
+                    //                 return res.send({ disable_ads: true })
+                    //             }
+                    //         } else {
+                    //             if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
+                    //                 await request_api.updateProfileData({ is_disabled_ads: false, pid: req.query.pid })
+                    //                 return res.send({ enable_ads: true })
+                    //             }
+                    //         }
+                    //     }
+                    // }
                     await request_api.updateProfileData({ total_bat: currentBat, pid: req.query.pid, '$inc': { count_brave_rounds: 1} })
                 }
             }
