@@ -136,7 +136,8 @@ async function checkBAT (action) {
     await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
     await sleep(2000)
     await updateUserInput(action.pid,'RELOAD_PAGE',0,0,0,0,"",'reload')
-    await sleep(3000)
+    await sleep(2000)
+    await userScroll(action.pid, -5)
     // double click
     let textBAT = [946, 958, 1012, 1062]
     await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],299,0,0,"",'click')

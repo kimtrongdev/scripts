@@ -801,9 +801,20 @@ function initExpress() {
                 currentBat = Number(currentBat)
                 
                 if (currentBat) {
-                    // let braveInfo = await request_api.getBraveInfo(req.query.pid)
+                    let braveInfo = await request_api.getBraveInfo(req.query.pid)
+                    if (braveInfo) {
+                        if (braveInfo.total_bat) {
+                            if (braveInfo.total_bat == currentBat) {
+                                await request_api.getProfileProxy(req.query.pid, PLAYLIST_ACTION.WATCH, true)
+                            }
+                        }
+                    }
                     // if (braveInfo) {
                     //     if (braveInfo.total_bat) {
+                    //         if (braveInfo.total_bat == currentBat) {
+                    //             await request_api.getProfileProxy(req.query.pid, PLAYLIST_ACTION.WATCH, true)
+                    //         }
+
                     //         if (!braveInfo.is_disabled_ads) {
                     //             if (braveInfo.total_bat == currentBat) {
                     //                 await request_api.updateProfileData({ is_disabled_ads: true, pid: req.query.pid, count_brave_rounds: 0 })
