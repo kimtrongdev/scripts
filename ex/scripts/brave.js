@@ -19,6 +19,14 @@ var newsNames = [
   "wsfa.com",
 ]
 
+async function scriptCheckBat(action) {
+  if (!action.checkingBAT) {
+    action.checkingBAT = true
+    await setActionData(action)
+    await handleBeforeTrickAds(action)
+  }
+}
+
 async function handleBraveSetting (action) {
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await goToLocation(action.pid, `brave://settings/shields`)

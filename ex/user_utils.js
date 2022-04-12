@@ -1,5 +1,8 @@
 async function runAction (action) {
-    if (action.id == 'google_news') {
+    if (action.id == 'check_bat') {
+        await scriptCheckBat(action)
+    }
+    else if (action.id == 'google_news') {
         await scriptGoogleNews(action)
     }
     else if (action.id == 'search') {
@@ -11,6 +14,7 @@ async function runAction (action) {
     else if (action.id == 'youtube_sub') {
         action.is_sub = true
         await setActionData(action)
+        await scriptYoutubeSub(action)
     } 
     else if (action.id == 'login') {
         console.log('login')
