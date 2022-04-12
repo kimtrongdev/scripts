@@ -23,7 +23,8 @@ async function userWatch(action){
         if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
             if (channels.length <= action.channel_position) {
-                await updateActionStatus(action.pid, action.id, 0,'end playlist')
+                await reportScript(action)
+                //await updateActionStatus(action.pid, action.id, 0,'end playlist')
                 return
             }
 
@@ -37,7 +38,8 @@ async function userWatch(action){
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
             } else {
-                await updateActionStatus(action.pid, action.id, 0,'end playlist')
+                await reportScript(action)
+                //await updateActionStatus(action.pid, action.id, 0,'end playlist')
             }
             return
         }
@@ -457,7 +459,8 @@ async function afterWatchingVideo(action,finishVideo){
           await setActionData(action) 
 
           if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
-            await updateActionStatus(action.pid, action.id, 0,'end playlist')
+            await reportScript(action)
+            //await updateActionStatus(action.pid, action.id, 0,'end playlist')
             return 
           }
 
