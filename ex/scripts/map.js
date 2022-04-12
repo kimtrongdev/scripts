@@ -53,7 +53,7 @@ async function handleRating (action) {
     let btnSelector = 'div[role="main"] div[data-js-log-root] button img[alt="'+ alt +'"]'
     if (document.querySelector(btnSelector)) {
       await userClick(action.pid, btnSelector)
-      await sleep(8000)
+      await sleep(15000)
       let iframe = document.querySelector('iframe[name="goog-reviews-write-widget"]')
 
       for await (let star of startList[getRating(action)]) {

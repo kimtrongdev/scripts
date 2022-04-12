@@ -1,3 +1,24 @@
+var newsNames = [
+    "cnn.com",
+    "theguardian.com",
+    "news18.com",
+    "kyma.com",
+    "inquirer.com",
+    "npr.org",
+    "thehindu.com",
+    "politico.com",
+    "nbcnews.com",
+    "click2houston.com",
+    "kktv.com",
+    "wsbtv.com",
+    "al.com",
+    "fox5atlanta.com",
+    "sltrib.com",
+    "pennlive.com",
+    "kiro7.com",
+    "wsfa.com",
+]
+
 async function runAction (action) {
     if (action.id == 'check_bat') {
         await scriptCheckBat(action)
@@ -75,12 +96,13 @@ async function initActionData(action) {
     if (action.id == 'check_bat') {
 
     }
-    if (action.id == 'google_news') {
-        await sleep(3000)
-        await goToLocation(action.pid, 'https://www.google.com/')
+    else if (action.id == 'google_news') {
+        let randomPoSite = randomRanger(0, newsNames.length - 1)
+        let link = action.link || `https://www.${newsNames[randomPoSite]}/`
+        await goToLocation(action.pid, link)
     }
     else if (action.id == 'search') {
-        await goToLocation(action.pid, action.keyword)
+        await goToLocation(action.pid, 'https://www.google.com/')
     }
     else if (action.id == 'map') {
         await goToLocation(action.pid,'google.com/maps')

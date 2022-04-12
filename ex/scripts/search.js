@@ -2,21 +2,34 @@ async function scriptSearch(action) {
   try {
     let url = window.location.toString()
       
-    if (url.indexOf('google.com/search?q') > -1) {
-      await sleep(3000)
-      let linkEl = document.querySelector(`#search a[href="${action.link}"]`)
-      if (linkEl) {
-        await userClick(action.pid, '', linkEl)
-      }
-    }
-    else if (url.indexOf(action.link) > -1) {
-      let randomScroll = randomRanger(7, 15)
-      await userScroll(action.pid, randomScroll)
-      await sleep(3000)
-      await userScroll(action.pid, -randomScroll)
+    if (url.indexOf('https://www.google.com/') > -1) {
+      if (action.isSearched) {
+        await sleep(3000)
+        let randomScroll = randomRanger(3,10)
+        await userScroll(action.pid, randomScroll)
+        await reportScript(action)
+      } else {
+        action.isSearched = true
+        await setActionData(action)
 
-      await reportScript(action)
-    } 
+        let rs = await fetch('https://random-data-api.com/api/commerce/random_commerce')
+          .then(response => {
+            console.log('response', response)
+            return response.json()
+          })
+          .then(response => response)
+          .catch(error => {
+            return {
+              product_name: makeName(5)
+            }
+          })
+
+        let key = rs.product_name
+        await userTypeEnter(action.pid,'input[maxLength="2048"]', key)
+      }
+
+      await sleep(60000)
+    }
   } catch (error) {
     
   }

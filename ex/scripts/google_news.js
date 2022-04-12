@@ -1,26 +1,16 @@
-var newsNames = [
-  "cnn.com",
-  "theguardian.com",
-  "news18.com",
-  "kyma.com",
-  "inquirer.com",
-  "npr.org",
-  "thehindu.com",
-  "politico.com",
-  "nbcnews.com",
-  "click2houston.com",
-  "kktv.com",
-  "wsbtv.com",
-  "al.com",
-  "fox5atlanta.com",
-  "sltrib.com",
-  "pennlive.com",
-  "kiro7.com",
-  "wsfa.com",
-]
 
 async function scriptGoogleNews(action) {
   try {
+    await sleep(7000)
+    let randomScroll = randomRanger(0,10)
+    await userScroll(action.pid, randomScroll)
+    await sleep(2000)
+    await userScroll(action.pid, randomScroll)
+    await sleep(2000)
+
+    return
+
+
     let url = window.location.toString()
     
     if (url.indexOf('https://www.google.com/') > -1) {
