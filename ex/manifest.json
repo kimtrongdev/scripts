@@ -23,6 +23,7 @@
         "./scripts/map.js",
         "./scripts/search.js",
         "./scripts/google_news.js",
+        "./scripts/youtube_sub.js",
         "./scripts/brave.js"
       ]
     },

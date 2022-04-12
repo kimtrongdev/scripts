@@ -47,7 +47,7 @@ async function scriptGoogleNews(action) {
           })
 
         let key = rs.product_name
-        await userTypeEnter(action.pid,'input', key)
+        await userTypeEnter(action.pid,'input[maxLength="2048"]', key)
       }
 
       await sleep(60000)

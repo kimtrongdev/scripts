@@ -172,7 +172,7 @@ async function userLogin(action) {
             await setActionData(action)
             await goToLocation(action.pid, 'https://www.google.com/')
             await sleep(60000)
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             // if (channels.length < action.total_channel_created && btnCreateChannel) {
             //     await userClick(action.pid,'',btnCreateChannel)
             // } else {

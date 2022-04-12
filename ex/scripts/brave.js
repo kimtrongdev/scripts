@@ -20,17 +20,19 @@ var newsNames = [
 ]
 
 async function handleBraveSetting (action) {
+  await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await goToLocation(action.pid, `brave://settings/shields`)
   await sleep(2000)
   //click Fingerprinting blocking
-  await updateUserInput(action.pid,'CLICK', 800,900,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 737, 894,0,0,"",'click')
   // select option
-  await updateUserInput(action.pid,'CLICK', 800,900,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 715,917,0,0,"",'click')
   // click Trackers & ads blocking
-  await updateUserInput(action.pid,'CLICK', 800,900,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 734,698,0,0,"",'click')
   // select option
-  await updateUserInput(action.pid,'CLICK', 800,900,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 726,758,0,0,"",'click')
 
+  await updateUserInput(action.pid,'CLICK',114,49,0,0,"",'go tab')
   await goToLocation(action.pid, 'accounts.google.com')
 }
 

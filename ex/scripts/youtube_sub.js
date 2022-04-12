@@ -33,29 +33,29 @@ async function scriptYoutubeSub(action) {
       await userClick(action.pid, '#search div h3')
     }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending') {
-      await processHomePage(action)
+      await processHomePageSub(action)
     } else if (url.indexOf('youtube.com/feed/history') > -1) {
-      await deleteHistory(action)
+      await deleteHistorySub(action)
       await goToLocation(action.pid, 'https://www.youtube.com//')
       await sleep(60000)
     } else if (url.indexOf('https://www.youtube.com/results') > -1) {
-      await processSearchPage(action)
+      await processSearchPageSub(action)
     }
     else if (url.indexOf('https://www.youtube.com/watch') > -1) {
-      await processWatchPage(action)
+      await processWatchPageSub(action)
     }
     else if (url.indexOf('https://www.youtube.com/playlist?list=') > -1) {
-      await processPlaylistPage(action)
+      await processPlaylistPageSub(action)
     }
     else if (
       url.indexOf('https://www.youtube.com/channel/') > -1 || 
       url.indexOf('https://www.youtube.com/user/') > -1 || 
       url.indexOf('https://www.youtube.com/c/') > -1
     ) {
-      await processWatchChannelPage(action)
+      await processWatchChannelPageSub(action)
     }
     else if (url.indexOf('https://www.youtube.com/create_channel') == 0) {
-      await createChannel(action)
+      await createChannelSub(action)
     }
     else if (url.indexOf('https://myaccount.google.com/') == 0) {
       await goToLocation(action.pid, 'youtube.com//')
@@ -106,25 +106,8 @@ async function scriptYoutubeSub(action) {
   }
 }
 
-async function processHomePage(action) {
+async function processHomePageSub(action) {
   await checkLogin(action)
-  // if(!(await deleteHistory(action))) return
-  // if ((action.channel_position == 0 || action.fisrtStart) && !isNonUser) {
-  //   action.fisrtStart = false
-  //   await setActionData(action)
-  //   await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-  //   return
-  // }
-
-  // if (isNonUser) {
-  //   getPlaylistData(action)
-  //   await setActionData(action)
-  // }
-
-  // if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
-  //     await updateActionStatus(action.pid, action.id, 0,'end playlist')
-  //     return
-  // }
 
   if (action.channel_id) {
     await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id)
@@ -135,31 +118,12 @@ async function processHomePage(action) {
     await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + action.video_id)
     return
   }
-
-  // if (action.preview == "home") {
-  //   await userScroll(action.pid, randomRanger(5, 15))
-  //   await sleep(randomRanger(1000, 5000))
-  //   await userClickRandomVideo(action.pid)
-  // }
-  // else if (action.preview == "search") {
-  //   await userTypeEnter(action.pid, 'input#search', action.keyword)
-  // }
-  // else if (action.home) {
-  //   await processBrowserFeature(action)
-  // }
-  // else if (action.suggest_videos) {
-  //   await userTypeEnter(action.pid, 'input#search', action.suggest_videos)
-  // }
-  // else {
-  //   await userTypeEnter(action.pid, 'input#search', action.video)
-  // }
-
   await sleep(3000)
 }
 
-async function preWatchingVideo(action) {
+async function preWatchingVideoSub(action) {
   await setActionData(action)
-  await skipAds(false, action)
+  await skipAdsSub(false, action)
   action.watch_time = Number(action.sub_time) + 10000 || 30000
   action.sub_time = Number(action.sub_time)
 
@@ -168,18 +132,18 @@ async function preWatchingVideo(action) {
   return true
 }
 
-async function watchingVideo(action) {
+async function watchingVideoSub(action) {
   let url = window.location.toString()
   let interval = 5000
   for (let i = 0; i < action.watch_time;) {
     // trick ads
-    await skipAds(true, action)
+    await skipAdsSub(true, action)
 
     if (i == 0 && url.indexOf('&t=') > -1) {
       await sendKey(action.pid, "0")
     }
 
-    await clickPlayIfPause(action.pid)
+    await clickPlayIfPauseSub(action.pid)
 
     if (action.is_sub && i > action.sub_time && i <= action.sub_time + interval) {
       if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
@@ -210,11 +174,11 @@ async function watchingVideo(action) {
   return true
 }
 
-async function afterWatchingVideo(action) {
+async function afterWatchingVideoSub(action) {
   await reportScript(action)
 }
 
-async function skipAds(watchingCheck, action = {}) {
+async function skipAdsSub(watchingCheck, action = {}) {
   if (!watchingCheck) await sleep(2000)
   while (document.querySelector('.ytp-ad-preview-slot')) {
     action.viewed_ads = true
@@ -268,52 +232,7 @@ async function skipAds(watchingCheck, action = {}) {
   }
 }
 
-async function processBrowserFeature(action) {
-  if (action.home) {
-    await sleep(3000)
-    let scroll = randomRanger(3, 7)
-    for (let i = 0; i < scroll; i++) {
-      await userScroll(action.pid, 10)
-      let video = document.querySelector('ytd-browse[page-subtype="home"] a#thumbnail[href*="' + action.playlist_url + '"]')
-      if (video) {
-        await userClick(action.pid, action.playlist_url, video)
-        return
-      }
-    }
-    if (action.other_videos.length >= CHANNEL_VIDEO_WATCH) {
-      action.home = false
-      await setActionData(action)
-      await userTypeEnter(action.pid, 'input#search', action.video)
-    }
-    else {
-      if (action.channel_videos.length) {
-        let otherVideo = document.querySelector(`${action.channel_videos.map(x => `ytd-browse[page-subtype="home"] a#thumbnail[href*="${x}"]${action.other_videos.map(v => `:not([href*="${v}"])`).join("")}`).join(",")}`)
-        if (otherVideo) {
-          action.other_videos.push(otherVideo.href.split('v=')[1].split('&')[0])
-          await setActionData(action)
-          await userClick(action.pid, otherVideo.href, otherVideo)
-          return
-        }
-      }
-
-      // find channel link
-      if (action.channel_url) {
-        let channel = document.querySelector(`ytd-browse[page-subtype="home"] a#avatar-link[href="${action.channel_url}"]`)
-        if (channel) {
-          await userClick(action.pid, action.channel_url, channel)
-        }
-        else {
-          await goToLocation(action.pid, action.channel_url)
-        }
-      }
-      else {
-        await userTypeEnter(action.pid, 'input#search', action.video)
-      }
-    }
-  }
-}
-
-async function processPlaylistPage(action) {
+async function processPlaylistPageSub(action) {
   let playBtn = document.querySelector('#button > yt-icon > svg > g > path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
   if (playBtn) {
     await userClick(action.pid, '', playBtn)
@@ -322,7 +241,7 @@ async function processPlaylistPage(action) {
   }
 }
 
-async function processSearchPage(action) {
+async function processSearchPageSub(action) {
   let url = window.location.toString()
 
   if (action.preview == "search") {
@@ -471,7 +390,7 @@ async function processSearchPage(action) {
   }
 }
 
-async function processWatchChannelPage(action) {
+async function processWatchChannelPageSub(action) {
   if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
     let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
     await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
@@ -543,132 +462,19 @@ async function processSearchSuggest(action) {
   }
 }
 
-async function processWatchPage(action) {
-  let watchVideo = await preWatchingVideo(action)
+async function processWatchPageSub(action) {
+  let watchVideo = await preWatchingVideoSub(action)
   if (watchVideo) {
-    let finishVideo = await watchingVideo(action)
-    await afterWatchingVideo(action, finishVideo)
+    let finishVideo = await watchingVideoSub(action)
+    await afterWatchingVideoSub(action, finishVideo)
   }
 }
 
-async function getReact(keyword, totalTime) {
-  console.log('getReact', keyword, totalTime)
-  let like = false
-  let dislike = false
-  let sub = false
-  let comment
-  if (Math.random() < (action.like_percent ? action.like_percent / 1000 : LIKE_PERCENT)) {
-    if (Math.random() < 0.95) {
-      // if(Math.random() < 1){
-      like = true
-    }
-    else {
-      dislike = true
-    }
-  }
-
-  let commentPercent = action.like_percent ? action.like_percent / 1000 : document.querySelector('#chatframe') ? COMMENT_PERCENT * 10 : COMMENT_PERCENT
-
-  if (Math.random() < commentPercent) {
-    comment = await getComment(keyword)
-    console.log('GETCOMMENT', comment)
-    comment = comment.data
-  }
-
-  if (Math.random() < VIEW_SUB_PERCENT) {
-    sub = true
-  }
-
-  let likeTime = like || dislike ? randomRanger(10000, totalTime) : 0
-  let commentTime = comment ? randomRanger(10000, totalTime) : 0
-  let subTime = sub ? randomRanger(10000, totalTime) : 0
-
-  let react = { like: like, dislike: dislike, comment: comment, like_time: likeTime, comment_time: commentTime, sub: sub, sub_time: subTime }
-  console.log('react:', react)
-
-  return react
-}
-
-async function LikeOrDisLikeYoutubeVideo(pid, isLike) {
-  try {
-    const likeBtn = Array.from(document.querySelectorAll("#top-level-buttons yt-icon-button#button.style-scope.ytd-toggle-button-renderer.style-text"))
-
-    let index
-    if (isLike) {
-      index = 1
-    } else {
-      index = 2
-    }
-    if (likeBtn.length > 1) {
-      await userClick(pid, `#top-level-buttons ytd-toggle-button-renderer:nth-of-type(${index}) yt-icon-button#button.style-scope.ytd-toggle-button-renderer.style-text`)
-      console.log(index == 0 ? 'like' : 'dislike' + 'OK')
-    } else {
-      console.log("like & dislike button not available")
-    }
-
-  } catch (e) {
-    console.log("LikeOrDisLikeYoutubeVideo pid: ", pid, " err: ", e)
-  }
-}
-
-async function CommentYoutubeVideo(pid, msg) {       // search video or view homepage
-  return;
-  // try {
-  //     console.log('pid: ', pid, ', CommentYoutubeVideo',msg)
-  //     if(!msg) return
-  //     await sleep(2000)
-
-  //     let chatFrame = document.querySelector('#chatframe')
-  //     if(chatFrame){
-  //         if(!chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a')){
-  //             await userTypeEnter(pid,'yt-live-chat-text-input-field-renderer#input',msg,'',chatFrame)
-  //             return
-  //         }
-  //         else{
-  //             // create channel
-  //             let action = (await getActionData()).action
-  //             action.create_channel = true
-  //             await setActionData(action)
-  //             await userClick(pid,'create channel',chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a'),chatFrame)
-  //             return
-  //         }
-  //     }
-
-  //     await userScroll(pid,70)
-
-  //     if(!document.querySelector('#placeholder-area')){
-  //         console.log('error','NO COMMENT SECTION')
-  //         return
-  //     }
-
-  //     await userScrollTo(pid, "#placeholder-area")
-  //     await userClick(pid, "#placeholder-area")
-  //     await sleep(1000)
-
-  //     await userType(pid,"#contenteditable-textarea",msg)
-  //     await sleep(1000)
-
-  //     await userClick(pid, "#submit-button.ytd-commentbox")
-  //     await sleep(2000)
-
-  //     await userScroll(pid,-70)
-
-  // }catch (e) {
-  //     console.log('error','CommentYoutubeVideo',pid)
-  // }
-}
-
-async function clickPlayIfPause(pid) {
-  console.log('clickPlayIfPause')
+async function clickPlayIfPauseSub(pid) {
   let btnPlay = document.querySelector('path[d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"]')
   if (btnPlay) {
-    console.log('info', 'clickPlayIfPause')
     await userClick(pid, 'button.ytp-play-button')
   }
-}
-
-function getCommentKeyword(videoId, keyword) {
-  return keyword.split(' ').filter(x => x != videoId).slice(0, randomRanger(3, 5)).join(' ')
 }
 
 function getTimeFromText(str) {
@@ -688,21 +494,7 @@ function getWatchAdTime(currentTime, minTime, maxTime) {
   return adWatchTime > 0 ? adWatchTime : 0
 }
 
-function removeSuggest() {
-  try {
-    if (action.remove_suggest) {
-      let element = document.querySelector('#columns #secondary #related')
-      if (element) {
-        element.parentNode.removeChild(element)
-      }
-    }
-  }
-  catch (e) {
-    console.log('error', 'removeSuggest', e)
-  }
-}
-
-async function deleteHistory(action) {
+async function deleteHistorySub(action) {
   try {
     let pauseIcon = document.querySelector("a > #button > yt-icon > svg > g > path[d='M11,16H9V8h2V16z M15,8h-2v8h2V8z M12,3c4.96,0,9,4.04,9,9s-4.04,9-9,9s-9-4.04-9-9S7.04,3,12,3 M12,2C6.48,2,2,6.48,2,12 s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2L12,2z']")
     if (!pauseIcon) return
@@ -734,7 +526,7 @@ async function deleteHistory(action) {
   }
 }
 
-async function createChannel(action) {
+async function createChannelSub(action) {
   await sleep(5000)
   for (let i = 0; i < 5; i++) {
     if (document.querySelector('button.create-channel-submit')) break

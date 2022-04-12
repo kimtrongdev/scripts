@@ -65,7 +65,7 @@ const LOCAL_PORT = 2000
 
 async function profileRunningManage() {
     try {
-        await checkRunningProfiles()
+        //await checkRunningProfiles()
         utils.log('profileRunningManage')
 
         if (MAX_CURRENT_ACC > runnings.length) {
@@ -341,6 +341,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
         }
+        console.log('Script data: ', action)
         let startTime = Date.now()
         let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
         runnings.push(actionRecord)
