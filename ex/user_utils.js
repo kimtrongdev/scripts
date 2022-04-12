@@ -125,6 +125,8 @@ function reportScript(action) {
             console.log('response', response)
             Object.assign(action, response)
             await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+            await scrollForViewAds(action)
+            
             await initActionData(action)
             await runAction(action)
         }

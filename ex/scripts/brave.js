@@ -79,15 +79,15 @@ async function handleBeforeTrickAds (action) {
       count++ 
   }
 
-  await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+  // await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
 
-  await scrollForViewAds(action)
+  // await scrollForViewAds(action)
 
-  await goToLocation(action.pid, 'https://www.youtube.com/')
-  await sleep(8000)
-  await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
+  // await goToLocation(action.pid, 'https://www.youtube.com/')
+  // await sleep(8000)
+  // await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
 
-  await sleep(randomRanger(10000, 15000))
+  //await sleep(randomRanger(10000, 15000))
   let closeSizes = [1025, 1125, 1225, 1325]
 
   if (action.enableBAT) {
