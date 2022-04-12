@@ -1,191 +1,130 @@
-var newsNames = [
-    "cnn.com",
-    "theguardian.com",
-    "news18.com",
-    "kyma.com",
-    "inquirer.com",
-    "npr.org",
-    "thehindu.com",
-    "politico.com",
-    "nbcnews.com",
-    "click2houston.com",
-    "kktv.com",
-    "wsbtv.com",
-    "al.com",
-    "fox5atlanta.com",
-    "sltrib.com",
-    "pennlive.com",
-    "kiro7.com",
-    "wsfa.com",
-  ]
-
-async function scrollForViewAds (action) {
-    let positionSize = Number(action.positionSize)
-    let scroll1Sizes = [1033, 1133, 1233, 1333]
-    await sleep(1000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(12000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(4000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(2000)
+async function runAction (action) {
+    if (action.id == 'google_news') {
+        await scriptGoogleNews(action)
+    }
+    else if (action.id == 'search') {
+        await scriptSearch(action)
+    }
+    else if (action.id == 'map') {
+        await scriptMap(action)
+    }
+    else if (action.id == 'youtube_sub') {
+        action.is_sub = true
+        await setActionData(action)
+    } 
+    else if (action.id == 'login') {
+        console.log('login')
+        await userLogin(action)
+    }
+    if (action.id == 'confirm') {
+        console.log('confirm')
+        await userConfirm(action)
+    }
+    if (action.id == 'changepass') {
+        console.log('changepass')
+        await changePassword(action)
+    }
+    if (action.id == 'checkpremium') {
+        console.log('checkpremium')
+        await checkPremium(action)
+    }
+    if (action.id == 'checkcountry') {
+        console.log('checkcountry')
+        await checkCountry(action)
+    }
+    else if(action.id == 'watch') {
+        console.log('watch')
+        !action.mobile ? await userWatch(action) : await userWatchMobile(action)
+    }
+    else if(action.id == 'sub'){
+        console.log('sub')
+        await userSub(action)
+    }
+    else if(action.id == 'logout'){
+        if(window.location.toString().indexOf('https://accounts.google.com/ServiceLogin') == 0 || window.location.toString().indexOf('https://accounts.google.com/signin/v2/identifier') == 0){
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        }
+    }
 }
 
-async function handleBeforeTrickAds (action) {
-    let positionSize = Number(action.positionSize)
-    async function viewNews () {
-        await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+async function initActionData(action) {
+    let mobileRate = action.mobile_percent 
+    action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
-        await scrollForViewAds(action)
-
-        let randomPoSite = randomRanger(0, newsNames.length - 1)
-        await goToLocation(action.pid, `https://www.${newsNames[randomPoSite]}/`)
-        await sleep(7000)
-        let randomScroll = randomRanger(0,10)
-        await userScroll(action.pid, randomScroll)
-        await sleep(2000)
-        await userScroll(action.pid, randomScroll)
-        await sleep(2000)
+    if(action.mobile){
+        await setUserAgent(action.pid);
+    }
+    
+    if(action.id=='watch'){
+        setWatchParam(action)
     }
 
-    let count = 0
-    while (count < Number(action.brave_view_news_count)) {
-        await viewNews()
-        count++ 
+    if(action.id=='sub'){
+        setSubParam(action)
     }
 
-    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    console.log(action)
+    await setActionData(action)
 
-    await scrollForViewAds(action)
+    if(action.mobile) await switchMobile(action)
 
-    await goToLocation(action.pid, 'https://www.youtube.com/')
-    await sleep(8000)
-    await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
-
-    await sleep(randomRanger(10000, 15000))
-    let closeSizes = [1025, 1125, 1225, 1325]
-
-    if (action.enableBAT) {
-        await enableBAT(action)
-        await trickAds(action)
-    } else {
-        //await trickAds(action)
-        await checkBAT(action)
-    }
-
-    // if (action.checkBAT) {
-    //    await checkBAT(action)
-    // }
-    // else if (action.enableBAT) {
-    //     await enableBAT(action)
-    // } else {
-    //     await trickAds(action)
-    // }
-
-    await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
-    await sleep(3000)
-    await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
-   // reportScript(action)
-}
-
-async function trickAds (action) {
-    let randomScroll = randomRanger(0,8)
-    let positionSize = Number(action.positionSize)
-    let scroll1Sizes = [1033, 1133, 1233, 1333]
-
-    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-    await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(7000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(2000)
-    // click on news
-    await updateUserInput(action.pid,'CLICK', 650, 400,0,0,"",'click')
-    await sleep(3000)
-    await userScroll(action.pid, randomScroll)
-
-    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-    await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(7000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(2000)
-    await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
-    await sleep(2000)
-
-    await updateUserInput(action.pid,'CLICK', 650, 400,0,0,"",'click')
-    await sleep(3000)
-    randomScroll = randomRanger(0,8)
-    await userScroll(action.pid, randomScroll)
-}
-
-async function checkBAT (action) {
-    let positionSize = Number(action.positionSize)
-    // click menu
-    // let iconPosition = [1019, 1118, 1217, 1318]
-    // await updateUserInput(action.pid,'CLICK', iconPosition[positionSize],82,0,0,"",'click')
-    // await sleep(8000)
-
-    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-    await goToLocation(action.pid,'brave://rewards/')
-    await sleep(3000)
-
-    // double click
-    let textBAT = [946, 958, 1012, 1062]
-    await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],299,0,0,"",'click')
-    await sleep(2000)
-    // copy bat data
-    let rs = await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')
-    if (rs.disable_ads || rs.enable_ads) {
-        let xPos = [638, 654, 702, 754]
-        await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
+    if (action.id == 'google_news') {
         await sleep(3000)
+        await goToLocation(action.pid, 'https://www.google.com/')
     }
-}
-
-async function enableBAT (action) {
-    // click menu browser
-    await updateUserInput(action.pid,'CLICK', 1017,80,0,0,"",'click')
-    await sleep(3000)
-    // click brave reward
-    await updateUserInput(action.pid,'CLICK', 773,218,0,0,"",'click')
-    await sleep(5000)
-    // click start using btn
-    await updateUserInput(action.pid,'CLICK', 385,574,0,0,"",'click')
-    await sleep(1000)
-
-    // click skip
-    let count = 0
-    while (count <= 10) {
-        await updateUserInput(action.pid,'CLICK', 488,682,0,0,"",'click')
-        count++
+    else if (action.id == 'search') {
+        await goToLocation(action.pid, action.keyword)
     }
-
-    // click setting ads/h
-    await updateUserInput(action.pid,'CLICK', 568,381,0,0,"",'click')
-    await sleep(1000)
-    // click selection
-    await updateUserInput(action.pid,'CLICK', 638,458,0,0,"",'click')
-    await sleep(1000)
-    // click 10ads/h
-    await updateUserInput(action.pid,'CLICK', 148,713,0,0,"",'click')
-
-    await sleep(1000)
-    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'click')
-    await sleep(3000)
-    await updateUserInput(action.pid,'CLICK', 1033,818,0,0,"",'click')
-    await sleep(2000)
-    // click show brave ads
-    await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
-    await sleep(25000)
+    else if (action.id == 'map') {
+        await goToLocation(action.pid,'google.com/maps')
+    }
+    else if (action.id == 'youtube_sub') {
+        await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+    } 
+    else if(action.id == 'login'){
+        await handleBraveSetting(action)
+        //await goToLocation(action.pid,'accounts.google.com')
+    }
+    else if(action.id == 'logout'){
+        await goToLocation(action.pid,'accounts.google.com/logout')
+    }
+    else if(action.id == 'confirm'){
+        // await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
+        await goToLocation(action.pid,'families.google.com')
+    }
+    else if(action.id == 'changepass'){
+        await goToLocation(action.pid,'myaccount.google.com/security')
+    }
+    else if(action.id == 'checkpremium'){
+        await goToLocation(action.pid,'m.youtube.com//')
+    }
+    else if(action.id == 'checkcountry'){
+        await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
+    }
+    else{
+        // await goToLocation(action.pid,'youtube.com/feed/history//')
+        // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
+        if (action.google) {
+            await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
+            await sleep(3000)
+        } else {
+            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+        }
+    }
 }
 
 function reportScript(action) {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: { isScriptReport: true, service_id: action._id, pid: action.pid }}, function (response) {
-        resolve(response);
+        data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break }}, 
+    async function (response) {
+        if (response) {
+            console.log('response', response)
+            Object.assign(action, response)
+            await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+            await initActionData(action)
+            await runAction(action)
+        }
+        resolve()
     }))
 }
 

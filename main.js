@@ -129,69 +129,6 @@ async function startChromeAction(action) {
         action.proxy_password = proxy[action.pid].password
     }
 
-    action.backup = BACKUP
-
-    // kien code
-    if(action.mobile_percent === undefined || action.mobile_percent === null){
-        let systemConfig = await request_api.getSystemConfig();
-        if (systemConfig.total_rounds_for_change_proxy) {
-            totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
-        }
-
-        utils.log('systemConfig', systemConfig);
-        Object.assign(action, systemConfig)
-
-        action.mobile_percent = systemConfig.browser_mobile_percent
-        active_devices = systemConfig.active_devices || []
-        if (active_devices.length) {
-            action.mobile_percent = 100
-        }
-
-        if (systemConfig.ads_percent  && !Number(action.ads_percent)) {
-            action.ads_percent = systemConfig.ads_percent
-        }
-
-        if (systemConfig.max_total_profiles) {
-           // MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
-        }
-
-        action.total_channel_created = Number(systemConfig.total_channel_created)
-
-        if (action.id == 'watch') {
-            let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
-            if (oldUserPosition) {
-                action.channel_position = Number(oldUserPosition.position) + 1
-                usersPosition = usersPosition.filter(u => u.pid != action.pid)
-            } else {
-                action.channel_position = 0
-            }
-            
-            action.total_loop_find_ads = systemConfig.total_loop_find_ads
-            if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
-                action.total_times_next_video = systemConfig.total_times_next_video
-            }
-            if (systemConfig.watching_time_non_ads && !Number(action.watching_time_non_ads)) {
-                action.watching_time_non_ads = systemConfig.watching_time_non_ads
-            }
-            if (systemConfig.watching_time_start_ads && !Number(action.watching_time_start_ads)) {
-                action.watching_time_start_ads = systemConfig.watching_time_start_ads
-            }
-            if (systemConfig.watching_time_end_ads && !Number(action.watching_time_end_ads)) {
-                action.watching_time_end_ads = systemConfig.watching_time_end_ads
-            }
-
-            action.playlist_data = action.playlist_url
-        }
-    }
-
-    if (fisrt_video < 3 && action.id != 'login') {
-        if (fisrt_video === 0) {
-            action.delete_history = true
-        }
-        action.direct_percent = 1000
-        fisrt_video = fisrt_video + 1
-    }
-
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
@@ -386,8 +323,8 @@ async function newRunProfile() {
     }
 }
 
-async function getScriptData(pid, isNewProxy) {
-    let action = { script_code: 'google_news' }//wait request_api.getNewScript(pid)
+async function getScriptData(pid, isNewProxy = false) {
+    let action = await request_api.getNewScript(pid)
     if (action) {
         if (isNewProxy) {
             let isLoadNewProxy = '' 
@@ -410,6 +347,68 @@ async function getScriptData(pid, isNewProxy) {
         watchRunnings.push(actionRecord)
         action.id = action.script_code
         action.pid = pid
+
+        // init action data
+        if(action.mobile_percent === undefined || action.mobile_percent === null){
+            let systemConfig = await request_api.getSystemConfig();
+            if (systemConfig.total_rounds_for_change_proxy) {
+                totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
+            }
+    
+            utils.log('systemConfig', systemConfig);
+            Object.assign(action, systemConfig)
+    
+            action.mobile_percent = systemConfig.browser_mobile_percent
+            active_devices = systemConfig.active_devices || []
+            if (active_devices.length) {
+                action.mobile_percent = 100
+            }
+    
+            if (systemConfig.ads_percent  && !Number(action.ads_percent)) {
+                action.ads_percent = systemConfig.ads_percent
+            }
+    
+            if (systemConfig.max_total_profiles) {
+               // MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+            }
+    
+            action.total_channel_created = Number(systemConfig.total_channel_created)
+    
+            if (action.id == 'watch') {
+                let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
+                if (oldUserPosition) {
+                    action.channel_position = Number(oldUserPosition.position) + 1
+                    usersPosition = usersPosition.filter(u => u.pid != action.pid)
+                } else {
+                    action.channel_position = 0
+                }
+                
+                action.total_loop_find_ads = systemConfig.total_loop_find_ads
+                if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
+                    action.total_times_next_video = systemConfig.total_times_next_video
+                }
+                if (systemConfig.watching_time_non_ads && !Number(action.watching_time_non_ads)) {
+                    action.watching_time_non_ads = systemConfig.watching_time_non_ads
+                }
+                if (systemConfig.watching_time_start_ads && !Number(action.watching_time_start_ads)) {
+                    action.watching_time_start_ads = systemConfig.watching_time_start_ads
+                }
+                if (systemConfig.watching_time_end_ads && !Number(action.watching_time_end_ads)) {
+                    action.watching_time_end_ads = systemConfig.watching_time_end_ads
+                }
+    
+                action.playlist_data = action.playlist_url
+            }
+        }
+    
+        if (fisrt_video < 3 && action.id != 'login') {
+            if (fisrt_video === 0) {
+                action.delete_history = true
+            }
+            action.direct_percent = 1000
+            fisrt_video = fisrt_video + 1
+        }
+
         return action
     }
 }
@@ -652,14 +651,19 @@ function initExpress() {
         res.send(playlist)
     })
 
-    app.get('/report', (req, res) => {
+    app.get('/report', async (req, res) => {
         utils.log(req.query)
 
         if (req.query.isScriptReport) {
-            closeChrome(req.query.pid)
-            watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
-            runnings = runnings.filter(i => i.pid != req.query.pid)
-            //request_api.reportScript(req.query.pid, req.query.service_id)
+            await request_api.reportScript(req.query.pid, req.query.service_id)
+            if (req.query.is_break) {
+                closeChrome(req.query.pid)
+                watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
+                runnings = runnings.filter(i => i.pid != req.query.pid)
+            } else {
+                let action = await getScriptData(req.query.pid)
+                return res.json(action)
+            }
         }
         else if (req.query.id == 'channel-position') {
             let channel = usersPosition.find(u => u.pid == req.query.pid)

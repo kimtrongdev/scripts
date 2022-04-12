@@ -22,7 +22,8 @@
         "content.js",
         "./scripts/map.js",
         "./scripts/search.js",
-        "./scripts/google_news.js"
+        "./scripts/google_news.js",
+        "./scripts/brave.js"
       ]
     },
     {

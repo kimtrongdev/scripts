@@ -22,52 +22,7 @@ async function loadPage(){
 
         await dismissDialog(action.pid)
 
-        if (action.id == 'google_news') {
-            await scriptGoogleNews(action)
-        }
-        else if (action.id == 'search') {
-            await scriptSearch(action)
-        }
-        else if (action.id == 'map') {
-            await scriptMap(action)
-        }
-        else if (action.id == 'youtube_sub') {
-            action.is_sub = true
-            await setActionData(action)
-        } 
-        else if (action.id == 'login') {
-            console.log('login')
-            await userLogin(action)
-        }
-        if (action.id == 'confirm') {
-            console.log('confirm')
-            await userConfirm(action)
-        }
-        if (action.id == 'changepass') {
-            console.log('changepass')
-            await changePassword(action)
-        }
-        if (action.id == 'checkpremium') {
-            console.log('checkpremium')
-            await checkPremium(action)
-        }
-        if (action.id == 'checkcountry') {
-            console.log('checkcountry')
-            await checkCountry(action)
-        }
-        else if(action.id == 'watch') {
-            console.log('watch')
-            !action.mobile ? await userWatch(action) : await userWatchMobile(action)
-        }
-        else if(action.id == 'sub'){
-            console.log('sub')
-            await userSub(action)
-        }
-        else if(action.id == 'logout'){
-            if(window.location.toString().indexOf('https://accounts.google.com/ServiceLogin') == 0 || window.location.toString().indexOf('https://accounts.google.com/signin/v2/identifier') == 0){
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            }
-        }
+        await runAction(action)
     }
     catch (e) {
         console.log('error',e)
@@ -132,89 +87,7 @@ async function initAction(){
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
 
-        let mobileRate = action.mobile_percent 
-        action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
-
-        // trong code
-        if(action.mobile){
-            await setUserAgent(action.pid);
-        }
-
-        // if (action.isNew) {
-        //     await updateUserInput(action.pid,'CLICK', 1118,79,0,0,"",'click')
-        //     await sleep(2000)
-        //     await updateUserInput(action.pid,'CLICK', 858,223,0,0,"",'click')
-        //     await sleep(2000)
-        //     await updateUserInput(action.pid,'CLICK', 390,130,0,0,"",'click setting')
-        //     await sleep(3000)
-        //     await updateUserInput(action.pid,'CLICK', 209,400,0,0,"",'click shields')
-        //     await sleep(1000)
-        //     await updateUserInput(action.pid,'CLICK', 926,894,0,0,"",'click select')
-        //     await updateUserInput(action.pid,'CLICK', 908,914,0,0,"",'click option')
-        //     await updateUserInput(action.pid,'CLICK', 912,694,0,0,"",'click Trackers & ads blocking')
-        //     await updateUserInput(action.pid,'CLICK', 900,757,0,0,"",'click disable')
-        //     await updateUserInput(action.pid,'CLICK', 152,50,0,0,"",'go main tab')
-        // }
-
-        if (action.id =='login') {
-           action.id = 'google_news'
-        }
-        
-        if(action.id=='watch'){
-            setWatchParam(action)
-        }
-
-        if(action.id=='sub'){
-            setSubParam(action)
-        }
-
-        console.log(action)
-        await setActionData(action)
-
-        if(action.mobile) await switchMobile(action)
-
-        if (action.id == 'google_news') {
-            await sleep(3000)
-            await goToLocation(action.pid, 'https://www.google.com/')
-        }
-        else if (action.id == 'search') {
-            await goToLocation(action.pid, action.keyword)
-        }
-        else if (action.id == 'map') {
-            await goToLocation(action.pid,'google.com/maps')
-        }
-        else if (action.id == 'youtube_sub') {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
-        } 
-        else if(action.id == 'login'){
-            await goToLocation(action.pid,'accounts.google.com')
-        }
-        else if(action.id == 'logout'){
-            await goToLocation(action.pid,'accounts.google.com/logout')
-        }
-        else if(action.id == 'confirm'){
-            // await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
-            await goToLocation(action.pid,'families.google.com')
-        }
-        else if(action.id == 'changepass'){
-            await goToLocation(action.pid,'myaccount.google.com/security')
-        }
-        else if(action.id == 'checkpremium'){
-            await goToLocation(action.pid,'m.youtube.com//')
-        }
-        else if(action.id == 'checkcountry'){
-            await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
-        }
-        else{
-            // await goToLocation(action.pid,'youtube.com/feed/history//')
-            // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
-            if (action.google) {
-                await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
-                await sleep(3000)
-            } else {
-                await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
-            }
-        }
+        await initActionData(action)
 
         await sleep(5000)
     }
