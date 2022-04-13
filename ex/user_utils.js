@@ -165,6 +165,13 @@ function reportScript(action) {
     }))
 }
 
+function reportLive(pid){
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: {id: 'live_report', pid}}, function (response) {
+        resolve(response);
+    }))
+}
+
 function getNewPlaylistData (action) {
     return new Promise(resolve => chrome.runtime.sendMessage({
             url: '/get-new-playlist',

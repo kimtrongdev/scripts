@@ -335,8 +335,8 @@ async function getScriptData(pid, isNewProxy = false) {
             }
 
             if (isLoadNewProxy) {
-                //proxy[pid] = undefined
-                proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                proxy[pid] = undefined
+                await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             } else {
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
@@ -423,6 +423,7 @@ function checkRunningProfiles () {
             let timeDiff = Date.now() - runnings[i].lastReport
             if (timeDiff > 180000) {
                 let pid = runnings[i].pid
+                console.log('--- expired time,', pid)
                 try {
                     closeChrome(pid)
                 }
@@ -655,7 +656,14 @@ function initExpress() {
     app.get('/report', async (req, res) => {
         utils.log(req.query)
 
-        if (req.query.isScriptReport) {
+        if (req.query.id == 'live_report') {
+            runnings.forEach(running => {
+                if (running.pid == req.query.pid) {
+                    running.lastReport = Date.now()
+                }
+            });
+        }
+        else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
             if (req.query.is_break) {
                 closeChrome(req.query.pid)

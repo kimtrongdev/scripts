@@ -75,7 +75,7 @@ async function handleBeforeTrickAds (action) {
   }
 
   let count = 0
-  while (count < Number(action.brave_view_news_count)) {
+  while (count < 2) {
       await viewNews()
       count++ 
   }
@@ -83,6 +83,7 @@ async function handleBeforeTrickAds (action) {
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
 
   //await scrollForViewAds(action)
+  reportLive(action.pid)
 
   await goToLocation(action.pid, 'https://www.youtube.com/')
   await sleep(8000)
@@ -92,6 +93,7 @@ async function handleBeforeTrickAds (action) {
 
   if (action.enableBAT) {
       await enableBAT(action)
+      reportLive(action.pid)
       await trickAds(action)
   } else {
       //await trickAds(action)

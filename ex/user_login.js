@@ -8,7 +8,7 @@ async function userLogin(action) {
         if (action.is_processing_bat) {
             return
         }
-        
+
         await sleep(5000)
         let url = window.location.toString()
 
@@ -215,6 +215,7 @@ async function userLogin(action) {
 
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
+    reportLive(action.pid)
     await goToLocation(action.pid,'youtube.com/feed/history')
     await sleep(60000)
 
