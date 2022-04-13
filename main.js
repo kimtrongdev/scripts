@@ -161,7 +161,7 @@ async function startChromeAction(action) {
                 await utils.sleep(2000)
                 exec(cmdRun)
             } else {
-                await utils.sleep(5000)
+                await utils.sleep(10000)
                 sendEnter(action.pid)
                 await utils.sleep(8000)
             }
