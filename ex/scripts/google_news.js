@@ -1,17 +1,24 @@
 
 async function scriptGoogleNews(action) {
   try {
-    await sleep(7000)
-    let randomScroll = randomRanger(0,10)
-    await userScroll(action.pid, randomScroll)
-    await sleep(2000)
-    await userScroll(action.pid, randomScroll)
-    await sleep(2000)
+    let url = window.location.toString()
+
+    for await (let site of newsNames) {
+      if (url.indexOf(site) > -1) {
+        await sleep(7000)
+        let randomScroll = randomRanger(0,10)
+        await userScroll(action.pid, randomScroll)
+        await sleep(2000)
+        await userScroll(action.pid, randomScroll)
+        await sleep(2000)
+        await reportScript(action)
+        break
+      }
+    }
 
     return
 
-
-    let url = window.location.toString()
+    //let url = window.location.toString()
     
     if (url.indexOf('https://www.google.com/') > -1) {
       if (action.isSearched) {

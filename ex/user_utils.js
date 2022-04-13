@@ -41,19 +41,19 @@ async function runAction (action) {
         console.log('login')
         await userLogin(action)
     }
-    if (action.id == 'confirm') {
+    else if (action.id == 'confirm') {
         console.log('confirm')
         await userConfirm(action)
     }
-    if (action.id == 'changepass') {
+    else if (action.id == 'changepass') {
         console.log('changepass')
         await changePassword(action)
     }
-    if (action.id == 'checkpremium') {
+    else if (action.id == 'checkpremium') {
         console.log('checkpremium')
         await checkPremium(action)
     }
-    if (action.id == 'checkcountry') {
+    else if (action.id == 'checkcountry') {
         console.log('checkcountry')
         await checkCountry(action)
     }
@@ -97,9 +97,13 @@ async function initActionData(action) {
 
     }
     else if (action.id == 'google_news') {
-        let randomPoSite = randomRanger(0, newsNames.length - 1)
-        let link = action.link || `https://www.${newsNames[randomPoSite]}/`
-        await goToLocation(action.pid, link)
+        if (!action.is_searched) {
+            action.is_searched = true
+            await setActionData(action)
+            let randomPoSite = randomRanger(0, newsNames.length - 1)
+            let link = action.link || `https://www.${newsNames[randomPoSite]}/`
+            await goToLocation(action.pid, link)
+        }
     }
     else if (action.id == 'search') {
         await goToLocation(action.pid, 'https://www.google.com/')
@@ -130,7 +134,7 @@ async function initActionData(action) {
     else if(action.id == 'checkcountry'){
         await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
     }
-    else{
+    else if (action.id == 'watch') {
         // await goToLocation(action.pid,'youtube.com/feed/history//')
         // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
         if (action.google) {

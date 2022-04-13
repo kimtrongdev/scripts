@@ -165,9 +165,9 @@ function setWatchParam(action){
 
     // watch random after video
     action.after_video = Math.random() < 0.1
-    let searchList = action.video.split(";;")
+    let searchList = ''//action.video.split(";;")
     action.searchList = searchList
-    action.video = searchList[randomRanger(0,searchList.length-1)].trim()
+    action.video = ''//searchList[randomRanger(0,searchList.length-1)].trim()
     action.playlist_url = action.playlist_url.trim()
     action.url_type = action.url_type.trim().toLowerCase()
     action.suggest_videos = action.suggest_videos?action.suggest_videos.trim():undefined

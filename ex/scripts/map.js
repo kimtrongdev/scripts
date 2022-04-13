@@ -23,7 +23,7 @@ async function scriptMap(action) {
       }
       return
     } else if (url.indexOf('google.com/maps/search') > -1) {
-      let searchRs = document.querySelectorAll('div[role="region"] div[data-js-log-root] div[jsaction] a')
+      let searchRs = document.querySelectorAll('div[role="region"] a')
       if (searchRs && searchRs.length) {
         let randomPo = randomRanger(0, searchRs.length - 1)
 

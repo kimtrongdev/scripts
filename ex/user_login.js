@@ -5,6 +5,10 @@ let LOGIN_STATUS = {
 
 async function userLogin(action) {
     try {
+        if (action.is_processing_bat) {
+            return
+        }
+        
         await sleep(5000)
         let url = window.location.toString()
 
@@ -168,11 +172,10 @@ async function userLogin(action) {
         else if (url.indexOf('youtube.com/account') > -1) {
             //let channels = document.querySelectorAll('ytd-account-item-renderer')
             //let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-            action.id = 'google_news'
+            action.is_processing_bat = true
             await setActionData(action)
-            await goToLocation(action.pid, 'https://www.google.com/')
-            await sleep(60000)
-            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await handleBeforeTrickAds(action)
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             // if (channels.length < action.total_channel_created && btnCreateChannel) {
             //     await userClick(action.pid,'',btnCreateChannel)
             // } else {

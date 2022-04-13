@@ -18,12 +18,13 @@ var newsNames = [
   "kiro7.com",
   "wsfa.com",
 ]
+let closeSizes = [1025, 1125, 1225, 1325]
 
 async function scriptCheckBat(action) {
   if (!action.checkingBAT) {
     action.checkingBAT = true
     await setActionData(action)
-    await handleBeforeTrickAds(action)
+    await checkBAT(action) //await handleBeforeTrickAds(action)
   }
 }
 
@@ -61,7 +62,7 @@ async function handleBeforeTrickAds (action) {
   async function viewNews () {
       await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
 
-      await scrollForViewAds(action)
+      //await scrollForViewAds(action)
 
       let randomPoSite = randomRanger(0, newsNames.length - 1)
       await goToLocation(action.pid, `https://www.${newsNames[randomPoSite]}/`)
@@ -79,16 +80,15 @@ async function handleBeforeTrickAds (action) {
       count++ 
   }
 
-  // await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+  await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
 
-  // await scrollForViewAds(action)
+  //await scrollForViewAds(action)
 
-  // await goToLocation(action.pid, 'https://www.youtube.com/')
-  // await sleep(8000)
-  // await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
+  await goToLocation(action.pid, 'https://www.youtube.com/')
+  await sleep(8000)
+  await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
 
-  //await sleep(randomRanger(10000, 15000))
-  let closeSizes = [1025, 1125, 1225, 1325]
+  await sleep(randomRanger(10000, 15000))
 
   if (action.enableBAT) {
       await enableBAT(action)
@@ -158,7 +158,7 @@ async function checkBAT (action) {
   await sleep(3000)
 
   // double click
-  let textBAT = [946, 958, 1012, 1062]
+  let textBAT = [932, 947, 997, 1013]
   await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],299,0,0,"",'click')
   await sleep(2000)
   // copy bat data
@@ -168,6 +168,10 @@ async function checkBAT (action) {
       await updateUserInput(action.pid,'CLICK', xPos[positionSize],380,0,0,"",'click')
       await sleep(3000)
   }
+
+  await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
+  await sleep(3000)
+  await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
 }
 
 async function enableBAT (action) {

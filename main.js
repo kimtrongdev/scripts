@@ -65,7 +65,7 @@ const LOCAL_PORT = 2000
 
 async function profileRunningManage() {
     try {
-        //await checkRunningProfiles()
+        await checkRunningProfiles()
         utils.log('profileRunningManage')
 
         if (MAX_CURRENT_ACC > runnings.length) {
@@ -421,7 +421,7 @@ function checkRunningProfiles () {
         for (let i = 0; i < watchingLength; i++) {
             // calculate last report time
             let timeDiff = Date.now() - runnings[i].lastReport
-            if (timeDiff > 300000) {
+            if (timeDiff > 180000) {
                 let pid = runnings[i].pid
                 try {
                     closeChrome(pid)
@@ -663,6 +663,11 @@ function initExpress() {
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
+                runnings.forEach(running => {
+                    if (running.pid == req.query.pid) {
+                        running.lastReport = Date.now()
+                    }
+                });
                 return res.json(action)
             }
         }
@@ -678,6 +683,11 @@ function initExpress() {
             }
         }
         else if (req.query.id == 'watched'){
+            runnings.forEach(running => {
+                if (running.pid == req.query.pid) {
+                    running.lastReport = Date.now()
+                }
+            });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
         else if (req.query.id == 'login') {
