@@ -843,9 +843,10 @@ function initExpress() {
             } else if (req.query.action == 'RELOAD_PAGE') {
                 execSync(`xdotool key F5 && sleep 1`)
             } else if (req.query.action == 'END_SCRIPT') {
+                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
+                await utils.sleep(5000)
                 watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
             }
 
             if (req.query.action == 'GO_ADDRESS' || req.query.action == 'OPEN_DEV') setChromeSize(req.query.pid)

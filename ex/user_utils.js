@@ -82,7 +82,7 @@ async function handleBeforeTrickAds (action) {
     //     await trickAds(action)
     // }
 
-    await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
+    updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
     await sleep(3000)
     await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
    // reportScript(action)
