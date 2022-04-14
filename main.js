@@ -14,7 +14,7 @@ const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 let config
 let devJson = require('./dev.json')
-const BROWSER = 'brave-browser'
+const BROWSER = 'brave'
 try {
     config = require('./config.json')
 }
