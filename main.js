@@ -122,9 +122,13 @@ async function startChromeAction(action) {
 
     let windowPosition = '--window-position=0,0'
     let windowSize = is_show_ui ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
-    if (proxy && proxy[action.pid]) {
+    if (proxy && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+    }
+
+    if (proxy && proxy[action.pid].username) {
+        utils.log('set proxy user name', proxy[action.pid].username)
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
@@ -398,9 +402,17 @@ async function getScriptData(pid, isNewProxy) {
             }
 
             if (isLoadNewProxy) {
-                proxy[pid] = undefined
-                await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                let newProxy = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                let proxyInfo = newProxy.server.split(':')
+                execSync(`gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
+                execSync(`gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
+                execSync(`gsettings set org.gnome.system.proxy mode 'manual'`)
+                proxy[pid] = {
+                    username: newProxy.username,
+                    password: newProxy.password
+                }
             } else {
+                execSync(`gsettings set org.gnome.system.proxy mode 'none'`)
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
         }
