@@ -398,8 +398,8 @@ async function getScriptData(pid, isNewProxy) {
             }
 
             if (isLoadNewProxy) {
-                //proxy[pid] = undefined
-                proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                proxy[pid] = undefined
+                await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             } else {
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
