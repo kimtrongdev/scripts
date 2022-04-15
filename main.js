@@ -122,9 +122,13 @@ async function startChromeAction(action) {
 
     let windowPosition = '--window-position=0,0'
     let windowSize = is_show_ui ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
-    if (proxy && proxy[action.pid]) {
+    if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+    }
+
+    if (proxy && proxy[action.pid] && proxy[action.pid].username) {
+        utils.log('set proxy user name', proxy[action.pid].username)
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
@@ -329,15 +333,23 @@ async function getScriptData(pid, isNewProxy = false) {
         if (isNewProxy) {
             let isLoadNewProxy = '' 
             let totalRound = totalRoundForChangeProxy * MAX_PROFILE
-            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE) {
+            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
                 isLoadNewProxy = true
                 console.log('Load new proxy for pid')
             }
 
             if (isLoadNewProxy) {
-                proxy[pid] = undefined
+                let newProxy = await request_api.getProxyV4()
                 await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                let proxyInfo = newProxy.server.split(':')
+                if (proxyInfo.length >= 2) {
+                    execSync(`gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
+                    execSync(`gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
+                    execSync(`gsettings set org.gnome.system.proxy mode 'manual'`)
+                    proxy[pid] = undefined
+                }
             } else {
+                execSync(`gsettings set org.gnome.system.proxy mode 'none'`)
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
         }
