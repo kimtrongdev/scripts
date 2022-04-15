@@ -65,9 +65,8 @@ async function scrollForViewAds (action) {
 
 async function handleBeforeTrickAds (action) {
   let positionSize = Number(action.positionSize)
+  await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   async function viewNews () {
-      //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-
       //await scrollForViewAds(action)
 
       let randomPoSite = randomRanger(0, newsNames.length - 1)
