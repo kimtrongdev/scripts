@@ -595,11 +595,11 @@ async function viewAds(action, onlyVideoType = false) {
 
 async function skipAds(watchingCheck, action = {}){
     if(!watchingCheck) await sleep(2000)
-    while (document.querySelector('.ytp-ad-preview-slot')) {
-        action.viewed_ads = true
-        await setActionData(action)
-        await sleep(2000)
-    }
+    // while (document.querySelector('.ytp-ad-preview-slot')) {
+    //     action.viewed_ads = true
+    //     await setActionData(action)
+    //     await sleep(2000)
+    // }
     while (document.querySelector('.ytp-ad-skip-ad-slot')) {
         console.log('skip ads')
         let adTimeCurrent = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-current').textContent)

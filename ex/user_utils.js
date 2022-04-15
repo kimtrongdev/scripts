@@ -153,10 +153,10 @@ function reportScript(action) {
         if (response) {
             console.log('response', response)
             Object.assign(action, response)
-            if (action.id != 'check_bat') {
-                await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-                await scrollForViewAds(action)
-            }
+            //if (action.id != 'check_bat') {
+                //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+                //await scrollForViewAds(action)
+            //}
 
             await initActionData(action)
             await runAction(action)

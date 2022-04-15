@@ -24,6 +24,12 @@ async function scriptCheckBat(action) {
   if (!action.checkingBAT) {
     action.checkingBAT = true
     await setActionData(action)
+
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await scrollForViewAds(action)
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await scrollForViewAds(action)
+    
     await checkBAT(action) //await handleBeforeTrickAds(action)
   }
 }
@@ -60,7 +66,7 @@ async function scrollForViewAds (action) {
 async function handleBeforeTrickAds (action) {
   let positionSize = Number(action.positionSize)
   async function viewNews () {
-      await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+      //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
 
       //await scrollForViewAds(action)
 
@@ -80,7 +86,7 @@ async function handleBeforeTrickAds (action) {
       count++ 
   }
 
-  await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+  //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
 
   //await scrollForViewAds(action)
   reportLive(action.pid)
