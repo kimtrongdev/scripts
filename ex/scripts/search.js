@@ -12,7 +12,9 @@ async function scriptSearch(action) {
         action.isSearched = true
         await setActionData(action)
 
-        let rs = await fetch('https://random-data-api.com/api/commerce/random_commerce')
+        let keyword = action.search_keyword
+        if (!keyword) {
+          let rs = await fetch('https://random-data-api.com/api/commerce/random_commerce')
           .then(response => {
             console.log('response', response)
             return response.json()
@@ -23,9 +25,10 @@ async function scriptSearch(action) {
               product_name: makeName(5)
             }
           })
+          keyword = rs.product_name
+        }
 
-        let key = rs.product_name
-        await userTypeEnter(action.pid,'input[maxLength="2048"]', key)
+        await userTypeEnter(action.pid,'input[maxLength="2048"]', keyword)
       }
 
       await sleep(60000)

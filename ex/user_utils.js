@@ -101,7 +101,7 @@ async function initActionData(action) {
             action.is_searched = true
             await setActionData(action)
             let randomPoSite = randomRanger(0, newsNames.length - 1)
-            let link = action.link || `https://www.${newsNames[randomPoSite]}/`
+            let link = action.news_link || `https://www.${newsNames[randomPoSite]}/`
             await goToLocation(action.pid, link)
         }
     }

@@ -341,12 +341,14 @@ async function getScriptData(pid, isNewProxy = false) {
             if (isLoadNewProxy) {
                 let newProxy = await request_api.getProxyV4()
                 await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-                let proxyInfo = newProxy.server.split(':')
-                if (proxyInfo.length >= 2) {
-                    execSync(`gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
-                    execSync(`gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
-                    execSync(`gsettings set org.gnome.system.proxy mode 'manual'`)
-                    proxy[pid] = undefined
+                if (newProxy.server) {
+                    let proxyInfo = newProxy.server.split(':')
+                    if (proxyInfo.length >= 2) {
+                        execSync(`gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
+                        execSync(`gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
+                        execSync(`gsettings set org.gnome.system.proxy mode 'manual'`)
+                        proxy[pid] = undefined
+                    }
                 }
             } else {
                 execSync(`gsettings set org.gnome.system.proxy mode 'none'`)
@@ -544,6 +546,7 @@ async function start() {
         initProxy()
         initExpress()
         running()
+        console.log('--- Running ---')
     }
     catch (e) {
         utils.log('error', 'start:', e)
