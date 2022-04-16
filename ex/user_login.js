@@ -70,6 +70,7 @@ async function userLogin(action) {
             action.relogin = true
             await setActionData(action)
             await waitForSelector("input[name='password']")
+            reportLive(action.pid)
             await userTypeEnter(action.pid, "input[name='password']", action.password)
             await sleep(60000)
         }
