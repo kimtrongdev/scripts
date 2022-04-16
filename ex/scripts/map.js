@@ -24,8 +24,12 @@ async function scriptMap(action) {
       return
     } else if (url.indexOf('google.com/maps/search') > -1) {
       let searchRs = document.querySelectorAll('div[role="region"] a')
+      if (!searchRs || !searchRs.length) {
+        searchRs = document.querySelectorAll('div[role="article"] a')
+      }
+
       if (searchRs && searchRs.length) {
-        let randomPo = randomRanger(0, searchRs.length - 1)
+        let randomPo = randomRanger(2, searchRs.length - 1)
 
         let itemMap = searchRs.item(randomPo)
         if (itemMap) {
