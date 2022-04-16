@@ -215,5 +215,5 @@ async function enableBAT (action) {
   await sleep(2000)
   // click show brave ads
   await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
-  await sleep(25000)
+  await sleep(30000)
 }
