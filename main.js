@@ -136,7 +136,7 @@ async function startChromeAction(action) {
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
-    let exs = action.pid % 10 < 10 ? ["ex", "quality"].map(x => path.resolve(x)).join(",") : ["ex", "quality", "trace"].map(x => path.resolve(x)).join(",")
+    let exs = ["ex", "quality", "trace"].map(x => path.resolve(x)).join(",")
 
     if (WIN_ENV) {        
         exec(`start chrome${userProxy} --lang=en-US,en --start-maximized --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
