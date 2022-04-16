@@ -32,7 +32,7 @@ const fs = require('fs')
 const version = fs.readFileSync(path.join(__dirname, 'version'), 'utf8')
 const publicIp = require('public-ip');
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
-let MAX_PROFILE = 5
+let MAX_PROFILE = 2
 
 const RUNNING_CHECK_INTERVAL = 15000     // 30 seconds
 const TIME_TO_CHECK_UPDATE = 600000
@@ -384,7 +384,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
     
             if (systemConfig.max_total_profiles) {
-               // MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+                MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
             }
     
             action.total_channel_created = Number(systemConfig.total_channel_created)
@@ -536,10 +536,10 @@ function initDir() {
 
 async function start() {
     try {
-        // let systemConfig = await request_api.getSystemConfig();
-        // if (systemConfig.max_total_profiles) {
-        //     MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
-        // }
+         let systemConfig = await request_api.getSystemConfig();
+        if (systemConfig.max_total_profiles) {
+            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+        }
         startupScript()
         initDir()
         await initConfig()
