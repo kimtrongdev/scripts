@@ -97,6 +97,7 @@ async function handleBeforeTrickAds (action) {
   await sleep(randomRanger(10000, 15000))
 
   if (action.enableBAT) {
+      reportLive(action.pid)
       await enableBAT(action)
       reportLive(action.pid)
       await trickAds(action)
@@ -215,5 +216,6 @@ async function enableBAT (action) {
   await sleep(2000)
   // click show brave ads
   await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
+  reportLive(action.pid)
   await sleep(30000)
 }
