@@ -32,6 +32,8 @@ async function scriptMap(action) {
           await userClick(action.pid, '', itemMap)
         }
         return
+      } else {
+        await reportScript(action)
       }
     } 
     else {
