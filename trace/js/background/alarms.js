@@ -35,15 +35,19 @@ var Alarms = {
 
 	Updaters:{
 		ChooseGPU:function(){
-			if (Prefs.Current.Pref_WebGLFingerprint.enabled === false) return;
+			if (Prefs.Current.Pref_WebGLFingerprint.gpcCust.enabled === true) {
+				Vars.gpuChose = rA(Prefs.Current.Pref_WebGLFingerprint.gpcCust.list)
+			} else {
+				if (Prefs.Current.Pref_WebGLFingerprint.enabled === false) return;
 
-			let gpuStr = rA(Vars.gpuModels);
-			let addDirectX = rA(gpuDirectStr) || "";
-			if (Prefs.Current.Pref_WebGLFingerprint.gpuList.list.length !== 0){
-				gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
+				let gpuStr = rA(Vars.gpuModels);
+				let addDirectX = rA(gpuDirectStr) || "";
+				if (Prefs.Current.Pref_WebGLFingerprint.gpuList.list.length !== 0){
+					gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
+				}
+
+				Vars.gpuChose = "ANGLE (" + gpuStr + " " + addDirectX + ")";
 			}
-
-			Vars.gpuChose = "ANGLE (" + gpuStr + " " + addDirectX + ")";
 		},
 
 		ChooseUserAgent:function(){
