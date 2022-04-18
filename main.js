@@ -829,7 +829,12 @@ function initExpress() {
             }
 
             if (req.query.action == 'COPY_BAT') {
-                execSync(`xdotool key Control_L+c && sleep 1`)
+                try {
+                    execSync(`xdotool key Control_L+c && sleep 1`)
+                } catch (error) {
+                    
+                }
+                
                 await utils.sleep(1000)
 
                 let currentBat = ''
