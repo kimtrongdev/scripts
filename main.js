@@ -356,10 +356,14 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
         console.log('Script data: ', action)
-        let startTime = Date.now()
-        let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
-        runnings.push(actionRecord)
-        watchRunnings.push(actionRecord)
+
+        if (!runnings.some(i => i.pid == pid)) {
+            let startTime = Date.now()
+            let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
+            runnings.push(actionRecord)
+            watchRunnings.push(actionRecord)
+        }
+        
         action.id = action.script_code
         action.pid = pid
 
