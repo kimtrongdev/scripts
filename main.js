@@ -40,7 +40,6 @@ let ids = []
 global.runnings = []
 global.usersPosition = []
 global.subRunnings = []
-global.watchRunnings = []
 global.addnewRunnings = []
 global.processRunning = []
 global.proxy = null
@@ -199,79 +198,6 @@ async function loginProfileChrome(profile) {
     }
 }
 
-async function pauseWatchingProfile(pid, action) {
-    try {
-        utils.log('pauseWatchingProfile: ', pid)
-
-        let removeWatch = null
-        if(action == PLAYLIST_ACTION.SUB && subRunnings.filter(x => x.pid == pid).length) return false
-        if(action == ADDNEW_ACTION && addnewRunnings.filter(x => x.pid == pid).length) return false
-
-        if (action < PLAYLIST_ACTION.SUB) {
-            if (addnewRunnings.filter(x => x.pid == pid).length || subRunnings.filter(x => x.pid == pid).length || watchRunnings.filter(x => x.pid == pid && x.action >= action).length) {
-                utils.log('warning', 'pid: ', pid, ' is in addnewRunnings/subRunnings/watchRunnings')
-                return false
-            }
-            if (addnewRunnings.length + subRunnings.length + watchRunnings.filter(x => x.action >= action).length >= MAX_CURRENT_ACC) {
-                utils.log('info', 'pid: ', pid, ' cannot run, MAX_CURRENT_ACC')
-                return false
-            }
-        }
-
-        // stop watching own pid if has
-        let ownRunnings = watchRunnings.filter(x => x.pid == pid && x.action < action)
-        if (ownRunnings.length) {
-            utils.log('remove own running: ', pid)
-            removeWatch = ownRunnings[0]
-        }
-        else if (addnewRunnings.length + subRunnings.length + watchRunnings.length >= MAX_CURRENT_ACC) {
-            let tempRun = watchRunnings.slice()
-            tempRun.sort(function (a, b) {
-                return a.action - b.action
-            })
-            utils.log('running by order: ', tempRun.map(x => { return { pid: x.pid, action: x.action } }))
-            // remove lowest running by action
-            removeWatch = tempRun.shift()
-        }
-
-        if (removeWatch) {
-            utils.log('remove pid: ', removeWatch.pid, ' action: ', removeWatch.action, ' for pid: ', pid, ' action: ', action)
-            watchRunnings = watchRunnings.filter(x => x.pid != removeWatch.pid)
-            // close watching browser
-            closeChrome(pid)
-        }
-
-        // check login
-        // if(action < ADDNEW_ACTION && !await reLogin(pid)){
-        //     return false
-        // }
-
-        // start new browser
-        // let browser = await newBrowser(pid, action)
-        let browser = true
-
-        let startTime = Date.now()
-        let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: browser, action: action }
-        if (action == ADDNEW_ACTION) {
-            watchRunnings.push(actionRecord)
-        }
-        else if (action == PLAYLIST_ACTION.SUB) {
-            subRunnings.push(actionRecord)
-        }
-        else {
-            actionRecord.playlist = {}
-            actionRecord.playlistTime = {}
-            watchRunnings.push(actionRecord)
-        }
-
-        return browser
-    }
-    catch (e) {
-        utils.log('error', 'pauseWatchingProfile err: ', e)
-        return false
-    }
-}
-
 async function newProfileManage() {
     try {
         if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
@@ -292,17 +218,10 @@ async function newProfileManage() {
                 }
             }
 
-            let browser = await pauseWatchingProfile(profile.id, ADDNEW_ACTION)
-            if (browser) {
-                runnings.push({pid: profile.id, lastReport: Date.now()})
-                ids.push(profile.id)
-                utils.log('addProfile: ', profile)
-                await loginProfileChrome(profile)
-            }
-            else {
-                await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
-                await deleteProfile(profile.id)
-            }
+            runnings.push({pid: profile.id, lastReport: Date.now()})
+            ids.push(profile.id)
+            utils.log('addProfile: ', profile)
+            await loginProfileChrome(profile)
         }
     }
     catch (e) {
@@ -361,7 +280,6 @@ async function getScriptData(pid, isNewProxy = false) {
             let startTime = Date.now()
             let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
             runnings.push(actionRecord)
-            watchRunnings.push(actionRecord)
         }
         
         action.id = action.script_code
@@ -456,7 +374,7 @@ function checkRunningProfiles () {
         }
     }
     catch (e) {
-        utils.log('error', 'checkWatchingProfile err: ', e, ' watchRunnings: ', watchRunnings)
+        utils.log('error', 'checkWatchingProfile err: ', e)
     }
 }
 
@@ -686,7 +604,6 @@ function initExpress() {
             await request_api.reportScript(req.query.pid, req.query.service_id)
             if (req.query.is_break) {
                 closeChrome(req.query.pid)
-                watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
@@ -747,32 +664,15 @@ function initExpress() {
                 utils.log(req.query.pid, 'confirm error', req.query.msg)
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
             }
-            watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
         }
         else if(req.query.id == 'changepass'){
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-            if(req.query.stop && req.query.stop != 'false'){
-                watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
-            }
         }
         else if(req.query.id == 'checkpremium' || req.query.id == 'checkcountry'){
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-            watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
         }
         else if (req.query.id == 'watch') {
-            if (req.query.status == 0) {
-                utils.log(req.query.pid, 'stop')
-                watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
-            }
-            else {
-                watchRunnings = watchRunnings.map(x => {
-                    if (x.pid == req.query.pid) {
-                        x.lastReport = Date.now()
-                        x.playlist = req.query.msg
-                    }
-                    return x
-                })
-            }
+            
         }
         else if (req.query.id == 'sub') {
             if (req.query.stop == 'true' || req.query.stop == true) {
@@ -801,12 +701,6 @@ function initExpress() {
 
     app.get('/input', async (req, res) => {
         utils.log(req.query)
-        watchRunnings = watchRunnings.map(x => {
-            if (x.pid == req.query.pid) {
-                x.lastReport = Date.now()
-            }
-            return x
-        })
         addnewRunnings = addnewRunnings.map(x => {
             if (x.pid == req.query.pid) {
                 x.lastReport = Date.now()
@@ -878,7 +772,6 @@ function initExpress() {
             } else if (req.query.action == 'END_SCRIPT') {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
                 await utils.sleep(5000)
-                watchRunnings = watchRunnings.filter(x => x.pid != req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             }
 
