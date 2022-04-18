@@ -497,27 +497,27 @@ function makeid(length) {
 
 async function initConfig() {
     // load configuration
-    utils.log('config: ', config)
-    let ip = ''
-    while(!ip || ip.length > 50){
-        await utils.sleep(5000)
-        try {
-            if (fs.existsSync('./ip.log')) {
-                ip = fs.readFileSync('./ip.log', 'utf8')
-                if (ip.length > 50) {
-                    ip = await publicIp.v4()
-                }
-            }
-            else {
-                ip = await publicIp.v4()
-            }
-        }
-        catch (e) {
-            utils.log('error', 'get ip err')
-        }
-    }
+    //utils.log('config: ', config)
+    // let ip = ''
+    // while(!ip || ip.length > 50){
+    //     await utils.sleep(5000)
+    //     try {
+    //         if (fs.existsSync('./ip.log')) {
+    //             ip = fs.readFileSync('./ip.log', 'utf8')
+    //             if (ip.length > 50) {
+    //                 ip = await publicIp.v4()
+    //             }
+    //         }
+    //         else {
+    //             ip = await publicIp.v4()
+    //         }
+    //     }
+    //     catch (e) {
+    //         utils.log('error', 'get ip err')
+    //     }
+    // }
 
-    utils.log('ip: ', ip)
+    // utils.log('ip: ', ip)
     // check config
     config.vm_id = makeid(9)//(Date.now()+'').slice(0,9)
 
