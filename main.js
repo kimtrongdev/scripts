@@ -521,12 +521,12 @@ async function initConfig() {
     // check config
     config.vm_id = makeid(9)//(Date.now()+'').slice(0,9)
 
-    fs.writeFile("config.json", JSON.stringify(config), (err) => {
-        if (err) throw err;
-        utils.log('update config.json');
-    })
+    // fs.writeFile("config.json", JSON.stringify(config), (err) => {
+    //     if (err) throw err;
+    //     utils.log('update config.json');
+    // })
 
-    utils.log('version: ', version)
+    //utils.log('version: ', version)
 }
 
 function initProxy() {
