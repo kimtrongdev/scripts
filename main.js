@@ -270,16 +270,19 @@ async function getScriptData(pid, isNewProxy = false) {
                 let newProxy = await request_api.getProxyV4()
                 await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
                 if (newProxy.server) {
-                    let proxyInfo = newProxy.server.split(':')
-                    if (proxyInfo.length >= 2) {
-                        execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
-                        execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
-                        execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
-                        proxy[pid] = undefined
+                    proxy[pid] = {
+                        server: newProxy.server
                     }
+                    // let proxyInfo = newProxy.server.split(':')
+                    // if (proxyInfo.length >= 2) {
+                    //     execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
+                    //     execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
+                    //     execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
+                    //     proxy[pid] = undefined
+                    // }
                 }
             } else {
-                execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
+                //execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
         }
