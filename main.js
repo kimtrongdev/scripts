@@ -29,8 +29,6 @@ global.workingDir = getScriptDir()
 const path = require('path')
 const del = require('del');
 const fs = require('fs')
-const version = fs.readFileSync(path.join(__dirname, 'version'), 'utf8')
-const publicIp = require('public-ip');
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 let MAX_PROFILE = 2
 
@@ -41,7 +39,6 @@ global.runnings = []
 global.usersPosition = []
 global.subRunnings = []
 global.addnewRunnings = []
-global.processRunning = []
 global.proxy = null
 global.gui = false
 global.WIN_ENV = process.platform === "win32"
