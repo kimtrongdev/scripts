@@ -117,11 +117,11 @@ function getProfileIds() {
 }
 
 async function startChromeAction(action) {
-    let widthSizes = [1000, 1100, 1200, 1300]
+    let widthSizes = [1000, 1100, 1200]
     let userProxy = ''
-    let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 3)
+    let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = widthSizes[positionSize]
-    let screenHeight = action.isNew ? 1000 : utils.getRndInteger(950, 1200)
+    let screenHeight = action.isNew ? 1000 : utils.getRndInteger(950, 1000)
 
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
