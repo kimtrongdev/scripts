@@ -1,4 +1,4 @@
-// config file
+let isSystemChecking = false
 const TIME_REPORT = 110000
 //let isCheckingBAT = false
 const isAutoEnableReward = true
@@ -48,8 +48,6 @@ global.fisrt_video = 0
 global.active_devices = []
 global.channelInfo = []
 let BACKUP = false
-let CUSTOM = false
-PR = [530810, 'abandondata7577@gmail.com', '8BTQ651e8cis', 'nCQFX4wh8340lzr@hotmail.com']
 
 const PLAYLIST_ACTION = {
     WATCH: 0,
@@ -61,15 +59,17 @@ const LOCAL_PORT = 2000
 
 async function profileRunningManage() {
     try {
-        await checkRunningProfiles()
-        utils.log('profileRunningManage')
+        if (!isSystemChecking) {
+            await checkRunningProfiles()
+            utils.log('profileRunningManage')
 
-        if (MAX_CURRENT_ACC > runnings.length) {
-            if (ids.length < MAX_PROFILE) {
-                newProfileManage()
-            } else {
-                countRun++
-                newRunProfile()
+            if (MAX_CURRENT_ACC > runnings.length) {
+                if (ids.length < MAX_PROFILE) {
+                    newProfileManage()
+                } else {
+                    countRun++
+                    newRunProfile()
+                }
             }
         }
     }
@@ -83,14 +83,18 @@ async function profileRunningManage() {
 
 async function runUpdateVps () {
     try {
-        execSync("git pull")
+        isSystemChecking = true
         let pids = await getProfileIds()
-        for await (let pid of pids) {
+        for (let pid of pids) {
             closeChrome(pid)
         }
-        execSync("rm -rf profiles && forever restart main.js") 
+
+        execSync(`xdotool key Control_L+c && sleep 1 && git pull && sleep 2 && xdotool key Control_L+v && sleep 2 && xdotool key KP_Enter && sleep 1`)
+        //execSync("git pull")
+        //execSync("rm -rf profiles && forever restart main.js")
+        isSystemChecking = false
     } catch (error) {
-        
+        console.log('Error while update vps, error: ', error);
     }
 }
 
