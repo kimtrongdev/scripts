@@ -39,7 +39,7 @@ const fs = require('fs')
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 let MAX_PROFILE = 2
 
-const RUNNING_CHECK_INTERVAL = 15000     // 30 seconds
+const RUNNING_CHECK_INTERVAL = 25000     // 30 seconds
 const TIME_TO_CHECK_UPDATE = 600000
 let ids = []
 global.runnings = []
