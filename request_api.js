@@ -7,7 +7,6 @@ try{
 catch (e) {
     config = {vm_id:2}
 }
-let devJson = require('./dev.json')
 const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 

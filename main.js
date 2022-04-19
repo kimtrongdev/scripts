@@ -12,8 +12,15 @@ require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
+require('dotenv').config();
 let config
-let devJson = require('./dev.json')
+global.devJson = {
+    hostIp: process.env.HOST_IP,
+    maxProfile: process.env.MAX_PROFILES,
+    isShowUI: process.env.DEBUG,
+    debug: process.env.SHOW_UI
+}
+
 const BROWSER = 'brave'
 try {
     config = require('./config.json')
@@ -89,9 +96,10 @@ async function runUpdateVps () {
             closeChrome(pid)
         }
 
-        execSync(`xdotool key Control_L+c && sleep 1 && git pull && sleep 2 && xdotool key Control_L+v && sleep 2 && xdotool key KP_Enter && sleep 1`)
-        //execSync("git pull")
-        //execSync("rm -rf profiles && forever restart main.js")
+        execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
+        execSync("git pull && forever restart main.js")
+        await utils.sleep(15000)
+        runnings = []
         isSystemChecking = false
     } catch (error) {
         console.log('Error while update vps, error: ', error);
@@ -264,14 +272,14 @@ async function getScriptData(pid, isNewProxy = false) {
                 if (newProxy.server) {
                     let proxyInfo = newProxy.server.split(':')
                     if (proxyInfo.length >= 2) {
-                        execSync(`gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
-                        execSync(`gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
-                        execSync(`gsettings set org.gnome.system.proxy mode 'manual'`)
+                        execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
+                        execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
+                        execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
                         proxy[pid] = undefined
                     }
                 }
             } else {
-                execSync(`gsettings set org.gnome.system.proxy mode 'none'`)
+                execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
         }
@@ -458,6 +466,7 @@ function initDir() {
 }
 
 async function start() {
+    execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
     try {
          let systemConfig = await request_api.getSystemConfig();
         if (systemConfig.max_total_profiles) {
@@ -941,7 +950,7 @@ function closeChrome(pid) {
                 execSync(`pkill -f "profiles/${pid}"`)
             }
             else {
-                execSync('pkill chrome')
+                execSync(`pkill ${BROWSER}`)
             }
         }
     }
