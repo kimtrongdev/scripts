@@ -96,7 +96,6 @@ async function runUpdateVps () {
             closeChrome(pid)
         }
 
-        execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
         execSync("git pull && sleep 2 && forever restart main.js")
         await utils.sleep(15000)
         runnings = []
@@ -469,13 +468,12 @@ function initDir() {
 }
 
 async function start() {
-    execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
     try {
          let systemConfig = await request_api.getSystemConfig();
         if (systemConfig.max_total_profiles) {
             MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
         }
-        startupScript()
+        //startupScript()
         initDir()
         await initConfig()
         initProxy()
@@ -1037,7 +1035,7 @@ function startupScript() {
     try {
         if(WIN_ENV) return
         // if (fs.existsSync('ex.zip')) execSync('rm -rf *.js')
-        execSync('rm -rf core.*;for i in /home/runuser/.forever/*.log; do cat /dev/null > $i; done;rm -rf ~/.ssh/known_hosts')
+        //execSync('rm -rf core.*;for i in /home/runuser/.forever/*.log; do cat /dev/null > $i; done;rm -rf ~/.ssh/known_hosts')
     }
     catch (e) {
         utils.log('error', 'startupScript', e)
