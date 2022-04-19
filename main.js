@@ -97,7 +97,7 @@ async function runUpdateVps () {
         }
 
         execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
-        execSync("git pull && forever restart main.js")
+        execSync("git pull && sleep 2 && forever restart main.js")
         await utils.sleep(15000)
         runnings = []
         isSystemChecking = false
@@ -1118,7 +1118,7 @@ async function checkToUpdate () {
         setTimeout(async () => {
             console.log('check to update')
             let result = await request_api.checkToUpdate()
-            if (result && result.updating) {
+            if (result && result.upgradeTool) {
                 runUpdateVps()
             } else {
                 checkToUpdate()
