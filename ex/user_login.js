@@ -24,7 +24,7 @@ async function userLogin(action) {
             let avatar = document.querySelector('#avatar-btn')
             if (avatar) {
                 if (action.id == 'profile_pause') {
-                    await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+                    await goToLocation(action.pid,'youtube.com/feed/history')
                 } else {
                     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
                 }
@@ -159,6 +159,7 @@ async function userLogin(action) {
         }
         else if (url.indexOf('myactivity.google.com/activitycontrols') > -1) {
             await pauseInfo(action)
+            await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
             return
         }      
         else if (url.indexOf('https://m.youtube.com/create_channel') == 0) {
@@ -176,18 +177,16 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('youtube.com/account') > -1) {
+            reportLive(action.pid)
             if (action.id == 'profile_pause') {
                 let channels = document.querySelectorAll('ytd-account-item-renderer')
-                let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-                //action.is_processing_bat = true
-                //await setActionData(action)
-                //await handleBeforeTrickAds(action)
-                //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-
-                if (action.total_created_users < channels.length && btnCreateChannel) {
+                action.total_created_users
+                let channelItem = channels.item(action.total_created_users)
+                if (channelItem) {
                     action.total_created_users++
+                    updateTotalCreatedUsers(action.pid, action.total_created_users)
                     await setActionData(action)
-                    await userClick(action.pid,'',btnCreateChannel)
+                    await userClick(action.pid,'',channelItem)
                 } else {
                     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
                 }
@@ -442,7 +441,7 @@ async function updateInfo(action){
     }
 }
 
-async function pauseInfo() {
+async function pauseInfo(action) {
     try {
         let btnOff = document.querySelector('div[data-is-touch-wrapper] > button[data-is-on="true"]')
         if (btnOff) {
@@ -457,8 +456,6 @@ async function pauseInfo() {
         }
     } catch (error) {
         
-    } finally {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     }
 }
 

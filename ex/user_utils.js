@@ -149,6 +149,13 @@ async function initActionData(action) {
     }
 }
 
+async function updateTotalCreatedUsers(pid, count){
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: { id: 'total_created_users', pid, count }}, function (response) {
+        resolve(response);
+    }))
+}
+
 function reportScript(action) {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break }}, 

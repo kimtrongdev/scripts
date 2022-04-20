@@ -101,7 +101,7 @@ async function runUpdateVps () {
         runnings = []
         isSystemChecking = false
     } catch (error) {
-        console.log('Error while update vps, error: ', error);
+        utils.log('Error while update vps, error: ', error);
     }
 }
 
@@ -182,6 +182,10 @@ async function startChromeAction(action) {
             setDisplay(action.pid)
             let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
             exec(run)
+            if (action.is_system_script) {
+                await utils.sleep(10000)
+                sendEnter(action.pid)
+            }
             await utils.sleep(8000)
         }
     }
@@ -210,12 +214,13 @@ async function newProfileManage() {
     try {
         if (process.env.IS_SYSTEM_SCRIPT) {
             let action = {
+                pid: 1,
                 id: 'profile_pause',
                 is_system_script: true,
                 email: 'amadocornelius@gmail.com',
                 password: 'ys5sA8beao',
                 recover_mail: 'amadocorneliusz8c89@yahoo.com',
-                total_created_users: 0,
+                total_created_users: 9,
             }
             if (action) {
                 runnings.push({ pid: action.pid, lastReport: Date.now() })
@@ -279,7 +284,7 @@ async function getScriptData(pid, isNewProxy = false) {
             let totalRound = totalRoundForChangeProxy * MAX_PROFILE
             if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
                 isLoadNewProxy = true
-                console.log('Load new proxy for pid')
+                utils.log('Load new proxy for pid')
             }
 
             if (isLoadNewProxy) {
@@ -302,7 +307,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
         }
-        console.log('Script data: ', action)
+        utils.log('Script data: ', action)
 
         if (!runnings.some(i => i.pid == pid)) {
             let startTime = Date.now()
@@ -387,7 +392,7 @@ function checkRunningProfiles () {
             let timeDiff = Date.now() - runnings[i].lastReport
             if (timeDiff > 180000) {
                 let pid = runnings[i].pid
-                console.log('--- expired time,', pid)
+                utils.log('--- expired time,', pid)
                 try {
                     closeChrome(pid)
                 }
@@ -496,7 +501,7 @@ async function start() {
         initProxy()
         initExpress()
         running()
-        console.log('--- Running ---')
+        utils.log('--- Running ---')
     }
     catch (e) {
         utils.log('error', 'start:', e)
@@ -621,7 +626,10 @@ function initExpress() {
     app.get('/report', async (req, res) => {
         utils.log(req.query)
 
-        if (req.query.id == 'live_report') {
+        if (req.query.id == 'total_created_users') {
+            request_api.updateProfileData({ id: req.query.pid, total_created_users: req.query.count})
+        }
+        else if (req.query.id == 'live_report') {
             runnings.forEach(running => {
                 if (running.pid == req.query.pid) {
                     running.lastReport = Date.now()
@@ -766,7 +774,7 @@ function initExpress() {
                 let currentBat = ''
                 const clipboardy = require('clipboardy');
                 currentBat = clipboardy.readSync()
-                console.log('currentBat', currentBat)
+                utils.log('currentBat', currentBat)
                 currentBat = Number(currentBat)
                 
                 if (currentBat) {
@@ -1134,7 +1142,7 @@ async function logScreen() {
 async function checkToUpdate () {
     try {
         setTimeout(async () => {
-            console.log('check to update')
+            utils.log('check to update')
             let result = await request_api.checkToUpdate()
             if (result && result.upgradeTool) {
                 runUpdateVps()
