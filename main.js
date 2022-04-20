@@ -70,10 +70,6 @@ async function profileRunningManage() {
             await checkRunningProfiles()
             utils.log('profileRunningManage')
 
-            if (process.env.IS_SYSTEM_SCRIPT) {
-                runnings = []
-            }
-
             if (MAX_CURRENT_ACC > runnings.length) {
                 if (ids.length < MAX_PROFILE) {
                     newProfileManage()
@@ -690,6 +686,8 @@ function initExpress() {
                 backup(req.query.pid,login)
             }
             else {
+                runnings = []
+                execSync('rm -rf profiles')
                 utils.log(req.query.pid, 'login error', req.query.msg)
                 request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
             }
