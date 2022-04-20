@@ -37,7 +37,7 @@ async function runAction (action) {
         await setActionData(action)
         await scriptYoutubeSub(action)
     } 
-    else if (action.id == 'login') {
+    else if (action.id == 'login' || action.id == 'profile_pause') {
         console.log('login')
         await userLogin(action)
     }
@@ -117,6 +117,9 @@ async function initActionData(action) {
     else if(action.id == 'login'){
         await handleBraveSetting(action)
         //await goToLocation(action.pid,'accounts.google.com')
+    }
+    else if (action.id == 'profile_pause') {
+        await goToLocation(action.pid,'accounts.google.com')
     }
     else if(action.id == 'logout'){
         await goToLocation(action.pid,'accounts.google.com/logout')

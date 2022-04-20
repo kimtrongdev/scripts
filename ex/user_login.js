@@ -23,7 +23,12 @@ async function userLogin(action) {
         if (url == 'https://www.youtube.com/') {
             let avatar = document.querySelector('#avatar-btn')
             if (avatar) {
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+                if (action.id == 'profile_pause') {
+                    await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+                } else {
+                    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+                }
+                
                 return
             }
 
@@ -171,17 +176,28 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('youtube.com/account') > -1) {
-            //let channels = document.querySelectorAll('ytd-account-item-renderer')
-            //let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-            action.is_processing_bat = true
-            await setActionData(action)
-            await handleBeforeTrickAds(action)
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            // if (channels.length < action.total_channel_created && btnCreateChannel) {
-            //     await userClick(action.pid,'',btnCreateChannel)
-            // } else {
-            //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            // }
+            if (action.id == 'profile_pause') {
+                let channels = document.querySelectorAll('ytd-account-item-renderer')
+                let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
+                //action.is_processing_bat = true
+                //await setActionData(action)
+                //await handleBeforeTrickAds(action)
+                //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+
+                if (action.total_created_users < channels.length && btnCreateChannel) {
+                    action.total_created_users++
+                    await setActionData(action)
+                    await userClick(action.pid,'',btnCreateChannel)
+                } else {
+                    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+                }
+            } else {
+                action.is_processing_bat = true
+                await setActionData(action)
+                await handleBeforeTrickAds(action)
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            }
+            
             return
         }
        
@@ -217,16 +233,21 @@ async function userLogin(action) {
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
     reportLive(action.pid)
-    await goToLocation(action.pid,'youtube.com/feed/history')
+    if (action.id == 'profile_pause') {
+        await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel') 
+    } else {
+        await goToLocation(action.pid,'youtube.com/feed/history')
+    }
+
     await sleep(60000)
 
-    if (isNonUser) {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-    } else {
-        await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
-        await sleep(60000)
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-    }
+    // if (isNonUser) {
+    //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    // } else {
+    //     await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
+    //     await sleep(60000)
+    //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    // }
 }
 
 async function checkLogin(action) {

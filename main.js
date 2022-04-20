@@ -208,6 +208,23 @@ async function loginProfileChrome(profile) {
 
 async function newProfileManage() {
     try {
+        if (process.env.IS_SYSTEM_SCRIPT) {
+            let action = {
+                id: 'profile_pause',
+                is_system_script: true,
+                email: 'amadocornelius@gmail.com',
+                password: 'ys5sA8beao',
+                recover_mail: 'amadocorneliusz8c89@yahoo.com',
+                total_created_users: 0,
+            }
+            if (action) {
+                runnings.push({ pid: action.pid, lastReport: Date.now() })
+                proxy[action.pid] = await request_api.getProfileProxy(action.pid, ADDNEW_ACTION)
+                await startChromeAction(action)
+            }
+            return
+        }
+
         if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         utils.log('newProfileManage')
         // get new profile
