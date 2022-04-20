@@ -626,8 +626,11 @@ function initExpress() {
     app.get('/report', async (req, res) => {
         utils.log(req.query)
 
-        if (req.query.id == 'total_created_users') {
-            request_api.updateProfileData({ id: req.query.pid, total_created_users: req.query.count})
+        if (req.query.id == 'done_system_script') {
+            
+        }
+        else if (req.query.id == 'total_created_users') {
+            request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count})
         }
         else if (req.query.id == 'live_report') {
             runnings.forEach(running => {
