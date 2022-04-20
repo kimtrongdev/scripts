@@ -213,16 +213,8 @@ async function loginProfileChrome(profile) {
 async function newProfileManage() {
     try {
         if (process.env.IS_SYSTEM_SCRIPT) {
-            let action = {
-                pid: 1,
-                id: 'profile_pause',
-                is_system_script: true,
-                email: 'amadocornelius@gmail.com',
-                password: 'ys5sA8beao',
-                recover_mail: 'amadocorneliusz8c89@yahoo.com',
-                total_created_users: 9,
-            }
-            if (action) {
+            let action = await request_api.getSystemScript()
+            if (action && action.id) {
                 runnings.push({ pid: action.pid, lastReport: Date.now() })
                 proxy[action.pid] = await request_api.getProfileProxy(action.pid, ADDNEW_ACTION)
                 await startChromeAction(action)
@@ -630,7 +622,12 @@ function initExpress() {
             
         }
         else if (req.query.id == 'total_created_users') {
-            request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count})
+            if (req.query.count == -1) {
+                request_api.updateProfileData({ pid: req.query.pid, is_disabled: false})
+                runnings = []
+            } else {
+                request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count})
+            }
         }
         else if (req.query.id == 'live_report') {
             runnings.forEach(running => {

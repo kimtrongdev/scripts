@@ -188,6 +188,7 @@ async function userLogin(action) {
                     await setActionData(action)
                     await userClick(action.pid,'',channelItem)
                 } else {
+                    updateTotalCreatedUsers(action.pid, -1)
                     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
                 }
             } else {

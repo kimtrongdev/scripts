@@ -11,6 +11,9 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    getSystemScript: async function getSystemScript() {
+        return await rq({uri: SUB_URL + '/api/script/get-system-script', json: true})
+    },
     getProxyV4: async function getProxyV4(data) {
         let query = ''
         if (data) {
