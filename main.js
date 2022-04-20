@@ -182,7 +182,7 @@ async function startChromeAction(action) {
             setDisplay(action.pid)
             let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
             exec(run)
-            if (action.is_system_script) {
+            if (process.env.IS_SYSTEM_SCRIPT) {
                 await utils.sleep(10000)
                 sendEnter(action.pid)
             }
@@ -625,6 +625,9 @@ function initExpress() {
             if (req.query.count == -1) {
                 request_api.updateProfileData({ pid: req.query.pid, is_disabled: false})
                 runnings = []
+                closeChrome(req.query.pid)
+                execSync('rm -rf profiles/' + req.query.pid)
+                ids = []
             } else {
                 request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count})
             }
