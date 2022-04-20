@@ -6,7 +6,7 @@ var Alarms = {
 				Alarms.Updaters.ChooseUserAgent();
 
 				// Assign browser event
-				chrome.alarms.create("UserAgentRefresh",{periodInMinutes: Vars.UserAgentInterval});
+				//chrome.alarms.create("UserAgentRefresh",{periodInMinutes: Vars.UserAgentInterval});
 			} else {
 				if (!onlyStart){
 					chrome.alarms.clear("UserAgentRefresh",function(success) {
@@ -22,7 +22,7 @@ var Alarms = {
 				Alarms.Updaters.ChooseGPU();
 
 				// Assign browser event
-				chrome.alarms.create("GPURefresh",{periodInMinutes: Vars.GPUInterval});
+				//chrome.alarms.create("GPURefresh",{periodInMinutes: Vars.GPUInterval});
 			} else {
 				if (!onlyStart){
 					chrome.alarms.clear("GPURefresh",function(success) {
@@ -37,19 +37,31 @@ var Alarms = {
 		ChooseGPU:function(){
 			if (Prefs.Current.Pref_WebGLFingerprint.enabled === false) return;
 
-			let gpuStr = rA(Vars.gpuModels);
-			let addDirectX = rA(gpuDirectStr) || "";
-			if (Prefs.Current.Pref_WebGLFingerprint.gpuList.list.length !== 0){
-				gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
-			}
+			// let gpuStr = rA(Vars.gpuModels);
+			// let addDirectX = rA(gpuDirectStr) || "";
+			// if (Prefs.Current.Pref_WebGLFingerprint.gpuList.list.length !== 0){
+			// 	gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
+			// }
 
-			Vars.gpuChose = "ANGLE (" + gpuStr + " " + addDirectX + ")";
+			Vars.gpuChose = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list) //"ANGLE (" + gpuStr + " " + addDirectX + ")";
 		},
 
 		ChooseUserAgent:function(){
+			let uA = rA(Prefs.Current.Pref_UserAgent.uaCust.customUAs)
+			Vars.useragent = uA
+			let m = uA.match(/\((.*?)\)/)
+			Vars.oscpu = m[1]
+			Vars.platform = 'Win64'
+			return Vars.useragent;
+
 			// If user has enabled custom user agents and set some
 			if (Prefs.Current.Pref_UserAgent.uaCust.enabled === true && Prefs.Current.Pref_UserAgent.uaCust.customUAs.length > 0){
-				return rA(Prefs.Current.Pref_UserAgent.uaCust.customUAs);
+				let uA = rA(Prefs.Current.Pref_UserAgent.uaCust.customUAs)
+				Vars.useragent = uA
+				let m = uA.match(/\((.*?)\)/)
+			  Vars.oscpu = m[1]
+				Vars.platform = 'Win64'
+				return Vars.useragent;
 			}
 
 			// Choose OS
