@@ -70,6 +70,10 @@ async function profileRunningManage() {
             await checkRunningProfiles()
             utils.log('profileRunningManage')
 
+            if (process.env.IS_SYSTEM_SCRIPT) {
+                runnings = []
+            }
+
             if (MAX_CURRENT_ACC > runnings.length) {
                 if (ids.length < MAX_PROFILE) {
                     newProfileManage()
@@ -143,7 +147,11 @@ async function startChromeAction(action) {
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
-    let exs = ["ex", "quality", "trace"].map(x => path.resolve(x)).join(",")
+    let exs = ["ex", "quality"]
+    if (!process.env.IS_SYSTEM_SCRIPT) {
+        exs.push('trace')
+    }
+    exs = exs.map(x => path.resolve(x)).join(",")
 
     if (WIN_ENV) {        
         exec(`start chrome${userProxy} --lang=en-US,en --start-maximized --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
