@@ -69,7 +69,8 @@ var Vars = {
 		},
 		"wb":{
 			"chrome":{
-				"86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
+				//"86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
+				"100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5014.0 Safari/537.36"
 			},
 			"firefox":{
 				"82":"Gecko/20100101 Firefox/82.0",
