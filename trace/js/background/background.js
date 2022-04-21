@@ -13,7 +13,7 @@ let gpuDirectStr = ['Direct3D9Ex vs_0_0 ps_2_0', 'Direct3D9Ex vs_3_0 ps_3_0', 'D
 //chrome.webRequest.onActionIgnored.addListener(function(a){
 //	console.log(a);
 //});
-
+// ạdasjkfasf
 /*chrome.storage.onChanged.addListener(function(changes, namespace) {
 	for (key in changes) {
 		if (key === "stats_main" || key === "stats_db") return;
