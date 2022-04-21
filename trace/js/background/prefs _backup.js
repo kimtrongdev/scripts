@@ -401,7 +401,7 @@ var Prefs = {
 			"enabled":false
 		},
 		"Pref_UserAgent":{
-			"enabled":true,
+			"enabled":false,
 			"uaOSConfig":{
 				"AllowMac":{
 					"enabled":false
