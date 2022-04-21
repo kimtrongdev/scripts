@@ -23,6 +23,7 @@ let Simple = {
 		"Pref_WebRTC",
 		"Pref_IPSpoof"
 	],
+	//sadas
 
 	presets:{
 		low:{
