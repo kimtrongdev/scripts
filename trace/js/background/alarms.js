@@ -42,7 +42,7 @@ var Alarms = {
 			// if (Prefs.Current.Pref_WebGLFingerprint.gpuList.list.length !== 0){
 			// 	gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
 			// }
-
+// kt test
 			Vars.gpuChose = rA([
 				"ANGLE-(NVIDIA,-NVIDIA-GeForce-GT-610--Direct3D11-vs_5_0-ps_5_0,-D3D11)",
 				"ANGLE-(NVIDIA,-NVIDIA-GeForce-MX450-Direct3D11-vs_5_0-ps_5_0,-D3D11)",
