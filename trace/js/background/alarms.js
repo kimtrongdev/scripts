@@ -43,15 +43,15 @@ var Alarms = {
 			// 	gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
 			// }
 
-			Vars.gpuChose = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list) //"ANGLE (" + gpuStr + " " + addDirectX + ")";
+			Vars.gpuChose = 'Apple GPU'//rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list) //"ANGLE (" + gpuStr + " " + addDirectX + ")";
 		},
 
 		ChooseUserAgent:function(){
-			let uA = rA(Prefs.Current.Pref_UserAgent.uaCust.customUAs)
-			Vars.useragent = uA
-			let m = uA.match(/\((.*?)\)/)
-			Vars.oscpu = m[1]
-			Vars.platform = 'Win64'
+			//let uA = rA(Prefs.Current.Pref_UserAgent.uaCust.customUAs)
+			Vars.useragent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15'
+			//let m = uA.match(/\((.*?)\)/)
+			Vars.oscpu = 'Macintosh; Intel Mac OS X 10_15_7' //m[1]
+			Vars.platform = 'MacIntel'
 			return Vars.useragent;
 
 			// If user has enabled custom user agents and set some
