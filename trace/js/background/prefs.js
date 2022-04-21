@@ -404,13 +404,13 @@ var Prefs = {
 			"enabled":true,
 			"uaOSConfig":{
 				"AllowMac":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowLinux":{
 					"enabled":false
 				},
 				"AllowWindows":{
-					"enabled":false
+					"enabled":true
 				}
 			},
 			"uaWBConfig":{
