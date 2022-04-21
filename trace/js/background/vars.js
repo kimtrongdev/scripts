@@ -59,6 +59,7 @@ var Vars = {
 				"linux 32bit":"X11; Linux x86_32"
 			},
 			"macos":{
+                "macos monteray":"Macintosh; Intel Mac OS X 10_15_7",
 				"macos mojave3":"Macintosh; Intel Mac OS X 10_14_6",
 				"macos mojave2":"Macintosh; Intel Mac OS X 10_14_0",
 				"macos mojave":"Macintosh; Intel Mac OS X 10_14",
@@ -69,8 +70,12 @@ var Vars = {
 		},
 		"wb":{
 			"chrome":{
-				//"86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
-				"100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5014.0 Safari/537.36"
+				//"86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"dsfdsf
+				"100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+				"100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36",
+				"99":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Safari/537.36",
+				"101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4893.203 Safari/537.36",
+				"101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.34 Safari/537.36",
 			},
 			"firefox":{
 				"82":"Gecko/20100101 Firefox/82.0",
@@ -96,7 +101,7 @@ var Vars = {
 	},
 
 	gpuModels: [
-		'AMD Radeon HD 6350',
+		/*'AMD Radeon HD 6350',
 		'AMD Radeon HD 6450',
 		'AMD Radeon HD 6800 Series',
 		'AMD Radeon HD 7310 Graphics',
@@ -216,6 +221,8 @@ var Vars = {
 		'NVIDIA GeForce GTX 1060M',
 		'NVIDIA GeForce GTX 1070M',
 		'NVIDIA GeForce GTX 1080M'
+		*/
+		'Apple,-Apple-M1-Pro,-OpenGL-4.1'
 	],
 	gpuChose:"Intel(R) HD Graphics",
 

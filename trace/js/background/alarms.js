@@ -99,7 +99,9 @@ var Alarms = {
 			if (Vars.oscpu.toLowerCase().includes("win")){
 				Vars.platform = rA(["Win32","Win64"]);
 			} else if (Vars.oscpu.toLowerCase().includes("mac")){
-				Vars.platform = rA(["MacIntel","MacPPC"]);
+				Vars.platform = rA(["MacIntel"]);
+//MacPPC
+
 			} else {
 				Vars.platform = rA(["Linux","X11","Linux 1686"]);
 			}
