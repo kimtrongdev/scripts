@@ -216,10 +216,10 @@ var Vars = {
 		'NVIDIA GeForce GTX 1070M',
 		'NVIDIA GeForce GTX 1080M'
 	],
-	gpuChose:"Intel(R) HD Graphics",
+	gpuChose:"Apple GPU",
 
 	// Current UA settings
-	useragent:"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:73.0) Gecko/20100101 Firefox/73.0",
-	oscpu:"Windows NT 10.0; Win64; x64; rv:73.0",
-	platform:"Win32"
+	useragent:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15",
+	oscpu:"Macintosh; Intel Mac OS X 10_15_7",
+	platform:"MacIntel"
 };
