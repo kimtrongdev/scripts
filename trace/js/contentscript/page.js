@@ -1078,7 +1078,7 @@ var TPage = {
 
 					7936:settings["ctx_vendor"] || "WebKit",
 					7937:settings["ctx_gpu"] || "WebKit WebGL",
-					37445:settings["debug_vendor"] || "Apple Inc."
+					37445:settings["debug_vendor"] || "Google Inc."
 				};
 				changeMap = Object.assign(changeMap, paramChanges);
 			}
