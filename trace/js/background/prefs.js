@@ -242,8 +242,7 @@ var Prefs = {
 				},
 				"deviceMemory":{
 					"enabled":true,
-					"value":4,
-					"list": [8, 16, 32, 64, 128]
+					"value":4
 				},
 				"hwVrDisplays":{
 					"enabled":true

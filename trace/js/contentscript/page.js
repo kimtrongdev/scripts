@@ -788,7 +788,7 @@ var TPage = {
 			["hardwareConcurrency", "deviceMemory"].forEach(function(hw){
 				if (!settings["hardware"][hw]["enabled"]) return;
 
-				let newValue = randArr(settings["hardware"][hw]['list']) //settings["hardware"][hw]["value"] || 4;
+				let newValue = randArr([8, 16, 32, 64, 128]) //settings["hardware"][hw]["value"] || 4;
 				if (hw == 'hardwareConcurrency') {
 					newValue = settings["hardware"][hw]["value"]
 				}
