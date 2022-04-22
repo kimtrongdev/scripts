@@ -432,7 +432,7 @@ var Prefs = {
 					"enabled":true
 				},
 				"AllowSafari":{
-					"enabled":true
+					"enabled":false
 				}
 			},
 			"uaCust":{
