@@ -410,7 +410,7 @@ var Prefs = {
 					"enabled":false
 				},
 				"AllowWindows":{
-					"enabled":false
+					"enabled":true
 				}
 			},
 			"uaWBConfig":{
