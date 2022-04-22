@@ -770,6 +770,9 @@ var TPage = {
 			if (!frame.navigator){
 				return;
 			}
+			let randArr = function(arr){
+				return arr[Math.floor(Math.random() * arr.length)];
+			};
 
 			function doUpdateProp(obj, prop, newVal){
 				let props = Object.getOwnPropertyDescriptor(obj, prop) || {configurable:true};
@@ -785,7 +788,7 @@ var TPage = {
 			["hardwareConcurrency", "deviceMemory"].forEach(function(hw){
 				if (!settings["hardware"][hw]["enabled"]) return;
 
-				let newValue = settings["hardware"][hw]["value"] || 4;
+				let newValue = randArr(settings["hardware"][hw]['list']) //settings["hardware"][hw]["value"] || 4;
 
 				doUpdateProp(frame.navigator, hw, newValue);
 			});
