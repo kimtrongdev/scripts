@@ -99,6 +99,11 @@ var Vars = {
 			"edge":{
 				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4664.110 Safari/537.36 Edg/100.0.1054.62",
 				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4855.0 Safari/537.36 Edg/100.0.1160.0",
+				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
+				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44",
+				"cr101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.34 Safari/537.36 Edg/101.0.1210.19",
+				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.88"
+
 
 				//"cr88":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4287.0 Safari/537.36 Edg/88.0.673.0",
 				//"cr86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 Edg/86.0.622.56"
