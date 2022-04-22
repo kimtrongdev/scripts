@@ -96,7 +96,7 @@ async function runUpdateVps () {
             closeChrome(pid)
         }
 
-        execSync("git pull && sleep 2 && forever restart main.js")
+        execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2 && forever restart main.js")
         await utils.sleep(15000)
         runnings = []
         isSystemChecking = false
