@@ -426,13 +426,13 @@ var Prefs = {
 					"enabled":false
 				},
 				"AllowOpera":{
-					"enabled":false
+					"enabled":true
 				},
 				"AllowEdge":{
 					"enabled":true
 				},
 				"AllowSafari":{
-					"enabled":false
+					"enabled":true
 				}
 			},
 			"uaCust":{
