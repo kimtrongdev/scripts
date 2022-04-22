@@ -239,7 +239,7 @@ var Prefs = {
 				"hardwareConcurrency":{
 					"enabled":true,
 					"value":4,
-					"list": [2, 4]
+					"list": [8]
 				},
 				"deviceMemory":{
 					"enabled":true,
@@ -406,7 +406,7 @@ var Prefs = {
 			"enabled":true,
 			"uaOSConfig":{
 				"AllowMac":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowLinux":{
 					"enabled":false
@@ -426,13 +426,13 @@ var Prefs = {
 					"enabled":false
 				},
 				"AllowOpera":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowEdge":{
 					"enabled":true
 				},
 				"AllowSafari":{
-					"enabled":true
+					"enabled":false
 				}
 			},
 			"uaCust":{
