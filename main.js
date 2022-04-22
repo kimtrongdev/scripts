@@ -267,7 +267,7 @@ async function getScriptData(pid, isNewProxy = false) {
 
             if (isLoadNewProxy) {
                 let newProxy = await request_api.getProxyV4()
-                await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
                 if (newProxy.server) {
                     proxy[pid] = {
                         server: newProxy.server
@@ -279,11 +279,18 @@ async function getScriptData(pid, isNewProxy = false) {
                     //     execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
                     //     proxy[pid] = undefined
                     // }
+                } else {
+                    proxy[pid] = proxyV6
                 }
             } else {
                 //execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
                 proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
             }
+        }
+
+        if (!proxy[pid] || !proxy[pid].server) {
+            console.log('Not found proxy')
+            return
         }
         console.log('Script data: ', action)
 
