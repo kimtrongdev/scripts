@@ -789,7 +789,9 @@ var TPage = {
 				if (!settings["hardware"][hw]["enabled"]) return;
 
 				let newValue = randArr(settings["hardware"][hw]['list']) //settings["hardware"][hw]["value"] || 4;
-
+				if (hw == 'hardwareConcurrency') {
+					newValue = settings["hardware"][hw]["value"]
+				}
 				doUpdateProp(frame.navigator, hw, newValue);
 			});
 

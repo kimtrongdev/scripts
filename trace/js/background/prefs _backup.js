@@ -238,8 +238,7 @@ var Prefs = {
 				"enabled":true,
 				"hardwareConcurrency":{
 					"enabled":true,
-					"value":4,
-					"list": [8]
+					"value":4
 				},
 				"deviceMemory":{
 					"enabled":true,
