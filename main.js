@@ -1138,11 +1138,25 @@ async function logScreen() {
     }
 }
 
+async function resetAllProfiles () {
+    isSystemChecking = true
+    let pids = await getProfileIds()
+    for (let pid of pids) {
+        closeChrome(pid)
+    }
+    execSync('rm -rf profiles')
+    isSystemChecking = false
+}
+
 async function checkToUpdate () {
     try {
         setTimeout(async () => {
             console.log('check to update')
             let result = await request_api.checkToUpdate()
+            if (result && result.resetAllItem) {
+                await resetAllProfiles()
+            }
+
             if (result && result.upgradeTool) {
                 runUpdateVps()
             } else {
