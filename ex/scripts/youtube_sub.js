@@ -5,28 +5,15 @@ async function scriptYoutubeSub(action) {
     let url = window.location.toString()
     if (url.indexOf('youtube.com/account') > -1) {
       let channels = document.querySelectorAll('ytd-account-item-renderer')
-      if (channels.length <= action.channel_position) {
-        await updateActionStatus(action.pid, action.id, 0, 'end playlist')
-        return
-      }
+      let posRd = randomRanger(0, channels.length - 1)
 
-      let channel = channels.item(action.channel_position)
+      let channel = channels.item(posRd)
       if (channel) {
-        if (action.channel_position < channels.length - 2) {
-          reportPositionChannel(action.pid, action.channel_position)
-        }
-        getPlaylistData(action)
-        action.channel_position += 1
-        await setActionData(action)
         await userClick(action.pid, '', channel)
       } else {
-        await updateActionStatus(action.pid, action.id, 0, 'end playlist')
+        await reportScript(action)
       }
       return
-    }
-    else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
-      //action.
-
     }
     else if (url.indexOf('google.com/search?q=') > -1) {
       await sleep(2000)
@@ -108,6 +95,13 @@ async function scriptYoutubeSub(action) {
 
 async function processHomePageSub(action) {
   await checkLogin(action)
+
+  if (!action.selectedUser) {
+    action.selectedUser = true
+    await setActionData(action)
+    await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    return
+  }
 
   if (action.channel_id) {
     await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id)
@@ -391,6 +385,7 @@ async function processSearchPageSub(action) {
 }
 
 async function processWatchChannelPageSub(action) {
+  await sleep(2000)
   if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
     let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
     await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
