@@ -29,6 +29,14 @@ catch (e) {
     config = { }
 }
 
+let updateFlag = {}
+try {
+    updateFlag = require('./update_flag.json')
+}
+catch (e) {
+    updateFlag = { }
+}
+
 global.DEBUG = devJson.debug
 
 const request_api = require('./request_api')
@@ -90,6 +98,9 @@ async function profileRunningManage() {
 
 async function runUpdateVps () {
     try {
+        // make for report upgrade
+        fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
+
         isSystemChecking = true
         let pids = await getProfileIds()
         for (let pid of pids) {
@@ -477,11 +488,12 @@ function initDir() {
 
 async function start() {
     try {
-         let systemConfig = await request_api.getSystemConfig();
-        if (systemConfig.max_total_profiles) {
-            MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+        
+        if (updateFlag && updateFlag.updating) {
+            request_api.reportUpgrade()
+            execSync('rm -rf update_flag.json')
         }
-        //startupScript()
+
         initDir()
         await initConfig()
         initProxy()
@@ -515,6 +527,10 @@ function makeid(length) {
 }
 
 async function initConfig() {
+    let systemConfig = await request_api.getSystemConfig();
+    if (systemConfig.max_total_profiles) {
+        MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+    }
     // load configuration
     //utils.log('config: ', config)
     // let ip = ''

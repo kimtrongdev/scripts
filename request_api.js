@@ -11,6 +11,9 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    reportUpgrade: async function reportUpgrade () {
+        return await rq({uri: SUB_URL + '/report-upgrade',json: true})
+    },
     getProxyV4: async function getProxyV4(data) {
         let query = ''
         if (data) {
