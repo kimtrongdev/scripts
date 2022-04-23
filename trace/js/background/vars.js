@@ -15,8 +15,8 @@ var Vars = {
 	pauseEnd:0,
 
 	// Refresh constants
-	UserAgentInterval:3,
-	GPUInterval:3,
+	UserAgentInterval:1,
+	GPUInterval:1,
 	FakeIPInterval:1,
 
 	uninstallUrl:"https://absolutedouble.co.uk/trace/extension-uninstall?e=",
@@ -46,21 +46,19 @@ var Vars = {
 		"os": {
 			"windows":{
 				"Windows 10 (x64)": "Windows NT 10.0; Win64; x64",
-			//	"Windows 10 (x86)": "Windows NT 10.0; en-US",
+				"Windows 10 (x86)": "Windows NT 10.0; en-US",
 				"Windows 8.1 (x64)":"Windows NT 6.3; Win64; x64",
-			//	"Windows 8.1 (x86)":"Windows NT 6.3; en-US",
+				"Windows 8.1 (x86)":"Windows NT 6.3; en-US",
 				"Windows 8 (x64)":"Windows NT 6.2; Win64; x64",
-			//	"Windows 8 (x86)":"Windows NT 6.2; en-US",
+				"Windows 8 (x86)":"Windows NT 6.2; en-US",
 				"Windows 7 (x64)":"Windows NT 6.1; Win64; x64",
-			//	"Windows 7 (x86)":"Windows NT 6.1; en-US"
+				"Windows 7 (x86)":"Windows NT 6.1; en-US"
 			},
 			"linux":{
 				"linux 64bit":"X11; Linux x86_64",
-				//"linux 32bit":"X11; Linux x86_32",
-				//"linux 64bit":"X11; Linux armv7l", 
+				"linux 32bit":"X11; Linux x86_32"
 			},
 			"macos":{
-                "macos monteray":"Macintosh; Intel Mac OS X 10_15_7",
 				"macos mojave3":"Macintosh; Intel Mac OS X 10_14_6",
 				"macos mojave2":"Macintosh; Intel Mac OS X 10_14_0",
 				"macos mojave":"Macintosh; Intel Mac OS X 10_14",
@@ -71,115 +69,48 @@ var Vars = {
 		},
 		"wb":{
 			"chrome":{
-				//"86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"dsfdsf
-				"100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
-				"100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36",
-				//"99":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Safari/537.36",
-				"101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4893.203 Safari/537.36",
-				//"101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.34 Safari/537.36",
+				"86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
 			},
 			"firefox":{
 				"82":"Gecko/20100101 Firefox/82.0",
 				"81":"Gecko/20100101 Firefox/81.0"
 			},
 			"vivaldi":{
-				//"84":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 OPR/86.0.4363.23",
-				//"2.70":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.137 Safari/537.36 Vivaldi/2.7.1628.33",
-				//"2.30":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.82 Safari/537.36 Vivaldi/2.3.1440.41"
+				"2.70":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.137 Safari/537.36 Vivaldi/2.7.1628.33",
+				"2.30":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.82 Safari/537.36 Vivaldi/2.3.1440.41"
 			},
 			"opera":{
-				"86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 OPR/86.0.4363.23",
-				"80":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4874.167 Safari/537.36 OPR/80.0.3067.72",
-				"85":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 OPR/85.0.4341.65",
-
-				//"46":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/46.0.2207.0 OMI/4.20.3.54.Catcher2.202 HbbTV/1.5.1 (+DRM;Hisense;SmartTV_2020;V0000.01.00S.M0222;HE65U6F1UWTSG;SmartTV_2020;) FVC/4.0 (Hisense;SmartTV_2020;) LaTivu_1.0.1_2020",
-				//"57":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 OPR/57.0.3098.106",
-				//"54":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.54"
+				"57":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 OPR/57.0.3098.106",
+				"54":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36 OPR/54.0.2952.54"
 			},
 			"edge":{
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4664.110 Safari/537.36 Edg/100.0.1054.62",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4855.0 Safari/537.36 Edg/100.0.1160.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.88",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.34",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.51",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.94",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4845.0 Safari/537.36 Edg/100.0.1154.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4845.0 Safari/537.36 Edg/100.0.1155.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1108.43 Safari/537.36 Edg/100.0.1108.43",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4851.0 Safari/537.36 Edg/100.0.1158.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4851.0 Safari/537.36 Edg/100.0.1156.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4855.0 Safari/537.36 Edg/100.0.1160.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4851.0 Safari/537.36 Edg/100.0.1156.1",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1161.0 Safari/537.36 Edg/100.0.1161.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4855.0 Safari/537.36 Edg/100.0.1161.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4855.0 Safari/537.36 Edg/100.0.1162.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4863.0 Safari/537.36 Edg/100.0.1163.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4867.0 Safari/537.36 Edg/100.0.1165.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4867.0 Safari/537.36 Edg/100.0.1166.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4863.0 Safari/537.36 Edg/100.0.1163.1",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4867.0 Safari/537.36 Edg/100.0.1167.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4867.0 Safari/537.36 Edg/100.0.1168.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1108.56 Safari/537.36 Edg/100.0.1108.56",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4867.0 Safari/537.36 Edg/100.0.1169.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4867.0 Safari/537.36 Edg/100.0.1169.1",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4882.0 Safari/537.36 Edg/100.0.1176.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4880.0 Safari/537.36 Edg/100.0.1175.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4884.0 Safari/537.36 Edg/100.0.1179.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1108.62 Safari/537.36 Edg/100.0.1108.62",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4884.0 Safari/537.36 Edg/100.0.1180.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4884.0 Safari/537.36 Edg/100.0.1181.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4894.0 Safari/537.36 Edg/100.0.1183.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1108.55 Safari/537.36 Edg/100.0.1108.55",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.0 Safari/537.36 Edg/100.0.1188.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.0 Safari/537.36 Edg/100.0.1189.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1150.30 Safari/537.36 Edg/100.0.1150.30",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1150.39 Safari/537.36 Edg/100.0.1150.39",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.20 Safari/537.36 Edg/100.0.1185.7",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.0 Safari/537.36 Edg/100.0.1185.0",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.20 Safari/537.36 Edg/100.0.1185.10",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.30 Safari/537.36 Edg/100.0.1185.12",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1150.46 Safari/537.36 Edg/100.0.1150.46",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1150.36 Safari/537.36 Edg/100.0.1150.36",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.46 Safari/537.36 Edg/100.0.1185.17",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.56 Safari/537.36 Edg/100.0.1185.23",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1150.55 Safari/537.36 Edg/100.0.1150.55",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36 Edg/100.0.1185.29",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36 Edg/100.0.1185.27",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36 Edg/100.0.1185.31",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.100.1185.29 Safari/537.36 Edg/100.0.1185.29",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36 Edg/100.0.1185.78",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.36",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36 Edg/100.0.1185.93",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36 Edg/100.0.1185.36",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.39",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.29",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.94",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.51",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.34",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
-					
-			   
-
-				//"cr88":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4287.0 Safari/537.36 Edg/88.0.673.0",
-				//"cr86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 Edg/86.0.622.56"
+				"cr88":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4287.0 Safari/537.36 Edg/88.0.673.0",
+				"cr86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 Edg/86.0.622.56"
 			},
 			"safari":{
-				"100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36",
-				//"12.1":"AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15",
-				//"12.0":"AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15",
+				"12.1":"AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15",
+				"12.0":"AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15",
 			}
 		}
 	},
 
 	gpuModels: [
-	/*	
+		'AMD Radeon HD 6350',
+		'AMD Radeon HD 6450',
+		'AMD Radeon HD 6800 Series',
+		'AMD Radeon HD 7310 Graphics',
+		'AMD Radeon HD 7340 Graphics',
+		'AMD Radeon HD 7520G',
+		'AMD Radeon HD 7640G',
 		'AMD Radeon HD 7700 Series',
 		'AMD Radeon HD 7800 Series',
 		'AMD Radeon HD 8240',
-		
+		'AMD Radeon R7 200 Series',
+		'AMD Radeon R7 300 Series',
+		'AMD Radeon R9 200 Series',
+		'AMD Radeon R9 300 Series',
+		'AMD Radeon R9 400 Series',
+
 		// AMD 5000 series
 		'AMD Radeon RX 5500 XT',
 		'AMD Radeon RX 5600 XT',
@@ -200,7 +131,24 @@ var Vars = {
 		'Intel(R) HD Graphics',
 		'Intel(R) HD Graphics Family',
 
-	,
+		// 2nd Gen Intel processors
+		'Intel(R) HD Graphics 2000',
+		'Intel(R) HD Graphics 3000',
+
+		// 3rd Gen Intel processors
+		'Intel(R) HD Graphics 2500',
+		'Intel(R) HD Graphics 4000',
+
+		// 4th Gen Intel processors
+		'Intel(R) HD Graphics 4200',
+		'Intel(R) HD Graphics 4400',
+		'Intel(R) HD Graphics 4600',
+		'Intel(R) HD Graphics 5000',
+
+		// 5th Gen Intel processors
+		'Intel(R) HD Graphics 5300',
+		'Intel(R) HD Graphics 5500',
+		'Intel(R) HD Graphics 6000',
 		'Intel(R) HD Graphics 6100',
 		'Intel(R) HD Graphics 6200',
 
@@ -233,6 +181,25 @@ var Vars = {
 		'Intel(R) Graphics Media Accelerator 3600 Series',
 		'Intel(R) Graphics Media Accelerator HD',
 
+		'NVIDIA GeForce 8400 GS',
+		'NVIDIA GeForce 9200',
+		'NVIDIA GeForce 9500 GT',
+		'NVIDIA GeForce 9800 GT',
+		'NVIDIA GeForce GT 220',
+		'NVIDIA GeForce GT 240',
+		'NVIDIA GeForce GT 430',
+		'NVIDIA GeForce GT 440',
+		'NVIDIA GeForce GT 610',
+		'NVIDIA GeForce GT 620',
+		'NVIDIA GeForce GT 630',
+		'NVIDIA GeForce GT 640',
+		'NVIDIA GeForce GTX 550 Ti',
+		'NVIDIA GeForce GTX 560',
+		'NVIDIA GeForce GTX 560 Ti',
+		'NVIDIA GeForce GTX 650',
+		'NVIDIA GeForce GTX 660',
+		'NVIDIA GeForce GTX 670',
+		'NVIDIA GeForce GTX 680',
 		'NVIDIA GeForce GTX 760',
 		'NVIDIA Quadro 4000M',
 		'NVIDIA Quadro 2000M',
@@ -247,55 +214,7 @@ var Vars = {
 		'NVIDIA GeForce GTX 1050M',
 		'NVIDIA GeForce GTX 1060M',
 		'NVIDIA GeForce GTX 1070M',
-		'NVIDIA GeForce GTX 1080M',
-		*/
-	
-		//
-		'NVIDIA, NVIDIA GeForce GTX 1050' ,
-		'NVIDIA, NVIDIA GeForce GTX 1660 SUPER',
-		'NVIDIA, NVIDIA GeForce GTX 970',
-		'NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU',
-		'NVIDIA, NVIDIA GeForce GT 620',
-		'NVIDIA, NVIDIA GeForce GTX 1080',
-		'NVIDIA, NVIDIA GeForce GT 1030',
-		'NVIDIA GeForce GTX 1050 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 1080 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 960',
-		'NVIDIA, NVIDIA GeForce GTX 1060 3GB',
-		'NVIDIA, NVIDIA GeForce GTX 1660 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 1060',
-		'NVIDIA, NVIDIA GeForce RTX 3060',
-		'NVIDIA GeForce GTX 1060 3GB',
-		'NVIDIA GeForce RTX 2060',
-		'NVIDIA, NVIDIA GeForce GT 720M',
-		'NVIDIA, NVIDIA GeForce GTX 1050 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 1650',
-		'NVIDIA, NVIDIA GeForce RTX 3050 Ti Laptop GPU',
-		'NVIDIA GeForce GTX 1060 6GB',
-		'NVIDIA, NVIDIA GeForce GTX 1650 Ti',
-		'NVIDIA GeForce 920MX',
-		'NVIDIA, NVIDIA GeForce GTX 950M',
-		'NVIDIA, NVIDIA GeForce RTX 2080 SUPER',
-		'NVIDIA GeForce RTX 3060 Ti',
-		'NVIDIA, NVIDIA GeForce RTX 2060',
-		'NVIDIA, NVIDIA GeForce RTX 3070',
-		'NVIDIA, NVIDIA GRID K280Q',
-		'NVIDIA, NVIDIA GeForce GTX 1660',
-		'NVIDIA, NVIDIA GeForce RTX 2070 SUPER',
-		'NVIDIA, NVIDIA Quadro RTX 4000',
-		'NVIDIA GeForce GTX 1650',
-		'NVIDIA GeForce RTX 3060 Laptop GPU',
-		'NVIDIA, NVIDIA GeForce GTX 1060 6GB',
-		'NVIDIA, NVIDIA GeForce GTX 750 Ti',
-		'NVIDIA, NVIDIA GeForce GT 730',
-		'NVIDIA, NVIDIA GeForce GTX 1070',
-		'NVIDIA GeForce GT 710',
-		'NVIDIA, NVIDIA GeForce RTX 2060 SUPER',
-		'NVIDIA GeForce RTX 3050',
-		'NVIDIA, NVIDIA GeForce RTX 3050',
-,
-
-	
+		'NVIDIA GeForce GTX 1080M'
 	],
 	gpuChose:"Intel(R) HD Graphics",
 
