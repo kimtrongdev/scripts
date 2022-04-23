@@ -404,7 +404,7 @@ var Prefs = {
 			"enabled":true,
 			"uaOSConfig":{
 				"AllowMac":{
-					"enabled":false
+					"enabled":true
 				},
 				"AllowLinux":{
 					"enabled":false
@@ -415,7 +415,7 @@ var Prefs = {
 			},
 			"uaWBConfig":{
 				"AllowChrome":{
-					"enabled":false
+					"enabled":true
 				},
 				"AllowFirefox":{
 					"enabled":false
@@ -427,7 +427,7 @@ var Prefs = {
 					"enabled":false
 				},
 				"AllowEdge":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowSafari":{
 					"enabled":false
