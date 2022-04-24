@@ -16,7 +16,7 @@ var Vars = {
 
 	// Refresh constants
 	UserAgentInterval:999999999,
-	GPUInterval:1,
+	GPUInterval:999999999,
 	FakeIPInterval:1,
 
 	uninstallUrl:"https://absolutedouble.co.uk/trace/extension-uninstall?e=",
