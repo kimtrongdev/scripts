@@ -23,7 +23,7 @@ global.devJson = {
 
 const BROWSER = 'brave'
 try {
-    config = require('./config.json')
+    config = require('./vm_log.json')
 }
 catch (e) {
     config = { }
@@ -414,6 +414,7 @@ async function updateVmStatus() {
         let pids = _pids.join(',')
         let rs = await request_api.updateVmStatus({
             vm_id: config.vm_id,
+            vm_name: config.vm_name,
             running: runnings.length,
             pids
         })
@@ -558,12 +559,17 @@ async function initConfig() {
 
     // utils.log('ip: ', ip)
     // check config
-    config.vm_id = makeid(9)//(Date.now()+'').slice(0,9)
+    if (process.env.VM_NAME && process.env.VM_NAME != '_VM_NAME') {
+        config.vm_name = process.env.VM_NAME
+    } else {
+        config.vm_name = makeid(3)
+    }
 
-    // fs.writeFile("config.json", JSON.stringify(config), (err) => {
-    //     if (err) throw err;
-    //     utils.log('update config.json');
-    // })
+    if (!config.vm_id) {
+        config.vm_id = makeid(9)
+    }
+
+    fs.writeFileSync("vm_log.json", JSON.stringify(config))
 
     //utils.log('version: ', version)
 }
@@ -1152,7 +1158,11 @@ async function resetAllProfiles () {
     for (let pid of pids) {
         closeChrome(pid)
     }
-    execSync('rm -rf profiles')
+
+    if (fs.existsSync('profiles')) {
+        execSync('rm -rf profiles')
+    }
+
     execSync('mkdir profiles')
     isSystemChecking = false
 }
