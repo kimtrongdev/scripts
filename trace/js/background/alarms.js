@@ -94,7 +94,6 @@ var Alarms = {
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.firefox));
 			}
 			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowEdge.enabled === true && osName == 'windows'){
-				console.log(Vars.uaSettings.wb.edge);
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.edge));
 			}
 			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowSafari.enabled === true && osName == 'macos'){
@@ -106,7 +105,7 @@ var Alarms = {
 			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowOpera.enabled === true && osName == 'linux'){
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.opera));
 			}
-console.log(uaWBPool);
+
 			Vars.oscpu = rA(uaOSPool);
 			let browser = rA(uaWBPool);
 
