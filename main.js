@@ -303,7 +303,6 @@ async function getScriptData(pid, isNewProxy = false) {
             console.log('Not found proxy')
             return
         }
-
         console.log('Script data: ', action)
 
         if (!runnings.some(i => i.pid == pid)) {
@@ -682,14 +681,16 @@ function initExpress() {
         else if (req.query.id == 'login') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
-                let login = !req.query.msg
-                req.query.msg = req.query.msg == "OK" ? undefined : req.query.msg
-                request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-                backup(req.query.pid,login)
+                //let login = !req.query.msg
+                //req.query.msg = req.query.msg == "OK" ? undefined : req.query.msg
+                request_api.updateProfileData({ pid: req.query.pid, status: 'SYNCED' })
+                //request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
+                //backup(req.query.pid,login)
             }
             else {
                 utils.log(req.query.pid, 'login error', req.query.msg)
-                request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
+                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
+                //request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
             }
             removePidAddnew(req.query.pid, req.query.status)
         }
