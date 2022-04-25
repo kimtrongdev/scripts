@@ -451,6 +451,10 @@ async function profileManage() {
 
 async function running() {
     // get profile ids
+    if (!fs.existsSync('profiles')) {
+        fs.mkdirSync('profiles')
+    }
+    
     ids = await getProfileIds()
     utils.log('ids: ', ids)
     ids.forEach(pid => startDisplay(pid))
@@ -1149,6 +1153,7 @@ async function resetAllProfiles () {
         closeChrome(pid)
     }
     execSync('rm -rf profiles')
+    execSync('mkdir profiles')
     isSystemChecking = false
 }
 
