@@ -129,7 +129,7 @@ function getProfileIds() {
 }
 
 async function startChromeAction(action) {
-    let widthSizes = [1000, 1100, 1200]
+    let widthSizes = [950, 1100, 1200]
     let userProxy = ''
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = widthSizes[positionSize]
@@ -956,7 +956,7 @@ function initExpress() {
 function removePidAddnew(pid, status) {
     try {
         utils.log('removePidAddnew', pid, status)
-        addnewRunnings = addnewRunnings.filter(x => x.pid != pid)
+        runnings = runnings.filter(x => x.pid != pid)
         if (status != 1) {
             // login error
             deleteProfile(pid)
