@@ -18,8 +18,8 @@ let config
 global.devJson = {
     hostIp: process.env.HOST_IP,
     maxProfile: process.env.MAX_PROFILES,
-    isShowUI: process.env.DEBUG,
-    debug: process.env.SHOW_UI
+    isShowUI: Boolean(Number(process.env.SHOW_UI)),
+    debug: Boolean(Number(process.env.DEBUG))
 }
 
 const BROWSER = 'brave-browser'
@@ -274,7 +274,7 @@ async function getScriptData(pid, isNewProxy = false) {
             let totalRound = totalRoundForChangeProxy * MAX_PROFILE
             if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
                 isLoadNewProxy = true
-                console.log('Load new proxy for pid')
+                utils.log('Load new proxy for pid')
             }
 
             if (isLoadNewProxy && isRunBAT) {
@@ -307,7 +307,7 @@ async function getScriptData(pid, isNewProxy = false) {
             console.log('Not found proxy')
             return
         }
-        console.log('Script data: ', action)
+        utils.log('Script data: ', action)
 
         if (!runnings.some(i => i.pid == pid)) {
             let startTime = Date.now()
@@ -395,7 +395,7 @@ function checkRunningProfiles () {
             let timeDiff = Date.now() - runnings[i].lastReport
             if (timeDiff > 180000) {
                 let pid = runnings[i].pid
-                console.log('--- expired time,', pid)
+                utils.log('--- expired time,', pid)
                 try {
                     closeChrome(pid)
                 }
@@ -793,7 +793,7 @@ function initExpress() {
                 let currentBat = ''
                 const clipboardy = require('clipboardy');
                 currentBat = clipboardy.readSync()
-                console.log('currentBat', currentBat)
+                utils.log('currentBat', currentBat)
                 currentBat = Number(currentBat)
                 
                 if (currentBat) {
@@ -1180,7 +1180,7 @@ async function resetAllProfiles () {
 async function checkToUpdate () {
     try {
         setTimeout(async () => {
-            console.log('check to update')
+            utils.log('check to update')
             let result = await request_api.checkToUpdate()
             if (result && result.resetAllItem) {
                 await resetAllProfiles()
