@@ -173,9 +173,12 @@ async function userLogin(action) {
         else if (url.indexOf('youtube.com/account') > -1) {
             //let channels = document.querySelectorAll('ytd-account-item-renderer')
             //let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-            action.is_processing_bat = true
-            await setActionData(action)
-            await handleBeforeTrickAds(action)
+            if (isRunBAT) {
+                action.is_processing_bat = true
+                await setActionData(action)
+                await handleBeforeTrickAds(action)
+            }
+            
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             // if (channels.length < action.total_channel_created && btnCreateChannel) {
             //     await userClick(action.pid,'',btnCreateChannel)

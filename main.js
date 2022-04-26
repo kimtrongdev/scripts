@@ -59,7 +59,7 @@ global.proxy = null
 global.gui = false
 global.WIN_ENV = process.platform === "win32"
 global.IS_LOG_SCREEN = false
-global.is_show_ui = devJson.isShowUI
+global.is_show_ui = isRunBAT ? 1 : 0//Boolean(process.env.SHOW_UI)
 global.fisrt_video = 0
 global.active_devices = []
 global.channelInfo = []
@@ -140,7 +140,7 @@ async function startChromeAction(action) {
     action['screenHeight'] = screenHeight
 
     let windowPosition = '--window-position=0,0'
-    let windowSize = is_show_ui ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
+    let windowSize = (is_show_ui || isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -472,9 +472,9 @@ async function running() {
 
 function initDir() {
     checkToUpdate()
-    // if (!fs.existsSync(path.resolve('logscreen'))) {
-    //     fs.mkdirSync(path.resolve('logscreen'));
-    // }
+    if (!fs.existsSync(path.resolve('logscreen'))) {
+        fs.mkdirSync(path.resolve('logscreen'));
+    }
 
     // if (!fs.existsSync(path.resolve('logs'))) {
     //     fs.mkdirSync(path.resolve('logs'));
@@ -725,7 +725,9 @@ function initExpress() {
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
         }
         else if (req.query.id == 'watch') {
-            
+            if (req.query.stop == 'true' || req.query.stop == true) {
+                runnings = runnings.filter(i => i.pid != req.query.pid)
+            }
         }
         else if (req.query.id == 'sub') {
             if (req.query.stop == 'true' || req.query.stop == true) {
