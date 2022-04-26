@@ -10,6 +10,7 @@ var windowWide
 var mobileMenuBarHeight
 var zoom
 var isNonUser = false
+var isRunBAT = false
 async function loadPage(){
     try{
         await sleep(4000)
@@ -87,6 +88,10 @@ async function initAction(){
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
 
+        if (action.isRunBAT) {
+            isRunBAT = Boolean(action.isRunBAT)
+        }
+        
         await initActionData(action)
 
         await sleep(5000)

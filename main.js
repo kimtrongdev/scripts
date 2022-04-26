@@ -1,3 +1,4 @@
+const isRunBAT = false
 let isSystemChecking = false
 const TIME_REPORT = 110000
 //let isCheckingBAT = false
@@ -21,7 +22,7 @@ global.devJson = {
     debug: process.env.SHOW_UI
 }
 
-const BROWSER = 'brave'
+const BROWSER = 'brave-browser'
 try {
     config = require('./vm_log.json')
 }
@@ -276,7 +277,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 console.log('Load new proxy for pid')
             }
 
-            if (isLoadNewProxy) {
+            if (isLoadNewProxy && isRunBAT) {
                 let newProxy = await request_api.getProxyV4()
                 let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
                 if (newProxy.server) {
@@ -295,7 +296,10 @@ async function getScriptData(pid, isNewProxy = false) {
                 }
             } else {
                 //execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
-                proxy[pid] = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
+                if (proxyV6 && proxyV6.server) {
+                    proxy[pid] = proxyV6
+                }
             }
         }
 
@@ -314,6 +318,9 @@ async function getScriptData(pid, isNewProxy = false) {
         action.id = action.script_code
         action.pid = pid
 
+        if (isRunBAT) {
+            action.isRunBAT = isRunBAT
+        }
         // init action data
         if(action.mobile_percent === undefined || action.mobile_percent === null){
             let systemConfig = await request_api.getSystemConfig();
