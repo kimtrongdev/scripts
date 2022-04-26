@@ -48,7 +48,7 @@ const fs = require('fs')
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 let MAX_PROFILE = 2
 
-const RUNNING_CHECK_INTERVAL = 25000     // 30 seconds
+const RUNNING_CHECK_INTERVAL = 20000     // 30 seconds
 const TIME_TO_CHECK_UPDATE = 600000
 let ids = []
 global.runnings = []
@@ -140,7 +140,7 @@ async function startChromeAction(action) {
     action['screenHeight'] = screenHeight
 
     let windowPosition = '--window-position=0,0'
-    let windowSize = (is_show_ui || isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
+    let windowSize = (is_show_ui || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
