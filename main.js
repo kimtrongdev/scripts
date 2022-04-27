@@ -812,6 +812,9 @@ function initExpress() {
                     }
                 }
             }
+            else if (req.query.action == 'GO_TO_FISRT_TAB') {
+                execSync(`xdotool key Control_L+1 && sleep 1`)
+            }
             else if (req.query.action == 'DOUBLE_CLICK') {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
             }

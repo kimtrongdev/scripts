@@ -47,7 +47,7 @@ async function handleBraveSetting (action) {
   // select option
   await updateUserInput(action.pid,'CLICK', 726,758,0,0,"",'click')
 
-  await updateUserInput(action.pid,'CLICK',114,49,0,0,"",'go tab')
+  await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
   await goToLocation(action.pid, 'accounts.google.com')
 }
 
