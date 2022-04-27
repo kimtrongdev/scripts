@@ -57,7 +57,7 @@ async function runAction (action) {
         console.log('checkcountry')
         await checkCountry(action)
     }
-    else if(action.id == 'watch') {
+    else if(action.id == 'watch' || action.id == 'watch_video') {
         console.log('watch')
         !action.mobile ? await userWatch(action) : await userWatchMobile(action)
     }
@@ -80,7 +80,7 @@ async function initActionData(action) {
         await setUserAgent(action.pid);
     }
     
-    if(action.id=='watch'){
+    if(action.id=='watch' || action.id == 'watch_video'){
         setWatchParam(action)
     }
 
@@ -134,7 +134,7 @@ async function initActionData(action) {
     else if(action.id == 'checkcountry'){
         await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
     }
-    else if (action.id == 'watch') {
+    else if (action.id == 'watch' || action.id == 'watch_video') {
         // await goToLocation(action.pid,'youtube.com/feed/history//')
         // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
         if (action.google) {

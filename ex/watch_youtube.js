@@ -502,6 +502,8 @@ async function afterWatchingVideo(action,finishVideo){
         }
     }
 
+    await updateActionStatus(action.pid, action.id, 0,'end playlist')
+    return
     if((await getActionData()).action.finish) return
 
     action.finish = true
