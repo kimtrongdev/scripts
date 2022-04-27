@@ -59,9 +59,9 @@ var Alarms = {
 			let uaOSPool = [];
 			let uaWBPool = [];
 			let osArr = []
-			if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowLinux.enabled === true){
-				osArr.push('linux')
-			}
+			// if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowLinux.enabled === true){
+			// 	osArr.push('linux')
+			// }
 			if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowMac.enabled === true){
 				osArr.push('macos')
 			}
@@ -74,9 +74,9 @@ var Alarms = {
 			if (osName) {
 				uaOSPool = Object.values(Vars.uaSettings.os[osName])
 			} else {
-				if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowLinux.enabled === true){
-					uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.linux));
-				}
+				// if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowLinux.enabled === true){
+				// 	uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.linux));
+				// }
 				if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowMac.enabled === true){
 					uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.macos));
 				}
@@ -102,9 +102,9 @@ var Alarms = {
 			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowVivaldi.enabled === true){
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.vivaldi));
 			}
-			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowOpera.enabled === true && osName == 'linux'){
-				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.opera));
-			}
+			// if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowOpera.enabled === true && osName == 'linux'){
+			// 	uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.opera));
+			// }
 
 			Vars.oscpu = rA(uaOSPool);
 			let browser = rA(uaWBPool);
@@ -126,7 +126,7 @@ var Alarms = {
 //"Win32",
 
 			} else {
-				Vars.platform = rA(["Linux","X11","Linux 1686"]);
+				Vars.platform = rA(["Win64"]);
 			}
 		},
 	},
