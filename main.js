@@ -373,15 +373,6 @@ async function getScriptData(pid, isNewProxy = false) {
                 action.playlist_data = action.playlist_url
             }
         }
-    
-        if (fisrt_video < 3 && action.id != 'login') {
-            if (fisrt_video === 0) {
-                action.delete_history = true
-            }
-            action.direct_percent = 1000
-            fisrt_video = fisrt_video + 1
-        }
-
         return action
     }
 }
@@ -653,7 +644,7 @@ function initExpress() {
         }
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
-            if (req.query.is_break) {
+            if (req.query.isBreak) {
                 closeChrome(req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
