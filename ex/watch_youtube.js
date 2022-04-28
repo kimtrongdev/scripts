@@ -164,14 +164,22 @@ async function processHomePage(action){
         return
     }
 
+    if (action.suggest) {
+        if(action.preview == "home"){
+            await userScroll(action.pid,randomRanger(5,15))
+            await sleep(randomRanger(1000,5000))
+            await userClickRandomVideo(action.pid)
+        }
+        else if(action.preview == "search"){
+            await userTypeEnter(action.pid,'input#search',action.keyword)
+        }
+        return
+    }
+
+    //////////
     if(action.direct){
         if(action.url_type=='video'){
             await goToLocation(action.pid,'https://www.youtube.com/watch?v='+action.playlist_url)
-            return
-        }
-        else{
-            // playlist
-            await goToLocation(action.pid,'https://www.youtube.com/playlist?list='+action.playlist_url)
             return
         }
     }
@@ -191,7 +199,7 @@ async function processHomePage(action){
         await userTypeEnter(action.pid,'input#search',action.suggest_videos)
     } 
     else{
-        await userTypeEnter(action.pid,'input#search',action.video)
+        await userTypeEnter(action.pid,'input#search',action.keyword)
     }
 
     await sleep(3000)
@@ -201,6 +209,40 @@ async function preWatchingVideo(action){
    // await sleep(1000)
     let url = window.location.toString()
     // removeSuggest()
+    if(!action.watch_time){
+        let videoTime
+        await skipAds(false, action)
+
+        function loadVideoTime() {
+            videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
+            videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
+            if(action.url_type=='playlist' && videoTime > 3600){
+                videoTime = 3600
+            }
+        }
+        loadVideoTime()
+        let countGetVideoTime = 0
+        // get video time
+        console.log('videoTime:',videoTime)
+        while (videoTime < 31 && countGetVideoTime < 5) {
+            countGetVideoTime++
+            console.log('videoTime:',videoTime)
+            await skipAds(false, action)
+            loadVideoTime()
+            await sleep(1000)
+        }
+
+        if (action.viewed_ads) {
+            action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
+        } else {
+            action.watch_time = action.watching_time_non_ads
+        }
+    }
+    else{
+        await skipAds(false, action)
+        action.watch_time = Number(action.watch_time) // 10000 //Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
+    }
+
     if(url.indexOf(action.playlist_url) < 0) {
         await skipAds(false, action)
         await userScroll(action.pid,0)
@@ -313,60 +355,6 @@ async function preWatchingVideo(action){
         await setActionData(action)
     }
 
-    if(action.total_times < 1000){
-        let videoTime
-        await skipAds(false, action)
-
-        function loadVideoTime() {
-            videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
-            videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
-            if(action.url_type=='playlist' && videoTime > 3600){
-                videoTime = 3600
-            }
-        }
-        loadVideoTime()
-        let countGetVideoTime = 0
-        // get video time
-        console.log('videoTime:',videoTime)
-        while (videoTime < 31 && countGetVideoTime < 5) {
-            countGetVideoTime++
-            console.log('videoTime:',videoTime)
-            await skipAds(false, action)
-            loadVideoTime()
-            await sleep(1000)
-        }
-
-        // if(Math.random() < 0.2){
-        //     action.watch_time = videoTime*1000*randomRanger(2,7)/10
-        // }
-        // else{
-        //     action.watch_time = videoTime*1000*randomRanger(7,9)/10
-        // }
-        if (action.viewed_ads) {
-            action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
-        } else {
-            action.watch_time = action.watching_time_non_ads
-        }
-        
-        // if(Math.random() < 0.2){
-        //     action.watch_time = videoTime*1000*randomRanger(0,25)/100
-        // }
-        // else if(Math.random() < 0.3){
-        //     action.watch_time = videoTime*1000*randomRanger(25,50)/100
-        // }
-        // else if(Math.random() < 0.4){
-        //     action.watch_time = videoTime*1000*randomRanger(50,75)/100
-        // }
-        // else{
-        //     action.watch_time = videoTime*1000*randomRanger(75,100)/100
-        // }
-        console.log('pid',action.pid,'video',action.playlist_url,'percent time:',action.watch_time)
-    }
-    else{
-        await skipAds(false, action)
-        action.watch_time = Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
-    }
-
     if(!action.react){
         let commentKeyword = getCommentKeyword(action.playlist_url,action.video)
         action.react = await getReact(commentKeyword,action.watch_time*0.9)
@@ -439,6 +427,7 @@ async function watchingVideo(action){
             //     await setActionData(action)
             //     return
             // }
+            reportLive(action.pid)
             if(Math.random() < 0.3){
                 let randomScroll = randomRanger(3,7)
                 await userScroll(action.pid, randomScroll)
@@ -509,10 +498,11 @@ async function afterWatchingVideo(action,finishVideo){
            // }
             return
         }
+        return
     }
 
-    await updateActionStatus(action.pid, action.id, 0,'end playlist')
-    return
+    //await updateActionStatus(action.pid, action.id, 0,'end playlist')
+    //return
     if((await getActionData()).action.finish) return
 
     action.finish = true
@@ -528,7 +518,7 @@ async function afterWatchingVideo(action,finishVideo){
     }
     else{
         // report host app
-        await updateActionStatus(action.pid, action.id, 0)
+        await reportScript(action)
         return
     }
 }
@@ -771,7 +761,7 @@ async function processSearchPage(action){
             action.channel_url = channelLink.href
             action.filter = action.filter?action.filter-1:undefined
             await setActionData(action)
-            await userClick(action.pid, action.playlist_url + ' channel-info',channelLink)
+            await userClick(action.pid, action.playlist_url + ' channel-info',channelLink, '', 5)
         }
         else{
             await userClick(action.pid, videoSelector)
@@ -901,8 +891,9 @@ async function processWatchChannelPage(action){
     }
     else{
         // click videos tab
-        if(document.querySelector('#tabsContent > paper-tab:nth-of-type(2)')){
-            await userClick(action.pid,'#tabsContent > paper-tab:nth-of-type(2)')
+        let videoTab = document.querySelectorAll('#tabsContent .tab-content').item(1)
+        if(videoTab){
+            await userClick(action.pid,'#tabsContent .tab-content', videoTab)
         }
         else if(document.querySelector('#title-text > a.yt-simple-endpoint[href*="/videos?"]')){
             await userClick(action.pid,'#title-text > a.yt-simple-endpoint[href*="/videos?"]')

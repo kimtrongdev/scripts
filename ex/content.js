@@ -146,6 +146,7 @@ function setWatchParam(action){
             action.home = true
         } else if (watchTypeRand < action.home_percent + action.suggest_percent) {
             action.suggest = true
+            action.preview = "search"
         } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch) {
             action.page = true
         } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
