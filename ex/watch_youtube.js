@@ -33,7 +33,11 @@ async function userWatch(action){
                 if (action.channel_position < channels.length - 2) {
                     reportPositionChannel(action.pid, action.channel_position)
                 }
-                getPlaylistData(action)
+
+                if (action.id == 'watch') {
+                    getPlaylistData(action)
+                }
+                
                 action.channel_position += 1
                 await setActionData(action)
                 await userClick(action.pid, '', channel)
@@ -152,6 +156,11 @@ async function processHomePage(action){
     if (action.view_playlist) {
         await goToLocation(action.pid,'https://www.youtube.com/playlist?list='+action.playlist_url)
         //await goToLocation(action.pid,`https://www.youtube.com/watch?${action.playlist_video}&list=${action.playlist_url}`)
+        return
+    }
+
+    if (action.search) {
+        await userTypeEnter(action.pid,'input#search',action.keyword)
         return
     }
 

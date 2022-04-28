@@ -340,7 +340,7 @@ async function getScriptData(pid, isNewProxy = false) {
     
             action.total_channel_created = Number(systemConfig.total_channel_created)
     
-            if (action.id == 'watch') {
+            if (action.id == 'watch' || action.id == 'watch_video') {
                 let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
                 if (oldUserPosition) {
                     action.channel_position = Number(oldUserPosition.position) + 1

@@ -122,7 +122,7 @@ function setWatchParam(action){
     action.channel_position = Number(action.channel_position)
     action.total_channel_created = Number(action.total_channel_created) || 20
     action._total_loop_find_ads = 0
-    if (action.playlist_percent == 100) {
+    if (action.id == 'watch' && action.playlist_percent == 100) {
         action.view_playlist = true
     } else {
         if(Math.random()<0.1){
@@ -155,6 +155,7 @@ function setWatchParam(action){
             action.google = true
         } else {
             // search
+            action.search = true
         }
     }
 
@@ -168,8 +169,8 @@ function setWatchParam(action){
     let searchList = ''//action.video.split(";;")
     action.searchList = searchList
     action.video = ''//searchList[randomRanger(0,searchList.length-1)].trim()
-    action.playlist_url = action.playlist_url.trim()
-    action.url_type = action.url_type.trim().toLowerCase()
+    action.playlist_url = action.playlist_url && action.playlist_url.trim()
+    action.url_type = action.url_type && action.url_type.trim().toLowerCase()
     action.suggest_videos = action.suggest_videos?action.suggest_videos.trim():undefined
 }
 
