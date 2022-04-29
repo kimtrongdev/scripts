@@ -34,7 +34,17 @@ async function userLogin(action) {
             }
         }
 
-        if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
+        if (url.indexOf('consent.youtube.com') > -1) {
+            await sleep(2000)
+            await userScroll(action.pid, 5)
+            let btnElement = document.querySelectorAll('div[data-is-touch-wrapper] > button').item(1)
+            if (btnElement) {
+                await userClick(action.pid, 'arrgre consent.youtube.com', btnElement)
+                await sleep(30000)
+            }
+            throw "consent.youtube.com"
+        }
+        else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
             console.log('enter email')
             await sleep(3000)
             await waitForSelector('#identifierId')
