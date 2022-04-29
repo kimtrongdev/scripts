@@ -3,7 +3,7 @@ const LIKE_PERCENT = 0.01
 const COMMENT_PERCENT = 0.0015
 const VIEW_SUB_PERCENT = 0  //0.002
 const SEARCH_SKIP = 0
-const CHANNEL_VIDEO_WATCH = 2
+const CHANNEL_VIDEO_WATCH = 0
 
 async function userWatch(action){
     try{
@@ -379,7 +379,7 @@ async function preWatchingVideo(action){
 
 async function watchingVideo(action){
     let url = window.location.toString()
-    let interval = 5000
+    let interval = 10000
     for(let i = 0; i < action.watch_time;){
         let currentUrl = window.location.toString()
         // check current url
@@ -405,66 +405,46 @@ async function watchingVideo(action){
 
         await clickPlayIfPause(action.pid)
 
-        // like or comment
-        // let react = action.react
-        // if(react && react.like_time > i && react.like_time <= i + interval){
-        //     await sleep(react.like_time - i)
-        //     await LikeOrDisLikeYoutubeVideo(action.pid, react.like)
-        // }
-        // if(react && react.comment_time > i && react.comment_time <= i + interval){
-        //     await sleep(react.comment_time - i)
-        //     await CommentYoutubeVideo(action.pid, react.comment)
-        // }
-        // if(react && react.sub_time > i && react.sub_time <= i + interval){
-        //     await sleep(react.sub_time - i)
-        //     await userClick(action.pid,'#top-row #subscribe-button paper-button.ytd-subscribe-button-renderer:not([subscribed])')
-        // }
-
-        let reactTime = 0
-        if (action.is_sub && i > action.sub_time && i <= action.sub_time + interval) {
-            if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-                // click sub document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-                let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-                await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
-            }
-        }
-
-        if (action.is_like && i > action.like_time && i <= action.like_time + interval) {
-            //await sleep(react.like_time - i)
-            await LikeOrDisLikeYoutubeVideo(action.pid, true)
-        }
-
-        if (action.is_comment && i > action.comment_time && i <= action.comment_time + interval) {
-            //await sleep(react.comment_time - i)
-            await CommentYoutubeVideo(action.pid, action.comment)
-        }
-
-        let sleepTime = interval + reactTime //action.watch_time - i > interval ? interval: action.watch_time - i
-        await sleep(sleepTime)
-
-        // report time
-        if(i%300000==0) {
-            // let continueWatch = await updateWatchingTime(action.pid, 1, 0, i==0?20000:300000, {url: action.playlist_url,keyword: action.video})
-            // let finish = !continueWatch.err && !continueWatch.continue
-            // if(finish){
-            //     action.playlist_index = 0
-            //     await setActionData(action)
-            //     return
-            // }
+        if(i%60000==0) {
             reportLive(action.pid)
             if(Math.random() < 0.3){
-                let randomScroll = randomRanger(3,7)
+                let randomScroll = randomRanger(2,5)
                 await userScroll(action.pid, randomScroll)
                 await sleep(1000)
                 await userScroll(action.pid, -randomScroll)
             }
         }
 
+        if (action.is_sub && i > action.sub_time && i <= action.sub_time + interval) {
+            if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+                let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
+                await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
+                action.is_sub = false
+                await setActionData(action)
+            }
+        }
+
+        if (action.is_like && i > action.like_time && i <= action.like_time + interval) {
+            await LikeOrDisLikeYoutubeVideo(action.pid, true)
+            action.is_like = false
+            await setActionData(action)
+        }
+
+        if (action.is_comment && i > action.comment_time && i <= action.comment_time + interval) {
+            await CommentYoutubeVideo(action.pid, action.comment)
+            action.is_comment = false
+            await setActionData(action)
+        }
+
+        //let reactTime = Date.now() - startReactTime
+        //let sleepTime = interval + reactTime //action.watch_time - i > interval ? interval: action.watch_time - i
+        await sleep(interval)
+
         await updateActionStatus(action.pid, action.id, 1, action.playlist_url+'_'+i, false)
         action.lastRequest = Date.now()
         await setActionData(action)
 
-        i += sleepTime
+        i += interval
     }
     return true
 }
@@ -1035,9 +1015,9 @@ async function LikeOrDisLikeYoutubeVideo(pid, isLike) {
         const likeBtns = document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")
         let index
         if(isLike) {
-            index = 2
+            index = 0
         }else {
-            index = 3
+            index = 1
         }
         let likeBtn = likeBtns.item(index)
         if (likeBtn) {
@@ -1087,7 +1067,7 @@ async function CommentYoutubeVideo(pid, msg) {       // search video or view hom
         await userClick(pid, "#placeholder-area")
         await sleep(1000)
 
-        await userType(pid,"#contenteditable-textarea",msg)
+        await userOnlyTypeEnter(pid,"#contenteditable-textarea",msg)
         await sleep(1000)
 
         await userClick(pid, "#submit-button.ytd-commentbox")
