@@ -39,13 +39,13 @@ async function handleBraveSetting (action) {
   await goToLocation(action.pid, `brave://settings/shields`)
   await sleep(2000)
   //click Fingerprinting blocking
-  await updateUserInput(action.pid,'CLICK', 737, 864,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 755, 692,0,0,"",'click')
   // select option
-  await updateUserInput(action.pid,'CLICK', 715,887,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 743,722,0,0,"",'click')
   // click Trackers & ads blocking
-  await updateUserInput(action.pid,'CLICK', 734,668,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 742,550,0,0,"",'click')
   // select option
-  await updateUserInput(action.pid,'CLICK', 726,728,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 719,610,0,0,"",'click')
 
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
   await goToLocation(action.pid, 'accounts.google.com')
