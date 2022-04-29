@@ -103,6 +103,17 @@ async function initAction(){
 
 function setWatchParam(action){
     // init watch params
+    action.watch_time = Number(action.watch_time)
+    if (action.watch_time && action.watch_time >= 30000) {
+        action.sub_time = randomRanger(5000, action.watch_time - 10000)
+        action.like_time = randomRanger(5000, action.watch_time - 10000)
+        action.comment_time = randomRanger(5000, action.watch_time - 10000)
+    } else {
+        action.is_like = false
+        action.is_sub = false 
+        action.is_comment = false
+    }
+
     action.fisrtStart = true
     action.other_videos = []
     action.channel_videos = []

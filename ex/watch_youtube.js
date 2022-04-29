@@ -240,11 +240,14 @@ async function preWatchingVideo(action){
     }
     else{
         await skipAds(false, action)
-        action.watch_time = Number(action.watch_time) // 10000 //Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
+        action.watch_time = action.origin_watch_time ? Number(action.origin_watch_time) : Number(action.watch_time) // 10000 //Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
     }
 
     if(url.indexOf(action.playlist_url) == -1) {
+        action.origin_watch_time = action.watch_time
+        await setActionData(action)
         action.watch_time = randomRanger(5000, 15000)
+        
         await skipAds(false, action)
         await userScroll(action.pid,0)
         let randomSleep = randomRanger(0,3)
@@ -284,10 +287,14 @@ async function preWatchingVideo(action){
                 let video = document.querySelector('ytd-watch-next-secondary-results-renderer .ytd-compact-video-renderer a#thumbnail[href*="' + action.playlist_url + '"]')
                 if(video) {
                     await userClick(action.pid, action.playlist_url, video)
+                    await sleep(100000)
                     return
                 }
             }
+
             if(action.other_videos.length >= CHANNEL_VIDEO_WATCH){
+                action.after_video = false
+                await setActionData(action)
                 //action.suggest = false
                 //await setActionData(action)
                 // await userTypeEnter(action.pid,'input#search',action.video)
@@ -304,6 +311,7 @@ async function preWatchingVideo(action){
                 next.insertAdjacentHTML('beforebegin', '<ytd-compact-video-renderer class="style-scope ytd-watch-next-secondary-results-renderer" lockup="" thumbnail-width="168">  <div id="dismissable" class="style-scope ytd-compact-video-renderer"> <ytd-thumbnail use-hovered-property="" class="style-scope ytd-compact-video-renderer">  <a id="thumbnail" class="yt-simple-endpoint inline-block style-scope ytd-thumbnail" aria-hidden="true" tabindex="-1" rel="nofollow" href="/watch?v=abcabcabcde"> <yt-img-shadow class="style-scope ytd-thumbnail no-transition" loaded="" style="background-color: transparent;"><img id="img" class="style-scope yt-img-shadow" alt="" width="168" src="https://i.ytimg.com/vi/dpGYmYC3p0I/hqdefault.jpg?sqp=-oaymwEYCKgBEF5IVfKriqkDCwgBFQAAiEIYAXAB&amp;rs=AOn4CLDAbX4Gl4f75wtg594Ix2Hla7Epxw"></yt-img-shadow>  <div id="overlays" class="style-scope ytd-thumbnail"><ytd-thumbnail-overlay-time-status-renderer class="style-scope ytd-thumbnail" overlay-style="DEFAULT"><yt-icon class="style-scope ytd-thumbnail-overlay-time-status-renderer" disable-upgrade="" hidden=""></yt-icon><span class="style-scope ytd-thumbnail-overlay-time-status-renderer" aria-label="1 hour, 14 minutes"> 1:14:08 </span></ytd-thumbnail-overlay-time-status-renderer><ytd-thumbnail-overlay-now-playing-renderer class="style-scope ytd-thumbnail">  <span class="style-scope ytd-thumbnail-overlay-now-playing-renderer">Now playing</span> </ytd-thumbnail-overlay-now-playing-renderer></div> <div id="mouseover-overlay" class="style-scope ytd-thumbnail"></div> <div id="hover-overlays" class="style-scope ytd-thumbnail"></div> </a> </ytd-thumbnail> <div class="details style-scope ytd-compact-video-renderer"> <div class="metadata style-scope ytd-compact-video-renderer"> <a class="yt-simple-endpoint style-scope ytd-compact-video-renderer" rel="nofollow" href="/watch?v=abcabcabcde"> <h3 class="style-scope ytd-compact-video-renderer"> <ytd-badge-supported-renderer class="style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> <span id="video-title" class="style-scope ytd-compact-video-renderer" aria-label="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava by Dave and Ava - Nursery Rhymes and Baby Songs 3 years ago 1 hour, 14 minutes 22,960,714 views" title="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava"> ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava </span> </h3> <div class="secondary-metadata style-scope ytd-compact-video-renderer"> <ytd-video-meta-block class="compact style-scope ytd-compact-video-renderer" no-endpoints="">    <div id="metadata" class="style-scope ytd-video-meta-block"> <div id="byline-container" class="style-scope ytd-video-meta-block"> <ytd-channel-name id="channel-name" class="style-scope ytd-video-meta-block">  <div id="container" class="style-scope ytd-channel-name"> <div id="text-container" class="style-scope ytd-channel-name"> <yt-formatted-string id="text" title="" class="style-scope ytd-channel-name" ellipsis-truncate="">Dave and Ava - Nursery Rhymes and Baby Songs</yt-formatted-string> </div> <paper-tooltip offset="10" class="style-scope ytd-channel-name" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Dave and Ava - Nursery Rhymes and Baby Songs </div> </paper-tooltip> </div> <ytd-badge-supported-renderer class="style-scope ytd-channel-name">   <div class="badge badge-style-type-verified style-scope ytd-badge-supported-renderer"> <yt-icon class="style-scope ytd-badge-supported-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10 S17.52,2,12,2z M9.92,17.93l-4.95-4.95l2.05-2.05l2.9,2.9l7.35-7.35l2.05,2.05L9.92,17.93z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon> <span class="style-scope ytd-badge-supported-renderer"></span> <paper-tooltip position="top" class="style-scope ytd-badge-supported-renderer" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Verified </div> </paper-tooltip></div> <dom-repeat id="repeat" as="badge" class="style-scope ytd-badge-supported-renderer"><template is="dom-repeat"></template></dom-repeat> </ytd-badge-supported-renderer> </ytd-channel-name> <div id="separator" class="style-scope ytd-video-meta-block">•</div> </div> <div id="metadata-line" class="style-scope ytd-video-meta-block">  <span class="style-scope ytd-video-meta-block">22M views</span>  <span class="style-scope ytd-video-meta-block">3 years ago</span> <dom-repeat strip-whitespace="" class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div> </div> <div id="additional-metadata-line" class="style-scope ytd-video-meta-block"> <dom-repeat class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div>  </ytd-video-meta-block> <ytd-badge-supported-renderer class="badges style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> </div> </a> <div id="buttons" class="style-scope ytd-compact-video-renderer"></div> </div> <div id="menu" class="style-scope ytd-compact-video-renderer"><ytd-menu-renderer class="style-scope ytd-compact-video-renderer">  <div id="top-level-buttons" class="style-scope ytd-menu-renderer"></div> <yt-icon-button id="button" class="dropdown-trigger style-scope ytd-menu-renderer" hidden="">   <button id="button" class="style-scope yt-icon-button">  <yt-icon class="style-scope ytd-menu-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon>  </button>  </yt-icon-button> </ytd-menu-renderer></div> <div id="queue-button" class="style-scope ytd-compact-video-renderer"></div> </div> </div> <div id="dismissed" class="style-scope ytd-compact-video-renderer"></div> </ytd-compact-video-renderer>')
                 next.previousElementSibling.querySelector('a').href = action.url_type == 'video'?"/watch?v=" + action.playlist_url:"/watch?v=" + (await getFirstVideo(action.playlist_url)).data + "&list=" + action.playlist_url
                 await userClick(action.pid, `${nextSelector} a#thumbnail`)
+                await sleep(100000)
                 return
             }
             else{
@@ -412,7 +420,8 @@ async function watchingVideo(action){
         //     await userClick(action.pid,'#top-row #subscribe-button paper-button.ytd-subscribe-button-renderer:not([subscribed])')
         // }
 
-        if (action.is_sub && i > 20000 && i <= 20000 + interval) {
+        let reactTime = 0
+        if (action.is_sub && i > action.sub_time && i <= action.sub_time + interval) {
             if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
                 // click sub document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
                 let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
@@ -420,7 +429,17 @@ async function watchingVideo(action){
             }
         }
 
-        let sleepTime = action.watch_time - i > interval ? interval: action.watch_time - i
+        if (action.is_like && i > action.like_time && i <= action.like_time + interval) {
+            //await sleep(react.like_time - i)
+            await LikeOrDisLikeYoutubeVideo(action.pid, true)
+        }
+
+        if (action.is_comment && i > action.comment_time && i <= action.comment_time + interval) {
+            //await sleep(react.comment_time - i)
+            await CommentYoutubeVideo(action.pid, action.comment)
+        }
+
+        let sleepTime = interval + reactTime //action.watch_time - i > interval ? interval: action.watch_time - i
         await sleep(sleepTime)
 
         // report time
@@ -1013,71 +1032,72 @@ async function getReact(keyword,totalTime){
 
 async function LikeOrDisLikeYoutubeVideo(pid, isLike) {
     try {
-        const likeBtn = Array.from(document.querySelectorAll("#top-level-buttons yt-icon-button#button.style-scope.ytd-toggle-button-renderer.style-text"))
-
+        const likeBtns = document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")
         let index
         if(isLike) {
-            index = 1
-        }else {
             index = 2
-        }
-        if(likeBtn.length > 1) {
-            await userClick(pid,`#top-level-buttons ytd-toggle-button-renderer:nth-of-type(${index}) yt-icon-button#button.style-scope.ytd-toggle-button-renderer.style-text`)
-            console.log(index==0?'like':'dislike'+ 'OK')
         }else {
-            console.log("like & dislike button not available")
+            index = 3
         }
-
+        let likeBtn = likeBtns.item(index)
+        if (likeBtn) {
+            await userClick(action.pid, 'likeBtn', likeBtn)
+        }
+        // if(likeBtn.length > 1) {
+        //     await userClick(pid,`#top-level-buttons ytd-toggle-button-renderer:nth-of-type(${index}) yt-icon-button#button.style-scope.ytd-toggle-button-renderer.style-text`)
+        //     console.log(index==0?'like':'dislike'+ 'OK')
+        // }else {
+        //     console.log("like & dislike button not available")
+        // }
     }catch (e) {
         console.log("LikeOrDisLikeYoutubeVideo pid: ", pid, " err: ", e)
     }
 }
 
 async function CommentYoutubeVideo(pid, msg) {       // search video or view homepage
-    return;
-    // try {
-    //     console.log('pid: ', pid, ', CommentYoutubeVideo',msg)
-    //     if(!msg) return
-    //     await sleep(2000)
+    try {
+        console.log('pid: ', pid, ', CommentYoutubeVideo',msg)
+        if(!msg) return
+        await sleep(2000)
 
-    //     let chatFrame = document.querySelector('#chatframe')
-    //     if(chatFrame){
-    //         if(!chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a')){
-    //             await userTypeEnter(pid,'yt-live-chat-text-input-field-renderer#input',msg,'',chatFrame)
-    //             return
-    //         }
-    //         else{
-    //             // create channel
-    //             let action = (await getActionData()).action
-    //             action.create_channel = true
-    //             await setActionData(action)
-    //             await userClick(pid,'create channel',chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a'),chatFrame)
-    //             return
-    //         }
-    //     }
+        let chatFrame = document.querySelector('#chatframe')
+        if(chatFrame){
+            if(!chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a')){
+                await userTypeEnter(pid,'yt-live-chat-text-input-field-renderer#input',msg,'',chatFrame)
+                return
+            }
+            else{
+                // create channel
+                let action = (await getActionData()).action
+                action.create_channel = true
+                await setActionData(action)
+                await userClick(pid,'create channel',chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a'),chatFrame)
+                return
+            }
+        }
 
-    //     await userScroll(pid,70)
+        await userScroll(pid,70)
 
-    //     if(!document.querySelector('#placeholder-area')){
-    //         console.log('error','NO COMMENT SECTION')
-    //         return
-    //     }
+        if(!document.querySelector('#placeholder-area')){
+            console.log('error','NO COMMENT SECTION')
+            return
+        }
 
-    //     await userScrollTo(pid, "#placeholder-area")
-    //     await userClick(pid, "#placeholder-area")
-    //     await sleep(1000)
+        await userScrollTo(pid, "#placeholder-area")
+        await userClick(pid, "#placeholder-area")
+        await sleep(1000)
 
-    //     await userType(pid,"#contenteditable-textarea",msg)
-    //     await sleep(1000)
+        await userType(pid,"#contenteditable-textarea",msg)
+        await sleep(1000)
 
-    //     await userClick(pid, "#submit-button.ytd-commentbox")
-    //     await sleep(2000)
+        await userClick(pid, "#submit-button.ytd-commentbox")
+        await sleep(2000)
 
-    //     await userScroll(pid,-70)
+        await userScroll(pid,-70)
 
-    // }catch (e) {
-    //     console.log('error','CommentYoutubeVideo',pid)
-    // }
+    }catch (e) {
+        console.log('error','CommentYoutubeVideo',pid)
+    }
 }
 
 async function clickPlayIfPause(pid) {
