@@ -243,30 +243,30 @@ async function preWatchingVideo(action){
         action.watch_time = Number(action.watch_time) // 10000 //Math.random() < 0.2 ? (action.total_times*randomRanger(2,7)/10) : (action.total_times*randomRanger(7,9)/10)
     }
 
-    if(url.indexOf(action.playlist_url) < 0) {
+    if(url.indexOf(action.playlist_url) == -1) {
         await skipAds(false, action)
         await userScroll(action.pid,0)
-        let randomSleep = randomRanger(18,36)
+        let randomSleep = randomRanger(0,3)
         for(let i = 0; i < randomSleep; i++){
-            await sleep(10000)
+            await sleep(1000)
             await userScroll(action.pid,0)
         }
         // await sleep(180000)
         // await userScroll(action.pid,0)
         // await sleep(randomRanger(60000, 180000))
-        if (action.preview) {
-            action.preview = false
-            action.lastRequest = Date.now()
-            await setActionData(action)
-            // await userTypeEnter(action.pid, 'input#search', action.suggest_videos ? action.suggest_videos : action.video)
-            if(action.home || action.direct){
-                await userClick(action.pid,'#container a#logo')
-            }
-            else{
-                await userTypeEnter(action.pid, 'input#search', action.video)
-            }
-            return
-        }
+        // if (action.preview) {
+        //     action.preview = false
+        //     action.lastRequest = Date.now()
+        //     await setActionData(action)
+        //     // await userTypeEnter(action.pid, 'input#search', action.suggest_videos ? action.suggest_videos : action.video)
+        //     if(action.home || action.direct){
+        //         await userClick(action.pid,'#container a#logo')
+        //     }
+        //     else{
+        //         await userTypeEnter(action.pid, 'input#search', action.video)
+        //     }
+        //     return
+        // }
         if(action.home){
             if(Math.random() < 0.5 ) {
                 await userClick(action.pid,'#container a#logo')
@@ -287,16 +287,17 @@ async function preWatchingVideo(action){
                 }
             }
             if(action.other_videos.length >= CHANNEL_VIDEO_WATCH){
-                action.suggest = false
-                await setActionData(action)
+                //action.suggest = false
+                //await setActionData(action)
                 // await userTypeEnter(action.pid,'input#search',action.video)
                 let randomNext = randomRanger(1,4)
                 let nextSelector = `ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(${randomNext})`
                 let next = document.querySelector(nextSelector)
                 if(!next){
                     randomNext = randomRanger(1,4)
-                    nextSelector = document.querySelector(`ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(${randomRanger(1,4)})`)
+                    nextSelector = `ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(${randomRanger(1,4)})`
                     next = document.querySelector(nextSelector)
+                   // document.querySelector(`ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(1)`)
                 }
                 next.insertAdjacentHTML('beforebegin', '<ytd-compact-video-renderer class="style-scope ytd-watch-next-secondary-results-renderer" lockup="" thumbnail-width="168">  <div id="dismissable" class="style-scope ytd-compact-video-renderer"> <ytd-thumbnail use-hovered-property="" class="style-scope ytd-compact-video-renderer">  <a id="thumbnail" class="yt-simple-endpoint inline-block style-scope ytd-thumbnail" aria-hidden="true" tabindex="-1" rel="nofollow" href="/watch?v=abcabcabcde"> <yt-img-shadow class="style-scope ytd-thumbnail no-transition" loaded="" style="background-color: transparent;"><img id="img" class="style-scope yt-img-shadow" alt="" width="168" src="https://i.ytimg.com/vi/dpGYmYC3p0I/hqdefault.jpg?sqp=-oaymwEYCKgBEF5IVfKriqkDCwgBFQAAiEIYAXAB&amp;rs=AOn4CLDAbX4Gl4f75wtg594Ix2Hla7Epxw"></yt-img-shadow>  <div id="overlays" class="style-scope ytd-thumbnail"><ytd-thumbnail-overlay-time-status-renderer class="style-scope ytd-thumbnail" overlay-style="DEFAULT"><yt-icon class="style-scope ytd-thumbnail-overlay-time-status-renderer" disable-upgrade="" hidden=""></yt-icon><span class="style-scope ytd-thumbnail-overlay-time-status-renderer" aria-label="1 hour, 14 minutes"> 1:14:08 </span></ytd-thumbnail-overlay-time-status-renderer><ytd-thumbnail-overlay-now-playing-renderer class="style-scope ytd-thumbnail">  <span class="style-scope ytd-thumbnail-overlay-now-playing-renderer">Now playing</span> </ytd-thumbnail-overlay-now-playing-renderer></div> <div id="mouseover-overlay" class="style-scope ytd-thumbnail"></div> <div id="hover-overlays" class="style-scope ytd-thumbnail"></div> </a> </ytd-thumbnail> <div class="details style-scope ytd-compact-video-renderer"> <div class="metadata style-scope ytd-compact-video-renderer"> <a class="yt-simple-endpoint style-scope ytd-compact-video-renderer" rel="nofollow" href="/watch?v=abcabcabcde"> <h3 class="style-scope ytd-compact-video-renderer"> <ytd-badge-supported-renderer class="style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> <span id="video-title" class="style-scope ytd-compact-video-renderer" aria-label="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava by Dave and Ava - Nursery Rhymes and Baby Songs 3 years ago 1 hour, 14 minutes 22,960,714 views" title="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava"> ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava </span> </h3> <div class="secondary-metadata style-scope ytd-compact-video-renderer"> <ytd-video-meta-block class="compact style-scope ytd-compact-video-renderer" no-endpoints="">    <div id="metadata" class="style-scope ytd-video-meta-block"> <div id="byline-container" class="style-scope ytd-video-meta-block"> <ytd-channel-name id="channel-name" class="style-scope ytd-video-meta-block">  <div id="container" class="style-scope ytd-channel-name"> <div id="text-container" class="style-scope ytd-channel-name"> <yt-formatted-string id="text" title="" class="style-scope ytd-channel-name" ellipsis-truncate="">Dave and Ava - Nursery Rhymes and Baby Songs</yt-formatted-string> </div> <paper-tooltip offset="10" class="style-scope ytd-channel-name" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Dave and Ava - Nursery Rhymes and Baby Songs </div> </paper-tooltip> </div> <ytd-badge-supported-renderer class="style-scope ytd-channel-name">   <div class="badge badge-style-type-verified style-scope ytd-badge-supported-renderer"> <yt-icon class="style-scope ytd-badge-supported-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10 S17.52,2,12,2z M9.92,17.93l-4.95-4.95l2.05-2.05l2.9,2.9l7.35-7.35l2.05,2.05L9.92,17.93z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon> <span class="style-scope ytd-badge-supported-renderer"></span> <paper-tooltip position="top" class="style-scope ytd-badge-supported-renderer" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Verified </div> </paper-tooltip></div> <dom-repeat id="repeat" as="badge" class="style-scope ytd-badge-supported-renderer"><template is="dom-repeat"></template></dom-repeat> </ytd-badge-supported-renderer> </ytd-channel-name> <div id="separator" class="style-scope ytd-video-meta-block">•</div> </div> <div id="metadata-line" class="style-scope ytd-video-meta-block">  <span class="style-scope ytd-video-meta-block">22M views</span>  <span class="style-scope ytd-video-meta-block">3 years ago</span> <dom-repeat strip-whitespace="" class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div> </div> <div id="additional-metadata-line" class="style-scope ytd-video-meta-block"> <dom-repeat class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div>  </ytd-video-meta-block> <ytd-badge-supported-renderer class="badges style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> </div> </a> <div id="buttons" class="style-scope ytd-compact-video-renderer"></div> </div> <div id="menu" class="style-scope ytd-compact-video-renderer"><ytd-menu-renderer class="style-scope ytd-compact-video-renderer">  <div id="top-level-buttons" class="style-scope ytd-menu-renderer"></div> <yt-icon-button id="button" class="dropdown-trigger style-scope ytd-menu-renderer" hidden="">   <button id="button" class="style-scope yt-icon-button">  <yt-icon class="style-scope ytd-menu-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon>  </button>  </yt-icon-button> </ytd-menu-renderer></div> <div id="queue-button" class="style-scope ytd-compact-video-renderer"></div> </div> </div> <div id="dismissed" class="style-scope ytd-compact-video-renderer"></div> </ytd-compact-video-renderer>')
                 next.previousElementSibling.querySelector('a').href = action.url_type == 'video'?"/watch?v=" + action.playlist_url:"/watch?v=" + (await getFirstVideo(action.playlist_url)).data + "&list=" + action.playlist_url
@@ -305,6 +306,8 @@ async function preWatchingVideo(action){
 
             }
             else{
+                action.after_video = true
+                await setActionData(action)
                 // get other video of channel, click if not empty
                 let otherVideo = document.querySelector(`${action.channel_videos.map(x => `ytd-watch-next-secondary-results-renderer .ytd-compact-video-renderer a#thumbnail[href*="${x}"]${action.other_videos.map(v => `:not([href*="${v}"])`).join("")}`).join(",")}`)
                 if(otherVideo){
@@ -326,10 +329,10 @@ async function preWatchingVideo(action){
             }
             return
         }
-        if (action.after && action.finish) {
-            await updateActionStatus(action.pid, action.id, 0)
-            return
-        }
+        //if (action.after && action.finish) {
+            //await updateActionStatus(action.pid, action.id, 0)
+        //    return
+        //}
     }
 
     action.preview = undefined
@@ -370,7 +373,7 @@ async function watchingVideo(action){
     for(let i = 0; i < action.watch_time;){
         let currentUrl = window.location.toString()
         // check current url
-        if(currentUrl.indexOf(action.playlist_url) < 0 || currentUrl != url) {
+        if(!action.after_video && (currentUrl.indexOf(action.playlist_url) < 0 || currentUrl != url)) {
             if (action.url_type == 'playlist') {
                 action.playlist_index = 1
                 action.viewed_ads = false
@@ -498,29 +501,25 @@ async function afterWatchingVideo(action,finishVideo){
            // }
             return
         }
-        return
     }
 
-    //await updateActionStatus(action.pid, action.id, 0,'end playlist')
-    //return
-    if((await getActionData()).action.finish) return
+    if (action.suggest) {
+        //if((await getActionData()).action.finish) return
 
-    action.finish = true
-    await setActionData(action)
+        //action.finish = true
+        //await setActionData(action)
 
 
-    if(action.after_video && !action.remove_suggest){
-        action.after_video = false
-        action.after = true
-        await setActionData(action)
-        await userClickRandomVideo(action.pid)
-        return
+        if(action.after_video){
+            action.after_video = false
+            action.after = true
+            await setActionData(action)
+            await userClickRandomVideo(action.pid)
+            return
+        }
     }
-    else{
-        // report host app
-        await reportScript(action)
-        return
-    }
+    
+    await reportScript(action)
 }
 
 async function viewAds(action, onlyVideoType = false) {
@@ -967,11 +966,9 @@ async function processSearchSuggest(action){
 }
 
 async function processWatchPage(action){
-    let watchVideo = await preWatchingVideo(action)
-    if(watchVideo){
-        let finishVideo = await watchingVideo(action)
-        await afterWatchingVideo(action,finishVideo)
-    }
+    await preWatchingVideo(action)
+    let finishVideo = await watchingVideo(action)
+    await afterWatchingVideo(action,finishVideo)
 }
 
 async function getReact(keyword,totalTime){
