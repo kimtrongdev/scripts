@@ -244,6 +244,7 @@ async function preWatchingVideo(action){
     }
 
     if(url.indexOf(action.playlist_url) == -1) {
+        action.watch_time = randomRanger(5000, 15000)
         await skipAds(false, action)
         await userScroll(action.pid,0)
         let randomSleep = randomRanger(0,3)
