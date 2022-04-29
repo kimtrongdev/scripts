@@ -516,7 +516,7 @@ async function afterWatchingVideo(action,finishVideo){
             return
         }
     }
-    
+    await updateWatchedVideo(action.viewed_ads, action.pid)
     await reportScript(action)
 }
 
