@@ -415,7 +415,7 @@ var Prefs = {
 			},
 			"uaWBConfig":{
 				"AllowChrome":{
-					"enabled":false
+					"enabled":true
 				},
 				"AllowFirefox":{
 					"enabled":false
@@ -427,10 +427,10 @@ var Prefs = {
 					"enabled":false
 				},
 				"AllowEdge":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowSafari":{
-					"enabled":true
+					"enabled":false
 				}
 			},
 			"uaCust":{
