@@ -645,7 +645,12 @@ function initExpress() {
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
             if (req.query.isBreak) {
-                closeChrome(req.query.pid)
+                if (is_show_ui) {
+                    closeChrome(req.query.pid)
+                } else {
+                    execSync(`xdotool mousemove 1918 20 && sleep 1 && xdotool click 1 && sleep 1`)
+                }
+                
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
