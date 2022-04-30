@@ -33,9 +33,9 @@ async function userWatch(action){
                     reportPositionChannel(action.pid, action.channel_position)
                 }
 
-                if (action.id == 'watch') {
+                //if (action.id == 'watch') {
                     getPlaylistData(action)
-                }
+                //}
                 
                 action.channel_position += 1
                 await setActionData(action)
@@ -141,10 +141,10 @@ async function processHomePage(action){
         return 
     }
 
-    if (isNonUser) {
+    //if (isNonUser) {
         getPlaylistData(action)
         await setActionData(action)
-    }
+    //}
 
     // if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
     //     await updateActionStatus(action.pid, action.id, 0,'end playlist')

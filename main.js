@@ -370,6 +370,7 @@ async function getScriptData(pid, isNewProxy = false) {
                     action.watching_time_end_ads = systemConfig.watching_time_end_ads
                 }
     
+                action.playlist_url = action.data
                 action.playlist_data = action.playlist_url
             }
         }
@@ -648,7 +649,8 @@ function initExpress() {
                 if (is_show_ui) {
                     closeChrome(req.query.pid)
                 } else {
-                    execSync(`xdotool mousemove 1918 20 && sleep 1 && xdotool click 1 && sleep 1`)
+                    execSync(`xdotool key Control_L+w && sleep 1`)
+                    //execSync(`xdotool mousemove 1918 20 && sleep 1 && xdotool click 1 && sleep 1`)
                 }
                 
                 runnings = runnings.filter(i => i.pid != req.query.pid)
