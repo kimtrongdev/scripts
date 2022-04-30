@@ -415,22 +415,22 @@ var Prefs = {
 			},
 			"uaWBConfig":{
 				"AllowChrome":{
-					"enabled":false
+					"enabled":true
 				},
 				"AllowFirefox":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowVivaldi":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowOpera":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowEdge":{
 					"enabled":false
 				},
 				"AllowSafari":{
-					"enabled":true
+					"enabled":false
 				}
 			},
 			"uaCust":{

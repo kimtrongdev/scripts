@@ -46,13 +46,13 @@ var Vars = {
 		"os": {
 			"windows":{
 				"Windows 10 (x64)": "Windows NT 10.0; Win64; x64",
-				"Windows 10 (x86)": "Windows NT 10.0; en-US",
+				//"Windows 10 (x86)": "Windows NT 10.0; en-US",
 				"Windows 8.1 (x64)":"Windows NT 6.3; Win64; x64",
-				"Windows 8.1 (x86)":"Windows NT 6.3; en-US",
+				//"Windows 8.1 (x86)":"Windows NT 6.3; en-US",
 				"Windows 8 (x64)":"Windows NT 6.2; Win64; x64",
-				"Windows 8 (x86)":"Windows NT 6.2; en-US",
+				//"Windows 8 (x86)":"Windows NT 6.2; en-US",
 				"Windows 7 (x64)":"Windows NT 6.1; Win64; x64",
-				"Windows 7 (x86)":"Windows NT 6.1; en-US"
+				//"Windows 7 (x86)":"Windows NT 6.1; en-US"
 			},
 			"linux":{
 				"linux 64bit":"X11; Linux x86_64",
