@@ -413,6 +413,7 @@ async function updateVmStatus() {
         if (rs && rs.removePid) {
             let removePID = Number(rs.removePid)
             closeChrome(removePID)
+            await utils.sleep(5000)
             execSync("rm -rf profiles/" + removePID)
             runnings = runnings.filter(i => i.pid != removePID)
             ids = ids.filter(i => i != removePID)
