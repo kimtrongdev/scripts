@@ -1,28 +1,24 @@
-const isRunBAT = false
+const isRunBAT = true
 let isSystemChecking = false
 const TIME_REPORT = 110000
-//let isCheckingBAT = false
+const RUNNING_CHECK_INTERVAL = 20000
+const TIME_TO_CHECK_UPDATE = 600000
 const isAutoEnableReward = true
-//const isReportBAT = false
-
 let totalRoundForChangeProxy = 5
-//const totalRoundsForCheckBAT = 6
-
 let countRun = 0
-require('log-timestamp')
-const utils = require('./utils')
-const execSync = require('child_process').execSync;
-const exec = require('child_process').exec;
+
 require('dotenv').config();
 let config
 global.devJson = {
     hostIp: process.env.HOST_IP,
     maxProfile: process.env.MAX_PROFILES,
-    isShowUI: Boolean(Number(process.env.SHOW_UI)),
-    debug: Boolean(Number(process.env.DEBUG))
 }
 
-const BROWSER = 'brave-browser'
+const BROWSER = process.env.BROWSER
+global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
+global.IS_LOG_SCREEN = false
+global.DEBUG = Boolean(Number(process.env.DEBUG))
+const LOCAL_PORT = 2000
 try {
     config = require('./vm_log.json')
 }
@@ -38,8 +34,10 @@ catch (e) {
     updateFlag = { }
 }
 
-global.DEBUG = devJson.debug
-
+require('log-timestamp')
+const utils = require('./utils')
+const execSync = require('child_process').execSync;
+const exec = require('child_process').exec;
 const request_api = require('./request_api')
 global.workingDir = getScriptDir()
 const path = require('path')
@@ -48,18 +46,14 @@ const fs = require('fs')
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 let MAX_PROFILE = 2
 
-const RUNNING_CHECK_INTERVAL = 20000     // 30 seconds
-const TIME_TO_CHECK_UPDATE = 600000
 let ids = []
 global.runnings = []
 global.usersPosition = []
 global.subRunnings = []
 global.addnewRunnings = []
-global.proxy = null
+global.proxy = {}
 global.gui = false
 global.WIN_ENV = process.platform === "win32"
-global.IS_LOG_SCREEN = false
-global.is_show_ui = isRunBAT ? 1 : 0//Boolean(process.env.SHOW_UI)
 global.fisrt_video = 0
 global.active_devices = []
 global.channelInfo = []
@@ -71,7 +65,6 @@ const PLAYLIST_ACTION = {
     SUB: 2
 }
 const ADDNEW_ACTION = 3
-const LOCAL_PORT = 2000
 
 async function profileRunningManage() {
     try {
@@ -108,7 +101,7 @@ async function runUpdateVps () {
             closeChrome(pid)
         }
 
-        execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2 && forever restart main.js")
+        execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2 && pm2 restart all")      
         await utils.sleep(15000)
         runnings = []
         isSystemChecking = false
@@ -140,7 +133,7 @@ async function startChromeAction(action) {
     action['screenHeight'] = screenHeight
 
     let windowPosition = '--window-position=0,0'
-    let windowSize = (is_show_ui || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
+    let windowSize = (IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
@@ -435,7 +428,7 @@ async function updateVmStatus() {
 
 async function profileManage() {
     try {
-        if (!is_show_ui) {
+        if (!IS_SHOW_UI) {
             logScreen()
         }
         
@@ -458,6 +451,7 @@ async function running() {
     utils.log('ids: ', ids)
     ids.forEach(pid => startDisplay(pid))
 
+    runAutoRebootVm()
     // manage profile actions
     await profileManage()
 }
@@ -499,7 +493,6 @@ async function start() {
 
         initDir()
         await initConfig()
-        initProxy()
         initExpress()
         running()
         console.log('--- Running ---')
@@ -572,21 +565,6 @@ async function initConfig() {
     //utils.log('version: ', version)
 }
 
-function initProxy() {
-    utils.log('USE_PROXY:', process.env.USE_PROXY)
-    // if(process.env.USE_PROXY){
-    if (true) {
-        // proxy = await request_api.getProxy(config.vm_id)
-        proxy = {}
-    }
-
-    utils.log('USE_GUI:', process.env.USE_GUI)
-    // if(process.env.USE_GUI=="true"){
-    if (process.env.USE_GUI == "true") {
-        gui = true
-    }
-}
-
 function getScriptDir() {
     utils.log('__dirname: ' + __dirname)
     return __dirname
@@ -646,7 +624,7 @@ function initExpress() {
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
             if (req.query.isBreak) {
-                if (is_show_ui) {
+                if (IS_SHOW_UI) {
                     closeChrome(req.query.pid)
                 } else {
                     execSync(`xdotool key Control_L+w && sleep 1`)
@@ -990,6 +968,20 @@ async function deleteProfile(pid, retry = 0) {
     }
 }
 
+function runAutoRebootVm () {
+    setInterval(() => {
+        let myDate = new Date()
+        let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
+        if (hour == 23) {
+            try {
+                execSync('sudo systemctl reboot')
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }, 3600000);
+}
+
 function closeChrome(pid) {
     try {
         if (WIN_ENV) {
@@ -1041,7 +1033,7 @@ function stopDisplay(pid) {
 
 function setDisplay(pid) {
     try {
-        if (!WIN_ENV && !is_show_ui) {
+        if (!WIN_ENV && !IS_SHOW_UI) {
             process.env.DISPLAY = ':' + pid
         }
     }
@@ -1053,7 +1045,7 @@ function sendEnter(pid) {
     try {
         if (!WIN_ENV ) {
             utils.log('sendEnter', pid)
-            if (!is_show_ui) {
+            if (!IS_SHOW_UI) {
                 process.env.DISPLAY = ':' + pid
             }
             
@@ -1068,7 +1060,7 @@ function setChromeSize(pid) {
     try {
         if (!WIN_ENV) {
             utils.log('setChromeSize', pid)
-            if (!is_show_ui) {
+            if (!IS_SHOW_UI) {
                 process.env.DISPLAY = ':' + pid
             }
             

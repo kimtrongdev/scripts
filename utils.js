@@ -345,7 +345,7 @@ module.exports = {
         }
     },
     logScreenshot: async function(fileName){
-        if (!DEBUG) {
+        if (!IS_LOG_SCREEN) {
             return
         }
         try{
