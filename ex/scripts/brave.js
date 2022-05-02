@@ -18,7 +18,7 @@ var newsNames = [
   "kiro7.com",
   "wsfa.com",
 ]
-let closeSizes = [1025, 1125, 1225, 1325]
+let closeSizes = [968, 1125, 1225, 1325]
 
 async function scriptCheckBat(action) {
   if (!action.checkingBAT) {
@@ -126,6 +126,7 @@ async function handleBeforeTrickAds (action) {
   //     await trickAds(action)
   // }
 
+  await updateActionStatus(action.pid, action.id, 1)
   updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
   await sleep(3000)
   await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
@@ -135,7 +136,7 @@ async function handleBeforeTrickAds (action) {
 async function trickAds (action) {
   let randomScroll = randomRanger(0,8)
   let positionSize = Number(action.positionSize)
-  let scroll1Sizes = [1033, 1133, 1233, 1333]
+  let scroll1Sizes = [977, 1133, 1233, 1333]
 
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await sleep(3000)
@@ -195,10 +196,10 @@ async function checkBAT (action) {
 
 async function enableBAT (action) {
   // click menu browser
-  await updateUserInput(action.pid,'CLICK', 1017,80,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 962,82,0,0,"",'click')
   await sleep(3000)
   // click brave reward
-  await updateUserInput(action.pid,'CLICK', 773,218,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', 720,220,0,0,"",'click')
   await sleep(5000)
   // click start using btn
   await updateUserInput(action.pid,'CLICK', 385,574,0,0,"",'click')

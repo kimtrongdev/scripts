@@ -148,8 +148,11 @@ async function startChromeAction(action) {
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
-    let exs = ["ex", "quality", "trace"].map(x => path.resolve(x)).join(",")
-
+    let exs = ["ex", "quality"]
+    if (!action.isNew) {
+        exs.push('trace')
+    }
+    exs = exs.map(x => path.resolve(x)).join(",")
     if (WIN_ENV) {        
         exec(`start chrome${userProxy} --lang=en-US,en --start-maximized --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
     }
@@ -974,8 +977,9 @@ function runAutoRebootVm () {
     setInterval(() => {
         let myDate = new Date()
         let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
-        if (hour == 23) {
+        if (hour == 23 || hour == 12) {
             try {
+                execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2") 
                 execSync('sudo systemctl reboot')
             } catch (error) {
                 console.log(error);
