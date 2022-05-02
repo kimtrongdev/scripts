@@ -199,6 +199,7 @@ async function loginProfileChrome(profile) {
         action.pid = profile.id
         action.id = 'login'
         action.isNew = true
+        action.is_show_ui = IS_SHOW_UI
 
         if (isAutoEnableReward) {
             action.enableBAT = true
