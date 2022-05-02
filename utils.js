@@ -349,6 +349,17 @@ module.exports = {
             return
         }
         try{
+            let images = fs.readdirSync('logscreen/')
+            if (images.length > 50) {
+                let count = 0
+                for (let fileName of images) {
+                    if (count < 20) {
+                        fs.unlinkSync('logscreen/' + fileName)
+                    }
+                    count++ 
+                }
+            }
+            
             let fullPath = path.join('logscreen',fileName+'_'+(+ new Date())+'.jpg')
             console.log('Screenshot: ', fullPath)
             if(WIN_ENV){
