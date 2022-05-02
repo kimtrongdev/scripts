@@ -133,7 +133,7 @@ async function startChromeAction(action) {
     action['screenHeight'] = screenHeight
 
     let windowPosition = '--window-position=0,0'
-    let windowSize = (IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
+    let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`

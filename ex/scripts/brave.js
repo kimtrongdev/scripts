@@ -64,7 +64,7 @@ async function handleBraveSetting (action) {
 
 async function scrollForViewAds (action) {
   let positionSize = Number(action.positionSize)
-  let scroll1Sizes = [1033, 1133, 1233, 1333]
+  let scroll1Sizes = [977, 1133, 1233, 1333]
   await sleep(1000)
   await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
   await sleep(12000)
