@@ -63,14 +63,17 @@ async function handleBraveSetting (action) {
 }
 
 async function scrollForViewAds (action) {
-  let positionSize = Number(action.positionSize)
-  let scroll1Sizes = [977, 1133, 1233, 1333]
+  //let positionSize = Number(action.positionSize)
+  //let scroll1Sizes = [977, 1133, 1233, 1333]
   await sleep(1000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
+  //await userScroll(action.pid,5)
   await sleep(12000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
+  //await userScroll(action.pid,5)
   await sleep(4000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
+  //await userScroll(action.pid,5)
   await sleep(2000)
 }
 
@@ -135,16 +138,16 @@ async function handleBeforeTrickAds (action) {
 
 async function trickAds (action) {
   let randomScroll = randomRanger(0,8)
-  let positionSize = Number(action.positionSize)
-  let scroll1Sizes = [977, 1133, 1233, 1333]
+  //let positionSize = Number(action.positionSize)
+  //let scroll1Sizes = [977, 1133, 1233, 1333]
 
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await sleep(3000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
   await sleep(7000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
   await sleep(2000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
   await sleep(2000)
   // click on news
   await updateUserInput(action.pid,'CLICK', 650, 400,0,0,"",'click')
@@ -153,11 +156,11 @@ async function trickAds (action) {
 
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await sleep(3000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
   await sleep(7000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
   await sleep(2000)
-  await updateUserInput(action.pid,'CLICK', scroll1Sizes[positionSize],900,0,0,"",'click')
+  await userScroll(action.pid,5)
   await sleep(2000)
 
   await updateUserInput(action.pid,'CLICK', 650, 400,0,0,"",'click')

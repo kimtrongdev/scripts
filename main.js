@@ -680,6 +680,7 @@ function initExpress() {
                 request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
                 //request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
             }
+            execSync(`xdotool key Control_L+Shift+w && sleep 2`)
             removePidAddnew(req.query.pid, req.query.status)
         }
         else if(req.query.id == 'logout'){
