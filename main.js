@@ -310,7 +310,7 @@ async function getScriptData(pid, isNewProxy = false) {
         
         action.id = action.script_code
         action.pid = pid
-
+        action.is_show_ui = IS_SHOW_UI
         if (isRunBAT) {
             action.isRunBAT = isRunBAT
         }
