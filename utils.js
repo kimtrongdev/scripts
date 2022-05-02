@@ -1,6 +1,7 @@
 const path = require('path')
 const rq = require('request-promise');
 const cheerio = require('cheerio');
+const fs = require('fs')
 let config
 try{
     config = require('./config.json')
