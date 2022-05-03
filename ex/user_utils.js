@@ -151,7 +151,9 @@ function reportScript(action) {
         data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break }}, 
     async function (response) {
         if (response) {
-            console.log('response', response)
+            if (action.watch_time) {
+                action.watch_time = 0
+            }
             Object.assign(action, response)
             //if (action.id != 'check_bat') {
                 //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
@@ -202,11 +204,13 @@ function reportPositionChannel(pid, position) {
 }
 
 function getPlaylistData (action) {
-    let items = action.playlist_data.split(',')
-    let playlist_id = items[Math.floor(Math.random()*items.length)];
-    let data = playlist_id.split('&list=')
-    action.playlist_url = data[1]
-    action.playlist_video = data[0]
+    if (action.id == 'watch') {
+        let items = action.playlist_data.split(',')
+        let playlist_id = items[Math.floor(Math.random()*items.length)];
+        let data = playlist_id.split('&list=')
+        action.playlist_url = data[1]
+        action.playlist_video = data[0]
+    }
 }
 
 async function getActionData(){

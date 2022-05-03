@@ -367,7 +367,9 @@ async function getScriptData(pid, isNewProxy = false) {
                     action.watching_time_end_ads = systemConfig.watching_time_end_ads
                 }
     
-                action.playlist_url = action.data
+                if (!action.playlist_url) {
+                    action.playlist_url = action.data
+                }
                 action.playlist_data = action.playlist_url
             }
         }
