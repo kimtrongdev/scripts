@@ -628,7 +628,7 @@ function initExpress() {
         }
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
-            if (Boolean(req.query.isBreak)) {
+            if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                 if (IS_SHOW_UI) {
                     closeChrome(req.query.pid)
                 } else {
