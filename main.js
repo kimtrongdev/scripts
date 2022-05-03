@@ -558,7 +558,7 @@ async function initConfig() {
     if (process.env.VM_NAME && process.env.VM_NAME != '_VM_NAME') {
         config.vm_name = process.env.VM_NAME
     } else {
-        config.vm_name = makeid(3)
+        config.vm_name = 'DEFAULT_PC'
     }
 
     if (!config.vm_id) {
