@@ -88,6 +88,8 @@ async function initAction(){
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
 
+        await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+
         if (action.isRunBAT) {
             isRunBAT = Boolean(action.isRunBAT)
         }

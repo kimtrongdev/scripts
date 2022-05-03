@@ -11,10 +11,10 @@ require('dotenv').config();
 let config
 global.devJson = {
     hostIp: process.env.HOST_IP,
-    maxProfile: process.env.MAX_PROFILES,
+    maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
 
-const BROWSER = process.env.BROWSER
+const BROWSER = process.env.BROWSER == '_BROWSER_NAME' ? 'brave' : process.env.BROWSER
 global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
 global.IS_LOG_SCREEN = false
 global.DEBUG = Boolean(Number(process.env.DEBUG))
@@ -628,7 +628,7 @@ function initExpress() {
         }
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
-            if (req.query.isBreak) {
+            if (Boolean(req.query.isBreak)) {
                 if (IS_SHOW_UI) {
                     closeChrome(req.query.pid)
                 } else {
@@ -802,6 +802,9 @@ function initExpress() {
                       utils.log(error)
                     }
                 }
+            }
+            else if (req.query.action == 'ESC') {
+                execSync(`xdotool key Escape && sleep 0.5`)
             }
             else if (req.query.action == 'GO_TO_FISRT_TAB') {
                 execSync(`xdotool key Control_L+1 && sleep 1`)
