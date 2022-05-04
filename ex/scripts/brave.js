@@ -199,7 +199,7 @@ function getYPos(action, y) {
   return (action.is_show_ui ? y : y - 30)
 }
 function getXPos(action, x) {
-  return (action.is_show_ui ? x : x - 70)
+  return (action.is_show_ui ? x : x - 51)
 }
 
 async function enableBAT (action) {
@@ -212,7 +212,7 @@ async function enableBAT (action) {
   // click skip
   let count = 0
   while (count <= 10) {
-      await updateUserInput(action.pid,'CLICK', getXPos(action, 462), getYPos(action, 661),0,0,"",'click')
+      await updateUserInput(action.pid,'CLICK', getXPos(action, 448), getYPos(action, 660),0,0,"",'click')
       count++
   }
 
