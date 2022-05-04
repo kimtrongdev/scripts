@@ -2,7 +2,7 @@
   "name": "ViewerViewer",
   "version": "1.0",
   "description": "Build an Extension!",
-  "permissions": ["webRequest","webRequestBlocking","nativeMessaging","activeTab", "declarativeContent", "storage","tabs","webNavigation","clipboardRead","clipboardWrite","http://*/","https://*/"],
+  "permissions": ["browsingData", "webRequest","webRequestBlocking","nativeMessaging","activeTab", "declarativeContent", "storage","tabs","webNavigation","clipboardRead","clipboardWrite","http://*/","https://*/"],
   "background": {
     "scripts": ["background.js"],
     "persistent": true

@@ -80,21 +80,19 @@ chrome.runtime.onMessage.addListener(
 
 function clearBrowserData () {
     return new Promise((res, rej) => {
-        //var millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
-       // var oneWeekAgo = (new Date()).getTime() - millisecondsPerWeek;
         chrome.browsingData.remove({
-        //"since": oneWeekAgo
+         //"since": 1000
         }, {
-            "appcache": true,
+            "appcache": false,
             "cache": true,
-            "cacheStorage": true,
-            "cookies": true,
+            "cacheStorage": false,
+            "cookies": false,
             "downloads": true,
             "fileSystems": false,
             "formData": false,
             "history": true,
             "indexedDB": false,
-            "localStorage": true,
+            "localStorage": false,
             "passwords": false,
             "serviceWorkers": false,
             "webSQL": false
