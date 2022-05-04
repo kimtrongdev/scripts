@@ -842,18 +842,23 @@ function initExpress() {
                 execSync(`xdotool key Shift+n && sleep 1`)
             }
             else if (req.query.action == 'SCROLL') {
-                if (req.query.str > 0) {
-                    let pageNumber = Math.ceil(req.query.str / 5)
-                    while (pageNumber > 0) {
-                        execSync(`xdotool key Page_Down && sleep 1`)
-                        pageNumber--
+                if (req.query.str == 6) {
+                    execSync(`xdotool key Tab && sleep 1`)
+                    execSync(`xdotool key Page_Down && sleep 1`)
+                } else {
+                    if (req.query.str > 0) {
+                        let pageNumber = Math.ceil(req.query.str / 5)
+                        while (pageNumber > 0) {
+                            execSync(`xdotool key Page_Down && sleep 1`)
+                            pageNumber--
+                        }
                     }
-                }
-                else {
-                    let pageNumber = Math.ceil(req.query.str / -5)
-                    while (pageNumber > 0) {
-                        execSync(`xdotool key Page_Up && sleep 1`)
-                        pageNumber--
+                    else {
+                        let pageNumber = Math.ceil(req.query.str / -5)
+                        while (pageNumber > 0) {
+                            execSync(`xdotool key Page_Up && sleep 1`)
+                            pageNumber--
+                        }
                     }
                 }
             }
