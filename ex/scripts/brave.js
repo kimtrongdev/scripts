@@ -179,8 +179,8 @@ async function checkBAT (action) {
   await sleep(3000)
 
   // double click
-  let textBAT = [932, 947, 997, 1013]
-  await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize],299,0,0,"",'click')
+  let textBAT = (action.is_show_ui ? [932, 947, 997, 1013] : [862, 877, 927, 943])
+  await updateUserInput(action.pid,'DOUBLE_CLICK', textBAT[positionSize], action.is_show_ui ? 299:270 ,0,0,"",'click')
   await sleep(2000)
   // copy bat data
   let rs = await updateUserInput(action.pid,'COPY_BAT', 0,0,0,0,"",'COPY_BAT')

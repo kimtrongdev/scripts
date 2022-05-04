@@ -843,7 +843,7 @@ function initExpress() {
             }
             else if (req.query.action == 'SCROLL') {
                 if (req.query.str == 6) {
-                    execSync(`xdotool key Tab && sleep 1`)
+                    execSync(`xdotool key Shift+Tab && sleep 1`)
                     execSync(`xdotool key Page_Down && sleep 1`)
                 } else {
                     if (req.query.str > 0) {
