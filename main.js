@@ -631,12 +631,7 @@ function initExpress() {
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
-                if (IS_SHOW_UI) {
-                    closeChrome(req.query.pid)
-                } else {
-                    execSync(`xdotool key Control_L+w && sleep 1`)
-                    //execSync(`xdotool mousemove 1918 20 && sleep 1 && xdotool click 1 && sleep 1`)
-                }
+                execSync(`xdotool key Control_L+w && sleep 1`)
                 
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
@@ -1061,7 +1056,7 @@ function sendEnter(pid) {
                 process.env.DISPLAY = ':' + pid
             }
             
-            execSync(`xdotool key KP_Enter && sleep 3 && xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040 && sleep 1`)
+            execSync(`xdotool key KP_Enter && sleep 3`)// && xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040 && sleep 1`)
         }
     }
     catch (e) {
@@ -1076,8 +1071,8 @@ function setChromeSize(pid) {
                 process.env.DISPLAY = ':' + pid
             }
             
-            execSync(`xdotool windowsize $(xdotool search --onlyvisible --class chrome) 1920 1040`)
-            execSync(`xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040`)
+            //execSync(`xdotool windowsize $(xdotool search --onlyvisible --class chrome) 1920 1040`)
+            //execSync(`xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040`)
         }
     }
     catch (e) {
