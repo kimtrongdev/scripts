@@ -146,12 +146,16 @@ async function initActionData(action) {
     }
 }
 
+function clearBSData () {
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'CLEAR_BROWSER_DATA', url: '/report',
+        data: {}}, function (response) {
+        resolve(response);
+    }))
+}
+
 async function reportScript(action) {
     if ([1, '1', 'true', true].includes(action.is_break)) {
-        new Promise(resolve => chrome.runtime.sendMessage({type: 'CLEAR_BROWSER_DATA', url: '/report',
-            data: {}}, function (response) {
-            resolve(response);
-        }))
+        await clearBSData()
         await sleep(5000)
     }
 

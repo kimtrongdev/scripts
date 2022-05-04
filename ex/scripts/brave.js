@@ -190,6 +190,7 @@ async function checkBAT (action) {
       await sleep(3000)
   }
 
+  await clearBSData()
   updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
   await sleep(3000)
   await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
