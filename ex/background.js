@@ -43,6 +43,12 @@ chrome.runtime.onMessage.addListener(
                   .catch(error => sendResponse({err: error}))
               return true;
           }
+          else if (request.type == 'CLEAR_BROWSER_DATA') {
+            clearBrowserData().then(rs => {
+                sendResponse(rs)
+            })
+            return true
+          }
           else if(request.type == 'SET_USER_AGENT'){ // trong code
             RE_SET_USER_AGENT = request.user_agent;
           }
@@ -71,6 +77,32 @@ chrome.runtime.onMessage.addListener(
           }
       }
     });
+
+function clearBrowserData () {
+    return new Promise((res, rej) => {
+        //var millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+       // var oneWeekAgo = (new Date()).getTime() - millisecondsPerWeek;
+        chrome.browsingData.remove({
+        //"since": oneWeekAgo
+        }, {
+            "appcache": true,
+            "cache": true,
+            "cacheStorage": true,
+            "cookies": true,
+            "downloads": true,
+            "fileSystems": false,
+            "formData": false,
+            "history": true,
+            "indexedDB": false,
+            "localStorage": true,
+            "passwords": false,
+            "serviceWorkers": false,
+            "webSQL": false
+        }, function () {
+            res(true)
+        });
+    })
+}
 
 function closeBrowser(){
     chrome.storage.sync.set({action: {}})

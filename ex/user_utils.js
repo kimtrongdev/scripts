@@ -146,7 +146,15 @@ async function initActionData(action) {
     }
 }
 
-function reportScript(action) {
+async function reportScript(action) {
+    if ([1, '1', 'true', true].includes(action.is_break)) {
+        new Promise(resolve => chrome.runtime.sendMessage({type: 'CLEAR_BROWSER_DATA', url: '/report',
+            data: {}}, function (response) {
+            resolve(response);
+        }))
+        await sleep(5000)
+    }
+
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break }}, 
     async function (response) {
