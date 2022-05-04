@@ -47,11 +47,11 @@ var Vars = {
 			"windows":{
 				"Windows 10 (x64)": "Windows NT 10.0; Win64; x64",
 			//	"Windows 10 (x86)": "Windows NT 10.0; en-US",
-				"Windows 8.1 (x64)":"Windows NT 6.3; Win64; x64",
+			//	"Windows 8.1 (x64)":"Windows NT 6.3; Win64; x64",
 			//	"Windows 8.1 (x86)":"Windows NT 6.3; en-US",
-				"Windows 8 (x64)":"Windows NT 6.2; Win64; x64",
+			//	"Windows 8 (x64)":"Windows NT 6.2; Win64; x64",
 			//	"Windows 8 (x86)":"Windows NT 6.2; en-US",
-				"Windows 7 (x64)":"Windows NT 6.1; Win64; x64",
+			//	"Windows 7 (x64)":"Windows NT 6.1; Win64; x64",
 			//	"Windows 7 (x86)":"Windows NT 6.1; en-US"
 			},
 			"linux":{
@@ -152,14 +152,14 @@ var Vars = {
 				// "cr54":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.34",
 				// "cr55":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.88",
 				// "cr56":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44",
-				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
+				"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36 Edg/101.0.1210.32",
 
 
 				//"cr88":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4287.0 Safari/537.36 Edg/88.0.673.0",
 				//"cr86":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 Edg/86.0.622.56"
 			},
 			"safari":{
-				"aa": "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+				"aa": "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
 				// "1":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4892.0 Safari/537.36",
 				// "2":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4758.102 Safari/537.36",
 				// "3":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4893.0 Safari/537.36",
@@ -235,125 +235,8 @@ var Vars = {
 	},
 
 	gpuModels: [
-	/*	
-		'AMD Radeon HD 7700 Series',
-		'AMD Radeon HD 7800 Series',
-		'AMD Radeon HD 8240',
-		
-		// AMD 5000 series
-		'AMD Radeon RX 5500 XT',
-		'AMD Radeon RX 5600 XT',
-		'AMD Radeon RX 5700 XT',
-
-		'AMD Radeon(TM) Vega 8 Graphics',
-		'AMD Radeon(TM) HD 6480G',
-		'AMD Radeon(TM) HD 6520G',
-		'ATI Mobility Radeon HD 4250',
-		'ATI Mobility Radeon HD 5470',
-		'ATI Mobility Radeon HD 5650',
-		'ATI Radeon HD 4200',
-		'ATI Radeon HD 4300/4500 Series',
-		'ATI Radeon HD 4600 Series',
-		'ATI Radeon HD 5470',
-		'ATI Radeon HD 5570',
-		'ATI Radeon HD 5670',
-		'Intel(R) HD Graphics',
-		'Intel(R) HD Graphics Family',
-
-	,
-		'Intel(R) HD Graphics 6100',
-		'Intel(R) HD Graphics 6200',
-
-		// 7th Gen Intel processors
-		'Intel(R) HD Graphics 610',
-		'Intel(R) HD Graphics 615',
-		'Intel(R) HD Graphics 620',
-		'Intel(R) HD Graphics 630',
-
-		// 8th Gen Intel processors
-		'Intel(R) UHD Graphics 610',
-		'Intel(R) UHD Graphics 615',
-		'Intel(R) UHD Graphics 617',
-		'Intel(R) UHD Graphics 620',
-		'Intel(R) UHD Graphics 630',
-
-		// Legacy Intel graphics
-		'Mobile Intel(R) 4 Series Express Chipset Family',
-		'Mobile Intel(R) 965 Express Chipset Family',
-		'Intel(R) Q35 Express Chipset Family',
-		'Intel(R) Q45/Q43 Express Chipset',
-		'Intel(R) Q965/Q963 Express Chipset Family',
-		'Intel(R) 4 Series Internal Chipset',
-		'Intel(R) 82945G Express Chipset Family',
-		'Intel(R) G33/G31 Express Chipset Family',
-		'Intel(R) G41 Express Chipset',
-		'Intel(R) G45/G43 Express Chipset',
-
-		'Intel(R) Graphics Media Accelerator 3150',
-		'Intel(R) Graphics Media Accelerator 3600 Series',
-		'Intel(R) Graphics Media Accelerator HD',
-
-		'NVIDIA GeForce GTX 760',
-		'NVIDIA Quadro 4000M',
-		'NVIDIA Quadro 2000M',
-		'NVIDIA Quadro K2000M',
-		'NVIDIA Quadro K420',
-		'NVIDIA Quadro NVS 140M',
-		'NVIDIA Quadro NVS 150M',
-		'NVIDIA Quadro NVS 160M',
-		'NVIDIA GeForce GTX 960M',
-		'NVIDIA GeForce GTX 970M',
-		'NVIDIA GeForce GTX 980M',
-		'NVIDIA GeForce GTX 1050M',
-		'NVIDIA GeForce GTX 1060M',
-		'NVIDIA GeForce GTX 1070M',
-		'NVIDIA GeForce GTX 1080M',
-		*/
 	
-		//
-		'NVIDIA, NVIDIA GeForce GTX 1050' ,
-		'NVIDIA, NVIDIA GeForce GTX 1660 SUPER',
-		'NVIDIA, NVIDIA GeForce GTX 970',
-		'NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU',
-		'NVIDIA, NVIDIA GeForce GT 620',
-		'NVIDIA, NVIDIA GeForce GTX 1080',
-		'NVIDIA, NVIDIA GeForce GT 1030',
-		'NVIDIA GeForce GTX 1050 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 1080 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 960',
-		'NVIDIA, NVIDIA GeForce GTX 1060 3GB',
-		'NVIDIA, NVIDIA GeForce GTX 1660 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 1060',
-		'NVIDIA, NVIDIA GeForce RTX 3060',
-		'NVIDIA GeForce GTX 1060 3GB',
-		'NVIDIA GeForce RTX 2060',
-		'NVIDIA, NVIDIA GeForce GT 720M',
-		'NVIDIA, NVIDIA GeForce GTX 1050 Ti',
-		'NVIDIA, NVIDIA GeForce GTX 1650',
-		'NVIDIA, NVIDIA GeForce RTX 3050 Ti Laptop GPU',
-		'NVIDIA GeForce GTX 1060 6GB',
-		'NVIDIA, NVIDIA GeForce GTX 1650 Ti',
-		'NVIDIA GeForce 920MX',
-		'NVIDIA, NVIDIA GeForce GTX 950M',
-		'NVIDIA, NVIDIA GeForce RTX 2080 SUPER',
-		'NVIDIA GeForce RTX 3060 Ti',
-		'NVIDIA, NVIDIA GeForce RTX 2060',
-		'NVIDIA, NVIDIA GeForce RTX 3070',
-		'NVIDIA, NVIDIA GRID K280Q',
-		'NVIDIA, NVIDIA GeForce GTX 1660',
-		'NVIDIA, NVIDIA GeForce RTX 2070 SUPER',
-		'NVIDIA, NVIDIA Quadro RTX 4000',
-		'NVIDIA GeForce GTX 1650',
-		'NVIDIA GeForce RTX 3060 Laptop GPU',
-		'NVIDIA, NVIDIA GeForce GTX 1060 6GB',
-		'NVIDIA, NVIDIA GeForce GTX 750 Ti',
-		'NVIDIA, NVIDIA GeForce GT 730',
-		'NVIDIA, NVIDIA GeForce GTX 1070',
-		'NVIDIA GeForce GT 710',
-		'NVIDIA, NVIDIA GeForce RTX 2060 SUPER',
-		'NVIDIA GeForce RTX 3050',
-		'NVIDIA, NVIDIA GeForce RTX 3050',
-,
+		'NVIDIA, NVIDIA GeForce GTX 1050 Ti'
 
 	
 	],
