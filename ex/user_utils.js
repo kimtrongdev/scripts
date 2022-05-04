@@ -115,8 +115,11 @@ async function initActionData(action) {
         await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
     } 
     else if(action.id == 'login'){
-        await handleBraveSetting(action)
-        //await goToLocation(action.pid,'accounts.google.com')
+        if (isRunBAT) {
+            await handleBraveSetting(action)
+        } else {
+            await goToLocation(action.pid,'accounts.google.com')
+        }
     }
     else if(action.id == 'logout'){
         await goToLocation(action.pid,'accounts.google.com/logout')
