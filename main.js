@@ -1,4 +1,4 @@
-const isRunBAT = true
+const isRunBAT = false
 let isSystemChecking = false
 const TIME_REPORT = 110000
 const RUNNING_CHECK_INTERVAL = 20000
@@ -150,7 +150,7 @@ async function startChromeAction(action) {
 
     let exs = ["ex", "quality"]
     if (!action.isNew) {
-        exs.push('trace')
+        //exs.push('trace')
     }
     exs = exs.map(x => path.resolve(x)).join(",")
     if (WIN_ENV) {        

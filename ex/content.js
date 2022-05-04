@@ -10,7 +10,7 @@ var windowWide
 var mobileMenuBarHeight
 var zoom
 var isNonUser = false
-var isRunBAT = true
+var isRunBAT = false
 async function loadPage(){
     try{
         await sleep(4000)
