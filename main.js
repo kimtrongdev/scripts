@@ -126,7 +126,7 @@ async function startChromeAction(action) {
     let userProxy = ''
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = widthSizes[positionSize]
-    let screenHeight = action.isNew ? 1000 : utils.getRndInteger(950, 1000)
+    let screenHeight = action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
