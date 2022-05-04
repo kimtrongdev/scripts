@@ -760,7 +760,12 @@ function initExpress() {
                 clipboardy.writeSync(req.query.str)
             }
 
-            if (req.query.action == 'COPY_BAT') {
+            if (req.query.action == 'SHOW_BRAVE_ADS') {
+                execSync(`xdotool key Shift+Tab && sleep 1`)
+                execSync(`xdotool key Shift+Tab && sleep 1`)
+                execSync(`xdotool key KP_Enter && sleep 1`)
+            }
+            else if (req.query.action == 'COPY_BAT') {
                 try {
                     execSync(`xdotool key Control_L+c && sleep 1`)
                 } catch (error) {

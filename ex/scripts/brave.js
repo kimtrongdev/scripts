@@ -195,40 +195,50 @@ async function checkBAT (action) {
   await updateUserInput(action.pid,'END_SCRIPT', closeSizes[positionSize],46,0,0,"",'close browser')
 }
 
+function getYPos(action, y) {
+  return (action.is_show_ui ? y : y - 30)
+}
+function getXPos(action, x) {
+  return (action.is_show_ui ? x : x - 70)
+}
+
 async function enableBAT (action) {
-  // click menu browser
-  await updateUserInput(action.pid,'CLICK', 962,82,0,0,"",'click')
-  await sleep(3000)
-  // click brave reward
-  await updateUserInput(action.pid,'CLICK', 720,220,0,0,"",'click')
+  await goToLocation(action.pid,'brave://rewards/')
+  // // click menu browser
+  // await updateUserInput(action.pid,'CLICK', 962,82,0,0,"",'click')
+  // await sleep(3000)
+  // // click brave reward
+  // await updateUserInput(action.pid,'CLICK', 720,220,0,0,"",'click')
   await sleep(5000)
   // click start using btn
-  await updateUserInput(action.pid,'CLICK', 385,574,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', getXPos(action, 385), getYPos(action, 574),0,0,"",'start using btn')
   await sleep(1000)
 
   // click skip
   let count = 0
   while (count <= 10) {
-      await updateUserInput(action.pid,'CLICK', 488,682,0,0,"",'click')
+      await updateUserInput(action.pid,'CLICK', getXPos(action, 488), getYPos(action, 682),0,0,"",'click')
       count++
   }
 
   // click setting ads/h
-  await updateUserInput(action.pid,'CLICK', 568,381,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', getXPos(action, 568),getYPos(action, 381),0,0,"",'click')
   await sleep(1000)
   // click selection
-  await updateUserInput(action.pid,'CLICK', 638,458,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', getXPos(action, 638),getYPos(action, 458),0,0,"",'click')
   await sleep(1000)
   // click 10ads/h
-  await updateUserInput(action.pid,'CLICK', 148,713,0,0,"",'click')
+  await updateUserInput(action.pid,'CLICK', getXPos(action, 148),getYPos(action, 713),0,0,"",'click')
 
   await sleep(1000)
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'click')
   await sleep(3000)
-  await updateUserInput(action.pid,'CLICK', 977,818,0,0,"",'click')
-  await sleep(2000)
-  // click show brave ads
-  await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
+
+  await updateUserInput(action.pid,'SHOW_BRAVE_ADS', 0,0,0,0,"",'SHOW_BRAVE_ADS')
+  // await userScroll(action.pid, 6)
+  // await sleep(2000)
+  // // click show brave ads
+  // await updateUserInput(action.pid,'CLICK', 543,650,0,0,"",'click')
   reportLive(action.pid)
   await sleep(30000)
 }
