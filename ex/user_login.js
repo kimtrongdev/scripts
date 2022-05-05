@@ -159,7 +159,7 @@ async function userLogin(action) {
             await beforeLoginSuccess(action) // login success
             return
         }
-        else if (url.indexOf('myactivity.google.com/product/youtube/controls') > -1) {
+        else if (url.indexOf('myactivity.google.com/product/youtube') > -1 || url.indexOf('myactivity.google.com/product/youtube/controls') > -1) {
             await pauseHistory(action)
             return
         }
@@ -177,7 +177,12 @@ async function userLogin(action) {
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             console.log('------pauseHistory');
             await oldPauseHistory(action)
-            await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
+            if (action.id == 'reg_user') {
+                await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
+            } else {
+                await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            }
+            
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
         }
@@ -495,7 +500,7 @@ async function pauseHistory(action){
         } catch (error) {
             
         } finally {
-            await goToLocation(action.pid, 'https://myactivity.google.com/activitycontrols')
+            await goToLocation(action.pid, 'https://myactivity.google.com/activitycontrols?time=' + Date.now())
             await sleep(60000)
         }
         
