@@ -149,7 +149,7 @@ async function startChromeAction(action) {
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
     let exs = ["ex", "quality"]
-    if (!action.isNew) {
+    if (!action.isNew && action.id != 'reg_user') {
         exs.push('trace')
     }
     exs = exs.map(x => path.resolve(x)).join(",")

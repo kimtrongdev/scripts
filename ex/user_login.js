@@ -138,16 +138,16 @@ async function userLogin(action) {
             await userClick(action.pid, 'input[type="submit"]')
             await sleep(60000)
         }
-        else if (url.indexOf('youtube.com/channel/') > -1) {
-            await goToLocation(action.pid,'myactivity.google.com/product/youtube/controls')  
-            // if (action.total_channel_created) {
-            //     await goToLocation(action.pid,'youtube.com/feed/history')
-            // } else {
-            //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            // }
+        // else if (url.indexOf('youtube.com/channel/') > -1) {
+        //     await goToLocation(action.pid,'myactivity.google.com/product/youtube/controls')  
+        //     // if (action.total_channel_created) {
+        //     //     await goToLocation(action.pid,'youtube.com/feed/history')
+        //     // } else {
+        //     //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        //     // }
             
-            return
-        }
+        //     return
+        // }
         else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
@@ -177,11 +177,7 @@ async function userLogin(action) {
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             console.log('------pauseHistory');
             await oldPauseHistory(action)
-            if (action.id == 'reg_user') {
-                await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
-            } else {
-                await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-            }
+            await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
             
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
