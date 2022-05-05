@@ -53,6 +53,7 @@ async function userLogin(action) {
         }
         else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
             //action.
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'PlusPageSignUpIdvChallenge')
             throw 'PlusPageSignUpIdvChallenge'
         }
         else if(url.indexOf('https://accounts.google.com/ServiceLogin/signinchooser') == 0){
@@ -151,7 +152,7 @@ async function userLogin(action) {
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
+            await goToLocation(action.pid,'youtube.com/feed/history')
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
@@ -176,7 +177,7 @@ async function userLogin(action) {
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             console.log('------pauseHistory');
             await oldPauseHistory(action)
-            await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            await goToLocation(action.pid,'myactivity.google.com/activitycontrols/youtube')
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
         }
@@ -185,6 +186,7 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('youtube.com/account') > -1) {
+            reportLive(action.pid)
             if (action.id == 'reg_user') {
                 let channels = document.querySelectorAll('ytd-account-item-renderer')
                 let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
@@ -193,7 +195,7 @@ async function userLogin(action) {
                     updateTotalCreatedUsers(action.pid, channels.length)
                 }
 
-                if (channels.length < action.total_channel_created && btnCreateChannel) {
+                if (channels.length < 100 && btnCreateChannel) {
                     await userClick(action.pid,'',btnCreateChannel)
                 } else {
                     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
@@ -252,6 +254,15 @@ async function beforeLoginSuccess (action) {
         await sleep(60000)
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     }
+}
+
+async function handleLoginSuccess (action) {
+    await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    // if (action.id == 'reg_user') {
+    //     await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    // } else {
+    //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    // }
 }
 
 async function checkLogin(action) {
@@ -447,7 +458,7 @@ async function updateInfo(action){
     }
 }
 
-async function pauseInfo() {
+async function pauseInfo(action) {
     try {
         let btnOff = document.querySelector('div[data-is-touch-wrapper] > button[data-is-on="true"]')
         if (btnOff) {
@@ -463,7 +474,7 @@ async function pauseInfo() {
     } catch (error) {
         
     } finally {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        handleLoginSuccess(action)
     }
 }
 
@@ -517,7 +528,7 @@ async function pauseHistory(action){
         console.log('error','pauseHistory',e)
     }
     finally{
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        handleLoginSuccess(action)
     }
 }
 

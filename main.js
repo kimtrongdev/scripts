@@ -670,7 +670,7 @@ function initExpress() {
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
-        else if (req.query.id == 'login') {
+        else if (req.query.id == 'login' || req.query.id == 'reg_user') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
                 //let login = !req.query.msg
