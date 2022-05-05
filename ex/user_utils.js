@@ -146,6 +146,13 @@ async function initActionData(action) {
     }
 }
 
+function updateTotalCreatedUsers (pid, count = 0) {
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: {pid: pid, id: 'total_created_channel', count }}, function (response) {
+        resolve(response);
+    }))
+}
+
 function clearBSData () {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'CLEAR_BROWSER_DATA', url: '/report',
         data: {}}, function (response) {
@@ -521,4 +528,16 @@ function getTotalTabs() {
     }, function (response) {
         resolve(response);
     }))
+}
+
+async function randomFullName () {
+    let rs = await fetch('https://random-data-api.com/api/name/random_name').then(response => {
+        return response.json()
+    }).then(response => response).catch(error => {
+        return {
+            name: makeName(5)
+        }
+    })
+
+    return rs.name
 }

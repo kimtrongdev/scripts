@@ -625,7 +625,10 @@ function initExpress() {
     app.get('/report', async (req, res) => {
         utils.log(req.query)
 
-        if (req.query.id == 'live_report') {
+        if (req.query.id == 'total_created_channel') {
+            request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })
+        }
+        else if (req.query.id == 'live_report') {
             runnings.forEach(running => {
                 if (running.pid == req.query.pid) {
                     running.lastReport = Date.now()

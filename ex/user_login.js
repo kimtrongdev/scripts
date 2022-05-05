@@ -180,21 +180,33 @@ async function userLogin(action) {
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
         }
+        else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUp') > -1) {
+            await userCreateChannel(action)
+            return
+        }
         else if (url.indexOf('youtube.com/account') > -1) {
-            //let channels = document.querySelectorAll('ytd-account-item-renderer')
-            //let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-            if (isRunBAT) {
-                action.is_processing_bat = true
-                await setActionData(action)
-                await handleBeforeTrickAds(action)
+            if (action.id == 'reg_user') {
+                let channels = document.querySelectorAll('ytd-account-item-renderer')
+                let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
+                if (channels.length) {
+                    // update users count to server
+                    updateTotalCreatedUsers(action.pid, channels.length)
+                }
+
+                if (channels.length < action.total_channel_created && btnCreateChannel) {
+                    await userClick(action.pid,'',btnCreateChannel)
+                } else {
+                    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+                }
+            } else {
+                if (isRunBAT) {
+                    action.is_processing_bat = true
+                    await setActionData(action)
+                    await handleBeforeTrickAds(action)
+                }
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             }
             
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            // if (channels.length < action.total_channel_created && btnCreateChannel) {
-            //     await userClick(action.pid,'',btnCreateChannel)
-            // } else {
-            //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            // }
             return
         }
        
@@ -364,8 +376,9 @@ function getLoginError() {
 }
 
 async function userCreateChannel(action){
+    let fullname = await randomFullName()
     await waitForSelector('#PlusPageName')
-    await userTypeEnter(action.pid, '#PlusPageName', makeName(9))
+    await userTypeEnter(action.pid, '#PlusPageName', fullname)
 
     await sleep(1000)
     await userClick(action.pid,'.consent-checkmark')
