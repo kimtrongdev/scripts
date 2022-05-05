@@ -449,6 +449,10 @@ async function profileManage() {
 }
 
 async function running() {
+    if (IS_SHOW_UI) {
+        execSync(`sudo xrandr -s 1600x1200`)
+    }
+    
     // get profile ids
     if (!fs.existsSync('profiles')) {
         fs.mkdirSync('profiles')
