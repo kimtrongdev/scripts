@@ -37,7 +37,7 @@ async function runAction (action) {
         await setActionData(action)
         await scriptYoutubeSub(action)
     } 
-    else if (action.id == 'login') {
+    else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
         await userLogin(action)
     }
@@ -113,7 +113,10 @@ async function initActionData(action) {
     }
     else if (action.id == 'youtube_sub') {
         await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
-    } 
+    }
+    else if(action.id == 'reg_user'){
+        await goToLocation(action.pid,'accounts.google.com')
+    }
     else if(action.id == 'login'){
         await handleBraveSetting(action)
         //await goToLocation(action.pid,'accounts.google.com')
