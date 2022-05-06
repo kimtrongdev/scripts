@@ -16,9 +16,11 @@ global.devJson = {
 
 const BROWSER = process.env.BROWSER == '_BROWSER_NAME' ? 'brave' : process.env.BROWSER
 global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
-global.IS_LOG_SCREEN = false
+global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
+const IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
+
 try {
     config = require('./vm_log.json')
 }
@@ -73,7 +75,7 @@ async function profileRunningManage() {
             utils.log('profileRunningManage')
 
             if (MAX_CURRENT_ACC > runnings.length) {
-                if (ids.length < MAX_PROFILE) {
+                if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
                     countRun++
@@ -264,7 +266,13 @@ async function newRunProfile() {
 }
 
 async function getScriptData(pid, isNewProxy = false) {
-    let action = await request_api.getNewScript(pid)
+    let action = {}
+    if (IS_REG_USER) {
+        action = await request_api.getProfileForRegChannel()
+    } else {
+        action = await request_api.getNewScript(pid)
+    }
+
     if (action) {
         if (isNewProxy) {
             let isLoadNewProxy = '' 
