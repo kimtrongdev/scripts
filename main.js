@@ -192,6 +192,11 @@ async function startChromeAction(action) {
             setDisplay(action.pid)
             let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
             exec(run)
+            if (IS_REG_USER) {
+                await utils.sleep(10000)
+                sendEnter(action.pid)
+            }
+            
             await utils.sleep(8000)
         }
     }
@@ -251,8 +256,11 @@ async function newProfileManage() {
 async function newRunProfile() {
     utils.log('ids: ', ids)
     let pid = ids.shift()
-    if (pid) {
-        ids.push(pid)
+    if (pid || IS_REG_USER) {
+        if (pid) {
+            ids.push(pid)
+        }
+
         try {
             let action = await getScriptData(pid, true)
             if (action && action.script_code) {
@@ -269,6 +277,9 @@ async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
         action = await request_api.getProfileForRegChannel()
+        action.pid = action.id
+        ids.push(action.id)
+        pid = action.id
     } else {
         action = await request_api.getNewScript(pid)
     }
@@ -970,7 +981,7 @@ function removePidAddnew(pid, status) {
     try {
         utils.log('removePidAddnew', pid, status)
         runnings = runnings.filter(x => x.pid != pid)
-        if (status != 1) {
+        if (status != 1 || IS_REG_USER) {
             // login error
             deleteProfile(pid)
         }
@@ -979,6 +990,10 @@ function removePidAddnew(pid, status) {
             if (!ids.filter(x => x == pid).length) {
                 ids.push(pid)
             }
+        }
+
+        if (IS_REG_USER) {
+            ids = ids.filter(x => x != pid)
         }
         utils.log(ids)
     }
