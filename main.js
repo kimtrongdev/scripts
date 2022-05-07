@@ -255,6 +255,9 @@ async function newProfileManage() {
 
 async function newRunProfile() {
     utils.log('ids: ', ids)
+    if (IS_REG_USER) {
+        ids = await getProfileIds()
+    }
     let pid = ids.shift()
     if (pid || IS_REG_USER) {
         if (pid) {
@@ -277,10 +280,15 @@ async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
         action = await request_api.getProfileForRegChannel()
-        action.pid = action.id
-        ids.push(action.id)
-        pid = action.id
-        isNewProxy = true
+        if (action && action.id) {
+            action.pid = action.id
+            ids.push(action.id)
+            pid = action.id
+            isNewProxy = true
+        } else {
+            console.log('Not found reg user data.');
+            return
+        }
     } else {
         action = await request_api.getNewScript(pid)
     }
@@ -409,6 +417,10 @@ function checkRunningProfiles () {
                 utils.log('--- expired time,', pid)
                 try {
                     closeChrome(pid)
+                    if (IS_REG_USER) {
+                        await utils.sleep(3000)
+                        execSync('rm -rf profiles/'+pid)
+                    }
                 }
                 catch (e) { }
                 finally {
