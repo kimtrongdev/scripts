@@ -37,6 +37,7 @@ var Stats = {
 				"other":0
 			};
 		}
+		//ssdf
 
 		// Update the appropriate values
 		Stats.Current[TimeRef[0]][TraceType]++;

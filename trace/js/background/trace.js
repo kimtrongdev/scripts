@@ -110,7 +110,11 @@ var Trace = {
 						plat:Vars.platform
 					},
 					"Pref_WebGLFingerprint":{
-						gpuChose:Vars.gpuChose
+						gpuChose:Vars.gpuChose,
+						plat:Vars.platform
+					},
+					"Pref_ScreenRes": {
+						plat:Vars.platform
 					}
 				},
 				"prefs":Prefs.Current,

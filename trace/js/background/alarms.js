@@ -36,14 +36,17 @@ var Alarms = {
 	Updaters:{
 		ChooseGPU:function(){
 			if (Prefs.Current.Pref_WebGLFingerprint.enabled === false) return;
+			if (Vars.platform =="MacIntel") {
+				Vars.gpuChose = 'ANGLE (Apple, Apple M1, OpenGL 4.1)'
+			} else {
+				let gpuStr = rA(Vars.gpuModels);
+				let addDirectX = rA(gpuDirectStr) || "";
+				if (Prefs.Current.Pref_WebGLFingerprint.gpuList.list.length !== 0){
+					gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
+				}
 
-			let gpuStr = rA(Vars.gpuModels);
-			let addDirectX = rA(gpuDirectStr) || "";
-			if (Prefs.Current.Pref_WebGLFingerprint.gpuList.list.length !== 0){
-				gpuStr = rA(Prefs.Current.Pref_WebGLFingerprint.gpuList.list);
+				Vars.gpuChose = "ANGLE (" + gpuStr + " " + addDirectX + ")";
 			}
-
-			Vars.gpuChose = "ANGLE (" + gpuStr + " " + addDirectX + ")";
 		},
 
 		ChooseUserAgent:function(){
@@ -54,33 +57,54 @@ var Alarms = {
 
 			// Choose OS
 			let uaOSPool = [];
-			if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowLinux.enabled === true){
-				uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.linux));
-			}
+			let uaWBPool = [];
+			let osArr = []
+			// if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowLinux.enabled === true){
+			// 	osArr.push('linux')
+			// }
 			if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowMac.enabled === true){
-				uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.macos));
+				osArr.push('macos')
 			}
 			if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowWindows.enabled === true){
-				uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.windows));
+				osArr.push('windows')
 			}
 
+			let osName = rA(osArr);
+
+			if (osName) {
+				uaOSPool = Object.values(Vars.uaSettings.os[osName])
+			} else {
+				// if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowLinux.enabled === true){
+				// 	uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.linux));
+				// }
+				if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowMac.enabled === true){
+					uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.macos));
+				}
+				if (Prefs.Current.Pref_UserAgent.uaOSConfig.AllowWindows.enabled === true){
+					uaOSPool = uaOSPool.concat(Object.values(Vars.uaSettings.os.windows));
+				}
+			}
+			
 			// Choose browser
-			let uaWBPool = [];
+			
 			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowChrome.enabled === true){
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.chrome));
 			}
-			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowFirefox.enabled === true){
+			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowFirefox.enabled === true ){
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.firefox));
 			}
-			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowEdge.enabled === true){
+			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowEdge.enabled === true && osName == 'windows'){
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.edge));
 			}
-			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowSafari.enabled === true){
+			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowSafari.enabled === true && osName == 'macos'){
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.safari));
 			}
 			if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowVivaldi.enabled === true){
 				uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.vivaldi));
 			}
+			// if (Prefs.Current.Pref_UserAgent.uaWBConfig.AllowOpera.enabled === true && osName == 'linux'){
+			// 	uaWBPool = uaWBPool.concat(Object.values(Vars.uaSettings.wb.opera));
+			// }
 
 			Vars.oscpu = rA(uaOSPool);
 			let browser = rA(uaWBPool);
@@ -94,12 +118,15 @@ var Alarms = {
 
 			Vars.useragent = "Mozilla/5.0 (" + Vars.oscpu + ") " + browser;
 
-			if (Vars.oscpu.toLowerCase().includes("win")){
-				Vars.platform = rA(["Win32","Win64"]);
-			} else if (Vars.oscpu.toLowerCase().includes("mac")){
-				Vars.platform = rA(["MacIntel","MacPPC"]);
+			if (osName == 'windows'){
+				Vars.platform = rA(["Win64"]);
+			} else if (osName == 'macos'){
+				Vars.platform = rA(["MacIntel"]);
+//MacPPC
+//"Win32",
+
 			} else {
-				Vars.platform = rA(["Linux","X11","Linux 1686"]);
+				Vars.platform = rA(["Win64"]);
 			}
 		},
 	},

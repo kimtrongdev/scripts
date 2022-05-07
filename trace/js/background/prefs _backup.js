@@ -1,7 +1,7 @@
 var Prefs = {
 	Defaults:{
 		"Pref_WebController":{
-			"enabled":true,
+			"enabled":false,
 			"lastRequest":1551633680,
 			"useLocal":{
 				"enabled":true
@@ -62,7 +62,7 @@ var Prefs = {
 				}
 			},
 			"urlCleaner":{
-				"enabled":false,
+				"enabled":true,
 				"queryString":{
 					"enabled":true,
 					"params":{
@@ -167,7 +167,7 @@ var Prefs = {
 			}
 		},
 		"Pref_AudioFingerprint":{
-			"enabled":false,
+			"enabled":true,
 			"audioBuffer":{
 				"enabled":true
 			},
@@ -182,7 +182,7 @@ var Prefs = {
 			}
 		},
 		"Pref_WebGLFingerprint":{
-			"enabled":false,
+			"enabled":true,
 			"gpuList":{
 				"enabled":true,
 				"list":[]
@@ -207,13 +207,13 @@ var Prefs = {
 			}
 		},
 		"Pref_NativeFunctions":{
-			"enabled":false,
+			"enabled":true,
 			"windowOpen":{
 				"enabled":true
 			}
 		},
 		"Pref_CommonTracking":{
-			"enabled":false,
+			"enabled":true,
 			"settings":{
 				"piwik":{
 					"enabled":false
@@ -253,7 +253,7 @@ var Prefs = {
 			}
 		},
 		"Pref_CookieEater":{
-			"enabled":false,
+			"enabled":true,
 			"settings":{
 				"setcookie":{
 					"enabled":true,
@@ -290,7 +290,7 @@ var Prefs = {
 			}
 		},
 		"Pref_ReferHeader":{
-			"enabled":false,
+			"enabled":true,
 			"jsVariable":{
 				"enabled":true,
 				"method":"remove"
@@ -314,7 +314,7 @@ var Prefs = {
 			}
 		},
 		"Pref_GoogleHeader":{
-			"enabled":false,
+			"enabled":true,
 			"rmClientData":{
 				"enabled":false
 			},
@@ -329,10 +329,10 @@ var Prefs = {
 			}
 		},
 		"Pref_ETagTrack":{
-			"enabled":false
+			"enabled":true
 		},
 		"Pref_FontFingerprint":{
-			"enabled":false,
+			"enabled":true,
 			"measureText":{
 				"enabled":true
 			}
@@ -350,10 +350,10 @@ var Prefs = {
 			}
 		},
 		"Pref_NetworkInformation":{
-			"enabled":false
+			"enabled":true
 		},
 		"Pref_ScreenRes":{
-			"enabled":false,
+			"enabled":true,
 			"randomOpts":{
 				"enabled":false,
 				"values":[-50,50]
@@ -401,7 +401,7 @@ var Prefs = {
 			"enabled":false
 		},
 		"Pref_UserAgent":{
-			"enabled":false,
+			"enabled":true,
 			"uaOSConfig":{
 				"AllowMac":{
 					"enabled":false
@@ -415,7 +415,7 @@ var Prefs = {
 			},
 			"uaWBConfig":{
 				"AllowChrome":{
-					"enabled":true
+					"enabled":false
 				},
 				"AllowFirefox":{
 					"enabled":false
@@ -427,10 +427,10 @@ var Prefs = {
 					"enabled":false
 				},
 				"AllowEdge":{
-					"enabled":false
+					"enabled":true
 				},
 				"AllowSafari":{
-					"enabled":false
+					"enabled":true
 				}
 			},
 			"uaCust":{

@@ -225,6 +225,8 @@ var TPage = {
 
 			// Check if we need to add any settings from background page
 			let tempParams = TPage.Settings.Prefs[protection];
+			console.log('tempParams', tempParams)
+
 			if (TPage.Settings.Additional[protection]){
 				tempParams = Object.assign(tempParams, TPage.Settings.Additional[protection]);
 			}
@@ -768,6 +770,9 @@ var TPage = {
 			if (!frame.navigator){
 				return;
 			}
+			let randArr = function(arr){
+				return arr[Math.floor(Math.random() * arr.length)];
+			};
 
 			function doUpdateProp(obj, prop, newVal){
 				let props = Object.getOwnPropertyDescriptor(obj, prop) || {configurable:true};
@@ -783,8 +788,10 @@ var TPage = {
 			["hardwareConcurrency", "deviceMemory"].forEach(function(hw){
 				if (!settings["hardware"][hw]["enabled"]) return;
 
-				let newValue = settings["hardware"][hw]["value"] || 4;
-
+				let newValue = randArr([8, 16, 32, 64, 128]) //settings["hardware"][hw]["value"] || 4;
+				if (hw == 'hardwareConcurrency') {
+					newValue = settings["hardware"][hw]["value"]
+				}
 				doUpdateProp(frame.navigator, hw, newValue);
 			});
 
@@ -974,8 +981,18 @@ var TPage = {
 				if (frame.outerWidth) 	updateObject(frame, "outerWidth",rand(range),true);
 				return;
 			}
-
-			let resolution = randArr(settings["commonResolutions"]["resolutions"]);
+console.log('setting', settings)
+// "additional":{
+// 	"Pref_UserAgent":{
+// 		ua:Vars.useragent,
+// 		os:Vars.oscpu,
+// 		plat:Vars.platform
+// 	},
+// 	"Pref_WebGLFingerprint":{
+// 		gpuChose:Vars.gpuChose
+// 	}
+// },
+			let resolution = settings.plat == "MacIntel" ? [1440, 900, 30] : randArr(settings["commonResolutions"]["resolutions"]);
 
 			if (settings["commonResolutions"]["enabled"] === true){
 				updateObject(frame.screen, "availHeight",resolution[1],false);
@@ -1055,7 +1072,7 @@ var TPage = {
 			}
 
 			let changeMap = {};
-
+console.log(settings)
 			if (settings["parameters"]["enabled"]){
 				let paramChanges = {
 					3379:Math.pow(2,settings["parameters"]["list"]["MAX_TEXTURE_SIZE"] || 14),
@@ -1078,7 +1095,7 @@ var TPage = {
 
 					7936:settings["ctx_vendor"] || "WebKit",
 					7937:settings["ctx_gpu"] || "WebKit WebGL",
-					37445:settings["debug_vendor"] || "Google Inc."
+					37445:settings["debug_vendor"] || settings.plat == 'MacIntel' ? "Google Inc. (Apple)" : "Google Inc. (NVIDIA)"
 				};
 				changeMap = Object.assign(changeMap, paramChanges);
 			}
