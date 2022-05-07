@@ -256,7 +256,10 @@ async function newProfileManage() {
 async function newRunProfile() {
     utils.log('ids: ', ids)
     if (IS_REG_USER) {
-        ids = await getProfileIds()
+        let currentIds = await getProfileIds()
+        ids = ids.filter(id => {
+            return currentIds.some(cid => cid == id)
+        })
     }
     let pid = ids.shift()
     if (pid || IS_REG_USER) {
@@ -283,6 +286,8 @@ async function getScriptData(pid, isNewProxy = false) {
         if (action && action.id) {
             action.pid = action.id
             ids.push(action.id)
+            ids = ids.map(String)
+            ids = [...new Set(ids)]
             pid = action.id
             isNewProxy = true
         } else {
