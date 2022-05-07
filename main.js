@@ -150,9 +150,10 @@ async function startChromeAction(action) {
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
     let exs = ["ex", "quality"]
-    if (!action.isNew && action.id != 'reg_user') {
+    if (action.id != 'reg_user') {
         exs.push('trace')
     }
+
     exs = exs.map(x => path.resolve(x)).join(",")
     if (WIN_ENV) {        
         exec(`start chrome${userProxy} --lang=en-US,en --start-maximized --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
