@@ -194,6 +194,8 @@ async function startChromeAction(action) {
             exec(run)
             if (IS_REG_USER) {
                 await utils.sleep(10000)
+                setDisplay(action.pid)
+                await utils.sleep(1000)
                 sendEnter(action.pid)
             }
             
