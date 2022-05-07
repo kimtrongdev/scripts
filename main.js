@@ -1,7 +1,6 @@
 const isRunBAT = true
 let isSystemChecking = false
 const TIME_REPORT = 110000
-const RUNNING_CHECK_INTERVAL = 20000
 const TIME_TO_CHECK_UPDATE = 600000
 const isAutoEnableReward = true
 let totalRoundForChangeProxy = 5
@@ -20,7 +19,7 @@ global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
 const IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
-
+const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 try {
     config = require('./vm_log.json')
 }
