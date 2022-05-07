@@ -32,9 +32,30 @@ async function userLogin(action) {
                 await userClick(action.pid, 'ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
                 await sleep(60000)
             }
+
+            let createChannelLayer = document.querySelectorAll('.button-layer a yt-formatted-string[id="text"]')
+            if (createChannelLayer) {
+                let createChannelBtn = createChannelLayer.item(1)
+                if (createChannelBtn) {
+                    await userClick(action.pid, 'createChannelBtn', createChannelBtn)
+                    await sleep(15000)
+                }
+            } 
+            // else {
+            //     if (action.isCreateChannel) {
+            //         await goToLocation(action.pid, 'youtube.com/create_channel')
+            //         await sleep(15000) 
+            //     }
+            // }
         }
 
-        if (url.indexOf('consent.youtube.com') > -1) {
+        if (url.indexOf('youtube.com/oops') > -1) {
+            await goToLocation(action.pid, 'youtube.com?skip_registered_account_check=true')
+            //action.isCreateChannel = true
+            //await setActionData(action)
+            await sleep(15000)
+        }
+        else if (url.indexOf('consent.youtube.com') > -1) {
             await sleep(2000)
             await userScroll(action.pid, 5)
             let btnElement = document.querySelectorAll('div[data-is-touch-wrapper] > button').item(1)
