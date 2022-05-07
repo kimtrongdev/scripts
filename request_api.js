@@ -11,8 +11,8 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
-    getProfileForRegChannel: async function getProfileForRegChannel () {
-        return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel',json: true})
+    getProfileForRegChannel: async function getProfileForRegChannel (pid = 0) {
+        return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel?pid='+pid,json: true})
     },
     reportUpgrade: async function reportUpgrade () {
         return await rq({uri: SUB_URL + '/report-upgrade',json: true})
