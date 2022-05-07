@@ -280,6 +280,7 @@ async function getScriptData(pid, isNewProxy = false) {
         action.pid = action.id
         ids.push(action.id)
         pid = action.id
+        isNewProxy = true
     } else {
         action = await request_api.getNewScript(pid)
     }
