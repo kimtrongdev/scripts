@@ -282,6 +282,9 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
+        if (ids.length < MAX_PROFILE) {
+            pid = 0
+        }
         action = await request_api.getProfileForRegChannel(pid)
         if (action && action.id) {
             action.pid = action.id
