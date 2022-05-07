@@ -405,7 +405,7 @@ async function getScriptData(pid, isNewProxy = false) {
     }
 }
 
-function checkRunningProfiles () {
+async function checkRunningProfiles () {
     try {
         utils.log('runnings: ', runnings.length)
         let watchingLength = runnings.length
