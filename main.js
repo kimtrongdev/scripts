@@ -183,6 +183,7 @@ async function startChromeAction(action) {
                 exec(cmdRun)
             } else {
                 await utils.sleep(17000)
+                setDisplay(action.pid)
                 sendEnter(action.pid)
                 await utils.sleep(8000)
             }
@@ -195,7 +196,6 @@ async function startChromeAction(action) {
             if (IS_REG_USER) {
                 await utils.sleep(10000)
                 setDisplay(action.pid)
-                await utils.sleep(1000)
                 sendEnter(action.pid)
             }
             
