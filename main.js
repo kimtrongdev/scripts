@@ -7,6 +7,7 @@ let totalRoundForChangeProxy = 5
 let countRun = 0
 
 require('dotenv').config();
+let systemConfig = {}
 let config
 global.devJson = {
     hostIp: process.env.HOST_IP,
@@ -67,6 +68,13 @@ const PLAYLIST_ACTION = {
 }
 const ADDNEW_ACTION = 3
 
+async function loadSystemConfig () {
+    systemConfig = await request_api.getSystemConfig();
+    if (systemConfig.max_total_profiles) {
+        MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+    }
+}
+
 async function profileRunningManage() {
     try {
         if (!isSystemChecking) {
@@ -112,14 +120,17 @@ async function runUpdateVps () {
 }
 
 function getProfileIds() {
-    return new Promise((resolve, reject) => {
+    try {
         let directoryPath = path.resolve("profiles")
-        fs.readdir(directoryPath, function (err, files) {
-            if (err) reject(err)
-            // else resolve(files.map(x => {return {id: x, time : 0}}))    // mapping add time field for computing reading for resume
-            else resolve(files)    // mapping add time field for computing reading for resume
-        })
-    })
+        let files = fs.readFileSync(directoryPath)
+        if (files && Array.isArray(files)) {
+            return files
+        }
+    } catch (error) {
+        console.log(error);
+    }
+    
+    return []
 }
 
 async function startChromeAction(action) {
@@ -358,12 +369,9 @@ async function getScriptData(pid, isNewProxy = false) {
         }
         // init action data
         if(action.mobile_percent === undefined || action.mobile_percent === null){
-            let systemConfig = await request_api.getSystemConfig();
             if (systemConfig.total_rounds_for_change_proxy) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
-    
-            utils.log('systemConfig', systemConfig);
             Object.assign(action, systemConfig)
     
             action.mobile_percent = systemConfig.browser_mobile_percent
@@ -374,10 +382,6 @@ async function getScriptData(pid, isNewProxy = false) {
     
             if (systemConfig.ads_percent  && !Number(action.ads_percent)) {
                 action.ads_percent = systemConfig.ads_percent
-            }
-    
-            if (systemConfig.max_total_profiles) {
-                MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
             }
     
             action.total_channel_created = Number(systemConfig.total_channel_created)
@@ -449,6 +453,7 @@ async function checkRunningProfiles () {
 
 async function updateVmStatus() {
     try {
+        await loadSystemConfig()
         let _pids = await getProfileIds()
         let pids = _pids.join(',')
         let rs = await request_api.updateVmStatus({
@@ -576,10 +581,7 @@ function makeid(length) {
 }
 
 async function initConfig() {
-    let systemConfig = await request_api.getSystemConfig();
-    if (systemConfig.max_total_profiles) {
-        MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
-    }
+    await loadSystemConfig()
     // load configuration
     //utils.log('config: ', config)
     // let ip = ''
@@ -1041,14 +1043,25 @@ async function deleteProfile(pid, retry = 0) {
 }
 
 function runAutoRebootVm () {
-    setInterval(() => {
+    setInterval(async () => {
         let myDate = new Date()
         let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
-        if (hour == 23 || hour == 12) {
+        if (hour == (Number(systemConfig.reset_system_time) || 1)) {
             try {
+                isSystemChecking = true
+                if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
+                    let _pids = getProfileIds()
+                    _pids.forEach(pid => {
+                        closeChrome(pid)
+                    });
+                    await utils.sleep(4000)
+                    execSync(`pkill ${BROWSER}`)
+                    execSync('rm -rf profiles')
+                }
                 execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2") 
                 execSync('sudo systemctl reboot')
             } catch (error) {
+                isSystemChecking = false
                 console.log(error);
             }
         }
