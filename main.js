@@ -1046,7 +1046,7 @@ function runAutoRebootVm () {
     setInterval(async () => {
         let myDate = new Date()
         let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
-        if (hour == (Number(systemConfig.reset_system_time) || 1)) {
+        if (Number(systemConfig.reset_system_time) >= 0 && hour == (Number(systemConfig.reset_system_time) || 1)) {
             try {
                 isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
