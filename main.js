@@ -105,7 +105,7 @@ async function runUpdateVps () {
         fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
 
         isSystemChecking = true
-        let pids = await getProfileIds()
+        let pids = getProfileIds()
         for (let pid of pids) {
             closeChrome(pid)
         }
@@ -269,7 +269,7 @@ async function newProfileManage() {
 async function newRunProfile() {
     utils.log('ids: ', ids)
     if (IS_REG_USER) {
-        let currentIds = await getProfileIds()
+        let currentIds = getProfileIds()
         ids = ids.filter(id => {
             return currentIds.some(cid => cid == id)
         })
@@ -454,7 +454,7 @@ async function checkRunningProfiles () {
 async function updateVmStatus() {
     try {
         await loadSystemConfig()
-        let _pids = await getProfileIds()
+        let _pids = getProfileIds()
         let pids = _pids.join(',')
         let rs = await request_api.updateVmStatus({
             vm_id: config.vm_id,
@@ -505,7 +505,7 @@ async function running() {
         fs.mkdirSync('profiles')
     }
     
-    ids = await getProfileIds()
+    ids = getProfileIds()
     utils.log('ids: ', ids)
     ids.forEach(pid => startDisplay(pid))
 
@@ -1243,7 +1243,7 @@ async function logScreen() {
 
 async function resetAllProfiles () {
     isSystemChecking = true
-    let pids = await getProfileIds()
+    let pids = getProfileIds()
     for (let pid of pids) {
         closeChrome(pid)
     }
