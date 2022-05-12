@@ -122,7 +122,7 @@ async function runUpdateVps () {
 function getProfileIds() {
     try {
         let directoryPath = path.resolve("profiles")
-        let files = fs.readFileSync(directoryPath)
+        let files = fs.readdirSync(directoryPath)
         if (files && Array.isArray(files)) {
             return files
         }
