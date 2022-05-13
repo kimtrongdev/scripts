@@ -426,7 +426,7 @@ async function checkRunningProfiles () {
         for (let i = 0; i < watchingLength; i++) {
             // calculate last report time
             let timeDiff = Date.now() - runnings[i].lastReport
-            if (timeDiff > 180000) {
+            if (timeDiff > 240000) {
                 let pid = runnings[i].pid
                 utils.log('--- expired time,', pid)
                 try {
@@ -1046,7 +1046,8 @@ function runAutoRebootVm () {
     setInterval(async () => {
         let myDate = new Date()
         let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
-        if (Number(systemConfig.reset_system_time) >= 0 && hour == (Number(systemConfig.reset_system_time) || 1)) {
+        if ((isNaN(systemConfig.reset_system_time) && hour == 1)
+            || Number(systemConfig.reset_system_time) >= 0 && hour == (Number(systemConfig.reset_system_time) || 1)) {
             try {
                 isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
