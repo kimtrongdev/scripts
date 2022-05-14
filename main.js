@@ -75,6 +75,8 @@ async function loadSystemConfig () {
     }
     if (systemConfig.show_ui_config && systemConfig.show_ui_config != 'false') {
         IS_SHOW_UI = true
+    } else {
+        IS_SHOW_UI = false
     }
 }
 
