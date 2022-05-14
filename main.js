@@ -73,6 +73,9 @@ async function loadSystemConfig () {
     if (systemConfig.max_total_profiles) {
         MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
     }
+    if (systemConfig.show_ui_config && systemConfig.show_ui_config != 'false') {
+        IS_SHOW_UI = true
+    }
 }
 
 async function profileRunningManage() {
