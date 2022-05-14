@@ -162,14 +162,28 @@ async function processHomePage(action){
         return
     }
 
-    if (action.suggest) {
-        if(action.preview == "home"){
-            await userScroll(action.pid,randomRanger(5,15))
-            await sleep(randomRanger(1000,5000))
-            await userClickRandomVideo(action.pid)
+    async function randomGotoChannelPage(action) {
+        let ids = action.suggest_channel_ids.split(',')
+        if (ids.length) {
+            let channelId = ids[randomRanger(0, ids.length - 1)]
+            // handle channel id 
+            await goToLocation(action.pid,'https://www.youtube.com/channel/'+channelId)
         }
-        else if(action.preview == "search"){
-            await userTypeEnter(action.pid,'input#search',action.keyword)
+    }
+
+    if (action.suggest) {
+        reportLive(action.pid)
+        if (action.suggest_channel_ids) {
+            await randomGotoChannelPage()
+        } else {
+            if(action.preview == "home"){
+                await userScroll(action.pid,randomRanger(5,15))
+                await sleep(randomRanger(1000,5000))
+                await userClickRandomVideo(action.pid)
+            }
+            else if(action.preview == "search"){
+                await userTypeEnter(action.pid,'input#search',action.keyword)
+            }
         }
         return
     }
