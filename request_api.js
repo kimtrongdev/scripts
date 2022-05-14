@@ -52,7 +52,7 @@ module.exports = {
     getProfile: async function getProfile(pid) {
         return await rq({uri: SUB_URL + '/profile/get-profile',json: true,qs: {pid: pid}})
     },
-    updateProfileStatus: async function getNewProfile(pid, vmId, status, description) {
+    updateProfileStatus: async function updateProfileStatus(pid, vmId, status, description) {
         return await rq({method: 'POST', uri: SUB_URL + '/profile/update-status',body: {pid: pid, vmId: vmId, status: status, description: description}, json: true})
     },
     getSubChannels: async function getSubChannels(pid, vmId, proxy) {

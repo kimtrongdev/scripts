@@ -1042,21 +1042,37 @@ async function deleteProfile(pid, retry = 0) {
     }
 }
 
+async function handleResetProfiles () {
+    isSystemChecking = true
+    let _pids = getProfileIds()
+    _pids.forEach(pid => {
+        closeChrome(pid)
+    });
+    for await (let pid of _pids) {
+        await request_api.updateProfileData({ pid, status: 'RESET' })
+    }
+    await utils.sleep(4000)
+
+    execSync(`pkill ${BROWSER}`)
+    isSystemChecking = false
+}
+
 function runAutoRebootVm () {
     setInterval(async () => {
         let myDate = new Date()
         let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
+
+        let resetProfilesTimeInterval = Number(systemConfig.reset_profiles_time_interval)
+        if (resetProfilesTimeInterval && resetProfilesTimeInterval % hour == 0) {
+            await handleResetProfiles()
+        }
+        
         if ((isNaN(systemConfig.reset_system_time) && hour == 1)
             || Number(systemConfig.reset_system_time) >= 0 && hour == (Number(systemConfig.reset_system_time) || 1)) {
             try {
                 isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
-                    let _pids = getProfileIds()
-                    _pids.forEach(pid => {
-                        closeChrome(pid)
-                    });
-                    await utils.sleep(4000)
-                    execSync(`pkill ${BROWSER}`)
+                    await handleResetProfiles()
                     execSync('rm -rf profiles')
                 }
                 execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2") 
