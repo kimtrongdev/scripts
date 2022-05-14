@@ -1043,20 +1043,29 @@ async function deleteProfile(pid, retry = 0) {
 }
 
 async function handleResetProfiles () {
-    isSystemChecking = true
-    let _pids = getProfileIds()
-    _pids.forEach(pid => {
-        closeChrome(pid)
-    });
-    for await (let pid of _pids) {
-        await request_api.updateProfileData({ pid, status: 'RESET' })
-    }
-    await utils.sleep(4000)
+    try {
+        isSystemChecking = true
+        let _pids = getProfileIds()
+        _pids.forEach(pid => {
+            closeChrome(pid)
+        });
+        for await (let pid of _pids) {
+            await request_api.updateProfileData({ pid: Number(pid), status: 'RESET' })
+        }
+        await utils.sleep(4000)
+        execSync('rm -rf profiles')
 
-    execSync(`pkill ${BROWSER}`)
-    await utils.sleep(2000)
-    execSync('rm -rf profiles')
-    isSystemChecking = false
+        if (!fs.existsSync('profiles')) {
+            fs.mkdirSync('profiles');
+        }
+        runnings = []
+        ids = []
+        
+    } catch (error) {
+        
+    } finally {
+        isSystemChecking = false
+    }
 }
 
 function runAutoRebootVm () {
@@ -1065,7 +1074,7 @@ function runAutoRebootVm () {
         let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
 
         let resetProfilesTimeInterval = Number(systemConfig.reset_profiles_time_interval)
-        if (resetProfilesTimeInterval && resetProfilesTimeInterval % hour == 0) {
+        if (resetProfilesTimeInterval && hour % resetProfilesTimeInterval == 0) {
             await handleResetProfiles()
         }
         
