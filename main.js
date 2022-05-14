@@ -592,6 +592,7 @@ function makeid(length) {
 
 async function initConfig() {
     await loadSystemConfig()
+    console.log(' -> SYSTEM CONFIG : ', systemConfig);
     // load configuration
     //utils.log('config: ', config)
     // let ip = ''
