@@ -1054,6 +1054,8 @@ async function handleResetProfiles () {
     await utils.sleep(4000)
 
     execSync(`pkill ${BROWSER}`)
+    await utils.sleep(2000)
+    execSync('rm -rf profiles')
     isSystemChecking = false
 }
 
@@ -1073,7 +1075,6 @@ function runAutoRebootVm () {
                 isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
                     await handleResetProfiles()
-                    execSync('rm -rf profiles')
                 }
                 execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2") 
                 execSync('sudo systemctl reboot')
