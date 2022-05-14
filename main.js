@@ -101,21 +101,26 @@ async function profileRunningManage() {
 
 async function runUpdateVps () {
     try {
+        isSystemChecking = true
+        await loadSystemConfig()
         // make for report upgrade
         fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
 
-        isSystemChecking = true
         let pids = getProfileIds()
         for (let pid of pids) {
             closeChrome(pid)
         }
 
-        execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2 && pm2 restart all")      
+        let gitKey = systemConfig.update_key
+        execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`)
+        execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull")
+        execSync('sudo systemctl reboot')
         await utils.sleep(15000)
         runnings = []
-        isSystemChecking = false
     } catch (error) {
         console.log('Error while update vps, error: ', error);
+    } finally {
+        isSystemChecking = false
     }
 }
 
@@ -1085,7 +1090,6 @@ function runAutoRebootVm () {
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
                     await handleResetProfiles()
                 }
-                execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull && sleep 2") 
                 execSync('sudo systemctl reboot')
             } catch (error) {
                 isSystemChecking = false
