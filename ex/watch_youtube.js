@@ -162,7 +162,7 @@ async function processHomePage(action){
         return
     }
 
-    async function randomGotoChannelPage(action) {
+    async function randomGotoChannelPage() {
         let ids = action.suggest_channel_ids.split(',')
         if (ids.length) {
             let channelId = ids[randomRanger(0, ids.length - 1)]
