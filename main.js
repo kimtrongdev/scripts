@@ -1114,8 +1114,7 @@ function runAutoRebootVm () {
             await handleResetProfiles()
         }
         
-        if ((isNaN(systemConfig.reset_system_time) && hour == 1)
-            || Number(systemConfig.reset_system_time) >= 0 && hour == (Number(systemConfig.reset_system_time) || 1)) {
+        if (Number(systemConfig.reset_system_time) > 0 && hour == Number(systemConfig.reset_system_time)){
             try {
                 isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
