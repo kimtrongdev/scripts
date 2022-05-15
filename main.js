@@ -95,6 +95,11 @@ async function loadSystemConfig () {
         isSystemChecking = true
         await handleForChangeShowUI()
         IS_SHOW_UI = newShowUIConfig
+
+        if (IS_SHOW_UI) {
+            process.env.DISPLAY = ':0'
+        }
+
         isSystemChecking = false
     }
 }
