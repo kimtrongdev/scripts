@@ -68,15 +68,34 @@ const PLAYLIST_ACTION = {
 }
 const ADDNEW_ACTION = 3
 
+async function handleForChangeShowUI() {
+    let _pids = getProfileIds()
+    _pids.forEach(pid => {
+        closeChrome(pid)
+    })
+    for await (let pid of _pids) {
+        closeChrome(pid)
+        await utils.sleep(2000)
+    }
+    await utils.sleep(2000)
+    runnings = []
+}
+
 async function loadSystemConfig () {
     systemConfig = await request_api.getSystemConfig();
     if (systemConfig.max_total_profiles) {
         MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
     }
+    let newShowUIConfig = false
     if (systemConfig.show_ui_config && systemConfig.show_ui_config != 'false') {
-        IS_SHOW_UI = true
-    } else {
-        IS_SHOW_UI = false
+        newShowUIConfig = true
+    }
+
+    if (IS_SHOW_UI != newShowUIConfig) {
+        isSystemChecking = true
+        await handleForChangeShowUI()
+        IS_SHOW_UI = newShowUIConfig
+        isSystemChecking = false
     }
 }
 
