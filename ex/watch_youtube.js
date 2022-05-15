@@ -167,7 +167,7 @@ async function processHomePage(action){
         if (ids.length) {
             let channelId = ids[randomRanger(0, ids.length - 1)]
             // handle channel id 
-            await goToLocation(action.pid,'https://www.youtube.com/channel/'+channelId)
+            await goToLocation(action.pid,'https://www.youtube.com/'+channelId)
         }
     }
 
@@ -888,9 +888,9 @@ async function processWatchChannelPage(action){
             let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail:not([href*="${action.playlist_url}"])${watched_videos}`)]
             let video
             if(videos.length){
-                video = videos[randomRanger(0,videos.length-1)]
+                video = videos[randomRanger(0, Math.max(videos.length-1), 10)]
                 action.other_videos.push(video.href.split('v=')[1].split('&')[0])
-                action.channel_videos = action.channel_videos.length?action.channel_videos:videos.map(x => x.href.split('v=')[1].split('&')[0])
+                //action.channel_videos = action.channel_videos.length?action.channel_videos:videos.map(x => x.href.split('v=')[1].split('&')[0])
                 await setActionData(action)
             }
             else{
