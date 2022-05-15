@@ -60,13 +60,13 @@ var Vars = {
 				//"linux 64bit":"X11; Linux armv7l", 
 			},
 			"macos":{
-                "macos monteray":"Macintosh; Intel Mac OS X 10_15_7",
-				"macos mojave3":"Macintosh; Intel Mac OS X 10_14_6",
-				"macos mojave2":"Macintosh; Intel Mac OS X 10_14_0",
-				"macos mojave":"Macintosh; Intel Mac OS X 10_14",
-				"macos high sierra2":"Macintosh; Intel Mac OS X 10_13_6",
-				"macos high sierra":"Macintosh; Intel Mac OS X 10_13",
-				"macos sierra":"Macintosh; Intel Mac OS X 10_12_2"
+                "macos monteray":"Macintosh; Intel Mac OS X 10_15_7"
+				//"macos mojave3":"Macintosh; Intel Mac OS X 10_14_6",
+				//"macos mojave2":"Macintosh; Intel Mac OS X 10_14_0",
+				//"macos mojave":"Macintosh; Intel Mac OS X 10_14",
+				//"macos high sierra2":"Macintosh; Intel Mac OS X 10_13_6",
+				//"macos high sierra":"Macintosh; Intel Mac OS X 10_13",
+				//"macos sierra":"Macintosh; Intel Mac OS X 10_12_2"
 			}
 		},
 		"wb":{
