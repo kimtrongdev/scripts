@@ -15,8 +15,8 @@ var Vars = {
 	pauseEnd:0,
 
 	// Refresh constants
-	UserAgentInterval:1,
-	GPUInterval:1,
+	UserAgentInterval:999999,
+	GPUInterval:999999,
 	FakeIPInterval:1,
 
 	uninstallUrl:"https://absolutedouble.co.uk/trace/extension-uninstall?e=",
@@ -69,7 +69,7 @@ var Vars = {
 		},
 		"wb":{
 			"chrome":{
-				"101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4893.203 Safari/537.36"
+				"32":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36 Edg/101.0.1210.32"
 			},
 			"firefox":{
 				"82":"Gecko/20100101 Firefox/82.0",
@@ -119,6 +119,13 @@ var Vars = {
 		'AMD Radeon(TM) Vega 8 Graphics',
 		'AMD Radeon(TM) HD 6480G',
 		'AMD Radeon(TM) HD 6520G',
+		'ATI Mobility Radeon HD 4250',
+		'ATI Mobility Radeon HD 5470',
+		'ATI Mobility Radeon HD 5650',
+		'ATI Radeon HD 4200',
+		'ATI Radeon HD 4300/4500 Series',
+		'ATI Radeon HD 4600 Series',
+		'ATI Radeon HD 5470',
 		'ATI Radeon HD 5570',
 		'ATI Radeon HD 5670',
 		'Intel(R) HD Graphics',
