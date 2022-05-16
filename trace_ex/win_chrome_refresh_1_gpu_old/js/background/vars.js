@@ -15,8 +15,8 @@ var Vars = {
 	pauseEnd:0,
 
 	// Refresh constants
-	UserAgentInterval:1,
-	GPUInterval:1,
+	UserAgentInterval:999999,
+	GPUInterval:999999,
 	FakeIPInterval:1,
 
 	uninstallUrl:"https://absolutedouble.co.uk/trace/extension-uninstall?e=",
@@ -69,7 +69,7 @@ var Vars = {
 		},
 		"wb":{
 			"chrome":{
-				"101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4893.203 Safari/537.36"
+				"32":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36 Edg/101.0.1210.32"
 			},
 			"firefox":{
 				"82":"Gecko/20100101 Firefox/82.0",
