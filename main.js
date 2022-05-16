@@ -3,6 +3,7 @@ let isSystemChecking = false
 const TIME_REPORT = 110000
 const TIME_TO_CHECK_UPDATE = 600000
 const isAutoEnableReward = true
+const EXPIRED_TIME = 240000
 let totalRoundForChangeProxy = 5
 let countRun = 0
 
@@ -482,7 +483,7 @@ async function checkRunningProfiles () {
         for (let i = 0; i < watchingLength; i++) {
             // calculate last report time
             let timeDiff = Date.now() - runnings[i].lastReport
-            if (timeDiff > 240000) {
+            if (timeDiff > EXPIRED_TIME) {
                 let pid = runnings[i].pid
                 utils.log('--- expired time,', pid)
                 try {
