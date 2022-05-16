@@ -116,6 +116,11 @@ async function profileRunningManage() {
             utils.log('profileRunningManage')
 
             if (MAX_CURRENT_ACC > runnings.length) {
+                let currentIds = getProfileIds()
+                ids = ids.filter(id => {
+                    return currentIds.some(cid => cid == id)
+                })
+
                 if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
@@ -325,12 +330,6 @@ async function newProfileManage() {
 
 async function newRunProfile() {
     utils.log('ids: ', ids)
-    if (IS_REG_USER) {
-        let currentIds = getProfileIds()
-        ids = ids.filter(id => {
-            return currentIds.some(cid => cid == id)
-        })
-    }
     let pid = ids.shift()
     if (pid || IS_REG_USER) {
         if (pid) {
@@ -1358,6 +1357,7 @@ async function resetAllProfiles () {
     }
 
     runnings = []
+    ids = []
     isSystemChecking = false
 }
 
