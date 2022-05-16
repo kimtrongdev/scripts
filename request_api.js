@@ -107,6 +107,11 @@ module.exports = {
         }
         catch (e) {
             console.log('getSystemConfig error', e)
+            try {
+                return await rq({uri: SUB_URL + '/oam/api-system-config',json: true})
+            } catch (error) {
+                
+            }
             return {};
         }
     },
