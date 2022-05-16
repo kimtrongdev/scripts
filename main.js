@@ -212,7 +212,7 @@ async function startChromeAction(action) {
             traceName = 'trace_ex/' + trace[action.pid]
         } else {
             if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
-                traceName = systemConfig.trace_names_ex[utils.getRndInteger(0, systemConfig.trace_names_ex.length - 1)]
+                traceName = systemConfig.trace_names_ex[Math.floor(Math.random()*systemConfig.trace_names_ex.length)]
                 trace[action.pid] = traceName
                 traceName = 'trace_ex/' + traceName
                 fs.writeFileSync("trace_config.json", JSON.stringify(trace))
