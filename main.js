@@ -1357,6 +1357,7 @@ async function resetAllProfiles () {
         }
     }
 
+    runnings = []
     isSystemChecking = false
 }
 
