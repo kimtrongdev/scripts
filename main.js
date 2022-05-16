@@ -141,8 +141,13 @@ async function runUpdateVps () {
         }
 
         let gitKey = systemConfig.update_key
-        execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`)
-        execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull")
+        try {
+            execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`)
+            execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull")
+        } catch (error) {
+            console.log(error);
+        }
+        
         execSync('sudo systemctl reboot')
         await utils.sleep(15000)
         runnings = []
@@ -501,7 +506,11 @@ async function updateVmStatus() {
             let removePID = Number(rs.removePid)
             closeChrome(removePID)
             await utils.sleep(5000)
-            execSync("rm -rf profiles/" + removePID)
+            try {
+                execSync("rm -rf profiles/" + removePID)
+            } catch (error) {
+                console.log(error);
+            }
             runnings = runnings.filter(i => i.pid != removePID)
             ids = ids.filter(i => i != removePID)
         }
@@ -1089,7 +1098,13 @@ async function handleResetProfiles () {
             await request_api.updateProfileData({ pid: Number(pid), status: 'RESET' })
         }
         await utils.sleep(4000)
-        execSync('rm -rf profiles')
+        if (fs.existsSync('profiles')) {
+            try {
+                execSync('rm -rf profiles')
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
         if (!fs.existsSync('profiles')) {
             fs.mkdirSync('profiles');
@@ -1310,10 +1325,14 @@ async function resetAllProfiles () {
     }
 
     if (fs.existsSync('profiles')) {
-        execSync('rm -rf profiles')
+        try {
+            execSync('rm -rf profiles')
+            execSync('mkdir profiles')
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    execSync('mkdir profiles')
     isSystemChecking = false
 }
 
