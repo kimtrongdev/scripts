@@ -202,7 +202,7 @@ async function startChromeAction(action) {
     let exs = ["ex", "quality"]
     if (action.id != 'reg_user') {
         let traceName = 'trace'
-        if (systemConfig.trace_name_ex && ['trace', 'trace2', 'trace3', 'trace4'].includes(systemConfig.trace_name_ex)) {
+        if (systemConfig.trace_name_ex) {
             traceName = systemConfig.trace_name_ex
         }
         exs.push(traceName)
