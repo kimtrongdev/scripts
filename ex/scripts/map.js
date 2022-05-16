@@ -23,9 +23,10 @@ async function scriptMap(action) {
       }
       return
     } else if (url.indexOf('google.com/maps/search') > -1) {
-      let searchRs = document.querySelectorAll('div[role="region"] a')
+      await sleep(5000)
+      let searchRs = document.querySelectorAll('div[role="region"] span[role="img"]')
       if (!searchRs || !searchRs.length) {
-        searchRs = document.querySelectorAll('div[role="article"] a')
+        searchRs = document.querySelectorAll('div[role="article"] span[role="img"]')
       }
 
       if (searchRs && searchRs.length) {
