@@ -207,7 +207,7 @@ async function startChromeAction(action) {
     if (action.id != 'reg_user') {
         let traceName = 'trace'
 
-        if (trace[action.pid]) {
+        if (trace[action.pid] && systemConfig.trace_names_ex.includes(trace[action.pid])) {
             traceName = 'trace_ex/' + trace[action.pid]
         } else {
             if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
