@@ -8,7 +8,6 @@ let countRun = 0
 
 require('dotenv').config();
 let systemConfig = {}
-let config
 global.devJson = {
     hostIp: process.env.HOST_IP,
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
@@ -21,20 +20,21 @@ global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
 const IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
+
+let config
 try {
     config = require('./vm_log.json')
-}
-catch (e) {
-    config = { }
-}
+} catch (e) { config = {} }
 
 let updateFlag = {}
 try {
     updateFlag = require('./update_flag.json')
-}
-catch (e) {
-    updateFlag = { }
-}
+} catch (e) { updateFlag = {} }
+
+let trace = {}
+try {
+    trace = require('./trace_config.json')
+} catch (e) { trace = {} }
 
 require('log-timestamp')
 const utils = require('./utils')
@@ -83,6 +83,10 @@ async function handleForChangeShowUI() {
 
 async function loadSystemConfig () {
     systemConfig = await request_api.getSystemConfig();
+    if (Number(systemConfig.max_current_profiles)) {
+        MAX_CURRENT_ACC = Number(systemConfig.max_current_profiles)
+    }
+
     if (systemConfig.max_total_profiles) {
         MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
     }
@@ -202,9 +206,18 @@ async function startChromeAction(action) {
     let exs = ["ex", "quality"]
     if (action.id != 'reg_user') {
         let traceName = 'trace'
-        if (systemConfig.trace_name_ex) {
-            traceName = systemConfig.trace_name_ex
+
+        if (trace[action.pid]) {
+            traceName = 'trace_ex/' + trace[action.pid]
+        } else {
+            if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
+                traceName = systemConfig.trace_names_ex[utils.getRndInteger(0, systemConfig.trace_names_ex.length - 1)]
+                trace[action.pid] = traceName
+                traceName = 'trace_ex/' + traceName
+                fs.writeFileSync("trace_config.json", JSON.stringify(trace))
+            }
         }
+        
         exs.push(traceName)
     }
 
@@ -1332,6 +1345,8 @@ async function resetAllProfiles () {
         try {
             execSync('rm -rf profiles')
             execSync('mkdir profiles')
+            trace = {}
+            execSync('rm -rf trace_config.json')
         } catch (error) {
             console.log(error);
         }

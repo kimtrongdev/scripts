@@ -24,3 +24,4 @@ error/
 screen/
 update_flag.json
 vm_log.json
+trace_config.json
