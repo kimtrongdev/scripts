@@ -532,6 +532,10 @@ async function updateVmStatus() {
             runnings = runnings.filter(i => i.pid != removePID)
             ids = ids.filter(i => i != removePID)
         }
+
+        if (rs && rs.reset_all_profiles) {
+            await resetAllProfiles()
+        }
     }
     catch (e) {
         utils.log('updateVmStatus err: ', e)
