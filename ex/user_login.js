@@ -216,7 +216,11 @@ async function userLogin(action) {
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             console.log('------pauseHistory');
             await oldPauseHistory(action)
-            await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            if (action.id == 'reg_user') {
+                await handleLoginSuccess(action)
+            } else {
+                await goToLocation(action.pid,'myactivity.google.com/product/youtube')
+            }
             
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             return
@@ -519,56 +523,23 @@ async function pauseInfo(action) {
 }
 
 async function pauseHistory(action){
-    try{
-        try {
-            let btnOff = document.querySelector('div[data-is-touch-wrapper] > button[data-is-on="true"]')
-            if (btnOff) {
-                await userClick(action.pid,'div[data-is-touch-wrapper] > button[data-is-on="true"]', btnOff)
-                await sleep(1000)
-                await userScrollMobile(action.pid, 20)
-                let pause = document.querySelectorAll('div[jsslot] div[data-is-touch-wrapper] > button > span').item(1)
-                if (pause) {
-                    await userClick(action.pid,'Pause btn', pause)
-                }
-                await sleep(4000)
+    try {
+        let btnOff = document.querySelector('div[data-is-touch-wrapper] > button[data-is-on="true"]')
+        if (btnOff) {
+            await userClick(action.pid,'div[data-is-touch-wrapper] > button[data-is-on="true"]', btnOff)
+            await sleep(1000)
+            await userScrollMobile(action.pid, 20)
+            let pause = document.querySelectorAll('div[jsslot] div[data-is-touch-wrapper] > button > span').item(1)
+            if (pause) {
+                await userClick(action.pid,'Pause btn', pause)
             }
-        } catch (error) {
-            
-        } finally {
-            await goToLocation(action.pid, 'https://myactivity.google.com/activitycontrols?time=' + Date.now())
-            await sleep(60000)
+            await sleep(4000)
         }
+    } catch (error) {
         
-        // let saved = document.querySelector('[d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-4-4 1.4-1.4 2.6 2.6 6.6-6.6L18 9l-8 8z"]')
-        // if(!saved) return
-        // await userClick(action.pid,'saved history button',saved)
-        // await sleep(2000)
-        // let historyOnInput = document.querySelector('[role="dialog"] input[checked]')
-        // if(historyOnInput){
-        //     console.log('pauseHistory')
-        //     await userClick(action.pid,'[role="dialog"] input[checked]',historyOnInput)
-        //     await sleep(3000)
-        //     await userClick(action.pid,'[role="dialog"] button[jsname] span')
-        //     await sleep(3000)
-        //     await waitForSelector('[role="dialog"] input:not([checked])')
-        //     await userClick(action.pid,'[role="dialog"] button')
-        //     await sleep(3000)
-        //     if(document.querySelector('[role="list"] [role="listitem"]')){
-        //         await userClick(action.pid,'c-wiz[data-p*="activitycontrols"] > div > div > div:nth-child(2) > div:nth-child(2) button span')
-        //         await sleep(2000)
-        //         await userClick(action.pid,'[role="dialog"] ul > li:nth-child(3)')
-        //         await sleep(3000)
-        //         let btns = [...document.querySelectorAll('[role="dialog"] button:not([aria-label])')]
-        //         await userClick(action.pid,'delete history',btns[btns.length-1])
-        //         await sleep(5000)
-        //     }
-        // }
-    }
-    catch(e){
-        console.log('error','pauseHistory',e)
-    }
-    finally{
-        handleLoginSuccess(action)
+    } finally {
+        await goToLocation(action.pid, 'https://myactivity.google.com/activitycontrols?time=' + Date.now())
+        await sleep(60000)
     }
 }
 
