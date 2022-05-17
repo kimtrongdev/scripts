@@ -107,12 +107,22 @@ async function loadSystemConfig () {
 
         isSystemChecking = false
     }
+
+    if (systemConfig.is_reg_user) {
+        IS_REG_USER = true
+    } else {
+        IS_REG_USER = false
+    }
 }
 
 async function profileRunningManage() {
     try {
         if (!isSystemChecking) {
             await checkRunningProfiles()
+            if (systemConfig.is_stop) {
+                return
+            }
+
             utils.log('profileRunningManage')
 
             if (MAX_CURRENT_ACC > runnings.length) {
