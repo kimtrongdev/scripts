@@ -41,7 +41,12 @@ module.exports = {
         return await rq({uri: SUB_URL + '/api/script/get-new?pid='+pid, json: true})
     },
     checkToUpdate: async function checkToUpdate() {
-        return await rq({uri: SUB_URL + '/get-to-update',json: true})
+        try {
+            return await rq({uri: SUB_URL + '/get-to-update',json: true})
+        } catch (error) {
+            console.log(error);
+            return false
+        }
     },
     getYTVideo: async function getYTVideo(pid = '') {
         return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
@@ -105,6 +110,7 @@ module.exports = {
         try{
             return await rq({uri: SUB_URL + '/api/config/system',json: true})
         } catch (e) {
+            console.log(e);
             return false;
         }
     },
