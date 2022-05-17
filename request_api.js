@@ -15,7 +15,7 @@ module.exports = {
         return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel?pid='+pid,json: true})
     },
     reportUpgrade: async function reportUpgrade () {
-        return await rq({uri: SUB_URL + '/report-upgrade',json: true})
+        return await rq({uri: SUB_URL + '/report-upgrade?vmId=' + config.vm_id,json: true})
     },
     getProxyV4: async function getProxyV4(data) {
         let query = ''
@@ -103,16 +103,9 @@ module.exports = {
     },
     getSystemConfig: async function() {
         try{
-            return await rq({uri: SUB_URL + '/oam/api-system-config',json: true})
-        }
-        catch (e) {
-            console.log('getSystemConfig error', e)
-            try {
-                return await rq({uri: SUB_URL + '/oam/api-system-config',json: true})
-            } catch (error) {
-                
-            }
-            return {};
+            return await rq({uri: SUB_URL + '/api/config/system',json: true})
+        } catch (e) {
+            return false;
         }
     },
     getComment: async function(keyword){

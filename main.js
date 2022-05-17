@@ -83,7 +83,11 @@ async function handleForChangeShowUI() {
 }
 
 async function loadSystemConfig () {
-    systemConfig = await request_api.getSystemConfig();
+    let rs = await request_api.getSystemConfig();
+    if (rs && !rs.error) {
+        systemConfig = rs
+    }
+    
     if (Number(systemConfig.max_current_profiles)) {
         MAX_CURRENT_ACC = Number(systemConfig.max_current_profiles)
     }
