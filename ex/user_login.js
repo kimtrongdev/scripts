@@ -30,10 +30,7 @@ async function userLogin(action) {
             return
         }
 
-        if (action.rejected) {
-            await goToLocation(action.pid,'accounts.google.com')
-            await sleep(60000)
-        } else {
+        if (!action.rejected) {
             await goToLocation(action.pid,'https://consent.youtube.com/d?continue=https://www.youtube.com/%3Fcbrd%3D1&gl=GB&m=0&pc=yt&uxe=eomty&hl=en&src=2')
             await sleep(60000)
         }
@@ -50,7 +47,7 @@ async function userLogin(action) {
 
             let signinBtn = document.querySelector('ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
             if (signinBtn) {
-                await userClick(action.pid, 'ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
+                await goToLocation(action.pid,'accounts.google.com')
                 await sleep(60000)
             }
 
