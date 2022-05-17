@@ -1108,38 +1108,6 @@ async function deleteProfile(pid, retry = 0) {
     }
 }
 
-async function handleResetProfiles () {
-    try {
-        isSystemChecking = true
-        let _pids = getProfileIds()
-        _pids.forEach(pid => {
-            closeChrome(pid)
-        });
-        for await (let pid of _pids) {
-            await request_api.updateProfileData({ pid: Number(pid), status: 'RESET' })
-        }
-        await utils.sleep(4000)
-        if (fs.existsSync('profiles')) {
-            try {
-                execSync('rm -rf profiles')
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        if (!fs.existsSync('profiles')) {
-            fs.mkdirSync('profiles');
-        }
-        runnings = []
-        ids = []
-        
-    } catch (error) {
-        
-    } finally {
-        isSystemChecking = false
-    }
-}
-
 function runAutoRebootVm () {
     setInterval(async () => {
         let myDate = new Date()
@@ -1147,14 +1115,14 @@ function runAutoRebootVm () {
 
         let resetProfilesTimeInterval = Number(systemConfig.reset_profiles_time_interval)
         if (resetProfilesTimeInterval && hour % resetProfilesTimeInterval == 0) {
-            await handleResetProfiles()
+            await resetAllProfiles()
         }
         
         if (Number(systemConfig.reset_system_time) > 0 && hour == Number(systemConfig.reset_system_time)){
             try {
                 isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
-                    await handleResetProfiles()
+                    await resetAllProfiles()
                 }
                 execSync('sudo systemctl reboot')
             } catch (error) {
@@ -1340,25 +1308,34 @@ async function logScreen() {
 
 async function resetAllProfiles () {
     isSystemChecking = true
-    let pids = getProfileIds()
-    for (let pid of pids) {
-        closeChrome(pid)
-    }
-
-    if (fs.existsSync('profiles')) {
-        try {
-            execSync('rm -rf profiles')
-            execSync('mkdir profiles')
-            trace = {}
-            execSync('rm -rf trace_config.json')
-        } catch (error) {
-            console.log(error);
+    try {
+        let pids = getProfileIds()
+        for (let pid of pids) {
+            closeChrome(pid)
         }
-    }
 
-    runnings = []
-    ids = []
-    isSystemChecking = false
+        for await (let pid of pids) {
+            await request_api.updateProfileData({ pid: Number(pid), status: 'RESET' })
+        }
+        await utils.sleep(4000)
+        if (fs.existsSync('profiles')) {
+            try {
+                execSync('rm -rf profiles')
+                execSync('mkdir profiles')
+                trace = {}
+                execSync('rm -rf trace_config.json')
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        runnings = []
+        ids = []
+    } catch (error) {
+        
+    } finally{
+        isSystemChecking = false
+    }
 }
 
 async function checkToUpdate () {
