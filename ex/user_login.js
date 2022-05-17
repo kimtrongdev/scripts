@@ -209,14 +209,14 @@ async function userLogin(action) {
         }
         else if (url.indexOf('youtube.com/account') > -1) {
             reportLive(action.pid)
-            if (action.id == 'reg_user') {
-                let channels = document.querySelectorAll('ytd-account-item-renderer')
-                let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
-                if (channels.length) {
-                    // update users count to server
-                    updateTotalCreatedUsers(action.pid, channels.length)
-                }
+            let channels = document.querySelectorAll('ytd-account-item-renderer')
+            if (channels.length) {
+                // update users count to server
+                updateTotalCreatedUsers(action.pid, channels.length)
+            }
 
+            if (action.id == 'reg_user') {
+                let btnCreateChannel = document.querySelector('#contents ytd-button-renderer > a > #button yt-formatted-string[id="text"]')
                 if (channels.length < 100 && btnCreateChannel) {
                     await userClick(action.pid,'',btnCreateChannel)
                 } else {
