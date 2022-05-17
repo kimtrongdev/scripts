@@ -108,10 +108,10 @@ async function loadSystemConfig () {
         isSystemChecking = false
     }
 
-    if (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') {
-        IS_REG_USER = true
-    } else {
-        IS_REG_USER = false
+    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false')
+    if (IS_REG_USER != IS_REG_USER_new) {
+        await resetAllProfiles()
+        IS_REG_USER = IS_REG_USER_new
     }
 }
 
