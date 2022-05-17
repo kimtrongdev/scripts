@@ -17,6 +17,21 @@ async function userLogin(action) {
             return
         }
 
+        if (url.indexOf('https://consent.youtube.com/d') > -1) {
+            let btnRejectAll = document.querySelector('form')
+            if (btnRejectAll) {
+                action.rejected = true
+                await setActionData(action)
+                await userClick(action.pid, 'btnRejectAll', btnRejectAll)
+            }
+            return
+        }
+
+        if (action.rejected) {
+            await goToLocation(action.pid,'accounts.google.com')
+            await sleep(60000)
+        }
+
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
