@@ -23,12 +23,18 @@ async function userLogin(action) {
                 action.rejected = true
                 await setActionData(action)
                 await userClick(action.pid, 'btnRejectAll', btnRejectAll)
+            } else {
+                await goToLocation(action.pid,'accounts.google.com')
+                await sleep(60000)
             }
             return
         }
 
         if (action.rejected) {
             await goToLocation(action.pid,'accounts.google.com')
+            await sleep(60000)
+        } else {
+            await goToLocation(action.pid,'https://consent.youtube.com/d?continue=https://www.youtube.com/%3Fcbrd%3D1&gl=GB&m=0&pc=yt&uxe=eomty&hl=en&src=2')
             await sleep(60000)
         }
 
