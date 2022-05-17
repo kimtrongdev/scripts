@@ -19,7 +19,7 @@ global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
-const IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
+let IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 
 let config
@@ -108,7 +108,7 @@ async function loadSystemConfig () {
         isSystemChecking = false
     }
 
-    if (systemConfig.is_reg_user) {
+    if (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') {
         IS_REG_USER = true
     } else {
         IS_REG_USER = false
@@ -119,7 +119,7 @@ async function profileRunningManage() {
     try {
         if (!isSystemChecking) {
             await checkRunningProfiles()
-            if (systemConfig.is_stop) {
+            if (systemConfig.is_stop && systemConfig.is_stop != 'false') {
                 return
             }
 
