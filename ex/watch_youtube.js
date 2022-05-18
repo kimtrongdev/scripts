@@ -30,7 +30,8 @@ async function userWatch(action){
                 return
             }
 
-            if ((channels && channels.length > 150) || !channels.length) {
+            let checkboxDontShow = document.querySelector('#checkboxContainer')
+            if (!channels || !channels.length || checkboxDontShow) {
                 action.loadFirstUser = true
                 await setActionData(action)
                 await goToLocation(action.pid, 'youtube.com/account')
