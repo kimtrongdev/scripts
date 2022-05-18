@@ -21,6 +21,7 @@ async function userWatch(action){
         // }
         
         if (url.indexOf('youtube.com/account') > -1) {
+            await utils.sleep(4000)
             let checkboxDontShow = document.querySelector('#checkboxContainer')
             if (checkboxDontShow) {
                 await userClick(action.pid, 'checkboxDontShow', checkboxDontShow)
