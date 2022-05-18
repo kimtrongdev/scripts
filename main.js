@@ -1,4 +1,4 @@
-const isRunBAT = true
+let isRunBAT = true
 let isSystemChecking = false
 const TIME_REPORT = 110000
 const TIME_TO_CHECK_UPDATE = 300000
