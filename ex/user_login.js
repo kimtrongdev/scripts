@@ -17,8 +17,8 @@ async function userLogin(action) {
             return
         }
 
-        if (url.indexOf('https://consent.youtube.com/d') > -1) {
-            let btnRejectAll = document.querySelector('form')
+        if (url.indexOf('https://consent.youtube.com/m') > -1) {
+            let btnRejectAll = document.querySelectorAll('form').item(1)
             if (btnRejectAll) {
                 action.rejected = true
                 await setActionData(action)
@@ -31,8 +31,8 @@ async function userLogin(action) {
         }
 
         if (!action.rejected) {
-           // await goToLocation(action.pid,'https://consent.youtube.com/d?continue=https://www.youtube.com/%3Fcbrd%3D1&gl=GB&m=0&pc=yt&uxe=eomty&hl=en&src=2')
-           // await sleep(60000)
+            await goToLocation(action.pid,'https://consent.youtube.com/m?continue=https://www.youtube.com/%3Fcbrd%3D1&gl=GB&m=0&pc=yt&uxe=eomty&hl=en&src=2')
+            await sleep(60000)
         }
 
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
