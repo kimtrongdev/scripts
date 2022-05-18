@@ -90,7 +90,7 @@ async function initAction(){
 
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
-        if (action.isRunBAT) {
+        if (action.isRunBAT && ['brave-browser', 'brave'].includes(action.browser_name)) {
             isRunBAT = Boolean(action.isRunBAT)
         }
         

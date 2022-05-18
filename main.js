@@ -14,7 +14,7 @@ global.devJson = {
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
 
-const BROWSER = process.env.BROWSER == '_BROWSER_NAME' ? 'brave' : process.env.BROWSER
+let BROWSER = process.env.BROWSER == '_BROWSER_NAME' ? 'brave' : process.env.BROWSER
 global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
@@ -116,6 +116,13 @@ async function loadSystemConfig () {
     if (IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
+    }
+
+    let newBrowser = systemConfig.browser_name || 'brave'
+    if (BROWSER != newBrowser) {
+        await resetAllProfiles()
+        BROWSER = newBrowser
+        isRunBAT = ['brave-browser', 'brave'].includes(BROWSER)
     }
 }
 
@@ -219,6 +226,8 @@ async function startChromeAction(action) {
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
+
+    action.browser_name = BROWSER
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
