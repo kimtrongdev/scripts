@@ -30,7 +30,7 @@ async function userWatch(action){
                 return
             }
 
-            if (channels || channels.length > 150 || !channels.length) {
+            if ((channels && channels.length > 150) || !channels.length) {
                 action.loadFirstUser = true
                 await setActionData(action)
                 await goToLocation(action.pid, 'youtube.com/account')
