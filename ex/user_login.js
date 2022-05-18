@@ -552,7 +552,8 @@ async function oldPauseHistory(action){
         let historyOnInput = document.querySelector('.yt-confirm-dialog-renderer #confirm-button')
         if(historyOnInput){
             console.log('pauseHistory')
-            await userClick(action.pid,'.yt-confirm-dialog-renderer #confirm-button',historyOnInput)
+            historyOnInput.click()
+            //await userClick(action.pid,'.yt-confirm-dialog-renderer #confirm-button',historyOnInput)
             await sleep(4000)
            // await userClick(action.pid,'[role="dialog"] button[jsname] span')
            // await sleep(3000)
