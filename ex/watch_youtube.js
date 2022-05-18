@@ -21,12 +21,23 @@ async function userWatch(action){
         // }
         
         if (url.indexOf('youtube.com/account') > -1) {
-            await utils.sleep(4000)
-            let checkboxDontShow = document.querySelector('#checkboxContainer')
-            if (checkboxDontShow) {
-                await userClick(action.pid, 'checkboxDontShow', checkboxDontShow)
-            }
             let channels = document.querySelectorAll('ytd-account-item-renderer')
+            if (action.loadFirstUser) {
+                action.loadFirstUser = false
+                await setActionData(action)
+                await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+                await sleep(60000)
+                return
+            }
+
+            if (channels || channels.length > 150 || !channels.length) {
+                action.loadFirstUser = true
+                await setActionData(action)
+                await goToLocation(action.pid, 'youtube.com/account')
+                await sleep(60000)
+                return
+            }
+
             if (channels.length <= action.channel_position) {
                 isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
                 return
