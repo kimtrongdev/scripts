@@ -21,6 +21,10 @@ async function userWatch(action){
         // }
         
         if (url.indexOf('youtube.com/account') > -1) {
+            let checkboxDontShow = document.querySelector('#checkboxContainer')
+            if (checkboxDontShow) {
+                await userClick(action.pid, 'checkboxDontShow', checkboxDontShow)
+            }
             let channels = document.querySelectorAll('ytd-account-item-renderer')
             if (channels.length <= action.channel_position) {
                 isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
