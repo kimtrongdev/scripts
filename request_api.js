@@ -87,10 +87,7 @@ module.exports = {
     updateVmVersion: async function updateVmVersion(vmId,version, ip) {
         return await rq({method: 'POST', uri: SUB_URL + '/manage/update-vm-version',body: {vmId: vmId, version: version, ip: ip}, json: true})
     },
-    getProxy: async function getProxy(vmId) {
-        return await rq({uri: SUB_URL + '/manage/get-proxy',json: true,qs: {vmId: vmId}})
-    },
-    getProfileProxy: async function getProxy(pid,action, isLoadNewProxy = '') {
+    getProfileProxy: async function getProfileProxy(pid,action, isLoadNewProxy = '') {
         return await rq({uri: SUB_URL + '/api/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
     },
     getVmFromIp: async function getVmFromIp(ip) {
