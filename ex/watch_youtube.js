@@ -20,6 +20,21 @@ async function userWatch(action){
         //     return
         // }
         
+        if (url.indexOf('https://consent.youtube.com/m') > -1) {
+            try {
+                let btnRejectAll = document.querySelectorAll('form').item(1)
+                if (btnRejectAll) {
+                    await userClick(action.pid, 'btnRejectAll', btnRejectAll)
+                } else {
+                    await goToLocation(action.pid,'accounts.google.com')
+                    await sleep(60000)
+                }
+                return
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        
         if (url.indexOf('youtube.com/account') > -1) {
             let channels = document.querySelectorAll('ytd-account-item-renderer')
             if (action.loadFirstUser) {
