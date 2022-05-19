@@ -91,6 +91,7 @@ async function initAction(){
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
         if (window.location.toString().indexOf('refreshed_localhost') == -1) {
             window.open(window.location.toString() + '&refreshed_localhost=true')
+            await sleep(30000)
             return
         }
 
