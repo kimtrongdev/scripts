@@ -19,9 +19,9 @@ async function userLogin(action) {
 
         if (url.indexOf('https://consent.youtube.com/m') > -1) {
             let btnRejectAll = document.querySelectorAll('form').item(1)
+            action.rejected = true
+            await setActionData(action)
             if (btnRejectAll) {
-                action.rejected = true
-                await setActionData(action)
                 await userClick(action.pid, 'btnRejectAll', btnRejectAll)
             } else {
                 await goToLocation(action.pid,'accounts.google.com')
