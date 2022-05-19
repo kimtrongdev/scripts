@@ -92,6 +92,8 @@ async function initAction(){
 
         if (action.isRunBAT && ['brave-browser', 'brave'].includes(action.browser_name)) {
             isRunBAT = Boolean(action.isRunBAT)
+        } else {
+            isRunBAT = false
         }
         
         await initActionData(action)
