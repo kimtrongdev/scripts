@@ -42,7 +42,7 @@ module.exports = {
     },
     checkToUpdate: async function checkToUpdate() {
         try {
-            return await rq({uri: SUB_URL + '/get-to-update',json: true})
+            return await rq({uri: SUB_URL + '/get-to-update?vmId=' + config.vm_id, json: true})
         } catch (error) {
             console.log(error);
             return false
