@@ -652,7 +652,7 @@ async function start() {
         if (updateFlag && updateFlag.updating) {
             await request_api.reportUpgrade()
             execSync('rm -rf update_flag.json')
-            await utils.sleep(60000)
+            await utils.sleep(180000)
         }
 
         initDir()
