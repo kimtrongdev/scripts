@@ -89,7 +89,11 @@ async function initAction(){
         action.lastRequest = Date.now()
 
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-        
+        if (window.location.toString().indexOf('refreshed_localhost') == -1) {
+            window.open(window.location.toString() + '&refreshed_localhost=true')
+            return
+        }
+
         await initActionData(action)
 
         await sleep(5000)
