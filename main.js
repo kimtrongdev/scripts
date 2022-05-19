@@ -6,6 +6,7 @@ const isAutoEnableReward = true
 const EXPIRED_TIME = 240000
 let totalRoundForChangeProxy = 5
 let countRun = 0
+let isPauseAction = false
 
 require('dotenv').config();
 let systemConfig = {}
@@ -211,7 +212,7 @@ async function startChromeAction(action) {
     let userProxy = ''
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = widthSizes[positionSize]
-    let screenHeight = action.isNew ? 950 : utils.getRndInteger(950, 1000)
+    let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
@@ -514,6 +515,9 @@ async function getScriptData(pid, isNewProxy = false) {
 
 async function checkRunningProfiles () {
     try {
+        if (isPauseAction) {
+            return
+        }
         utils.log('runnings: ', runnings.length)
         let watchingLength = runnings.length
         for (let i = 0; i < watchingLength; i++) {
@@ -747,6 +751,12 @@ function initExpress() {
     const express = require('express')
     const app = express()
 
+    app.get('/debug', (req, res) => {
+        isPauseAction = true
+        res.send({ rs: 'ok' })
+        return
+    })
+
     app.get('/login', (req, res) => {
         utils.log(req.query)
         if (req.query.status == 1) {
@@ -770,6 +780,10 @@ function initExpress() {
     })
 
     app.get('/report', async (req, res) => {
+        if (isPauseAction) {
+            res.send({ rs: 'ok' })
+            return
+        }
         utils.log(req.query)
 
         if (req.query.id == 'total_created_channel') {
@@ -888,6 +902,10 @@ function initExpress() {
     })
 
     app.get('/input', async (req, res) => {
+        if (isPauseAction) {
+            res.send({ rs: 'ok' })
+            return
+        }
         utils.log(req.query)
         addnewRunnings = addnewRunnings.map(x => {
             if (x.pid == req.query.pid) {
