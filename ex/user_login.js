@@ -18,23 +18,28 @@ async function userLogin(action) {
         }
 
         if (url.indexOf('https://consent.youtube.com/m') > -1) {
-            let btnRejectAll = document.querySelectorAll('form').item(1)
+            try {
+                let btnRejectAll = document.querySelectorAll('form').item(1)
+                if (btnRejectAll) {
+                    await userClick(action.pid, 'btnRejectAll', btnRejectAll)
+                } else {
+                    await goToLocation(action.pid,'accounts.google.com')
+                    await sleep(60000)
+                }
+                return
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        if (!action.rejected && url.indexOf('https://www.youtube.com/') > -1) {
             action.rejected = true
             await setActionData(action)
-            if (btnRejectAll) {
-                await userClick(action.pid, 'btnRejectAll', btnRejectAll)
-            } else {
-                await goToLocation(action.pid,'accounts.google.com')
-                await sleep(60000)
-            }
-            return
-        }
-
-        if (!action.rejected) {
             await goToLocation(action.pid,'https://consent.youtube.com/m?continue=https://www.youtube.com/%3Fcbrd%3D1&gl=GB&m=0&pc=yt&uxe=eomty&hl=en&src=2')
             await sleep(60000)
+            return
         }
-
+    
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
