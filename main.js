@@ -164,7 +164,6 @@ async function runUpdateVps () {
         isSystemChecking = true
         await loadSystemConfig()
         // make for report upgrade
-        fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
 
         let pids = getProfileIds()
         for (let pid of pids) {
@@ -175,6 +174,7 @@ async function runUpdateVps () {
         try {
             execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`)
             execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull")
+            fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
         } catch (error) {
             console.log(error);
         }
