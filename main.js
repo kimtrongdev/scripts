@@ -359,6 +359,13 @@ async function newRunProfile() {
     let pid = ids.shift()
     if (pid || IS_REG_USER) {
         if (pid) {
+            // handle remove undefined folder
+            if (pid == 'undefined' && !IS_REG_USER) {
+                try {
+                    execSync('rm -rf profiles/undefined')
+                } catch (error) { console.log(error) }
+                return
+            }
             ids.push(pid)
         }
 
