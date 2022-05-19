@@ -7,7 +7,7 @@ const EXPIRED_TIME = 240000
 let totalRoundForChangeProxy = 5
 let countRun = 0
 let isPauseAction = false
-
+let isAfterReboot = false
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -287,7 +287,12 @@ async function startChromeAction(action) {
                 await utils.sleep(2000)
                 exec(cmdRun)
             } else {
-                await utils.sleep(17000)
+                if (isAfterReboot) {
+                    await utils.sleep(35000)
+                    isAfterReboot = false
+                } else {
+                    await utils.sleep(17000)
+                }
                 setDisplay(action.pid)
                 sendEnter(action.pid)
                 await utils.sleep(8000)
@@ -652,6 +657,7 @@ async function start() {
     try {
         
         if (updateFlag && updateFlag.updating) {
+            isAfterReboot = true
             await request_api.reportUpgrade()
             execSync('rm -rf update_flag.json')
             await utils.sleep(180000)
