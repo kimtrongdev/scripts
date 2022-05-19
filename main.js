@@ -171,18 +171,20 @@ async function runUpdateVps () {
             closeChrome(pid)
         }
 
-        let gitKey = systemConfig.update_key
         try {
+            let gitKey = systemConfig.update_key
             if (gitKey) {
                 execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`)
             }
 
             execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull")
-            fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
         } catch (error) {
             console.log(error);
+            isSystemChecking = false
+            return
         }
-        
+
+        fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
         execSync('sudo systemctl reboot')
         await utils.sleep(15000)
         runnings = []
