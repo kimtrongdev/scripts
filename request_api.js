@@ -84,9 +84,6 @@ module.exports = {
         const apiUrl = 'https://www.googleapis.com/youtube/v3/channels?part=statistics&key=AIzaSyCVfKZdlQgwiFY-lEeZ6xKsgUBTbTEDZWA&id='
         return await rq({uri: apiUrl+channelId, json: true, qs: {vmId: config.vm_id}})
     },
-    updateVmVersion: async function updateVmVersion(vmId,version, ip) {
-        return await rq({method: 'POST', uri: SUB_URL + '/manage/update-vm-version',body: {vmId: vmId, version: version, ip: ip}, json: true})
-    },
     getProfileProxy: async function getProfileProxy(pid,action, isLoadNewProxy = '') {
         return await rq({uri: SUB_URL + '/api/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
     },
@@ -105,7 +102,7 @@ module.exports = {
     },
     getSystemConfig: async function() {
         try{
-            return await rq({uri: SUB_URL + '/api/config/system',json: true})
+            return await rq({ uri: SUB_URL + '/api/config/system?vmId=' + config.vm_id, json: true })
         } catch (e) {
             console.log(e);
             return false;
