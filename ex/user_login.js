@@ -10,6 +10,7 @@ async function userLogin(action) {
         }
 
         await sleep(5000)
+        reportLive(action.pid)
         let url = window.location.toString()
 
         if (url.indexOf('accounts.google.com/b/0/PlusPageSignUp') > -1) {
@@ -120,7 +121,6 @@ async function userLogin(action) {
             action.relogin = true
             await setActionData(action)
             await waitForSelector("input[name='password']")
-            reportLive(action.pid)
             await userTypeEnter(action.pid, "input[name='password']", action.password)
             await sleep(60000)
         }
@@ -230,7 +230,6 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('youtube.com/account') > -1) {
-            reportLive(action.pid)
             let channels = document.querySelectorAll('ytd-account-item-renderer')
             if (channels.length) {
                 // update users count to server
@@ -287,7 +286,6 @@ async function userLogin(action) {
 
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
-    reportLive(action.pid)
     await goToLocation(action.pid,'youtube.com/feed/history')
     await sleep(60000)
 
