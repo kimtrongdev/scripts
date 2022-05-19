@@ -89,12 +89,6 @@ async function initAction(){
         action.lastRequest = Date.now()
 
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-
-        if (action.isRunBAT && ['brave-browser', 'brave'].includes(action.browser_name)) {
-            isRunBAT = Boolean(action.isRunBAT)
-        } else {
-            isRunBAT = false
-        }
         
         await initActionData(action)
 
@@ -103,6 +97,11 @@ async function initAction(){
     else{
         let data = await getActionData()
         action = data.action
+        if (action.isRunBAT && ['brave-browser', 'brave'].includes(action.browser_name)) {
+            isRunBAT = Boolean(action.isRunBAT)
+        } else {
+            isRunBAT = false
+        }
         windowWide = action.windowWide
         mobileMenuBarHeight = action.mobileMenuBarHeight
         zoom = action.zoom || 1

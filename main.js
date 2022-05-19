@@ -231,6 +231,9 @@ async function startChromeAction(action) {
     }
 
     action.browser_name = BROWSER
+    if (isRunBAT) {
+        action.isRunBAT = isRunBAT
+    }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
@@ -361,6 +364,7 @@ async function newRunProfile() {
         if (pid) {
             // handle remove undefined folder
             if (pid == 'undefined' && !IS_REG_USER) {
+                console.log('Handle remove undefined folder');
                 try {
                     execSync('rm -rf profiles/undefined')
                 } catch (error) { console.log(error) }
