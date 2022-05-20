@@ -72,15 +72,14 @@ const ADDNEW_ACTION = 3
 
 async function handleForChangeShowUI() {
     let _pids = getProfileIds()
-    _pids.forEach(pid => {
-        closeChrome(pid)
-    })
+
     for await (let pid of _pids) {
         closeChrome(pid)
         await utils.sleep(2000)
     }
     await utils.sleep(2000)
     runnings = []
+    ids = []
 }
 
 async function loadSystemConfig () {
