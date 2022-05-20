@@ -65,9 +65,10 @@ async function userLogin(action) {
             // }
         }
 
-        if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1) {
+        if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1 && action.order_id) {
             //enter code
-            let phoneRs = await getPhoneCode()
+            let phoneRs = await getPhoneCode(action.order_id)
+            console.log('getPhoneCode',phoneRs);
             if (phoneRs.error) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
             } else {
@@ -78,6 +79,7 @@ async function userLogin(action) {
         else if (url.indexOf('accounts.google.com/speedbump/idvreenable') > -1 && action.is_ver_mail_type) {
             //enter phone number
             let phoneRs = await getPhone()
+            console.log('getPhone',phoneRs);
             if (phoneRs.error) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
             } else {
@@ -103,7 +105,6 @@ async function userLogin(action) {
         }
         else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
             console.log('enter email')
-            await sleep(3000)
             await waitForSelector('#identifierId')
             await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(60000)
@@ -317,7 +318,8 @@ async function beforeLoginSuccess (action) {
 
 async function handleLoginSuccess (action) {
     if (action.is_ver_mail_type) {
-        await updateActionStatus(action.pid, 'ver_mail_type', LOGIN_STATUS.SUCCESS)
+        let type = action.order_id ? 'ver_mail_type_by_code':'ver_mail_type'
+        await updateActionStatus(action.pid, type, LOGIN_STATUS.SUCCESS)
     } else {
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }

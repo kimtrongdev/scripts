@@ -767,14 +767,14 @@ function initExpress() {
 
     app.get('/get-phone', async (req, res) => {
         let rs = await request_api.getPhone()
-        res.send({ rs })
+        res.send(rs)
         return
     })
 
     app.get('/get-phone-code', async (req, res) => {
         let order_id = req.query.order_id
         let rs = await request_api.getPhoneCode(order_id)
-        res.send({ rs })
+        res.send(rs)
         return
     })
 
@@ -852,13 +852,23 @@ function initExpress() {
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
-        else if (req.query.id == 'ver_mail_type') {
+        else if (req.query.id == 'ver_mail_type_by_code') {
             if (req.query.status == 1) {
                 request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: 'verify_success' })
             }
             else {
                 request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
             }
+            removePidAddnew(req.query.pid, req.query.status)
+        }
+        else if (req.query.id == 'ver_mail_type') {
+            if (req.query.status == 1) {
+                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: 'account_ok' })
+            }
+            else {
+                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
+            }
+            removePidAddnew(req.query.pid, req.query.status)
         }
         else if (req.query.id == 'login' || req.query.id == 'reg_user') {
             if (req.query.status == 1) {
