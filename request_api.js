@@ -11,6 +11,12 @@ const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 module.exports = {
+    getPhone: async function getPhone () {
+        return await rq({uri: SUB_URL + '/api/phone',json: true})
+    },
+    getPhoneCode: async function getPhoneCode (orderID) {
+        return await rq({uri: SUB_URL + '/api/phone/code?order_id=' + orderID,json: true})
+    },
     getProfileForRegChannel: async function getProfileForRegChannel (pid = 0) {
         return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel?pid='+pid,json: true})
     },

@@ -112,7 +112,8 @@ async function loadSystemConfig () {
         isSystemChecking = false
     }
 
-    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false')
+    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
+    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false')
     if (IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
@@ -764,6 +765,19 @@ function initExpress() {
         return
     })
 
+    app.get('/get-phone', async (req, res) => {
+        let rs = await request_api.getPhone()
+        res.send({ rs })
+        return
+    })
+
+    app.get('/get-phone-code', async (req, res) => {
+        let order_id = req.query.order_id
+        let rs = await request_api.getPhoneCode(order_id)
+        res.send({ rs })
+        return
+    })
+
     app.get('/login', (req, res) => {
         utils.log(req.query)
         if (req.query.status == 1) {
@@ -838,19 +852,22 @@ function initExpress() {
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
+        else if (req.query.id == 'ver_mail_type') {
+            if (req.query.status == 1) {
+                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: 'verify_success' })
+            }
+            else {
+                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
+            }
+        }
         else if (req.query.id == 'login' || req.query.id == 'reg_user') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
-                //let login = !req.query.msg
-                //req.query.msg = req.query.msg == "OK" ? undefined : req.query.msg
                 request_api.updateProfileData({ pid: req.query.pid, status: 'SYNCED' })
-                //request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-                //backup(req.query.pid,login)
             }
             else {
                 utils.log(req.query.pid, 'login error', req.query.msg)
                 request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
-                //request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
             }
             execSync(`xdotool key Control_L+Shift+w && sleep 2`)
             removePidAddnew(req.query.pid, req.query.status)

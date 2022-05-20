@@ -32,14 +32,6 @@ async function userLogin(action) {
                 console.log(error);
             }
         }
-
-        // if (!action.rejected && url.indexOf('https://www.youtube.com/') > -1) {
-        //     action.rejected = true
-        //     await setActionData(action)
-        //     await goToLocation(action.pid,'https://consent.youtube.com/m?continue=https://www.youtube.com/%3Fcbrd%3D1&gl=GB&m=0&pc=yt&uxe=eomty&hl=en&src=2')
-        //     await sleep(60000)
-        //     return
-        // }
     
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
@@ -73,10 +65,30 @@ async function userLogin(action) {
             // }
         }
 
-        if (url.indexOf('youtube.com/oops') > -1) {
+        if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1) {
+            //enter code
+            let phoneRs = await getPhoneCode()
+            if (phoneRs.error) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+            } else {
+                await userTypeEnter(action.pid, '#smsUserPin', phoneRs.code)
+                await sleep(30000)
+            }
+        }
+        else if (url.indexOf('accounts.google.com/speedbump/idvreenable') > -1 && action.is_ver_mail_type) {
+            //enter phone number
+            let phoneRs = await getPhone()
+            if (phoneRs.error) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+            } else {
+                action.order_id = phoneRs.orderID
+                await setActionData(action)
+                await userTypeEnter(action.pid, '#deviceAddress', phoneRs.phone)
+                await sleep(30000)
+            }
+        }
+        else if (url.indexOf('youtube.com/oops') > -1) {
             await goToLocation(action.pid, 'youtube.com?skip_registered_account_check=true')
-            //action.isCreateChannel = true
-            //await setActionData(action)
             await sleep(15000)
         }
         else if (url.indexOf('consent.youtube.com') > -1) {
@@ -304,12 +316,11 @@ async function beforeLoginSuccess (action) {
 }
 
 async function handleLoginSuccess (action) {
-    await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-    // if (action.id == 'reg_user') {
-    //     await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-    // } else {
-    //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-    // }
+    if (action.is_ver_mail_type) {
+        await updateActionStatus(action.pid, 'ver_mail_type', LOGIN_STATUS.SUCCESS)
+    } else {
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    }
 }
 
 async function checkLogin(action) {

@@ -152,6 +152,19 @@ async function initActionData(action) {
     }
 }
 
+function getPhone () {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone', data: {} }, function (response) {
+        resolve(response);
+    }))
+}
+
+function getPhoneCode (order_id) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone-code',
+        data: { order_id: order_id }}, function (response) {
+        resolve(response);
+    }))
+}
+
 function updateTotalCreatedUsers (pid, count = 0) {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: {pid: pid, id: 'total_created_channel', count }}, function (response) {
