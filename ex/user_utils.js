@@ -158,9 +158,9 @@ function getPhone () {
     }))
 }
 
-function getPhoneCode (order_id) {
+function getPhoneCode (order_id, api_name) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone-code',
-        data: { order_id: order_id }}, function (response) {
+        data: { order_id: order_id, api_name: api_name }}, function (response) {
         resolve(response);
     }))
 }

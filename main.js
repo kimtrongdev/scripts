@@ -424,7 +424,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 utils.log('Load new proxy for pid')
             }
 
-            if (isLoadNewProxy && isRunBAT) {
+            if (isLoadNewProxy && isRunBAT || action.is_ver_mail_type) {
                 let newProxy = await request_api.getProxyV4()
                 let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
                 if (newProxy.server) {
@@ -773,7 +773,8 @@ function initExpress() {
 
     app.get('/get-phone-code', async (req, res) => {
         let order_id = req.query.order_id
-        let rs = await request_api.getPhoneCode(order_id)
+        let api_name = req.query.api_name
+        let rs = await request_api.getPhoneCode(order_id, api_name)
         res.send(rs)
         return
     })

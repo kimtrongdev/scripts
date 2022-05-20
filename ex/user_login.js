@@ -67,7 +67,7 @@ async function userLogin(action) {
 
         if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1 && action.order_id) {
             //enter code
-            let phoneRs = await getPhoneCode(action.order_id)
+            let phoneRs = await getPhoneCode(action.order_id, action.api_name)
             console.log('getPhoneCode',phoneRs);
             if (phoneRs.error) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
@@ -84,6 +84,7 @@ async function userLogin(action) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
             } else {
                 action.order_id = phoneRs.orderID
+                action.api_name = phoneRs.api_name
                 await setActionData(action)
                 await userTypeEnter(action.pid, '#deviceAddress', phoneRs.phone)
                 await sleep(30000)
@@ -332,7 +333,7 @@ async function beforeLoginSuccess (action) {
     if (action.is_ver_mail_type) {
         let msg = action.order_id ? 'verify_success':'account_ok'
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, msg)
-        
+
         // if (action.newPassword) {
         //     let msg = action.order_id ? 'verify_success':'account_ok'
         //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, msg)
