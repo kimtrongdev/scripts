@@ -852,24 +852,6 @@ function initExpress() {
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
-        else if (req.query.id == 'ver_mail_type_by_code') {
-            if (req.query.status == 1) {
-                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: 'verify_success' })
-            }
-            else {
-                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
-            }
-            removePidAddnew(req.query.pid, req.query.status)
-        }
-        else if (req.query.id == 'ver_mail_type') {
-            if (req.query.status == 1) {
-                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: 'account_ok' })
-            }
-            else {
-                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
-            }
-            removePidAddnew(req.query.pid, req.query.status)
-        }
         else if (req.query.id == 'login' || req.query.id == 'reg_user') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')

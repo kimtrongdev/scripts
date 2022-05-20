@@ -89,6 +89,31 @@ async function userLogin(action) {
                 await sleep(30000)
             }
         }
+        else if (url.indexOf('https://myaccount.google.com/security') > -1) {
+            if(!action.newRecoveryMail){
+                await userClick(action.pid,'a[href^="recovery/email"]')
+            }
+            if(!action.newPassword){
+                await userClick(action.pid,'a[href^="signinoptions/password"]')
+            }
+            else{
+                await beforeLoginSuccess(action)
+            }
+            return
+        }
+        else if (url.indexOf('https://myaccount.google.com/signinoptions/password') > -1) {
+            let newPassword = Math.random().toString(36).slice(9).toLocaleUpperCase() + Math.random().toString(36).slice(randomRanger(2,5))
+            action.newPassword = newPassword
+            await setActionData(action)
+            await userType(action.pid,'input[name="password"]',newPassword)
+            await sleep(randomRanger(3,5)*1000)
+            await userType(action.pid,'input[name="confirmation_password"]',newPassword)
+            await sleep(randomRanger(3,5)*1000)
+            await userClick(action.pid,'button[type="submit"]')
+            await sleep(10000)
+            await beforeLoginSuccess(action)
+            return
+        }
         else if (url.indexOf('youtube.com/oops') > -1) {
             await goToLocation(action.pid, 'youtube.com?skip_registered_account_check=true')
             await sleep(15000)
@@ -304,7 +329,19 @@ async function userLogin(action) {
 
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
-    await goToLocation(action.pid,'youtube.com/feed/history')
+    if (action.is_ver_mail_type) {
+        let msg = action.order_id ? 'verify_success':'account_ok'
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, msg)
+        
+        // if (action.newPassword) {
+        //     let msg = action.order_id ? 'verify_success':'account_ok'
+        //     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, msg)
+        // } else {
+        //     await goToLocation(action.pid,'myaccount.google.com/security')
+        // }
+    } else {
+        await goToLocation(action.pid,'youtube.com/feed/history')
+    }
     await sleep(60000)
 
     if (isNonUser) {
@@ -317,12 +354,7 @@ async function beforeLoginSuccess (action) {
 }
 
 async function handleLoginSuccess (action) {
-    if (action.is_ver_mail_type) {
-        let type = action.order_id ? 'ver_mail_type_by_code':'ver_mail_type'
-        await updateActionStatus(action.pid, type, LOGIN_STATUS.SUCCESS)
-    } else {
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-    }
+    await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
 }
 
 async function checkLogin(action) {
