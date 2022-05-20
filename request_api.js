@@ -14,8 +14,8 @@ module.exports = {
     getPhone: async function getPhone () {
         return await rq({uri: SUB_URL + '/api/phone',json: true})
     },
-    getPhoneCode: async function getPhoneCode (orderID) {
-        return await rq({uri: SUB_URL + '/api/phone/code?order_id=' + orderID,json: true})
+    getPhoneCode: async function getPhoneCode (orderID, api_name) {
+        return await rq({uri: SUB_URL + `/api/phone/code?order_id=${orderID}&api_name=${api_name}`,json: true})
     },
     getProfileForRegChannel: async function getProfileForRegChannel (pid = 0) {
         return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel?pid='+pid,json: true})
