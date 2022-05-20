@@ -69,9 +69,11 @@ async function userLogin(action) {
             //enter code
             let phoneRs = await getPhoneCode(action.order_id, action.api_name)
             console.log('getPhoneCode',phoneRs);
-            if (phoneRs.error) {
+            if (phoneRs.error || action.entered_code) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
             } else {
+                action.entered_code = true
+                await setActionData(action)
                 await userTypeEnter(action.pid, '#smsUserPin', phoneRs.code)
                 await sleep(30000)
             }
@@ -80,11 +82,12 @@ async function userLogin(action) {
             //enter phone number
             let phoneRs = await getPhone()
             console.log('getPhone',phoneRs);
-            if (phoneRs.error) {
+            if (phoneRs.error || action.entered_phone) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
             } else {
                 action.order_id = phoneRs.orderID
                 action.api_name = phoneRs.api_name
+                action.entered_phone = true
                 await setActionData(action)
                 await userTypeEnter(action.pid, '#deviceAddress', phoneRs.phone)
                 await sleep(30000)
