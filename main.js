@@ -608,8 +608,10 @@ async function profileManage() {
 }
 
 async function running() {
-    if (IS_SHOW_UI) {
+    try {
         execSync(`sudo xrandr -s 1600x1200`)
+    } catch (error) {
+        console.log(error);
     }
     
     // get profile ids
