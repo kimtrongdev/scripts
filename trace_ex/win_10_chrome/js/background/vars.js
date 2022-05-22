@@ -45,13 +45,13 @@ var Vars = {
 	uaSettings:{
 		"os": {
 			"windows":{
-			//	"Windows 10 (x64)": "Windows NT 10.0; Win64; x64"
+				"Windows 10 (x64)": "Windows NT 10.0; Win64; x64"
 			//	"Windows 10 (x86)": "Windows NT 10.0; en-US",
 			//	"Windows 8.1 (x64)":"Windows NT 6.3; Win64; x64",
 			//	"Windows 8.1 (x86)":"Windows NT 6.3; en-US",
 			//	"Windows 8 (x64)":"Windows NT 6.2; Win64; x64",
 			//	"Windows 8 (x86)":"Windows NT 6.2; en-US",
-				"Windows 7 (x64)":"Windows NT 6.1; Win64; x64"
+			//	"Windows 7 (x64)":"Windows NT 6.1; Win64; x64",
 			//	"Windows 7 (x86)":"Windows NT 6.1; en-US"
 			},
 			"linux":{
@@ -60,12 +60,12 @@ var Vars = {
 				//"linux 64bit":"X11; Linux armv7l", 
 			},
 			"macos":{
-                //"macos monteray":"Macintosh; Intel Mac OS X 10_15_7",
-				//"macos mojave3":"Macintosh; Intel Mac OS X 10_14_6"
+                "macos monteray":"Macintosh; Intel Mac OS X 10_15_7"
+				//"macos mojave3":"Macintosh; Intel Mac OS X 10_14_6",
 				//"macos mojave2":"Macintosh; Intel Mac OS X 10_14_0",
 				//"macos mojave":"Macintosh; Intel Mac OS X 10_14",
 				//"macos high sierra2":"Macintosh; Intel Mac OS X 10_13_6",
-				"macos high sierra":"Macintosh; Intel Mac OS X 10_13",
+				//"macos high sierra":"Macintosh; Intel Mac OS X 10_13",
 				//"macos sierra":"Macintosh; Intel Mac OS X 10_12_2"
 			}
 		},
@@ -152,8 +152,8 @@ var Vars = {
 				// "cr54":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.34",
 				// "cr55":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36 Edg/100.0.1185.88",
 				// "cr56":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44",
-				//"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36 Edg/101.0.1210.32"
-                  "cr101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4893.203 Safari/537.36"
+			    	//"cr100":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.41 Safari/537.36 Edg/101.0.1210.32"
+			    	"101":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4893.203 Safari/537.36"
 
 
 				//"cr88":"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4287.0 Safari/537.36 Edg/88.0.673.0",
@@ -237,8 +237,7 @@ var Vars = {
 
 	gpuModels: [
 	
-		
-		'NVIDIA, NVIDIA GeForce GTX 1070'
+		'NVIDIA, NVIDIA GeForce GTX 1050 Ti'
 
 	
 	],
