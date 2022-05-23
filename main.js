@@ -823,8 +823,8 @@ function initExpress() {
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
-                execSync(`xdotool key Control_L+w && sleep 1`)
-                
+               // execSync(`xdotool key Control_L+w && sleep 1`)
+                // browser will closed by background extention
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
