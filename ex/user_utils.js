@@ -261,6 +261,9 @@ async function getActionData(){
 }
 
 async function setActionData(data){
+    if (Number(data.id)) {
+        data.id = data.script_code
+    }
     return new Promise(resolve => chrome.storage.sync.set({action: data}, function() {
             resolve();
         })

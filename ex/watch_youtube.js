@@ -55,6 +55,7 @@ async function userWatch(action){
             }
 
             if (channels.length <= action.channel_position) {
+                reportPositionChannel(action.pid, 0)
                 isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
                 return
             }
