@@ -45,6 +45,11 @@ async function userWatch(action){
                 return
             }
 
+            if (!channels.length) {
+                await sleep(15000)
+                channels = document.querySelectorAll('ytd-account-item-renderer')
+            }
+
             let checkboxDontShow = document.querySelector('#checkboxContainer')
             if (!channels || !channels.length || checkboxDontShow) {
                 action.loadFirstUser = true
