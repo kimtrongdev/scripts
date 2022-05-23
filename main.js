@@ -23,7 +23,7 @@ const LOCAL_PORT = 2000
 let IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 
-let config
+global.config
 try {
     config = require('./vm_log.json')
 } catch (e) { config = {} }

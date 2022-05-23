@@ -1,12 +1,5 @@
 const rq = require('request-promise')
 const fs = require('fs')
-let config
-try{
-    config = require('./config.json')
-}
-catch (e) {
-    config = {vm_id:2}
-}
 const SUB_URL = `http://${ devJson.hostIp }`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
