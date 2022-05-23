@@ -345,11 +345,14 @@ function updateUserInput(pid, action, x, y, sx, sy, str, selector){
 
 function getElementPosition(el,iframe){
     if(el){
+        let screenX = window.screen.width - window.screen.availWidth
+        let screenY = window.screen.height - window.screen.availHeight
+        let windowWide = window.outerWidth - window.innerWidth
         let pos = el.getBoundingClientRect()
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
-        let menuBarHeight = mobileMenuBarHeight ||  (window.outerHeight - window.innerHeight)
-        let x = zoom*(pos.left + pos.width*0.6 + (iframe?iframePost.left:0)) + window.screenX + (windowWide?(windowWide-zoom*window.innerWidth)/2:0)
-        let y = zoom*(pos.top + pos.height*0.6 + (iframe?iframePost.top:0))  +  window.screenY + menuBarHeight
+        let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
+        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + (windowWide?(windowWide-zoom*window.innerWidth)/2:0)
+        let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight
         let scrollX = window.scrollX
         let scrollY = window.scrollY
         console.log({x: x, y: y, scrollX: scrollX, scrollY: scrollY})
