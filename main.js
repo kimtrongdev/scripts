@@ -15,7 +15,6 @@ global.devJson = {
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
 
-let BROWSER = process.env.BROWSER == '_BROWSER_NAME' ? 'brave' : process.env.BROWSER
 global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
@@ -118,13 +117,6 @@ async function loadSystemConfig () {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
     }
-
-    let newBrowser = systemConfig.browser_name || 'brave'
-    if (BROWSER != newBrowser) {
-        await resetAllProfiles()
-        BROWSER = newBrowser
-        isRunBAT = ['brave-browser', 'brave'].includes(BROWSER)
-    }
 }
 
 async function profileRunningManage() {
@@ -209,7 +201,7 @@ function getProfileIds() {
     return []
 }
 
-async function startChromeAction(action) {
+async function startChromeAction(action, _browser) {
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = widthSizes[positionSize]
@@ -217,7 +209,7 @@ async function startChromeAction(action) {
 
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
-    if (BROWSER == 'firefox') {
+    if (_browser == 'firefox') {
         userDataDir = ` --profile "${path.resolve("profiles", action.pid + '')}"`
     }
 
@@ -225,7 +217,7 @@ async function startChromeAction(action) {
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
     action['screenHeight'] = screenHeight
-    let windowPosition = '--window-position=0,0'
+    let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
     windowSize = ' --start-maximized'
@@ -244,7 +236,7 @@ async function startChromeAction(action) {
     }
 
     // handle flag data
-    action.browser_name = BROWSER
+    action.browser_name = _browser
     if (isRunBAT) {
         action.isRunBAT = isRunBAT
     }
@@ -275,7 +267,6 @@ async function startChromeAction(action) {
         exec(`start chrome${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
-        utils.log('startChromeAction', action.pid)
         closeChrome(action.pid)
         await utils.sleep(3000)
         utils.log('startDisplay')
@@ -290,9 +281,9 @@ async function startChromeAction(action) {
 
             setDisplay(action.pid)
 
-            let cmdRun = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
             exec(cmdRun)
-            if (BROWSER == 'microsoft-edge') {
+            if (_browser == 'microsoft-edge') {
                 await utils.sleep(5000)
                 closeChrome(action.pid)
                 await utils.sleep(2000)
@@ -312,7 +303,7 @@ async function startChromeAction(action) {
         }
         else {
             setDisplay(action.pid)
-            let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            let run = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
             exec(run)
             if (IS_REG_USER) {
                 await utils.sleep(10000)
@@ -334,11 +325,35 @@ async function loginProfileChrome(profile) {
         action.isNew = true
         action.is_show_ui = IS_SHOW_UI
 
+        // handle log browser for profile
+        if (!config.browser_map) {
+            config.browser_map = {}
+        }
+        let _browser = systemConfig.browsers[0]
+        systemConfig.browsers.forEach((browser) => {
+            if (!config.browser_map[_browser]) {
+                _browser = browser
+                return
+            }
+
+            if (config.browser_map[browser].length < config.browser_map[_browser].length) {
+                _browser = browser
+            }
+        })
+        
+        if (!config.browser_map[_browser]) {
+            config.browser_map[_browser] = []
+        }
+        if (!config.browser_map[_browser].includes(action.pid)) {
+            config.browser_map[_browser].push(action.pid)
+        }
+        fs.writeFileSync("vm_log.json", JSON.stringify(config))
+
         if (isAutoEnableReward) {
             action.enableBAT = true
         }
         
-        await startChromeAction(action)
+        await startChromeAction(action, _browser)
     }
     catch (e) {
         utils.log('error', 'loginProfile', profile.id, e)
@@ -376,6 +391,16 @@ async function newProfileManage() {
     }
 }
 
+function getBrowserOfProfile (pid) {
+    let _browser
+    systemConfig.browsers.forEach((browser) => {
+        if (config.browser_map[browser] && config.browser_map[browser].some(id => id == pid)) {
+            _browser = _browser
+        }
+    })
+    return _browser
+}
+
 async function newRunProfile() {
     utils.log('ids: ', ids)
     let pid = ids.shift()
@@ -395,7 +420,9 @@ async function newRunProfile() {
         try {
             let action = await getScriptData(pid, true)
             if (action && action.script_code) {
-                await startChromeAction(action)
+                // handle get browser loged
+                let _browser = getBrowserOfProfile(pid)
+                await startChromeAction(action, _browser)
             }
         }
         catch (e) {
@@ -1228,7 +1255,7 @@ function closeChrome(pid) {
                 execSync(`pkill -f "profiles/${pid}"`)
             }
             else {
-                execSync(`pkill ${BROWSER}`)
+                execSync(`pkill ${getBrowserOfProfile(pid)}`)
             }
         }
     }
