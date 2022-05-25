@@ -122,7 +122,7 @@ function initSettingData (action) {
 
     zoom = action.zoom || 1
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
-    windowWide = action.windowWide
+   // windowWide = action.windowWide
    // menuBarWidth = 27
 }
 

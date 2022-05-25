@@ -347,7 +347,6 @@ function getElementPosition(el,iframe){
     if(el){
         let screenX = window.screen.width - window.screen.availWidth
         let screenY = window.screen.height - window.screen.availHeight
-        let windowWide = window.outerWidth - window.innerWidth
         let pos = el.getBoundingClientRect()
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
         let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)

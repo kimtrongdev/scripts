@@ -211,28 +211,36 @@ function getProfileIds() {
 
 async function startChromeAction(action) {
     let widthSizes = [950, 1100, 1200]
-    let userProxy = ''
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = widthSizes[positionSize]
     let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
+    //handle userDataDir
+    let userDataDir =  `--user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+    if (BROWSER == 'firefox') {
+        userDataDir = `--profile="${path.resolve("profiles", action.pid + '')}"`
+    }
+
+    //handle browser size
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
     action['screenHeight'] = screenHeight
-
     let windowPosition = '--window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
+   
+    // handle proxy
+    let userProxy = ''
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
     }
-
     if (proxy && proxy[action.pid] && proxy[action.pid].username) {
         utils.log('set proxy user name', proxy[action.pid].username)
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
 
+    // handle flag data
     action.browser_name = BROWSER
     if (isRunBAT) {
         action.isRunBAT = isRunBAT
@@ -261,7 +269,7 @@ async function startChromeAction(action) {
 
     exs = exs.map(x => path.resolve(x)).join(",")
     if (WIN_ENV) {        
-        exec(`start chrome${userProxy} --lang=en-US,en --start-maximized --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
+        exec(`start chrome${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
         utils.log('startChromeAction', action.pid)
@@ -279,7 +287,7 @@ async function startChromeAction(action) {
 
             setDisplay(action.pid)
 
-            let cmdRun = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            let cmdRun = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
             exec(cmdRun)
             if (BROWSER == 'microsoft-edge') {
                 await utils.sleep(5000)
@@ -301,7 +309,7 @@ async function startChromeAction(action) {
         }
         else {
             setDisplay(action.pid)
-            let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
             exec(run)
             if (IS_REG_USER) {
                 await utils.sleep(10000)
