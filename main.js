@@ -1,4 +1,4 @@
-let isRunBAT = true
+let isRunBAT = false
 let isSystemChecking = false
 const TIME_REPORT = 110000
 const TIME_TO_CHECK_UPDATE = 300000
@@ -216,9 +216,9 @@ async function startChromeAction(action) {
     let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
-    let userDataDir =  `--user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+    let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
     if (BROWSER == 'firefox') {
-        userDataDir = `--profile="${path.resolve("profiles", action.pid + '')}"`
+        userDataDir = ` --profile "${path.resolve("profiles", action.pid + '')}"`
     }
 
     //handle browser size
@@ -227,7 +227,10 @@ async function startChromeAction(action) {
     action['screenHeight'] = screenHeight
     let windowPosition = '--window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
-   
+    //debug
+    windowSize = ' --start-maximized'
+    windowPosition = ''
+
     // handle proxy
     let userProxy = ''
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
