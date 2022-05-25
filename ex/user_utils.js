@@ -180,13 +180,15 @@ function clearBSData () {
 }
 
 async function reportScript(action) {
+    let isBreak = false
     if ([1, '1', 'true', true].includes(action.is_break)) {
+        isBreak = true
         await clearBSData()
         await sleep(5000)
     }
 
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break }}, 
+        data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break, stop: isBreak }}, 
     async function (response) {
         if (response) {
             if (action.watch_time) {
@@ -259,6 +261,9 @@ async function getActionData(){
 }
 
 async function setActionData(data){
+    if (Number(data.id)) {
+        data.id = data.script_code
+    }
     return new Promise(resolve => chrome.storage.sync.set({action: data}, function() {
             resolve();
         })

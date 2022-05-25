@@ -45,6 +45,11 @@ async function userWatch(action){
                 return
             }
 
+            if (!channels.length) {
+                await sleep(15000)
+                channels = document.querySelectorAll('ytd-account-item-renderer')
+            }
+
             let checkboxDontShow = document.querySelector('#checkboxContainer')
             if (!channels || !channels.length || checkboxDontShow) {
                 action.loadFirstUser = true
@@ -55,6 +60,7 @@ async function userWatch(action){
             }
 
             if (channels.length <= action.channel_position) {
+                reportPositionChannel(action.pid, 0)
                 isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
                 return
             }

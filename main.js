@@ -23,7 +23,7 @@ const LOCAL_PORT = 2000
 let IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 
-let config
+global.config
 try {
     config = require('./vm_log.json')
 } catch (e) { config = {} }
@@ -823,8 +823,8 @@ function initExpress() {
         else if (req.query.isScriptReport) {
             await request_api.reportScript(req.query.pid, req.query.service_id)
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
-                execSync(`xdotool key Control_L+w && sleep 1`)
-                
+               // execSync(`xdotool key Control_L+w && sleep 1`)
+                // browser will closed by background extention
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
