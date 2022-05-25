@@ -263,6 +263,8 @@ async function startChromeAction(action, _browser) {
     }
 
     exs = exs.map(x => path.resolve(x)).join(",")
+    utils.log('--BROWSER--', _browser)
+    utils.log('--PID--', action.pid)
     if (WIN_ENV) {        
         exec(`start chrome${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
@@ -330,13 +332,11 @@ async function loginProfileChrome(profile) {
             config.browser_map = {}
         }
         let _browser = systemConfig.browsers[0]
-        systemConfig.browsers.forEach((browser) => {
-            if (!config.browser_map[_browser]) {
+        systemConfig.browsers.some((browser) => {
+            if (!config.browser_map[browser]) {
                 _browser = browser
-                return
-            }
-
-            if (config.browser_map[browser].length < config.browser_map[_browser].length) {
+                return true
+            } else if (config.browser_map[browser].length < config.browser_map[_browser].length) {
                 _browser = browser
             }
         })
@@ -395,7 +395,7 @@ function getBrowserOfProfile (pid) {
     let _browser
     systemConfig.browsers.forEach((browser) => {
         if (config.browser_map[browser] && config.browser_map[browser].some(id => id == pid)) {
-            _browser = _browser
+            _browser = browser
         }
     })
     return _browser
