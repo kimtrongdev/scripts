@@ -353,7 +353,7 @@ var Prefs = {
 			"enabled":true
 		},
 		"Pref_ScreenRes":{
-			"enabled":true,
+			"enabled":false,
 			"randomOpts":{
 				"enabled":false,
 				"values":[-50,50]
