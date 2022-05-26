@@ -295,7 +295,7 @@ async function startChromeAction(action, _browser) {
             }
 
             if (['opera', 'microsoft-edge'].includes(_browser)) {
-                await utils.sleep(5000)
+                await utils.sleep(10000)
                 closeChrome(action.pid)
                 await utils.sleep(2000)
                 exec(cmdRun)

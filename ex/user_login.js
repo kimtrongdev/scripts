@@ -134,6 +134,7 @@ async function userLogin(action) {
         }
         else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
             console.log('enter email')
+            await await updateUserInput(action.pid,'CLICK', 639,339,0,0,"",'close btn')
             await waitForSelector('#identifierId')
             await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(60000)
