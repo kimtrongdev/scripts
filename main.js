@@ -210,7 +210,7 @@ async function startChromeAction(action, _browser) {
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
     if (_browser == 'firefox') {
-        userDataDir = ` --profile "${path.resolve("profiles", action.pid + '')}"`
+        userDataDir = ` -P "${action.pid}"`
     }
 
     //handle browser size
@@ -275,17 +275,20 @@ async function startChromeAction(action, _browser) {
         startDisplay(action.pid)
         await utils.sleep(3000)
 
-        utils.log('start chrome', action.pid)
+        utils.log('start browser', action.pid)
         if (action.id == 'login') {
-            utils.log('start chrome login', action.pid)
-
-            await createProfile(action.pid)
-
             setDisplay(action.pid)
-
             let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
+            
+            if (_browser == 'firefox') {
+                let createPCMD = `firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
+                console.log(createPCMD);
+                execSync(createPCMD)
+
+                cmdRun = `${_browser} -setDefaultBrowser -url "${startPage}" -install-global-extension "${exs}"`
+            }
             exec(cmdRun)
-            if (_browser == 'microsoft-edge') {
+            if (['opera', 'microsoft-edge'].includes(_browser)) {
                 await utils.sleep(5000)
                 closeChrome(action.pid)
                 await utils.sleep(2000)
@@ -1436,6 +1439,8 @@ async function resetAllProfiles () {
                 execSync('mkdir profiles')
                 trace = {}
                 execSync('rm -rf trace_config.json')
+                config.browser_map = {}
+                fs.writeFileSync("vm_log.json", JSON.stringify(config))
             } catch (error) {
                 console.log(error);
             }
