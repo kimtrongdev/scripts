@@ -511,7 +511,8 @@ async function afterWatchingVideo(action,finishVideo){
           await setActionData(action) 
 
           if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
-            isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+            await reportScript(action)
+            //isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
             return 
           }
 

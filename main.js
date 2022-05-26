@@ -287,7 +287,13 @@ async function startChromeAction(action, _browser) {
 
                 cmdRun = `${_browser} -setDefaultBrowser -url "${startPage}" -install-global-extension "${exs}"`
             }
-            exec(cmdRun)
+
+            if (_browser == 'opera') {
+                exec(`${_browser} --lang=en-US,en --disable-quic${userDataDir}${windowPosition}${windowSize}`)
+            } else {
+                exec(cmdRun)
+            }
+
             if (['opera', 'microsoft-edge'].includes(_browser)) {
                 await utils.sleep(5000)
                 closeChrome(action.pid)

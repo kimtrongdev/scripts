@@ -12,6 +12,9 @@ var menuBarWidth
 var zoom
 var isNonUser = false
 var isRunBAT = true
+
+var widthCustom = 0
+var heightCustom = 0
 async function loadPage(){
     try{
         await sleep(4000)
@@ -121,6 +124,10 @@ function initSettingData (action) {
     }
 
     zoom = action.zoom || 1
+
+    if (action.browser_name == 'vivaldi-stable') {
+        heightCustom = -23
+    }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide
    // menuBarWidth = 27
