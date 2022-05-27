@@ -79,7 +79,7 @@ async function handleForChangeShowUI() {
     }
     await utils.sleep(2000)
     runnings = []
-    ids = []
+    ids = _pids
 }
 
 async function loadSystemConfig () {
