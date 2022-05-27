@@ -129,6 +129,7 @@ async function loadSystemConfig () {
             }  
         })
     }
+    utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
 async function profileRunningManage() {
@@ -146,7 +147,7 @@ async function profileRunningManage() {
                 ids = ids.filter(id => {
                     return currentIds.some(cid => cid == id)
                 })
-
+                utils.log('ids--', ids);
                 if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
@@ -796,6 +797,10 @@ async function initConfig() {
 
     if (!config.vm_id) {
         config.vm_id = makeid(9)
+    }
+
+    if (!config.browser_map) {
+        config.browser_map = {}
     }
 
     fs.writeFileSync("vm_log.json", JSON.stringify(config))
