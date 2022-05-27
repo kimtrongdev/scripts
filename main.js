@@ -117,6 +117,18 @@ async function loadSystemConfig () {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
     }
+
+    if (config.browser_map) {
+        Object.keys(config.browser_map).forEach(browserMaped => {
+            if (!systemConfig.browsers.includes(browserMaped)) {
+                config.browser_map[browserMaped].forEach(pid => {
+                    closeChrome(pid)
+                    execSync('rm -rf profiles/'+pid)
+                });
+                delete config.browser_map[browserMaped]
+            }  
+        })
+    }
 }
 
 async function profileRunningManage() {
@@ -371,6 +383,13 @@ async function loginProfileChrome(profile) {
 
 async function newProfileManage() {
     try {
+        let ids = getProfileIds()
+        systemConfig.browsers.forEach((browser) => {
+            if (config.browser_map[browser]) {
+                config.browser_map[browser] = config.browser_map[browser].filter(pid => ids.some(id => id == pid))
+            }
+        })
+
         if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         utils.log('newProfileManage')
         // get new profile
@@ -872,6 +891,7 @@ function initExpress() {
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                // execSync(`xdotool key Control_L+w && sleep 1`)
                 // browser will closed by background extention
+                closeChrome(req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
