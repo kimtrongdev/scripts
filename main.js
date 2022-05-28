@@ -1026,6 +1026,14 @@ function initExpress() {
             if (req.query.action == 'CLOSE_BROWSER') {
                 execSync(`xdotool key Control_L+w && sleep 1`)
             }
+            else if (req.query.action == 'TABS') {
+                let totalClick = Number(req.query.x)
+                let count = 0
+                while (count < totalClick) {
+                    execSync(`xdotool key Tab && sleep 1`)
+                    count ++
+                }
+            }
             else if (req.query.action == 'SHOW_BRAVE_ADS') {
                 execSync(`xdotool key Shift+Tab && sleep 1`)
                 execSync(`xdotool key Shift+Tab && sleep 1`)
@@ -1099,6 +1107,9 @@ function initExpress() {
             }
             if (req.query.action == 'TYPE') {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
+            }
+            else if (req.query.action == 'KEY_ENTER') {
+                execSync(`xdotool key KP_Enter && sleep 1`)
             }
             else if (req.query.action == 'TYPE_ENTER') {
                 execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
