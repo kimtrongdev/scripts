@@ -118,17 +118,18 @@ async function loadSystemConfig () {
         IS_REG_USER = IS_REG_USER_new
     }
 
-    if (config.browser_map) {
-        Object.keys(config.browser_map).forEach(browserMaped => {
-            if (!systemConfig.browsers.includes(browserMaped)) {
-                config.browser_map[browserMaped].forEach(pid => {
-                    closeChrome(pid)
-                    execSync('rm -rf profiles/'+pid)
-                });
-                delete config.browser_map[browserMaped]
-            }  
-        })
-    }
+    // if (config.browser_map) {
+    //     Object.keys(config.browser_map).forEach(browserMaped => {
+    //         if (!systemConfig.browsers.includes(browserMaped)) {
+    //             config.browser_map[browserMaped].forEach(pid => {
+    //                 closeChrome(pid)
+    //                 execSync('rm -rf profiles/'+pid)
+    //             });
+    //             delete config.browser_map[browserMaped]
+    //         }  
+    //     })
+    // }
+    systemConfig.browsers = ['iridium-browser']
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
