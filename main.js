@@ -320,7 +320,11 @@ async function startChromeAction(action, _browser) {
                     await utils.sleep(17000)
                 }
                 setDisplay(action.pid)
-                sendEnter(action.pid)
+
+                if (_browser != 'iridium-browser') {
+                    sendEnter(action.pid)
+                }
+                
                 await utils.sleep(8000)
             }
             utils.log('process login')
