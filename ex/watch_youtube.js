@@ -51,6 +51,20 @@ async function userWatch(action){
             }
 
             let checkboxDontShow = document.querySelector('#checkboxContainer')
+            // handle not found channels
+            if (!channels.length) {
+                await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
+                let switchChannelOpt = document.querySelectorAll('yt-multi-page-menu-section-renderer #endpoint #primary-text-container #label').item(3)
+                if (switchChannelOpt) {
+                    await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
+
+                    let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
+                    if (fisUser) {
+                        await userClick(action.pid, 'fisUser', fisUser)
+                        await sleep(60000)
+                    }
+                }
+            }
             if (!channels || !channels.length || checkboxDontShow) {
                 action.loadFirstUser = true
                 await setActionData(action)
