@@ -60,7 +60,7 @@ async function userWatch(action){
             if (!channels.length) {
                 await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
                 await sleep(5000)
-                let switchChannelOpt = document.querySelectorAll('yt-multi-page-menu-section-renderer #endpoint #primary-text-container #label').item(3)
+                let switchChannelOpt = document.querySelectorAll('yt-multi-page-menu-section-renderer #endpoint #content-icon').item(3)
                 if (switchChannelOpt) {
                     await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
                     await sleep(5000)
