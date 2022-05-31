@@ -396,7 +396,6 @@ async function newProfileManage() {
         })
 
         if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
-        utils.log('newProfileManage')
         // get new profile
         let newProfile = await request_api.getNewProfile()
         utils.log('newProfile: ', newProfile)
@@ -415,7 +414,6 @@ async function newProfileManage() {
 
             runnings.push({pid: profile.id, lastReport: Date.now()})
             ids.push(profile.id)
-            utils.log('addProfile: ', profile)
             await loginProfileChrome(profile)
         }
     }
@@ -1231,11 +1229,11 @@ function initExpress() {
 
 function removePidAddnew(pid, status) {
     try {
-        utils.log('removePidAddnew', pid, status)
         runnings = runnings.filter(x => x.pid != pid)
         if (status != 1 || IS_REG_USER) {
             // login error
             deleteProfile(pid)
+            utils.log('removePidAddnew', pid, status)
         }
         else {
             // login success
