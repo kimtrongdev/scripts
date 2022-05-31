@@ -222,9 +222,6 @@ async function startChromeAction(action, _browser) {
 
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
-    if (_browser == 'firefox') {
-        userDataDir = ` -P "${action.pid}"`
-    }
 
     //handle browser size
     action['positionSize'] = positionSize
@@ -240,7 +237,7 @@ async function startChromeAction(action, _browser) {
     let userProxy = ''
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${devJson.hostIp}"`
     }
     if (proxy && proxy[action.pid] && proxy[action.pid].username) {
         utils.log('set proxy user name', proxy[action.pid].username)
@@ -292,17 +289,12 @@ async function startChromeAction(action, _browser) {
         if (action.id == 'login') {
             setDisplay(action.pid)
             let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
-            
-            if (_browser == 'firefox') {
-                let createPCMD = `firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
-                console.log(createPCMD);
-                execSync(createPCMD)
-
-                cmdRun = `${_browser} -setDefaultBrowser -url "${startPage}" -install-global-extension "${exs}"`
-            }
 
             if (_browser == 'opera') {
-                exec(`${_browser} --lang=en-US,en --disable-quic${userDataDir}${windowPosition}${windowSize}`)
+                exec(`${_browser}${userDataDir}${windowSize}`)
+                await utils.sleep(10000)
+                closeChrome(action.pid)
+                exec(`${_browser}${userDataDir}${windowSize}`)
             } else {
                 exec(cmdRun)
             }
