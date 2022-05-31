@@ -621,7 +621,7 @@ async function updateVmStatus() {
         await loadSystemConfig()
         let _pids = getProfileIds()
         let pids = _pids.join(',')
-        let rs = await request_api.updateVmStatus({
+        let rs = await request_api.reportVM({
             vm_id: config.vm_id,
             vm_name: config.vm_name,
             running: runnings.length,
