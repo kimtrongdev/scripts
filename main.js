@@ -147,6 +147,12 @@ async function profileRunningManage() {
                 ids = ids.filter(id => {
                     return currentIds.some(cid => cid == id)
                 })
+                currentIds.forEach(cID => {
+                    if (!ids.some(cid => cid == cID)) {
+                        ids.push(cID)
+                    }
+                });
+
                 utils.log('ids--', ids);
                 if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
@@ -387,7 +393,7 @@ async function newProfileManage() {
             }
         })
 
-        if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
+        //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         // get new profile
         let newProfile = await request_api.getNewProfile()
         utils.log('newProfile: ', newProfile)
