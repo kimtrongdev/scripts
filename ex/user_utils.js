@@ -121,10 +121,9 @@ async function initActionData(action) {
         if (action.browser_name == 'iridium-browser') {
             await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
             await goToLocation(action.pid, `chrome://settings/cookies`)
-            await sleep(2000)
+            await sleep(4000)
 
-            await updateUserInput(action.pid,'TABS', 8,0,0,0,"",'TABS')
-            await updateUserInput(action.pid,'KEY_ENTER', 0, 0,0,0,"",'enter')
+            await updateUserInput(action.pid,'IRIDIUM_SETTING', 8,0,0,0,"",'IRIDIUM_SETTING')
 
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
             await goToLocation(action.pid, 'accounts.google.com')
