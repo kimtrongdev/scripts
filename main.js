@@ -241,6 +241,7 @@ async function startChromeAction(action, _browser) {
 
     if (action.isNew && _browser == 'brave') {
         windowSize = ' --window-size="950,950"'
+        windowPosition = ' --window-position=0,0'
     }
 
     // handle proxy
