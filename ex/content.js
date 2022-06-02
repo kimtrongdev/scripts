@@ -113,11 +113,7 @@ async function initAction(){
 }
 
 function initSettingData (action) {
-    let barHeightMap = {
-        'brave': 75,
-        'google-chrome': 107,
-    }
-    if (action.isRunBAT && ['brave-browser', 'brave'].includes(action.browser_name)) {
+    if (action.isRunBAT && ['brave-browser', 'brave', 'brave-browser-stable'].includes(action.browser_name)) {
         isRunBAT = Boolean(action.isRunBAT)
     } else {
         isRunBAT = false
