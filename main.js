@@ -239,11 +239,6 @@ async function startChromeAction(action, _browser) {
     windowSize = ' --start-maximized'
     windowPosition = ''
 
-    if (action.isNew && _browser == 'brave') {
-        windowSize = ' --window-size="950,950"'
-        windowPosition = ' --window-position=0,0'
-    }
-
     // handle proxy
     let userProxy = ''
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
