@@ -15,6 +15,7 @@ var isRunBAT = true
 
 var widthCustom = 0
 var heightCustom = 0
+var IS_MOBILE = false
 async function loadPage(){
     try{
         await sleep(4000)
@@ -123,6 +124,10 @@ function initSettingData (action) {
 
     if (action.browser_name == 'vivaldi-stable') {
         heightCustom = -23
+    }
+
+    if (navigator.platform == 'iPhone') {
+        IS_MOBILE = true
     }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide
