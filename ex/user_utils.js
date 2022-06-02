@@ -128,7 +128,7 @@ async function initActionData(action) {
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
             await goToLocation(action.pid, 'accounts.google.com')
         } else {
-            if (isRunBAT) {
+            if (action.browser_name == 'brave') {
                 await handleBraveSetting(action)
             } else {
                 await goToLocation(action.pid,'accounts.google.com')
