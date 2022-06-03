@@ -15,6 +15,7 @@ var isRunBAT = true
 
 var widthCustom = 0
 var heightCustom = 0
+var IS_MOBILE = false
 async function loadPage(){
     try{
         await sleep(4000)
@@ -113,11 +114,7 @@ async function initAction(){
 }
 
 function initSettingData (action) {
-    let barHeightMap = {
-        'brave': 75,
-        'google-chrome': 107,
-    }
-    if (action.isRunBAT && ['brave-browser', 'brave'].includes(action.browser_name)) {
+    if (action.isRunBAT && ['brave-browser', 'brave', 'brave-browser-stable'].includes(action.browser_name)) {
         isRunBAT = Boolean(action.isRunBAT)
     } else {
         isRunBAT = false
@@ -127,6 +124,10 @@ function initSettingData (action) {
 
     if (action.browser_name == 'vivaldi-stable') {
         heightCustom = -23
+    }
+
+    if (navigator.platform == 'iPhone') {
+        IS_MOBILE = true
     }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide

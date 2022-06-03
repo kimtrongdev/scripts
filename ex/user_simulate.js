@@ -167,7 +167,11 @@ async function sendKey(pid, key){
 
 async function nextVideo(pid){
     console.log('nextVideo')
-    await updateUserInput(pid,'NEXT_VIDEO')
+    if (IS_MOBILE) {
+       await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]') 
+    } else {
+        await updateUserInput(pid,'NEXT_VIDEO')
+    }
 }
 
 async function switchMobile(action){
