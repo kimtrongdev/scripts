@@ -119,14 +119,14 @@ var Alarms = {
 			Vars.useragent = "Mozilla/5.0 (" + Vars.oscpu + ") " + browser;
 
 			if (osName == 'windows'){
-				Vars.platform = rA(["Win64"]);
+				Vars.platform = rA(["Win32"]);
 			} else if (osName == 'macos'){
 				Vars.platform = rA(["MacIntel"]);
 //MacPPC
 //"Win32",
 
 			} else {
-				Vars.platform = rA(["Win64"]);
+				Vars.platform = rA(["Win32"]);
 			}
 		},
 	},
