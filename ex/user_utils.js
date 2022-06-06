@@ -132,6 +132,7 @@ async function initActionData(action) {
                 await handleBraveSetting(action)
             } else {
                 await goToLocation(action.pid,'accounts.google.com')
+                await sleep(15000)
             }
         }
     }
