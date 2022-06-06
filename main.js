@@ -164,6 +164,9 @@ async function profileRunningManage() {
                 });
 
                 utils.log('ids--', ids);
+                if (runnings.some(running => running.action == 'login')) {
+                    return
+                }
                 if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
@@ -420,7 +423,7 @@ async function newProfileManage() {
                 }
             }
 
-            runnings.push({pid: profile.id, lastReport: Date.now()})
+            runnings.push({ action: 'login', pid: profile.id, lastReport: Date.now() })
             ids.push(profile.id)
             await loginProfileChrome(profile)
         }
