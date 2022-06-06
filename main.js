@@ -262,7 +262,7 @@ async function startChromeAction(action, _browser) {
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
     let exs = ["ex", "quality"]
-    if (action.id != 'reg_user') {
+    if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
 
         if (trace[action.pid] && systemConfig.trace_names_ex.includes(trace[action.pid])) {
