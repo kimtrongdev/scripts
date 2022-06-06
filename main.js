@@ -8,6 +8,7 @@ let totalRoundForChangeProxy = 5
 let countRun = 0
 let isPauseAction = false
 let isAfterReboot = false
+let inputDatas = []
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -993,249 +994,229 @@ function initExpress() {
     })
 
     app.get('/input', async (req, res) => {
-        if (isPauseAction) {
-            res.send({ rs: 'ok' })
-            return
-        }
-        utils.log(req.query)
-        addnewRunnings = addnewRunnings.map(x => {
-            if (x.pid == req.query.pid) {
-                x.lastReport = Date.now()
-            }
-            return x
-        })
-        
-
-        if (process.platform === "win32") {
-            // copy str
-            if(req.query.str){
-                const clipboardy = require('clipboardy');
-                clipboardy.writeSync(req.query.str)
-            }
-            if(req.query.action == 'OPEN_MOBILE') req.query.x = 150 + 24*(req.query.pid % 4)
-            execSync(`input ${req.query.action} ${req.query.x} ${req.query.y} "${req.query.str}"`)
-        }
-        else {
-            setDisplay(req.query.pid)
-            // copy str
-            if(req.query.str){
-                const clipboardy = require('clipboardy');
-                clipboardy.writeSync(req.query.str)
-            }
-
-            if (req.query.action == 'IRIDIUM_SETTING') {
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key Up`)
-                execSync(`xdotool key Up`)
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key Tab && sleep 1`)
-                execSync(`xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'CLOSE_BROWSER') {
-                execSync(`xdotool key Control_L+w && sleep 1`)
-            }
-            else if (req.query.action == 'TABS') {
-                let totalClick = Number(req.query.x)
-                let count = 0
-                while (count < totalClick) {
-                    execSync(`xdotool key Tab && sleep 1`)
-                    count ++
-                }
-            }
-            else if (req.query.action == 'SHOW_BRAVE_ADS') {
-                execSync(`xdotool key Shift+Tab && sleep 1`)
-                execSync(`xdotool key Shift+Tab && sleep 1`)
-                execSync(`xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'COPY_BAT') {
-                try {
-                    execSync(`xdotool key Control_L+c && sleep 1`)
-                } catch (error) {
-                    
-                }
-                
-                await utils.sleep(1000)
-
-                let currentBat = ''
-                const clipboardy = require('clipboardy');
-                currentBat = clipboardy.readSync()
-                utils.log('currentBat', currentBat)
-                currentBat = Number(currentBat)
-                
-                if (currentBat) {
-                    try {
-                        let braveInfo = await request_api.getBraveInfo(req.query.pid)
-                        if (braveInfo) {
-                            if (braveInfo.total_bat) {
-                                if (!braveInfo.is_disabled_ads) {
-                                    if (braveInfo.total_bat == currentBat) {
-                                        request_api.updateProfileData({ is_disabled_ads: true, pid: req.query.pid, count_brave_rounds: 0 })
-                                        request_api.getProfileProxy(req.query.pid, PLAYLIST_ACTION.WATCH, true)
-                                        return res.send({ disable_ads: true })
-                                    }
-                                } else {
-                                    if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
-                                        request_api.updateProfileData({ is_disabled_ads: false, pid: req.query.pid })
-                                        return res.send({ enable_ads: true })
-                                    }
-                                }
-                            }
-                        }
-                        request_api.updateProfileData({ total_bat: currentBat, pid: req.query.pid, '$inc': { count_brave_rounds: 1 } })
-                    } catch (error) {
-                      utils.log(error)
-                    }
-                }
-            }
-            else if (req.query.action == 'ESC') {
-                execSync(`xdotool key Escape && sleep 0.5`)
-            }
-            else if (req.query.action == 'GO_TO_FISRT_TAB') {
-                execSync(`xdotool key Control_L+1 && sleep 1`)
-            }
-            else if (req.query.action == 'DOUBLE_CLICK') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
-            }
-            else if (req.query.action == 'NEW_TAB') {
-                execSync(`xdotool key Control_L+t && sleep 1`)
-            } else if (req.query.action == 'RELOAD_PAGE') {
-                execSync(`xdotool key F5 && sleep 1`)
-            } else if (req.query.action == 'END_SCRIPT') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
-                await utils.sleep(5000)
-                runnings = runnings.filter(i => i.pid != req.query.pid)
-            }
-
-            if (req.query.action == 'GO_ADDRESS' || req.query.action == 'OPEN_DEV') setChromeSize(req.query.pid)
-            // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
-            if (req.query.action == 'CLICK') {
-                if (req.query.x > 65) {
-                    execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
-                }
-            }
-            if (req.query.action == 'TYPE') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
-            }
-            else if (req.query.action == 'KEY_ENTER') {
-                execSync(`xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'TYPE_ENTER') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'ONLY_TYPE_ENTER') {
-                execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'CLICK_ENTER') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'NEXT_VIDEO') {
-                execSync(`xdotool key Shift+n && sleep 1`)
-            }
-            else if (req.query.action == 'SCROLL') {
-                if (req.query.str == 6) {
-                    execSync(`xdotool key Shift+Tab && sleep 1`)
-                    execSync(`xdotool key Page_Down && sleep 1`)
-                } else {
-                    if (req.query.str > 0) {
-                        let pageNumber = Math.ceil(req.query.str / 5)
-                        while (pageNumber > 0) {
-                            execSync(`xdotool key Page_Down && sleep 1`)
-                            pageNumber--
-                        }
-                    }
-                    else {
-                        let pageNumber = Math.ceil(req.query.str / -5)
-                        while (pageNumber > 0) {
-                            execSync(`xdotool key Page_Up && sleep 1`)
-                            pageNumber--
-                        }
-                    }
-                }
-            }
-            else if (req.query.action == 'SEND_KEY') {
-                execSync(`xdotool type ${req.query.str}`)
-            }
-            else if (req.query.action == 'GO_ADDRESS') {
-                execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5 && xdotool type "${req.query.str}" && sleep 0.5 && xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'OPEN_DEV') {
-                execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'OPEN_MOBILE') {
-                utils.log('open mobile simulator')
-                let po = {
-                    0: 4, 
-                    1: 5, 
-                    2: 6, 
-                    3: 7, 
-                    4: 8, 
-                    5: 9, 
-                    6: 10, 
-                    7: 11,
-                    8: 12, 
-                    9: 12, 
-                }
-                let devicePo = Number(active_devices[Number(req.query.pid) % active_devices.length])
-                devicePo -= 1
-                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'OPEN_MOBILE_CUSTOM') {
-                utils.log('add custom mobile')
-                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${req.query.x};xdotool key Tab;xdotool type ${req.query.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'REOPEN_MOBILE_CUSTOM') {
-                utils.log('add custom mobile')
-                execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${req.query.x};xdotool key Tab;xdotool type ${req.query.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'SELECT_MOBILE') {
-                utils.log('open mobile simulator')
-                let po = {
-                    0: 4, 
-                    1: 5, 
-                    2: 6, 
-                    3: 7, 
-                    4: 8, 
-                    5: 9, 
-                    6: 10, 
-                    7: 11,
-                    8: 12, 
-                    9: 12, 
-                }
-                let devicePo = Number(active_devices[Number(req.query.pid) % active_devices.length])
-                devicePo -= 1
-                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'SELECT_MOBILE_CUSTOM') {
-                utils.log('open mobile simulator')
-                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'SHOW_PAGE') {
-                execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'SELECT_OPTION') {
-                execSync(`xdotool key Page_Up && sleep 1`)
-                for(let i = 0; i < req.query.str*1; i++){
-                    execSync(`xdotool key Down && sleep 0.2`)
-                }
-                execSync(`xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'SCREENSHOT') {
-                utils.errorScreenshot(req.query.pid + '_input')
-            }
-            utils.screenshot(req.query.pid + '_input')
-            if (addnewRunnings.filter(x => x.pid == req.query.pid).length) utils.errorScreenshot(req.query.pid + '_login')
-        }
+        inputDatas.push(req.query)
         res.send({ rs: 'ok' })
     })
 
     app.listen(LOCAL_PORT, () => {
         utils.log('start app on', LOCAL_PORT)
     })
+}
+
+function input (actionData) {
+    setDisplay(actionData.pid)
+    // copy str
+    if(actionData.str){
+        const clipboardy = require('clipboardy');
+        clipboardy.writeSync(actionData.str)
+    }
+
+    if (actionData.action == 'IRIDIUM_SETTING') {
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'CLOSE_BROWSER') {
+        execSync(`xdotool key Control_L+w && sleep 1`)
+    }
+    else if (actionData.action == 'TABS') {
+        let totalClick = Number(actionData.x)
+        let count = 0
+        while (count < totalClick) {
+            execSync(`xdotool key Tab && sleep 1`)
+            count ++
+        }
+    }
+    else if (actionData.action == 'SHOW_BRAVE_ADS') {
+        execSync(`xdotool key Shift+Tab && sleep 1`)
+        execSync(`xdotool key Shift+Tab && sleep 1`)
+        execSync(`xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'COPY_BAT') {
+        try {
+            execSync(`xdotool key Control_L+c && sleep 1`)
+        } catch (error) {
+            
+        }
+        
+        await utils.sleep(1000)
+
+        let currentBat = ''
+        const clipboardy = require('clipboardy');
+        currentBat = clipboardy.readSync()
+        utils.log('currentBat', currentBat)
+        currentBat = Number(currentBat)
+        
+        if (currentBat) {
+            try {
+                let braveInfo = await request_api.getBraveInfo(actionData.pid)
+                if (braveInfo) {
+                    if (braveInfo.total_bat) {
+                        if (!braveInfo.is_disabled_ads) {
+                            if (braveInfo.total_bat == currentBat) {
+                                request_api.updateProfileData({ is_disabled_ads: true, pid: actionData.pid, count_brave_rounds: 0 })
+                                request_api.getProfileProxy(actionData.pid, PLAYLIST_ACTION.WATCH, true)
+                                return res.send({ disable_ads: true })
+                            }
+                        } else {
+                            if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
+                                request_api.updateProfileData({ is_disabled_ads: false, pid: actionData.pid })
+                                return res.send({ enable_ads: true })
+                            }
+                        }
+                    }
+                }
+                request_api.updateProfileData({ total_bat: currentBat, pid: actionData.pid, '$inc': { count_brave_rounds: 1 } })
+            } catch (error) {
+                utils.log(error)
+            }
+        }
+    }
+    else if (actionData.action == 'ESC') {
+        execSync(`xdotool key Escape && sleep 0.5`)
+    }
+    else if (actionData.action == 'GO_TO_FISRT_TAB') {
+        execSync(`xdotool key Control_L+1 && sleep 1`)
+    }
+    else if (actionData.action == 'DOUBLE_CLICK') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+    }
+    else if (actionData.action == 'NEW_TAB') {
+        execSync(`xdotool key Control_L+t && sleep 1`)
+    } else if (actionData.action == 'RELOAD_PAGE') {
+        execSync(`xdotool key F5 && sleep 1`)
+    } else if (actionData.action == 'END_SCRIPT') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(5000)
+        runnings = runnings.filter(i => i.pid != actionData.pid)
+    }
+
+    if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
+    // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
+    if (actionData.action == 'CLICK') {
+        if (actionData.x > 65) {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+        }
+    }
+    if (actionData.action == 'TYPE') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
+    }
+    else if (actionData.action == 'KEY_ENTER') {
+        execSync(`xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'TYPE_ENTER') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'ONLY_TYPE_ENTER') {
+        execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'CLICK_ENTER') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'NEXT_VIDEO') {
+        execSync(`xdotool key Shift+n && sleep 1`)
+    }
+    else if (actionData.action == 'SCROLL') {
+        if (actionData.str == 6) {
+            execSync(`xdotool key Shift+Tab && sleep 1`)
+            execSync(`xdotool key Page_Down && sleep 1`)
+        } else {
+            if (actionData.str > 0) {
+                let pageNumber = Math.ceil(actionData.str / 5)
+                while (pageNumber > 0) {
+                    execSync(`xdotool key Page_Down && sleep 1`)
+                    pageNumber--
+                }
+            }
+            else {
+                let pageNumber = Math.ceil(actionData.str / -5)
+                while (pageNumber > 0) {
+                    execSync(`xdotool key Page_Up && sleep 1`)
+                    pageNumber--
+                }
+            }
+        }
+    }
+    else if (actionData.action == 'SEND_KEY') {
+        execSync(`xdotool type ${actionData.str}`)
+    }
+    else if (actionData.action == 'GO_ADDRESS') {
+        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5 && xdotool type "${actionData.str}" && sleep 0.5 && xdotool key KP_Enter`)
+    }
+    else if (actionData.action == 'OPEN_DEV') {
+        execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
+    }
+    else if (actionData.action == 'OPEN_MOBILE') {
+        utils.log('open mobile simulator')
+        let po = {
+            0: 4, 
+            1: 5, 
+            2: 6, 
+            3: 7, 
+            4: 8, 
+            5: 9, 
+            6: 10, 
+            7: 11,
+            8: 12, 
+            9: 12, 
+        }
+        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+        devicePo -= 1
+        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
+        utils.log('add custom mobile')
+        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'REOPEN_MOBILE_CUSTOM') {
+        utils.log('add custom mobile')
+        execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'SELECT_MOBILE') {
+        utils.log('open mobile simulator')
+        let po = {
+            0: 4, 
+            1: 5, 
+            2: 6, 
+            3: 7, 
+            4: 8, 
+            5: 9, 
+            6: 10, 
+            7: 11,
+            8: 12, 
+            9: 12, 
+        }
+        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+        devicePo -= 1
+        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
+        utils.log('open mobile simulator')
+        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'SHOW_PAGE') {
+        execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
+    }
+    else if (actionData.action == 'SELECT_OPTION') {
+        execSync(`xdotool key Page_Up && sleep 1`)
+        for(let i = 0; i < actionData.str*1; i++){
+            execSync(`xdotool key Down && sleep 0.2`)
+        }
+        execSync(`xdotool key KP_Enter`)
+    }
+    else if (actionData.action == 'SCREENSHOT') {
+        utils.errorScreenshot(actionData.pid + '_input')
+    }
+    utils.screenshot(actionData.pid + '_input')
+    if (addnewRunnings.filter(x => x.pid == actionData.pid).length) utils.errorScreenshot(actionData.pid + '_login')
 }
 
 function removePidAddnew(pid, status) {
@@ -1354,12 +1335,18 @@ function stopDisplay(pid) {
 
 function setDisplay(pid) {
     try {
-        if (!WIN_ENV && !IS_SHOW_UI) {
-            process.env.DISPLAY = ':' + pid
+        if (IS_SHOW_UI) {
+            if (MAX_CURRENT_ACC > 1) {
+                let browser = getBrowserOfProfile(pid)
+                execSync(`wmctrl -x -a ${browser}`)
+            }
+        } else {
+            if (!WIN_ENV) {
+                process.env.DISPLAY = ':' + pid
+            }
         }
     }
-    catch (e) {
-    }
+    catch (e) {}
 }
 
 function sendEnter(pid) {
