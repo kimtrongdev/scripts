@@ -302,64 +302,67 @@ async function startChromeAction(action, _browser) {
     exs = exs.map(x => path.resolve(x)).join(",")
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
-    if (WIN_ENV) {        
-        exec(`start chrome${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
-    }
-    else {
-        closeChrome(action.pid)
-        await utils.sleep(3000)
-        utils.log('startDisplay')
-        startDisplay(action.pid)
-        await utils.sleep(3000)
 
-        utils.log('start browser', action.pid)
-        if (action.id == 'login') {
-            setDisplay(action.pid)
-            let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
+    closeChrome(action.pid)
+    await utils.sleep(3000)
+    utils.log('startDisplay')
+    startDisplay(action.pid)
+    await utils.sleep(3000)
 
-            if (_browser == 'opera') {
-                exec(`${_browser}${userDataDir}${windowSize}`)
-                await utils.sleep(10000)
-                closeChrome(action.pid)
-                exec(`${_browser}${userDataDir}${windowSize}`)
-            } else {
-                exec(cmdRun)
-            }
+    utils.log('start browser', action.pid)
+    if (action.id == 'login') {
+        setDisplay(action.pid)
+        let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
 
-            if (['opera', 'microsoft-edge'].includes(_browser)) {
-                await utils.sleep(10000)
-                closeChrome(action.pid)
-                await utils.sleep(2000)
-                exec(cmdRun)
-            } else {
-                if (isAfterReboot) {
-                    await utils.sleep(35000)
-                    isAfterReboot = false
-                } else {
-                    await utils.sleep(17000)
-                }
-                setDisplay(action.pid)
-
-                if (_browser != 'iridium-browser') {
-                    sendEnter(action.pid)
-                }
-                
-                await utils.sleep(8000)
-            }
-            utils.log('process login')
+        if (WIN_ENV) {
+            cmdRun = `start ${_browser}${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`
         }
-        else {
+
+        if (_browser == 'opera') {
+            exec(`${_browser}${userDataDir}${windowSize}`)
+            await utils.sleep(10000)
+            closeChrome(action.pid)
+            exec(`${_browser}${userDataDir}${windowSize}`)
+        } else {
+            exec(cmdRun)
+        }
+
+        if (['opera', 'microsoft-edge'].includes(_browser)) {
+            await utils.sleep(10000)
+            closeChrome(action.pid)
+            await utils.sleep(2000)
+            exec(cmdRun)
+        } else {
+            if (isAfterReboot) {
+                await utils.sleep(35000)
+                isAfterReboot = false
+            } else {
+                await utils.sleep(17000)
+            }
             setDisplay(action.pid)
-            let run = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
-            exec(run)
-            if (IS_REG_USER) {
-                await utils.sleep(10000)
-                setDisplay(action.pid)
+
+            if (_browser != 'iridium-browser') {
                 sendEnter(action.pid)
             }
             
-            await utils.sleep(5000)
+            await utils.sleep(8000)
         }
+        utils.log('process login')
+    }
+    else {
+        setDisplay(action.pid)
+        let run = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
+        if (WIN_ENV) {
+            run = `start ${_browser}${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`
+        }
+        exec(run)
+        if (IS_REG_USER) {
+            await utils.sleep(10000)
+            setDisplay(action.pid)
+            sendEnter(action.pid)
+        }
+        
+        await utils.sleep(5000)
     }
 }
 
@@ -744,7 +747,6 @@ function initDir() {
 
 async function start() {
     try {
-        
         if (updateFlag && updateFlag.updating) {
             isAfterReboot = true
             await request_api.reportUpgrade()
