@@ -1239,6 +1239,7 @@ function removePidAddnew(pid, status) {
         }
         else {
             // login success
+            closeChrome(pid)
             if (!ids.filter(x => x == pid).length) {
                 ids.push(pid)
             }

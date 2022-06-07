@@ -40,13 +40,13 @@ async function handleBraveSetting (action) {
   await sleep(2000)
   if (action.is_show_ui) {
     //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 1190, 883,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1332, 781,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 1177, 913,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1322, 805,0,0,"",'click')
     // click Trackers & ads blocking
-    await updateUserInput(action.pid,'CLICK', 1185, 692,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1338, 636,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 1178, 753,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1313, 694,0,0,"",'click')
   } else {
     //click Fingerprinting blocking
     await updateUserInput(action.pid,'CLICK', 755, 692,0,0,"",'click')
