@@ -70,6 +70,14 @@ const PLAYLIST_ACTION = {
 }
 const ADDNEW_ACTION = 3
 
+function addOpenBrowserAction (action, browser) {
+    actionsData.push({
+        action: 'OPEN_BROWSER',
+        data: action,
+        browser: browser
+    })
+}
+
 async function execActionsRunning () {
     if (actionsData.length) {
         let action = actionsData.shift()
@@ -350,7 +358,7 @@ async function startChromeAction(action, _browser) {
                 sendEnter(action.pid)
             }
             
-            await utils.sleep(8000)
+            await utils.sleep(5000)
         }
     }
 }
@@ -390,7 +398,7 @@ async function loginProfileChrome(profile) {
             action.enableBAT = true
         }
         
-        await startChromeAction(action, _browser)
+        addOpenBrowserAction(action, _browser)
     }
     catch (e) {
         utils.log('error', 'loginProfile', profile.id, e)
@@ -464,7 +472,7 @@ async function newRunProfile() {
             if (action && action.script_code) {
                 // handle get browser loged
                 let _browser = getBrowserOfProfile(pid)
-                await startChromeAction(action, _browser)
+                addOpenBrowserAction(action, _browser)
             }
         }
         catch (e) {
@@ -1023,7 +1031,10 @@ async function handleAction (actionData) {
         clipboardy.writeSync(actionData.str)
     }
 
-    if (actionData.action == 'IRIDIUM_SETTING') {
+    if (actionData.action == 'OPEN_BROWSER') {
+        await startChromeAction(actionData.data, actionData.browser)
+    }
+    else if (actionData.action == 'IRIDIUM_SETTING') {
         execSync(`xdotool key Tab && sleep 1`)
         execSync(`xdotool key Tab && sleep 1`)
         execSync(`xdotool key Tab && sleep 1`)
