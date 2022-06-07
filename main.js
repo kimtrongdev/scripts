@@ -1256,8 +1256,10 @@ function removePidAddnew(pid, status) {
 
 async function deleteProfile(pid, retry = 0) {
     ids = ids.filter(x => x != pid)
+    runnings = runnings.filter(r => r.pid != pid)
     try {
         stopDisplay(pid)
+        closeChrome(pid)
         del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
     }
     catch (e) {

@@ -95,11 +95,11 @@ async function initAction(){
         initSettingData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
-        if (window.location.toString().indexOf('refreshed_localhost') == -1) {
-            window.open(window.location.toString() + '&refreshed_localhost=true')
-            await sleep(30000)
-            return
-        }
+        // if (window.location.toString().indexOf('refreshed_localhost') == -1) {
+        //     window.open(window.location.toString() + '&refreshed_localhost=true')
+        //     await sleep(30000)
+        //     return
+        // }
 
         await initActionData(action)
         await sleep(5000)
