@@ -1122,14 +1122,14 @@ async function handleAction (actionData) {
         runnings = runnings.filter(i => i.pid != actionData.pid)
     }
 
-    if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
+    //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
     // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
-    if (actionData.action == 'CLICK') {
+    else if (actionData.action == 'CLICK') {
         if (actionData.x > 65) {
             execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
         }
     }
-    if (actionData.action == 'TYPE') {
+    else if (actionData.action == 'TYPE') {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
     }
     else if (actionData.action == 'KEY_ENTER') {
@@ -1172,7 +1172,16 @@ async function handleAction (actionData) {
         execSync(`xdotool type ${actionData.str}`)
     }
     else if (actionData.action == 'GO_ADDRESS') {
-        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5 && xdotool type "${actionData.str}" && sleep 0.5 && xdotool key KP_Enter`)
+        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
+        if (actionData.str.length > 40) {
+            execSync(`xdotool key Control_L+v`)
+            await utils.sleep(2000)
+        } else {
+            execSync(`xdotool type "${actionData.str}"`)
+        }
+        await utils.sleep(1000)
+        execSync(`xdotool key KP_Enter`)
+        await utils.sleep(2000)
     }
     else if (actionData.action == 'OPEN_DEV') {
         execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
