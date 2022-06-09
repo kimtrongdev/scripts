@@ -376,6 +376,7 @@ async function loginProfileChrome(profile) {
         if (!config.browser_map) {
             config.browser_map = {}
         }
+        systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
         systemConfig.browsers.some((browser) => {
             if (!config.browser_map[browser]) {
