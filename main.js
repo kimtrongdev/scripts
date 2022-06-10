@@ -468,7 +468,7 @@ async function newProfileManage() {
 }
 
 function getBrowserOfProfile (pid) {
-    let _browser
+    let _browser = systemConfig.browsers[0]
     systemConfig.browsers.forEach((browser) => {
         if (config.browser_map[browser] && config.browser_map[browser].some(id => id == pid)) {
             _browser = browser

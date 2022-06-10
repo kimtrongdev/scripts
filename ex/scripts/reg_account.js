@@ -1,6 +1,7 @@
 
 async function regAccount(action) {
   try {
+    await sleep(5000)
     let url = window.location.toString()
 
     if (url.indexOf('mail.google.com/mail') > -1) {
@@ -18,28 +19,31 @@ async function regAccount(action) {
         let newEmail = ''
         if (document.querySelector('button[data-username]')) {
           newEmail = document.querySelector('button[data-username]').dataset.username
+          await userClick(action.pid, 'button[data-username]')
         } else {
-          let rsName = await randomName()
+          let rsName = await getRandomVietnamesName()
           lastName = rsName.last_name
           firstName = rsName.first_name
           newEmail = (lastName + firstName).toLowerCase().replace(' ', '')
-        }
 
-        await userType(action.pid, 'form input[type="email"]', newEmail)
-        await updateUserInput(action.pid,'TABS', 1, 0,0,0,"",'click')
-        if (document.querySelector(`input[data-initial-value="${newEmail}"]`)) {
-          await typeEmail()
-        } else {
-          action.username = newEmail
+          await userType(action.pid, 'form input[type="email"]', newEmail)
+          await updateUserInput(action.pid,'TABS', 1, 0,0,0,"",'click')
+          await sleep(9000)
+          if (document.querySelector(`input[aria-invalid="true"]`)) {
+            await sleep(3000)
+            await typeEmail()
+          } else {
+            action.username = newEmail
+          }
         }
       }
       await typeEmail()
-      action.password = makeid(5)
+      await sleep(5000)
+      action.password = makeid(10)
 
       await setActionData(action)
       await userType(action.pid, 'form input[name="lastName"]', lastName)
       await userType(action.pid, 'form input[name="firstName"]', firstName)
-      await userType(action.pid, 'form input[type="email"]', action.username)
       await userType(action.pid, 'form input[name="Passwd"]', action.password)
       await userTypeEnter(action.pid, 'form input[name="ConfirmPasswd"]', action.password)
 

@@ -621,3 +621,24 @@ function makeid(length) {
    }
    return result;
 }
+
+function getRandomVietnamesName () {
+    let rs = await fetch('https://story-shack-cdn-v2.glitch.me/generators/vietnamese-name-generator/male').then(response => {
+        return response.json()
+    }).then(response => {
+        let fullName = response.data.name
+        let firstName = fullName.split(' ').slice(0, -1).join(' ');
+        let lastName = fullName.split(' ').slice(-1).join(' ');
+        return {
+            last_name: lastName,
+            first_name: firstName,
+        }
+    }).catch(error => {
+        return {
+            last_name: makeName(5),
+            first_name: makeName(5),
+        }
+    })
+
+    return rs
+}
