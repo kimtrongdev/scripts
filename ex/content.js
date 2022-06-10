@@ -122,7 +122,7 @@ function initSettingData (action) {
 
     zoom = action.zoom || 1
 
-    if (action.browser_name == 'vivaldi-stable') {
+    if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
         heightCustom = -23
     }
 

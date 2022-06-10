@@ -1049,6 +1049,7 @@ function initExpress() {
 }
 
 async function handleAction (actionData) {
+    utils.log('--->', actionData);
     setDisplay(actionData.pid)
     // copy str
     if(actionData.str){
