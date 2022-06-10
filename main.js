@@ -343,7 +343,7 @@ async function startChromeAction(action, _browser) {
 
             if (_browser == 'opera') {
                 exec(`${_browser}${userDataDir}${windowSize}`)
-                await utils.sleep(10000)
+                await utils.sleep(19000)
                 closeChrome(action.pid)
                 exec(`${_browser}${userDataDir}${windowSize}`)
             } else {

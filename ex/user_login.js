@@ -204,7 +204,7 @@ async function userLogin(action) {
                     await userTypeEnter(action.pid, "input[type='email']", emailRecovery)
                 }
             }
-            await sleep(60000)
+            await sleep(180000)
         }
         else if (url.indexOf("challenge/kpp") > -1) {
             let phoneInput = document.querySelector("input#phoneNumberId")
