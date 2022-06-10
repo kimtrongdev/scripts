@@ -130,7 +130,8 @@ async function loadSystemConfig () {
     }
 
     let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
-    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false')
+    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
+    (systemConfig.is_reg_acc && systemConfig.is_reg_acc != 'false')
     if (IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
@@ -927,7 +928,18 @@ function initExpress() {
         }
         utils.log(req.query)
 
-        if (req.query.id == 'total_created_channel') {
+        if (req.query.id == 'reg_account') {
+            let action = req.query.action
+            if (action && action.username && action.password) {
+                request_api.reportAccount({
+                    username: action.username,
+                    password: action.password,
+                    verify: action.verify,
+                    type: action.account_type
+                })
+            }
+        }
+        else if (req.query.id == 'total_created_channel') {
             request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })
         }
         else if (req.query.id == 'live_report') {

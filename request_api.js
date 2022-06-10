@@ -11,6 +11,9 @@ function rq (data) {
 }
 
 module.exports = {
+    reportAccount: async function (data) {
+        return await rq({method: 'POST', uri: SUB_URL + '/api/account', body: data, json: true})
+    },
     getPhone: async () => {
         return await rq({uri: SUB_URL + '/api/phone',json: true})
     },

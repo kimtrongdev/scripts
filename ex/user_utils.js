@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'check_bat') {
+    if (action.id == 'reg_account') {
+        await regAccount(action)
+    }
+    else if (action.id == 'check_bat') {
         await scriptCheckBat(action)
     }
     else if (action.id == 'google_news') {
@@ -93,7 +96,14 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_bat') {
+    if (action.id == 'reg_account') {
+        if (action.account_type == 'gmail') {
+            await goToLocation(action.pid, 'https://accounts.google.com/signup/v2/webcreateaccount?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&flowName=GlifWebSignIn&flowEntry=SignUp')
+        } else if (action.account_type == 'facebook') {
+            await goToLocation(action.pid, '')
+        }
+    }
+    else if (action.id == 'check_bat') {
 
     }
     else if (action.id == 'google_news') {
@@ -162,6 +172,13 @@ async function initActionData(action) {
             await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
         }
     }
+}
+
+function reportAccount (action) {
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
+        data: {pid: action.pid, id: action.id, action, stop: true }}, function (response) {
+        resolve(response);
+    }))
 }
 
 function getPhone () {
@@ -579,4 +596,28 @@ async function randomFullName () {
     })
 
     return rs.name
+}
+
+async function randomName () {
+    let rs = await fetch('https://random-data-api.com/api/name/random_name').then(response => {
+        return response.json()
+    }).then(response => response).catch(error => {
+        return {
+            last_name: makeName(5),
+            first_name: makeName(5),
+        }
+    })
+
+    return rs
+}
+
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
 }
