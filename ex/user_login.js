@@ -193,6 +193,7 @@ async function userLogin(action) {
             }
 
             await sleep(60000)
+            return
         }
         else if (url.indexOf("challenge/kpe") > -1) {
             let emailInput = document.querySelector("input[name='email']")
