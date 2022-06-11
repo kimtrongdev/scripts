@@ -353,13 +353,13 @@ var Prefs = {
 			"enabled":true
 		},
 		"Pref_ScreenRes":{
-			"enabled":true,
+			"enabled":false,
 			"randomOpts":{
 				"enabled":false,
 				"values":[-50,50]
 			},
 			"commonResolutions":{
-				"enabled":true,
+				"enabled":false,
 				"resolutions":[
 					[1920,1080,24],
 					[1920,1280,24],
@@ -401,7 +401,7 @@ var Prefs = {
 			"enabled":false
 		},
 		"Pref_UserAgent":{
-			"enabled":true,
+			"enabled":false,
 			"uaOSConfig":{
 				"AllowMac":{
 					"enabled":false

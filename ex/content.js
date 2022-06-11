@@ -8,9 +8,14 @@ let action
 let checkMiniPlayerRef
 var windowWide
 var mobileMenuBarHeight
+var menuBarWidth
 var zoom
 var isNonUser = false
 var isRunBAT = true
+
+var widthCustom = 0
+var heightCustom = 0
+var IS_MOBILE = false
 async function loadPage(){
     try{
         await sleep(4000)
@@ -87,31 +92,46 @@ async function initAction(){
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
-
+        initSettingData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-        if (window.location.toString().indexOf('refreshed_localhost') == -1) {
-            window.open(window.location.toString() + '&refreshed_localhost=true')
-            await sleep(30000)
-            return
-        }
+
+        // if (window.location.toString().indexOf('refreshed_localhost') == -1) {
+        //     window.open(window.location.toString() + '&refreshed_localhost=true')
+        //     await sleep(30000)
+        //     return
+        // }
 
         await initActionData(action)
-
         await sleep(5000)
     }
     else{
         let data = await getActionData()
         action = data.action
-        if (action.isRunBAT && ['brave-browser', 'brave'].includes(action.browser_name)) {
-            isRunBAT = Boolean(action.isRunBAT)
-        } else {
-            isRunBAT = false
-        }
-        windowWide = action.windowWide
-        mobileMenuBarHeight = action.mobileMenuBarHeight
-        zoom = action.zoom || 1
+        initSettingData(action)        
+
         console.log('action:',action)
     }
+}
+
+function initSettingData (action) {
+    if (action.isRunBAT && ['brave-browser', 'brave', 'brave-browser-stable'].includes(action.browser_name)) {
+        isRunBAT = Boolean(action.isRunBAT)
+    } else {
+        isRunBAT = false
+    }
+
+    zoom = action.zoom || 1
+
+    if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
+        heightCustom = -23
+    }
+
+    if (navigator.platform == 'iPhone') {
+        IS_MOBILE = true
+    }
+   // mobileMenuBarHeight = barHeightMap[action.browser_name]
+   // windowWide = action.windowWide
+   // menuBarWidth = 27
 }
 
 function setWatchParam(action){

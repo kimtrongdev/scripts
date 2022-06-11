@@ -1,4 +1,4 @@
-let isRunBAT = true
+let isRunBAT = false
 let isSystemChecking = false
 const TIME_REPORT = 110000
 const TIME_TO_CHECK_UPDATE = 300000
@@ -8,6 +8,7 @@ let totalRoundForChangeProxy = 5
 let countRun = 0
 let isPauseAction = false
 let isAfterReboot = false
+let actionsData = []
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -15,7 +16,6 @@ global.devJson = {
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
 
-let BROWSER = process.env.BROWSER == '_BROWSER_NAME' ? 'brave' : process.env.BROWSER
 global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
@@ -70,6 +70,23 @@ const PLAYLIST_ACTION = {
 }
 const ADDNEW_ACTION = 3
 
+function addOpenBrowserAction (action, browser) {
+    actionsData.push({
+        action: 'OPEN_BROWSER',
+        data: action,
+        browser: browser
+    })
+}
+
+async function execActionsRunning () {
+    if (actionsData.length) {
+        let action = actionsData.shift()
+        await handleAction(action)
+    }
+    await utils.sleep(1000)
+    execActionsRunning()
+}
+
 async function handleForChangeShowUI() {
     let _pids = getProfileIds()
 
@@ -119,12 +136,42 @@ async function loadSystemConfig () {
         IS_REG_USER = IS_REG_USER_new
     }
 
-    let newBrowser = systemConfig.browser_name || 'brave'
-    if (BROWSER != newBrowser) {
-        await resetAllProfiles()
-        BROWSER = newBrowser
-        isRunBAT = ['brave-browser', 'brave'].includes(BROWSER)
+    // handle browsers for centos and ubuntu
+    let browsers = []
+    systemConfig.browsers.forEach(br => {
+        if (process.OS == 'centos') {
+            if (br == 'brave') {
+                br = 'brave-browser'
+            }
+
+            if (br == 'microsoft-edge') {
+                br = 'microsoft-edge-stable'
+            }
+
+            if (br == 'vivaldi-stable') {
+                br = 'vivaldi'
+            }
+            browsers.push(br)
+        } else {
+            if (br != 'iridium-browser') {
+                browsers.push(br)
+            }
+        }
+    })
+    systemConfig.browsers = browsers
+
+    if (config.browser_map) {
+        Object.keys(config.browser_map).forEach(browserMaped => {
+            if (!systemConfig.browsers.includes(browserMaped)) {
+                config.browser_map[browserMaped].forEach(pid => {
+                    closeChrome(pid)
+                    execSync('rm -rf profiles/'+pid)
+                });
+                delete config.browser_map[browserMaped]
+            }  
+        })
     }
+    utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
 async function profileRunningManage() {
@@ -142,7 +189,16 @@ async function profileRunningManage() {
                 ids = ids.filter(id => {
                     return currentIds.some(cid => cid == id)
                 })
+                currentIds.forEach(cID => {
+                    if (!ids.some(cid => cid == cID)) {
+                        ids.push(cID)
+                    }
+                });
 
+                utils.log('ids--', ids);
+                if (runnings.some(running => running.action == 'login')) {
+                    return
+                }
                 if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
@@ -209,31 +265,39 @@ function getProfileIds() {
     return []
 }
 
-async function startChromeAction(action) {
+async function startChromeAction(action, _browser) {
     let widthSizes = [950, 1100, 1200]
-    let userProxy = ''
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = widthSizes[positionSize]
     let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
+    //handle userDataDir
+    let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+
+    //handle browser size
     action['positionSize'] = positionSize
     action['screenWidth'] = screenWidth
     action['screenHeight'] = screenHeight
-
-    let windowPosition = '--window-position=0,0'
+    let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
+    //debug
+    windowSize = ' --start-maximized'
+    windowPosition = ''
+
+    // handle proxy
+    let userProxy = ''
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${ devJson.hostIp },*dominhit.pro*"`
+        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${devJson.hostIp}"`
     }
-
     if (proxy && proxy[action.pid] && proxy[action.pid].username) {
         utils.log('set proxy user name', proxy[action.pid].username)
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
 
-    action.browser_name = BROWSER
+    // handle flag data
+    action.browser_name = _browser
     if (isRunBAT) {
         action.isRunBAT = isRunBAT
     }
@@ -242,7 +306,7 @@ async function startChromeAction(action) {
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
     let exs = ["ex", "quality"]
-    if (action.id != 'reg_user') {
+    if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
 
         if (trace[action.pid] && systemConfig.trace_names_ex.includes(trace[action.pid])) {
@@ -260,29 +324,34 @@ async function startChromeAction(action) {
     }
 
     exs = exs.map(x => path.resolve(x)).join(",")
+    utils.log('--BROWSER--', _browser)
+    utils.log('--PID--', action.pid)
     if (WIN_ENV) {        
-        exec(`start chrome${userProxy} --lang=en-US,en --start-maximized --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}"`)
+        exec(`start chrome${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
-        utils.log('startChromeAction', action.pid)
         closeChrome(action.pid)
         await utils.sleep(3000)
         utils.log('startDisplay')
         startDisplay(action.pid)
         await utils.sleep(3000)
 
-        utils.log('start chrome', action.pid)
+        utils.log('start browser', action.pid)
         if (action.id == 'login') {
-            utils.log('start chrome login', action.pid)
-
-            await createProfile(action.pid)
-
             setDisplay(action.pid)
+            let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
 
-            let cmdRun = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
-            exec(cmdRun)
-            if (BROWSER == 'microsoft-edge') {
-                await utils.sleep(5000)
+            if (_browser == 'opera') {
+                exec(`${_browser}${userDataDir}${windowSize}`)
+                await utils.sleep(19000)
+                closeChrome(action.pid)
+                exec(`${_browser}${userDataDir}${windowSize}`)
+            } else {
+                exec(cmdRun)
+            }
+
+            if (['opera', 'microsoft-edge', 'microsoft-edge-stable'].includes(_browser)) {
+                await utils.sleep(10000)
                 closeChrome(action.pid)
                 await utils.sleep(2000)
                 exec(cmdRun)
@@ -294,14 +363,18 @@ async function startChromeAction(action) {
                     await utils.sleep(17000)
                 }
                 setDisplay(action.pid)
-                sendEnter(action.pid)
+
+                if (_browser != 'iridium-browser') {
+                    sendEnter(action.pid)
+                }
+                
                 await utils.sleep(8000)
             }
             utils.log('process login')
         }
         else {
             setDisplay(action.pid)
-            let run = `${BROWSER}${userProxy} --lang=en-US,en --disable-quic --user-data-dir="${path.resolve("profiles", action.pid + '')}" --load-extension="${exs}" "${startPage}" ${windowPosition}${windowSize}`
+            let run = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
             exec(run)
             if (IS_REG_USER) {
                 await utils.sleep(10000)
@@ -309,7 +382,7 @@ async function startChromeAction(action) {
                 sendEnter(action.pid)
             }
             
-            await utils.sleep(8000)
+            await utils.sleep(5000)
         }
     }
 }
@@ -323,11 +396,34 @@ async function loginProfileChrome(profile) {
         action.isNew = true
         action.is_show_ui = IS_SHOW_UI
 
+        // handle log browser for profile
+        if (!config.browser_map) {
+            config.browser_map = {}
+        }
+        systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
+        let _browser = systemConfig.browsers[0]
+        systemConfig.browsers.some((browser) => {
+            if (!config.browser_map[browser]) {
+                _browser = browser
+                return true
+            } else if (config.browser_map[browser].length < config.browser_map[_browser].length) {
+                _browser = browser
+            }
+        })
+        
+        if (!config.browser_map[_browser]) {
+            config.browser_map[_browser] = []
+        }
+        if (!config.browser_map[_browser].includes(action.pid)) {
+            config.browser_map[_browser].push(action.pid)
+        }
+        fs.writeFileSync("vm_log.json", JSON.stringify(config))
+
         if (isAutoEnableReward) {
             action.enableBAT = true
         }
         
-        await startChromeAction(action)
+        addOpenBrowserAction(action, _browser)
     }
     catch (e) {
         utils.log('error', 'loginProfile', profile.id, e)
@@ -336,8 +432,14 @@ async function loginProfileChrome(profile) {
 
 async function newProfileManage() {
     try {
-        if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
-        utils.log('newProfileManage')
+        let ids = getProfileIds()
+        systemConfig.browsers.forEach((browser) => {
+            if (config.browser_map[browser]) {
+                config.browser_map[browser] = config.browser_map[browser].filter(pid => ids.some(id => id == pid))
+            }
+        })
+
+        //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         // get new profile
         let newProfile = await request_api.getNewProfile()
         utils.log('newProfile: ', newProfile)
@@ -354,15 +456,24 @@ async function newProfileManage() {
                 }
             }
 
-            runnings.push({pid: profile.id, lastReport: Date.now()})
+            runnings.push({ action: 'login', pid: profile.id, lastReport: Date.now() })
             ids.push(profile.id)
-            utils.log('addProfile: ', profile)
             await loginProfileChrome(profile)
         }
     }
     catch (e) {
         utils.log('newProfileManage err: ', e)
     }
+}
+
+function getBrowserOfProfile (pid) {
+    let _browser
+    systemConfig.browsers.forEach((browser) => {
+        if (config.browser_map[browser] && config.browser_map[browser].some(id => id == pid)) {
+            _browser = browser
+        }
+    })
+    return _browser
 }
 
 async function newRunProfile() {
@@ -384,7 +495,9 @@ async function newRunProfile() {
         try {
             let action = await getScriptData(pid, true)
             if (action && action.script_code) {
-                await startChromeAction(action)
+                // handle get browser loged
+                let _browser = getBrowserOfProfile(pid)
+                addOpenBrowserAction(action, _browser)
             }
         }
         catch (e) {
@@ -560,7 +673,7 @@ async function updateVmStatus() {
         await loadSystemConfig()
         let _pids = getProfileIds()
         let pids = _pids.join(',')
-        let rs = await request_api.updateVmStatus({
+        let rs = await request_api.reportVM({
             vm_id: config.vm_id,
             vm_name: config.vm_name,
             running: runnings.length,
@@ -629,7 +742,6 @@ async function running() {
 }
 
 function initDir() {
-    checkToUpdate()
     if (!fs.existsSync(path.resolve('logscreen'))) {
         fs.mkdirSync(path.resolve('logscreen'));
     }
@@ -664,7 +776,8 @@ async function start() {
             execSync('rm -rf update_flag.json')
             await utils.sleep(180000)
         }
-
+        checkToUpdate()
+        execActionsRunning()
         initDir()
         await initConfig()
         initExpress()
@@ -730,6 +843,10 @@ async function initConfig() {
 
     if (!config.vm_id) {
         config.vm_id = makeid(9)
+    }
+
+    if (!config.browser_map) {
+        config.browser_map = {}
     }
 
     fs.writeFileSync("vm_log.json", JSON.stringify(config))
@@ -825,6 +942,7 @@ function initExpress() {
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                // execSync(`xdotool key Control_L+w && sleep 1`)
                 // browser will closed by background extention
+                closeChrome(req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
@@ -921,219 +1039,7 @@ function initExpress() {
     })
 
     app.get('/input', async (req, res) => {
-        if (isPauseAction) {
-            res.send({ rs: 'ok' })
-            return
-        }
-        utils.log(req.query)
-        addnewRunnings = addnewRunnings.map(x => {
-            if (x.pid == req.query.pid) {
-                x.lastReport = Date.now()
-            }
-            return x
-        })
-        
-
-        if (process.platform === "win32") {
-            // copy str
-            if(req.query.str){
-                const clipboardy = require('clipboardy');
-                clipboardy.writeSync(req.query.str)
-            }
-            if(req.query.action == 'OPEN_MOBILE') req.query.x = 150 + 24*(req.query.pid % 4)
-            execSync(`input ${req.query.action} ${req.query.x} ${req.query.y} "${req.query.str}"`)
-        }
-        else {
-            setDisplay(req.query.pid)
-            // copy str
-            if(req.query.str){
-                const clipboardy = require('clipboardy');
-                clipboardy.writeSync(req.query.str)
-            }
-
-            if (req.query.action == 'CLOSE_BROWSER') {
-                execSync(`xdotool key Control_L+w && sleep 1`)
-            }
-            else if (req.query.action == 'SHOW_BRAVE_ADS') {
-                execSync(`xdotool key Shift+Tab && sleep 1`)
-                execSync(`xdotool key Shift+Tab && sleep 1`)
-                execSync(`xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'COPY_BAT') {
-                try {
-                    execSync(`xdotool key Control_L+c && sleep 1`)
-                } catch (error) {
-                    
-                }
-                
-                await utils.sleep(1000)
-
-                let currentBat = ''
-                const clipboardy = require('clipboardy');
-                currentBat = clipboardy.readSync()
-                utils.log('currentBat', currentBat)
-                currentBat = Number(currentBat)
-                
-                if (currentBat) {
-                    try {
-                        let braveInfo = await request_api.getBraveInfo(req.query.pid)
-                        if (braveInfo) {
-                            if (braveInfo.total_bat) {
-                                if (!braveInfo.is_disabled_ads) {
-                                    if (braveInfo.total_bat == currentBat) {
-                                        request_api.updateProfileData({ is_disabled_ads: true, pid: req.query.pid, count_brave_rounds: 0 })
-                                        request_api.getProfileProxy(req.query.pid, PLAYLIST_ACTION.WATCH, true)
-                                        return res.send({ disable_ads: true })
-                                    }
-                                } else {
-                                    if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
-                                        request_api.updateProfileData({ is_disabled_ads: false, pid: req.query.pid })
-                                        return res.send({ enable_ads: true })
-                                    }
-                                }
-                            }
-                        }
-                        request_api.updateProfileData({ total_bat: currentBat, pid: req.query.pid, '$inc': { count_brave_rounds: 1 } })
-                    } catch (error) {
-                      utils.log(error)
-                    }
-                }
-            }
-            else if (req.query.action == 'ESC') {
-                execSync(`xdotool key Escape && sleep 0.5`)
-            }
-            else if (req.query.action == 'GO_TO_FISRT_TAB') {
-                execSync(`xdotool key Control_L+1 && sleep 1`)
-            }
-            else if (req.query.action == 'DOUBLE_CLICK') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
-            }
-            else if (req.query.action == 'NEW_TAB') {
-                execSync(`xdotool key Control_L+t && sleep 1`)
-            } else if (req.query.action == 'RELOAD_PAGE') {
-                execSync(`xdotool key F5 && sleep 1`)
-            } else if (req.query.action == 'END_SCRIPT') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
-                await utils.sleep(5000)
-                runnings = runnings.filter(i => i.pid != req.query.pid)
-            }
-
-            if (req.query.action == 'GO_ADDRESS' || req.query.action == 'OPEN_DEV') setChromeSize(req.query.pid)
-            // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
-            if (req.query.action == 'CLICK') {
-                if (req.query.x > 65) {
-                    execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1`)
-                }
-            }
-            if (req.query.action == 'TYPE') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
-            }
-            else if (req.query.action == 'TYPE_ENTER') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'ONLY_TYPE_ENTER') {
-                execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'CLICK_ENTER') {
-                execSync(`xdotool mousemove ${req.query.x} ${req.query.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
-            }
-            else if (req.query.action == 'NEXT_VIDEO') {
-                execSync(`xdotool key Shift+n && sleep 1`)
-            }
-            else if (req.query.action == 'SCROLL') {
-                if (req.query.str == 6) {
-                    execSync(`xdotool key Shift+Tab && sleep 1`)
-                    execSync(`xdotool key Page_Down && sleep 1`)
-                } else {
-                    if (req.query.str > 0) {
-                        let pageNumber = Math.ceil(req.query.str / 5)
-                        while (pageNumber > 0) {
-                            execSync(`xdotool key Page_Down && sleep 1`)
-                            pageNumber--
-                        }
-                    }
-                    else {
-                        let pageNumber = Math.ceil(req.query.str / -5)
-                        while (pageNumber > 0) {
-                            execSync(`xdotool key Page_Up && sleep 1`)
-                            pageNumber--
-                        }
-                    }
-                }
-            }
-            else if (req.query.action == 'SEND_KEY') {
-                execSync(`xdotool type ${req.query.str}`)
-            }
-            else if (req.query.action == 'GO_ADDRESS') {
-                execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5 && xdotool type "${req.query.str}" && sleep 0.5 && xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'OPEN_DEV') {
-                execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'OPEN_MOBILE') {
-                utils.log('open mobile simulator')
-                let po = {
-                    0: 4, 
-                    1: 5, 
-                    2: 6, 
-                    3: 7, 
-                    4: 8, 
-                    5: 9, 
-                    6: 10, 
-                    7: 11,
-                    8: 12, 
-                    9: 12, 
-                }
-                let devicePo = Number(active_devices[Number(req.query.pid) % active_devices.length])
-                devicePo -= 1
-                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'OPEN_MOBILE_CUSTOM') {
-                utils.log('add custom mobile')
-                execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${req.query.x};xdotool key Tab;xdotool type ${req.query.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'REOPEN_MOBILE_CUSTOM') {
-                utils.log('add custom mobile')
-                execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${req.query.x};xdotool key Tab;xdotool type ${req.query.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'SELECT_MOBILE') {
-                utils.log('open mobile simulator')
-                let po = {
-                    0: 4, 
-                    1: 5, 
-                    2: 6, 
-                    3: 7, 
-                    4: 8, 
-                    5: 9, 
-                    6: 10, 
-                    7: 11,
-                    8: 12, 
-                    9: 12, 
-                }
-                let devicePo = Number(active_devices[Number(req.query.pid) % active_devices.length])
-                devicePo -= 1
-                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'SELECT_MOBILE_CUSTOM') {
-                utils.log('open mobile simulator')
-                execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
-            }
-            else if (req.query.action == 'SHOW_PAGE') {
-                execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'SELECT_OPTION') {
-                execSync(`xdotool key Page_Up && sleep 1`)
-                for(let i = 0; i < req.query.str*1; i++){
-                    execSync(`xdotool key Down && sleep 0.2`)
-                }
-                execSync(`xdotool key KP_Enter`)
-            }
-            else if (req.query.action == 'SCREENSHOT') {
-                utils.errorScreenshot(req.query.pid + '_input')
-            }
-            utils.screenshot(req.query.pid + '_input')
-            if (addnewRunnings.filter(x => x.pid == req.query.pid).length) utils.errorScreenshot(req.query.pid + '_login')
-        }
+        actionsData.push(req.query)
         res.send({ rs: 'ok' })
     })
 
@@ -1142,16 +1048,244 @@ function initExpress() {
     })
 }
 
+async function handleAction (actionData) {
+    utils.log('--->', actionData);
+    setDisplay(actionData.pid)
+    // copy str
+    if(actionData.str){
+        const clipboardy = require('clipboardy');
+        clipboardy.writeSync(actionData.str)
+    }
+
+    if (actionData.action == 'OPEN_BROWSER') {
+        await startChromeAction(actionData.data, actionData.browser)
+    }
+    else if (actionData.action == 'IRIDIUM_SETTING') {
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'CLOSE_BROWSER') {
+        execSync(`xdotool key Control_L+w && sleep 1`)
+    }
+    else if (actionData.action == 'TABS') {
+        let totalClick = Number(actionData.x)
+        let count = 0
+        while (count < totalClick) {
+            execSync(`xdotool key Tab && sleep 1`)
+            count ++
+        }
+    }
+    else if (actionData.action == 'SHOW_BRAVE_ADS') {
+        execSync(`xdotool key Shift+Tab && sleep 1`)
+        execSync(`xdotool key Shift+Tab && sleep 1`)
+        execSync(`xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'COPY_BAT') {
+        try {
+            execSync(`xdotool key Control_L+c && sleep 1`)
+        } catch (error) {
+            
+        }
+        
+        await utils.sleep(1000)
+
+        let currentBat = ''
+        const clipboardy = require('clipboardy');
+        currentBat = clipboardy.readSync()
+        utils.log('currentBat', currentBat)
+        currentBat = Number(currentBat)
+        
+        if (currentBat) {
+            try {
+                let braveInfo = await request_api.getBraveInfo(actionData.pid)
+                if (braveInfo) {
+                    if (braveInfo.total_bat) {
+                        if (!braveInfo.is_disabled_ads) {
+                            if (braveInfo.total_bat == currentBat) {
+                                request_api.updateProfileData({ is_disabled_ads: true, pid: actionData.pid, count_brave_rounds: 0 })
+                                request_api.getProfileProxy(actionData.pid, PLAYLIST_ACTION.WATCH, true)
+                                return res.send({ disable_ads: true })
+                            }
+                        } else {
+                            if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
+                                request_api.updateProfileData({ is_disabled_ads: false, pid: actionData.pid })
+                                return res.send({ enable_ads: true })
+                            }
+                        }
+                    }
+                }
+                request_api.updateProfileData({ total_bat: currentBat, pid: actionData.pid, '$inc': { count_brave_rounds: 1 } })
+            } catch (error) {
+                utils.log(error)
+            }
+        }
+    }
+    else if (actionData.action == 'ESC') {
+        execSync(`xdotool key Escape && sleep 0.5`)
+    }
+    else if (actionData.action == 'GO_TO_FISRT_TAB') {
+        execSync(`xdotool key Control_L+1 && sleep 1`)
+    }
+    else if (actionData.action == 'DOUBLE_CLICK') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+    }
+    else if (actionData.action == 'NEW_TAB') {
+        execSync(`xdotool key Control_L+t && sleep 1`)
+    } else if (actionData.action == 'RELOAD_PAGE') {
+        execSync(`xdotool key F5 && sleep 1`)
+    } else if (actionData.action == 'END_SCRIPT') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+        await utils.sleep(5000)
+        runnings = runnings.filter(i => i.pid != actionData.pid)
+    }
+
+    //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
+    // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
+    else if (actionData.action == 'CLICK') {
+        if (actionData.x > 65) {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+        }
+    }
+    else if (actionData.action == 'TYPE') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
+    }
+    else if (actionData.action == 'KEY_ENTER') {
+        execSync(`xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'TYPE_ENTER') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'ONLY_TYPE_ENTER') {
+        execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'CLICK_ENTER') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
+    }
+    else if (actionData.action == 'NEXT_VIDEO') {
+        execSync(`xdotool key Shift+n && sleep 1`)
+    }
+    else if (actionData.action == 'SCROLL') {
+        if (actionData.str == 6) {
+            execSync(`xdotool key Shift+Tab && sleep 1`)
+            execSync(`xdotool key Page_Down && sleep 1`)
+        } else {
+            if (actionData.str > 0) {
+                let pageNumber = Math.ceil(actionData.str / 5)
+                while (pageNumber > 0) {
+                    execSync(`xdotool key Page_Down && sleep 1`)
+                    pageNumber--
+                }
+            }
+            else {
+                let pageNumber = Math.ceil(actionData.str / -5)
+                while (pageNumber > 0) {
+                    execSync(`xdotool key Page_Up && sleep 1`)
+                    pageNumber--
+                }
+            }
+        }
+    }
+    else if (actionData.action == 'SEND_KEY') {
+        execSync(`xdotool type ${actionData.str}`)
+    }
+    else if (actionData.action == 'GO_ADDRESS') {
+        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
+        if (actionData.str.length > 40) {
+            execSync(`xdotool key Control_L+v`)
+            await utils.sleep(2000)
+        } else {
+            execSync(`xdotool type "${actionData.str}"`)
+        }
+        await utils.sleep(1000)
+        execSync(`xdotool key KP_Enter`)
+        await utils.sleep(2000)
+    }
+    else if (actionData.action == 'OPEN_DEV') {
+        execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
+    }
+    else if (actionData.action == 'OPEN_MOBILE') {
+        utils.log('open mobile simulator')
+        let po = {
+            0: 4, 
+            1: 5, 
+            2: 6, 
+            3: 7, 
+            4: 8, 
+            5: 9, 
+            6: 10, 
+            7: 11,
+            8: 12, 
+            9: 12, 
+        }
+        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+        devicePo -= 1
+        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
+        utils.log('add custom mobile')
+        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'REOPEN_MOBILE_CUSTOM') {
+        utils.log('add custom mobile')
+        execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'SELECT_MOBILE') {
+        utils.log('open mobile simulator')
+        let po = {
+            0: 4, 
+            1: 5, 
+            2: 6, 
+            3: 7, 
+            4: 8, 
+            5: 9, 
+            6: 10, 
+            7: 11,
+            8: 12, 
+            9: 12, 
+        }
+        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+        devicePo -= 1
+        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
+        utils.log('open mobile simulator')
+        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
+    }
+    else if (actionData.action == 'SHOW_PAGE') {
+        execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
+    }
+    else if (actionData.action == 'SELECT_OPTION') {
+        execSync(`xdotool key Page_Up && sleep 1`)
+        for(let i = 0; i < actionData.str*1; i++){
+            execSync(`xdotool key Down && sleep 0.2`)
+        }
+        execSync(`xdotool key KP_Enter`)
+    }
+    else if (actionData.action == 'SCREENSHOT') {
+        utils.errorScreenshot(actionData.pid + '_input')
+    }
+}
+
 function removePidAddnew(pid, status) {
     try {
-        utils.log('removePidAddnew', pid, status)
         runnings = runnings.filter(x => x.pid != pid)
         if (status != 1 || IS_REG_USER) {
             // login error
             deleteProfile(pid)
+            utils.log('removePidAddnew', pid, status)
         }
         else {
             // login success
+            closeChrome(pid)
             if (!ids.filter(x => x == pid).length) {
                 ids.push(pid)
             }
@@ -1169,8 +1303,10 @@ function removePidAddnew(pid, status) {
 
 async function deleteProfile(pid, retry = 0) {
     ids = ids.filter(x => x != pid)
+    runnings = runnings.filter(r => r.pid != pid)
     try {
         stopDisplay(pid)
+        closeChrome(pid)
         del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
     }
     catch (e) {
@@ -1217,7 +1353,7 @@ function closeChrome(pid) {
                 execSync(`pkill -f "profiles/${pid}"`)
             }
             else {
-                execSync(`pkill ${BROWSER}`)
+                execSync(`pkill ${getBrowserOfProfile(pid)}`)
             }
         }
     }
@@ -1258,12 +1394,18 @@ function stopDisplay(pid) {
 
 function setDisplay(pid) {
     try {
-        if (!WIN_ENV && !IS_SHOW_UI) {
-            process.env.DISPLAY = ':' + pid
+        if (IS_SHOW_UI) {
+            if (MAX_CURRENT_ACC > 1) {
+                let browser = getBrowserOfProfile(pid)
+                execSync(`wmctrl -x -a ${browser}`)
+            }
+        } else {
+            if (!WIN_ENV) {
+                process.env.DISPLAY = ':' + pid
+            }
         }
     }
-    catch (e) {
-    }
+    catch (e) {}
 }
 
 function sendEnter(pid) {
@@ -1398,6 +1540,8 @@ async function resetAllProfiles () {
                 execSync('mkdir profiles')
                 trace = {}
                 execSync('rm -rf trace_config.json')
+                config.browser_map = {}
+                fs.writeFileSync("vm_log.json", JSON.stringify(config))
             } catch (error) {
                 console.log(error);
             }

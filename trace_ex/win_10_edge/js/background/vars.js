@@ -17,7 +17,7 @@ var Vars = {
 	// Refresh constants
 	UserAgentInterval:999999999,
 	GPUInterval:999999999,
-	FakeIPInterval:1,
+	FakeIPInterval:999999,
 
 	uninstallUrl:"https://absolutedouble.co.uk/trace/extension-uninstall?e=",
 
@@ -245,5 +245,5 @@ var Vars = {
 	// Current UA settings
 	useragent:"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
 	oscpu:"Windows NT 10.0; Win64; x64",
-	platform:"Win64"
+	platform:"Win32"
 };

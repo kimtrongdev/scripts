@@ -112,7 +112,7 @@ async function userWatch(action){
             await sleep(2000)
             await userClick(action.pid,'#search div h3')
         }
-        else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending') {
+        else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
             await processHomePage(action)
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             await deleteHistory(action)
@@ -121,8 +121,12 @@ async function userWatch(action){
         } else if (url.indexOf('https://www.youtube.com/results') > -1) {
             await processSearchPage(action)
         }
-        else if(url.indexOf('https://www.youtube.com/watch') > -1){
+        else if(url.indexOf('https://www.youtube.com/watch') > -1 || url.indexOf('https://m.youtube.com/watch') > -1){
             await processWatchPage(action)
+        }
+        else if (url.indexOf('m.youtube.com/playlist?list=') > -1) {
+            await userClick(action.pid, '.playlist-play-all-button')
+            await sleep(15000)
         }
         else if(url.indexOf('https://www.youtube.com/playlist?list=') > -1){
             await processPlaylistPage(action)
@@ -532,7 +536,8 @@ async function afterWatchingVideo(action,finishVideo){
           await setActionData(action) 
 
           if (Number(action.total_loop_find_ads) <= action._total_loop_find_ads) {
-            isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+            await reportScript(action)
+            //isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
             return 
           }
 

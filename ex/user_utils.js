@@ -118,10 +118,22 @@ async function initActionData(action) {
         await goToLocation(action.pid,'accounts.google.com')
     }
     else if(action.id == 'login'){
-        if (isRunBAT) {
-            await handleBraveSetting(action)
+        if (action.browser_name == 'iridium-browser') {
+            await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+            await goToLocation(action.pid, `chrome://settings/cookies`)
+            await sleep(4000)
+
+            await updateUserInput(action.pid,'IRIDIUM_SETTING', 8,0,0,0,"",'IRIDIUM_SETTING')
+
+            await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+            await goToLocation(action.pid, 'accounts.google.com')
         } else {
-            await goToLocation(action.pid,'accounts.google.com')
+            if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
+                await handleBraveSetting(action)
+            } else {
+                await goToLocation(action.pid,'accounts.google.com')
+                await sleep(15000)
+            }
         }
     }
     else if(action.id == 'logout'){
@@ -345,11 +357,14 @@ function updateUserInput(pid, action, x, y, sx, sy, str, selector){
 
 function getElementPosition(el,iframe){
     if(el){
+        let screenX = window.screen.width - window.screen.availWidth
+        let screenY = window.screen.height - window.screen.availHeight
         let pos = el.getBoundingClientRect()
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
-        let menuBarHeight = mobileMenuBarHeight ||  72//(window.outerHeight - window.innerHeight)
-        let x = zoom*(pos.left + pos.width*0.6 + (iframe?iframePost.left:0)) + window.screenX  + (windowWide?(windowWide-zoom*window.innerWidth)/2:0)
-        let y = zoom*(pos.top + pos.height*0.6 + (iframe?iframePost.top:0))  +  window.screenY + menuBarHeight
+        let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
+        let menuLeftWith = (window.outerWidth - window.innerWidth)
+        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide-zoom*window.innerWidth)/2:0) + widthCustom
+        let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
         let scrollX = window.scrollX
         let scrollY = window.scrollY
         console.log({x: x, y: y, scrollX: scrollX, scrollY: scrollY})

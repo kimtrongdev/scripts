@@ -113,8 +113,14 @@ function closeBrowser(){
 
 function closeOldTabs() {
     chrome.tabs.query({}, function (tabs) {
-        for (var i = 0; i < tabs.length; i++) {
-            if (!tabs[i].active) {
+        for (var i = tabs.length - 1; i >= 0; i--) {
+            if (tabs[i].active) {
+                if (tabs[i].url.indexOf('localhost') == -1) {
+                    chrome.tabs.remove(tabs[i].id);
+                    closeOldTabs()
+                    break;
+                }
+            } else {
                 chrome.tabs.remove(tabs[i].id);
             }
         }
