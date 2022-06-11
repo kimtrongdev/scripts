@@ -24,7 +24,10 @@ async function regAccount(action) {
           let rsName = await getRandomVietnamesName()
           lastName = rsName.last_name
           firstName = rsName.first_name
-          newEmail = (lastName + firstName).toLowerCase().replace(' ', '')
+          newEmail = (lastName + firstName).toLowerCase().normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/đ/g, "d")
+          .replace(/ /g, '')
 
           await userType(action.pid, 'form input[type="email"]', newEmail)
           await updateUserInput(action.pid,'TABS', 1, 0,0,0,"",'click')

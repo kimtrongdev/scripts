@@ -985,6 +985,9 @@ function initExpress() {
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
+        else if (req.query.id == 'reg_account') {
+            removePidAddnew(req.query.pid, 0)
+        }
         else if (req.query.id == 'login' || req.query.id == 'reg_user') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
@@ -994,7 +997,6 @@ function initExpress() {
                 utils.log(req.query.pid, 'login error', req.query.msg)
                 request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
             }
-            execSync(`xdotool key Control_L+Shift+w && sleep 2`)
             removePidAddnew(req.query.pid, req.query.status)
         }
         else if(req.query.id == 'logout'){
