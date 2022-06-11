@@ -938,6 +938,8 @@ function initExpress() {
                     type: action.account_type
                 })
             }
+
+            removePidAddnew(req.query.pid, 0)
         }
         else if (req.query.id == 'total_created_channel') {
             request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })
@@ -984,9 +986,6 @@ function initExpress() {
                 }
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
-        }
-        else if (req.query.id == 'reg_account') {
-            removePidAddnew(req.query.pid, 0)
         }
         else if (req.query.id == 'login' || req.query.id == 'reg_user') {
             if (req.query.status == 1) {
