@@ -94,9 +94,9 @@ async function handleRating (action) {
 }
 
 function getRating (action) {
-  let star5 = Number(action['5_start_percent']) || 0
-  let star4 = Number(action['4_start_percent']) || 0
-  let star3 = Number(action['3_start_percent']) || 0
+  let star5 = Number(action['5_star_percent']) || 0
+  let star4 = Number(action['4_star_percent']) || 0
+  let star3 = Number(action['3_star_percent']) || 0
   let rateRd = randomRanger(0, (star5 + star4 + star3))
   let rate = 5
   if (rateRd <= star3) {
