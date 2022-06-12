@@ -68,10 +68,10 @@ async function handleRating (action) {
       await waitForSelector(starsSelector, 30000, iframe)
       await userClick(action.pid, 'textarea', '', iframe)
       await userType(action.pid, 'textarea', action.comment, '', iframe)
-      await sleep(1000)
+      await sleep(3000)
       let star = iframe.contentWindow.document.querySelectorAll(starsSelector).item(starRating - 1)
       await userClick(action.pid, '', star, iframe)
-      await sleep(1000)
+      await sleep(3000)
 
       let btns = iframe.contentWindow.document.querySelectorAll('div[data-is-touch-wrapper] button')
       let pos = 2
