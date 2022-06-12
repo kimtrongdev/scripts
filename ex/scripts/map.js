@@ -50,7 +50,7 @@ async function scriptMap(action) {
 }
 
 async function handleRating (action) {
-  let starRating = 5
+  let starRating = getRating(action)
   let btnSelector = 'img[src="//www.gstatic.com/images/icons/material/system_gm/1x/rate_review_gm_blue_18dp.png"]'
   await waitForSelector(btnSelector)
 
@@ -69,7 +69,7 @@ async function handleRating (action) {
       await userClick(action.pid, 'textarea', '', iframe)
       await userType(action.pid, 'textarea', action.comment, '', iframe)
       await sleep(1000)
-      let star = document.querySelectorAll(starsSelector).item(starRating - 1)
+      let star = iframe.contentWindow.document.querySelectorAll(starsSelector).item(starRating - 1)
       await userClick(action.pid, '', star, iframe)
       await sleep(1000)
 
@@ -99,10 +99,16 @@ async function handleRating (action) {
 }
 
 function getRating (action) {
-  // "5_start_percent": "100",
-  // "4_start_percent": "",
-  // "3_start_percent": "",
-  // "2_start_percent": "",
-  // "1_start_percent": "",
-  return 5
+  let star5 = Number(action['5_start_percent']) || 0
+  let star4 = Number(action['4_start_percent']) || 0
+  let star3 = Number(action['3_start_percent']) || 0
+  let rateRd = randomRanger(0, (star5 + star4 + star3))
+  let rate = 5
+  if (rateRd <= star3) {
+    rate = 3
+  } else if (rateRd <= star3 + star4) {
+    rate = 4
+  }
+
+  return rate
 }
