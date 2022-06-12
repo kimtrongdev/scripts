@@ -51,8 +51,7 @@ async function scriptMap(action) {
 
 async function handleRating (action) {
   let starRating = 5
-
-  let btnSelector = 'img[src="//www.gstatic.com/images/icons/material/system_gm/2x/rate_review_gm_blue_18dp.png"]'
+  let btnSelector = 'img[src="//www.gstatic.com/images/icons/material/system_gm/1x/rate_review_gm_blue_18dp.png"]'
   await waitForSelector(btnSelector)
 
   let reviewBtn = document.querySelector(btnSelector)
