@@ -389,10 +389,10 @@ function randomRanger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-async function waitForSelector(selector,timeout = 30000){
+async function waitForSelector(selector,timeout = 30000, iframe){
     let n = Math.ceil(timeout/1000)
     for(let i = 0; i < n; i++){
-        let el = document.querySelector(selector)
+        let el = iframe ? iframe.contentWindow.document.querySelector(selector) : document.querySelector(selector)
         if(el && el.getBoundingClientRect().width) return
         await sleep(1000)
     }
