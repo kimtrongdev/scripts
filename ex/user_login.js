@@ -140,7 +140,7 @@ async function userLogin(action) {
 
             await waitForSelector('#identifierId')
             await userTypeEnter(action.pid, '#identifierId', action.email)
-            await sleep(60000)
+            await sleep(180000)
         }
         else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
             //action.
@@ -165,7 +165,7 @@ async function userLogin(action) {
             await waitForSelector('#identifierId')
             document.querySelector('#identifierId').value = ""
             await userTypeEnter(action.pid, '#identifierId', action.email)
-            await sleep(60000)
+            await sleep(190000)
         }
         else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1) {
             console.log('enter password')
@@ -173,7 +173,7 @@ async function userLogin(action) {
             await setActionData(action)
             await waitForSelector("input[name='password']")
             await userTypeEnter(action.pid, "input[name='password']", action.password)
-            await sleep(60000)
+            await sleep(190000)
         }
         else if (url.indexOf("accounts.google.com/signin/v2/sl/pwd") > -1) {
             const msgEle = document.querySelector("div[aria-live='assertive']")
@@ -192,8 +192,7 @@ async function userLogin(action) {
                 return
             }
 
-            await sleep(60000)
-            return
+            await sleep(180000)
         }
         else if (url.indexOf("challenge/kpe") > -1) {
             let emailInput = document.querySelector("input[name='email']")
