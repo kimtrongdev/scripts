@@ -80,12 +80,7 @@ async function handleRating (action) {
       }
       let postBtn = btns.item(pos)
       await userClick(action.pid, '', postBtn, iframe)
-      await sleep(2000)
-
-      let backBtn = document.querySelectorAll('#omnibox-singlebox button img').item(0)
-      if (backBtn) {
-        await userClick(action.pid, '', backBtn)
-      }
+      await sleep(5000)
 
       //report success
       return true
