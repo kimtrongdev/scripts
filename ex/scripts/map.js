@@ -50,51 +50,44 @@ async function scriptMap(action) {
 }
 
 async function handleRating (action) {
-  let altList = ['Write a review', 'Viết bài đánh giá']
-  let startList = {
-    5: ['Five stars', 'Năm sao'],
-    4: ['Four stars']
-  }
+  let starRating = 5
 
-  for await (let alt of altList) {
-    let btnSelector = 'div[role="main"] div[data-js-log-root] button img[alt="'+ alt +'"]'
-    let reviewBtn = document.querySelector(btnSelector)
-    if (reviewBtn) {
-      reviewBtn.scrollIntoViewIfNeeded()
-      let pos = getElementPosition(reviewBtn)
-      await updateUserInput(action.pid, 'CLICK', pos.x + 30, pos.y, 0,0,"", btnSelector)
+  let btnSelector = 'img[src="//www.gstatic.com/images/icons/material/system_gm/2x/rate_review_gm_blue_18dp.png"]'
+  await waitForSelector(btnSelector)
 
-      await sleep(15000)
-      let iframe = document.querySelector('iframe[name="goog-reviews-write-widget"]')
+  let reviewBtn = document.querySelector(btnSelector)
+  if (reviewBtn) {
+    reviewBtn.scrollIntoViewIfNeeded()
+    let pos = getElementPosition(reviewBtn)
+    await updateUserInput(action.pid, 'CLICK', pos.x + 30, pos.y, 0,0,"", reviewBtn)
 
-      for await (let star of startList[getRating(action)]) {
-        let startSelector = 'div[aria-label="'+star+'"]'
-        if (iframe.contentWindow.document.querySelector(startSelector)) {
-          await userClick(action.pid, 'textarea', '', iframe)
-          await userType(action.pid, 'textarea', action.comment, '', iframe)
-          await sleep(1000)
-          await userClick(action.pid, startSelector, '', iframe)
-          await sleep(1000)
+    await waitForSelector('iframe[name="goog-reviews-write-widget"]')
+    let iframe = document.querySelector('iframe[name="goog-reviews-write-widget"]')
 
-          let btns = iframe.contentWindow.document.querySelectorAll('div[data-is-touch-wrapper] button')
-          let pos = 2
-          if (btns.length == 2) {
-            pos = 1
-          }
-          let postBtn = btns.item(pos)
-          await userClick(action.pid, '', postBtn, iframe)
-          await sleep(2000)
+    if (iframe && iframe.contentWindow.document.querySelector('div[role="radiogroup"] div')) {
+      await userClick(action.pid, 'textarea', '', iframe)
+      await userType(action.pid, 'textarea', action.comment, '', iframe)
+      await sleep(1000)
+      let star = document.querySelectorAll('div[role="radiogroup"] div').item(starRating - 1)
+      await userClick(action.pid, '', star, iframe)
+      await sleep(1000)
 
-          let backBtn = document.querySelectorAll('#omnibox-singlebox button img').item(0)
-          if (backBtn) {
-            await userClick(action.pid, '', backBtn)
-          }
-
-          //report success
-          return true
-        } 
+      let btns = iframe.contentWindow.document.querySelectorAll('div[data-is-touch-wrapper] button')
+      let pos = 2
+      if (btns.length == 2) {
+        pos = 1
       }
-      break
+      let postBtn = btns.item(pos)
+      await userClick(action.pid, '', postBtn, iframe)
+      await sleep(2000)
+
+      let backBtn = document.querySelectorAll('#omnibox-singlebox button img').item(0)
+      if (backBtn) {
+        await userClick(action.pid, '', backBtn)
+      }
+
+      //report success
+      return true
     }
   }
 
