@@ -63,11 +63,13 @@ async function handleRating (action) {
     await waitForSelector('iframe[name="goog-reviews-write-widget"]')
     let iframe = document.querySelector('iframe[name="goog-reviews-write-widget"]')
 
-    if (iframe && iframe.contentWindow.document.querySelector('div[role="radiogroup"] div')) {
+    let starsSelector = 'div[role="radiogroup"] div'
+    if (iframe && iframe.contentWindow.document.querySelector(starsSelector)) {
+      await waitForSelector(starsSelector)
       await userClick(action.pid, 'textarea', '', iframe)
       await userType(action.pid, 'textarea', action.comment, '', iframe)
       await sleep(1000)
-      let star = document.querySelectorAll('div[role="radiogroup"] div').item(starRating - 1)
+      let star = document.querySelectorAll(starsSelector).item(starRating - 1)
       await userClick(action.pid, '', star, iframe)
       await sleep(1000)
 
