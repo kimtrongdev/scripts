@@ -193,7 +193,7 @@ function clearBSData () {
     }))
 }
 
-async function reportScript(action) {
+async function reportScript(action, status = true) {
     let isBreak = false
     if ([1, '1', 'true', true].includes(action.is_break)) {
         isBreak = true
@@ -202,7 +202,7 @@ async function reportScript(action) {
     }
 
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break, stop: isBreak }}, 
+        data: { isScriptReport: true, service_id: action._id, pid: action.pid, isBreak: action.is_break, stop: isBreak, status }}, 
     async function (response) {
         if (response) {
             if (action.watch_time) {

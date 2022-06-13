@@ -39,11 +39,17 @@ async function scriptSearch(action) {
       // }
 
       await sleep(60000)
+    } else if (url.indexOf(action.site_url) > -1) {
+      await sleep(3000)
+      let randomScroll = randomRanger(3,10)
+      await userScroll(action.pid, randomScroll)
+      await sleep(10000)
+      await reportScript(action)
     } else {
-
+      await reportScript(action, false)
     }
   } catch (error) {
-    
+    console.log(error);
   }
 }
 
@@ -54,5 +60,6 @@ async function searchKeyword (action) {
     await userTypeEnter(action.pid,'input[maxLength="2048"]', keyword)
   } else {
     // handle end script
+    await reportScript(action, false)
   }
 }
