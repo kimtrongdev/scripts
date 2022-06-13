@@ -80,7 +80,7 @@ async function handleRating (action) {
       }
       let postBtn = btns.item(pos)
       await userClick(action.pid, '', postBtn, iframe)
-      await sleep(5000)
+      await sleep(9000)
 
       //report success
       return true
