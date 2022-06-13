@@ -106,6 +106,8 @@ async function initActionData(action) {
         }
     }
     else if (action.id == 'search') {
+        action.search_keywords = action.search_keywords.split(',')
+        await setActionData(action)
         await goToLocation(action.pid, 'https://www.google.com/')
     }
     else if (action.id == 'map') {
@@ -579,4 +581,20 @@ async function randomFullName () {
     })
 
     return rs.name
+}
+
+function getElementContainsInnerText(tagName, innerText) {
+    let headings = document.evaluate(
+        `//${tagName}[contains(., '${innerText}')]`,
+        document,
+        null,
+        XPathResult.ANY_TYPE,
+        null
+    );
+
+    if (headings) {
+        const thisHeading = headings.iterateNext();
+        return thisHeading
+    }
+    return null
 }
