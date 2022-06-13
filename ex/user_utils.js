@@ -23,53 +23,6 @@ async function runAction (action) {
     if (action.id == 'check_bat') {
         await scriptCheckBat(action)
     }
-    else if (action.id == 'google_news') {
-        await scriptGoogleNews(action)
-    }
-    else if (action.id == 'search') {
-        await scriptSearch(action)
-    }
-    else if (action.id == 'map') {
-        await scriptMap(action)
-    }
-    else if (action.id == 'youtube_sub') {
-        action.is_sub = true
-        await setActionData(action)
-        await scriptYoutubeSub(action)
-    } 
-    else if (action.id == 'login' || action.id == 'reg_user') {
-        console.log('login')
-        await userLogin(action)
-    }
-    else if (action.id == 'confirm') {
-        console.log('confirm')
-        await userConfirm(action)
-    }
-    else if (action.id == 'changepass') {
-        console.log('changepass')
-        await changePassword(action)
-    }
-    else if (action.id == 'checkpremium') {
-        console.log('checkpremium')
-        await checkPremium(action)
-    }
-    else if (action.id == 'checkcountry') {
-        console.log('checkcountry')
-        await checkCountry(action)
-    }
-    else if(action.id == 'watch' || action.id == 'watch_video') {
-        console.log('watch')
-        !action.mobile ? await userWatch(action) : await userWatchMobile(action)
-    }
-    else if(action.id == 'sub'){
-        console.log('sub')
-        await userSub(action)
-    }
-    else if(action.id == 'logout'){
-        if(window.location.toString().indexOf('https://accounts.google.com/ServiceLogin') == 0 || window.location.toString().indexOf('https://accounts.google.com/signin/v2/identifier') == 0){
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-        }
-    }
 }
 
 async function initActionData(action) {
@@ -164,19 +117,6 @@ async function initActionData(action) {
             await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
         }
     }
-}
-
-function getPhone () {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone', data: {} }, function (response) {
-        resolve(response);
-    }))
-}
-
-function getPhoneCode (order_id, api_name) {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone-code',
-        data: { order_id: order_id, api_name: api_name }}, function (response) {
-        resolve(response);
-    }))
 }
 
 function updateTotalCreatedUsers (pid, count = 0) {
