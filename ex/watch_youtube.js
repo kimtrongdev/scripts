@@ -963,7 +963,7 @@ async function processWatchChannelPage(action){
             else{
                 video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')
             }
-            await userClick(action.pid,video.href,video)
+            await userClick(action.pid,'video',video)
             await sleep(2000)
         }
     }
@@ -1134,7 +1134,7 @@ async function CommentYoutubeVideo(pid, msg) {       // search video or view hom
             }
         }
 
-        await userScroll(pid,20)
+        await userScroll(pid,10)
 
         if(!document.querySelector('#placeholder-area')){
             console.log('error','NO COMMENT SECTION')
@@ -1152,7 +1152,7 @@ async function CommentYoutubeVideo(pid, msg) {       // search video or view hom
         await userClick(pid, "#submit-button.ytd-commentbox")
         await sleep(2000)
 
-        await userScroll(pid,-20)
+        await userScroll(pid,-5)
 
     }catch (e) {
         console.log('error','CommentYoutubeVideo',pid)
