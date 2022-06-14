@@ -80,7 +80,7 @@ async function youtubeComment(action) {
       reportLive(action.pid)
       await CommentYoutubeVideo(action.pid, action.comment)
       await afterComment(action)
-    } else if (url.indexOf('https://www.youtube.com/channel/') > -1) {
+    } else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
       if (document.querySelector('#edit-buttons a')) {
         await userClick(action.pid, '#edit-buttons a')
       } else {
@@ -106,7 +106,9 @@ async function handleStudioSetting (action) {
 
   await userClick(action.pid, '#add-section-button')
   await userClick(action.pid, 'tp-yt-paper-item[test-id="playlist"]')
+  await sleep(3000)
   await userType(action.pid, '#search-any', action.playlist_id)
+  await sleep(2000)
   await waitForSelector('#content')
   await userClick(action.pid, '#content')
   await sleep(2000)
