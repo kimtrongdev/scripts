@@ -90,13 +90,6 @@ module.exports = {
             return false;
         }
     },
-    getComment: async (keyword) => {
-        try{
-            return await rq({uri: 'https://dominhit.pro/get-comment-api',json: true,qs: {keyword: keyword}})
-        }
-        catch (e) {
-        }
-    },
     reportVM: async (data = {}) => {
         try{
             return await rq({uri: SUB_URL + '/api/vm/report',json: true,qs: data})

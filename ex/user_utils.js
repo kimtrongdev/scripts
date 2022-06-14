@@ -345,13 +345,6 @@ async function updateActionStatus(pid, action, status, msg, stop = true){
     }))
 }
 
-function getComment(keyword){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'COMMENT', url: 'https://dominhit.pro/get-comment-api',
-        data: {keyword: keyword}}, function (response) {
-        resolve(response);
-    }))
-}
-
 async function getPublicDays(videoId){
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'COMMENT', url: 'https://pll.dominhit.pro/playlist/api',
         data: {action: 'get-public-time-day-ago',id: videoId}}, function (response) {

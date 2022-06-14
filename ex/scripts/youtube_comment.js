@@ -80,6 +80,7 @@ async function youtubeComment(action) {
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
+      await waitForSelector('#placeholder-area')
       await CommentYoutubeVideo(action.pid)
       await afterComment(action)
     } else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
