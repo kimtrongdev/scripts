@@ -64,6 +64,9 @@ chrome.runtime.onMessage.addListener(
           else if (request.type == 'CLOSE_OLD_TABS') {
             closeOldTabs()
           }
+          else if (request.type == 'CLOSE_UNACTIVE_TABS') {
+            closeUnactiveTabs()
+          }
           else{
               if(request.data.stop){
                     closeBrowser()
@@ -121,6 +124,16 @@ function closeOldTabs() {
                     break;
                 }
             } else {
+                chrome.tabs.remove(tabs[i].id);
+            }
+        }
+    });
+}
+
+function closeUnactiveTabs() {
+    chrome.tabs.query({}, function (tabs) {
+        for (var i = tabs.length - 1; i >= 0; i--) {
+            if (!tabs[i].active) {
                 chrome.tabs.remove(tabs[i].id);
             }
         }

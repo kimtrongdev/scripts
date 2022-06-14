@@ -955,7 +955,7 @@ async function processWatchChannelPage(action){
             let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)]
             let video
             if(videos.length){
-                video = videos[randomRanger(0, Math.max(videos.length-1, 15))]
+                video = videos[randomRanger(0, Math.min(videos.length-1, 15))]
                 //action.other_videos.push(video.href.split('v=')[1].split('&')[0])
                 //action.channel_videos = action.channel_videos.length?action.channel_videos:videos.map(x => x.href.split('v=')[1].split('&')[0])
                 await setActionData(action)

@@ -1,7 +1,7 @@
 async function youtubeComment(action) {
   try {
     let url = window.location.toString()
-
+    reportLive(action.pid)
     if (url.indexOf('youtube.com/account') > -1) {
       reportLive(action.pid)
       let channels = document.querySelectorAll('ytd-account-item-renderer')
@@ -69,7 +69,7 @@ async function youtubeComment(action) {
       return
     }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-      closeOldTabs()
+      closeUnactiveTabs()
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')  
       await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
       await sleep(5000)
