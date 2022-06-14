@@ -99,6 +99,7 @@ async function initActionData(action) {
     if (action.id == 'comment_youtube') {
         action.commented_count = 0
         action.video_ids = action.video_ids.split(',')
+        action.channel_ids = action.channel_ids.split(',')
         await setActionData(action)
         await goToLocation(action.pid, 'https://www.youtube.com/')
     }

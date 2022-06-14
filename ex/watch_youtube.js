@@ -951,12 +951,12 @@ async function processWatchChannelPage(action){
             if (!Array.isArray(action.other_videos)) {
                 action.other_videos = []
             }
-            let watched_videos = action.other_videos.map(x => `:not([href*="${x}"])`).join("")
-            let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail:not([href*="${action.playlist_url}"])${watched_videos}`)]
+            //let watched_videos = action.other_videos.map(x => `:not([href*="${x}"])`).join("")
+            let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)]
             let video
             if(videos.length){
-                video = videos[randomRanger(0, Math.max(videos.length-1), 10)]
-                action.other_videos.push(video.href.split('v=')[1].split('&')[0])
+                video = videos[randomRanger(0, Math.max(videos.length-1, 15))]
+                //action.other_videos.push(video.href.split('v=')[1].split('&')[0])
                 //action.channel_videos = action.channel_videos.length?action.channel_videos:videos.map(x => x.href.split('v=')[1].split('&')[0])
                 await setActionData(action)
             }
