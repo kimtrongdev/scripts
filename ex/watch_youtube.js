@@ -1131,7 +1131,7 @@ async function CommentYoutubeVideo(pid, msg) {       // search video or view hom
             }
         }
 
-        //await userScroll(pid,70)
+        await userScroll(pid,20)
 
         if(!document.querySelector('#placeholder-area')){
             console.log('error','NO COMMENT SECTION')
@@ -1142,13 +1142,14 @@ async function CommentYoutubeVideo(pid, msg) {       // search video or view hom
         await userClick(pid, "#placeholder-area")
         await sleep(1000)
 
-        await userOnlyTypeEnter(pid,"#contenteditable-textarea",msg)
+        await userType(pid, "#contenteditable-textarea", msg)
+        //await userOnlyTypeEnter(pid,"#contenteditable-textarea",msg)
         await sleep(4000)
 
         await userClick(pid, "#submit-button.ytd-commentbox")
         await sleep(2000)
 
-        //await userScroll(pid,-70)
+        await userScroll(pid,-20)
 
     }catch (e) {
         console.log('error','CommentYoutubeVideo',pid)

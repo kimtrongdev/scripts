@@ -1041,8 +1041,7 @@ function initExpress() {
     })
 
     app.get('/input', async (req, res) => {
-        actionsData.push(req.query)
-        res.send({ rs: 'ok' })
+        actionsData.push({...req.query, res})
     })
 
     app.listen(LOCAL_PORT, () => {
@@ -1051,7 +1050,7 @@ function initExpress() {
 }
 
 async function handleAction (actionData) {
-    utils.log('--->', actionData);
+    utils.log('--->', actionData.action);
     setDisplay(actionData.pid)
     // copy str
     if(actionData.str){
@@ -1274,6 +1273,10 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'SCREENSHOT') {
         utils.errorScreenshot(actionData.pid + '_input')
+    }
+
+    if (actionData.res) {
+        actionData.res.json({ success: true })
     }
 }
 
