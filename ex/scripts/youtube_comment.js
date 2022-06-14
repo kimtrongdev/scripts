@@ -75,7 +75,7 @@ async function youtubeComment(action) {
           await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
       }
     }
-    else if(url.indexOf('https://www.youtube.com/watch') > -1 || url.indexOf('https://m.youtube.com/watch') > -1){
+    else if(url.indexOf('https://www.youtube.com/watch') > -1){
       await sleep(10000)
       await CommentYoutubeVideo(action.pid, action.comment)
       await afterComment(action)
@@ -98,13 +98,19 @@ async function youtubeComment(action) {
 async function handleStudioSetting (action) {
   while (document.querySelector('#shelf-actions-menu .remove-defaults')) {
     await userClick(action.pid, '#shelf-actions-menu .remove-defaults')
+    await sleep(1000)
+    await userClick(action.pid, 'tp-yt-paper-item[test-id="delete"]')
     await sleep(2000)
   }
 
   await userClick(action.pid, '#add-section-button')
+  await sleep(3000)
   await userClick(action.pid, 'tp-yt-paper-item[test-id="playlist"]')
+  await sleep(3000)
   await userType(action.pid, '#search-any', action.playlist_id)
+  await waitForSelector('#content')
   await userClick(action.pid, '#content')
+  await sleep(3000)
   await userClick(action.pid, '#publish-button')
   await sleep(5000)
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
