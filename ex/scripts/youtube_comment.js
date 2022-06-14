@@ -3,6 +3,7 @@ async function youtubeComment(action) {
     let url = window.location.toString()
 
     if (url.indexOf('youtube.com/account') > -1) {
+      reportLive(action.pid)
       let channels = document.querySelectorAll('ytd-account-item-renderer')
       if (action.loadFirstUser) {
           action.loadFirstUser = false
@@ -120,14 +121,14 @@ async function handleStudioSetting (action) {
 async function gotoWatch (action) {
   if (action.channel_ids && action.channel_ids.length) {
     let channel_id = action.channel_ids[randomRanger(0, action.channel_ids.length - 1)]
-    await goToLocation(action.pid,'https://www.youtube.com/'+channel_id)
+    await goToLocation(action.pid, 'https://www.youtube.com/' + channel_id + '/videos')
   } else {
     if (!action.video_ids.length) {
       await reportScript(action)
     } else {
       let videoId = action.video_ids.shift()
       await setActionData(action)
-      await goToLocation(action.pid,'https://www.youtube.com/watch?v=' + videoId)
+      await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
     }
   }
 }
