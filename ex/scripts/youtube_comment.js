@@ -4,7 +4,7 @@ async function youtubeComment(action) {
     reportLive(action.pid)
     if (url.indexOf('youtube.com/account') > -1) {
       reportLive(action.pid)
-      let channels = document.querySelectorAll('ytd-account-item-renderer')
+      let channels = document.querySelectorAll('ytd-account-item-renderer img')
       if (action.loadFirstUser) {
           action.loadFirstUser = false
           await setActionData(action)
@@ -15,7 +15,7 @@ async function youtubeComment(action) {
 
       if (!channels.length) {
           await sleep(15000)
-          channels = document.querySelectorAll('ytd-account-item-renderer')
+          channels = document.querySelectorAll('ytd-account-item-renderer img')
       }
 
       let checkboxDontShow = document.querySelector('#checkboxContainer')
@@ -115,6 +115,9 @@ async function handleStudioSetting (action) {
   await userClick(action.pid, '#content')
   await sleep(2000)
   await userClick(action.pid, '#publish-button')
+  await sleep(2000)
+  await userClick(action.pid, '#discard-changes-button')
+  
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
   await gotoWatch(action)
 }
