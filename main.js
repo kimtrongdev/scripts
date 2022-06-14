@@ -600,7 +600,7 @@ async function getScriptData(pid, isNewProxy = false) {
     
             action.total_channel_created = Number(systemConfig.total_channel_created)
     
-            if (action.id == 'watch' || action.id == 'watch_video') {
+            if (['watch', 'watch_video', 'comment_youtube'].includes(action.id)) {
                 let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
                 if (oldUserPosition) {
                     action.channel_position = Number(oldUserPosition.position) + 1
@@ -608,7 +608,9 @@ async function getScriptData(pid, isNewProxy = false) {
                 } else {
                     action.channel_position = 0
                 }
-                
+            }
+
+            if (action.id == 'watch' || action.id == 'watch_video') {
                 action.total_loop_find_ads = systemConfig.total_loop_find_ads
                 if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
                     action.total_times_next_video = systemConfig.total_times_next_video

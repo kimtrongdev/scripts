@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'check_bat') {
+    if (action.id == 'comment_youtube') {
+        await youtubeComment(action)
+    }
+    else if (action.id == 'check_bat') {
         await scriptCheckBat(action)
     }
     else if (action.id == 'google_news') {
@@ -93,7 +96,13 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_bat') {
+    if (action.id == 'comment_youtube') {
+        action.commented_count = 0
+        action.video_ids = action.video_ids.split(',')
+        await setActionData(action)
+        await goToLocation(action.pid, 'https://www.youtube.com/')
+    }
+    else if (action.id == 'check_bat') {
 
     }
     else if (action.id == 'google_news') {
