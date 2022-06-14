@@ -176,6 +176,12 @@ async function initActionData(action) {
     }
 }
 
+function getComment () {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-comment', data: {} }, function (response) {
+        resolve(response);
+    }))
+}
+
 function getPhone () {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone', data: {} }, function (response) {
         resolve(response);

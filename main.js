@@ -886,6 +886,11 @@ function initExpress() {
         return
     })
 
+    app.get('/get-comment', async (req, res) => {
+        let rs = await request_api.getComment()
+        return res.send(rs)
+    })
+
     app.get('/get-phone', async (req, res) => {
         let rs = await request_api.getPhone()
         res.send(rs)
