@@ -69,7 +69,7 @@ async function youtubeComment(action) {
       return
     }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-      closeTabs()
+      closeOldTabs()
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')  
       await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
       await sleep(5000)
