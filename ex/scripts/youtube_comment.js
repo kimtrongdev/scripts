@@ -53,13 +53,13 @@ async function youtubeComment(action) {
           return
       }
 
+      action.channel_position += 1
       let channel = channels.item(action.channel_position)
       if (channel) {
           if (action.channel_position < channels.length - 2) {
               reportPositionChannel(action.pid, action.channel_position)
           }
-          
-          action.channel_position += 1
+
           await setActionData(action)
           await userClick(action.pid, '', channel)
       } else {
@@ -68,6 +68,7 @@ async function youtubeComment(action) {
       return
     }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')  
       await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
       await sleep(5000)
       let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
@@ -76,7 +77,7 @@ async function youtubeComment(action) {
       }
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
-      await sleep(10000)
+      reportLive(action.pid)
       await CommentYoutubeVideo(action.pid, action.comment)
       await afterComment(action)
     } else if (url.indexOf('https://www.youtube.com/channel/') > -1) {
@@ -104,22 +105,19 @@ async function handleStudioSetting (action) {
   }
 
   await userClick(action.pid, '#add-section-button')
-  await sleep(3000)
   await userClick(action.pid, 'tp-yt-paper-item[test-id="playlist"]')
-  await sleep(3000)
   await userType(action.pid, '#search-any', action.playlist_id)
   await waitForSelector('#content')
   await userClick(action.pid, '#content')
-  await sleep(3000)
+  await sleep(2000)
   await userClick(action.pid, '#publish-button')
-  await sleep(5000)
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
   await gotoWatch(action)
 }
 
 async function gotoWatch (action) {
   if (action.channel_id) {
-    await goToLocation(action.pid,'https://www.youtube.com/'+channelId)
+    await goToLocation(action.pid,'https://www.youtube.com/'+action.channel_id)
   } else {
     if (!action.video_ids.length) {
       await reportScript(action)
@@ -133,6 +131,7 @@ async function gotoWatch (action) {
 
 async function afterComment (action) {
   action.commented_count++
+  await setActionData(action)
   if (action.commented_count <= action.commented_count_max) {
     if (action.commented_count % action.comment_change_user == 0) {
       await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')

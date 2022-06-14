@@ -948,6 +948,9 @@ async function processWatchChannelPage(action){
         }
         else{
             // watch other video for suggest or browser feature
+            if (!Array.isArray(action.other_videos)) {
+                action.other_videos = []
+            }
             let watched_videos = action.other_videos.map(x => `:not([href*="${x}"])`).join("")
             let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail:not([href*="${action.playlist_url}"])${watched_videos}`)]
             let video
@@ -1144,7 +1147,7 @@ async function CommentYoutubeVideo(pid, msg) {       // search video or view hom
 
         await userType(pid, "#contenteditable-textarea", msg)
         //await userOnlyTypeEnter(pid,"#contenteditable-textarea",msg)
-        await sleep(4000)
+        await sleep(1000)
 
         await userClick(pid, "#submit-button.ytd-commentbox")
         await sleep(2000)
