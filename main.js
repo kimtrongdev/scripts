@@ -989,7 +989,6 @@ function initExpress() {
                 utils.log(req.query.pid, 'login error', req.query.msg)
                 request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
             }
-            execSync(`xdotool key Control_L+Shift+w && sleep 2`)
             removePidAddnew(req.query.pid, req.query.status)
         }
         else if(req.query.id == 'logout'){
