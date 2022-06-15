@@ -147,6 +147,13 @@ async function reportScript(action, status = true) {
     }))
 }
 
+function getProxy(pid) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-proxy',
+        data: {pid}}, function (response) {
+        resolve(response);
+    }))
+}
+
 function reportLive(pid){
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: {id: 'live_report', pid}}, function (response) {

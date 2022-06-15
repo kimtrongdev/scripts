@@ -40,7 +40,7 @@ async function scriptCheckBat(action) {
   }
   else if (url.indexOf('youtube.com') > -1) {
     await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
-    await sleep(5000)
+    await sleep(15000)
     await updateUserInput(action.pid,'CLICK', 582,720,0,0,"",'click')
   }
 }

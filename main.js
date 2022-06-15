@@ -257,11 +257,11 @@ async function startChromeAction(action, _browser) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${devJson.hostIp}"`
     }
-    if (proxy && proxy[action.pid] && proxy[action.pid].username) {
-        utils.log('set proxy user name', proxy[action.pid].username)
-        action.proxy_username = proxy[action.pid].username
-        action.proxy_password = proxy[action.pid].password
-    }
+    // if (proxy && proxy[action.pid] && proxy[action.pid].username) {
+    //     utils.log('set proxy user name', proxy[action.pid].username)
+    //     action.proxy_username = proxy[action.pid].username
+    //     action.proxy_password = proxy[action.pid].password
+    // }
 
     // handle flag data
     action.browser_name = _browser
@@ -514,10 +514,10 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
 
-        if (!proxy[pid] || !proxy[pid].server) {
-            console.log('Not found proxy')
-            return
-        }
+        // if (!proxy[pid] || !proxy[pid].server) {
+        //     console.log('Not found proxy')
+        //     return
+        // }
         utils.log('Script data: ', action)
 
         if (!runnings.some(i => i.pid == pid)) {
@@ -842,6 +842,16 @@ function initExpress() {
         removePidAddnew(req.query.pid, req.query.status)
 
         res.send({ rs: 'ok' })
+    })
+
+    app.get('/get-proxy', async (req, res) => {
+        let _proxy = {}
+        if (proxy[req.query.pid].username) {
+            _proxy.proxy_username = proxy[action.pid].username
+            _proxy.proxy_password = proxy[action.pid].password
+        }
+
+        res.send(_proxy)
     })
 
     app.get('/get-new-playlist', async (req, res) => {
