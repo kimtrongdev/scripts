@@ -3,74 +3,15 @@ async function youtubeComment(action) {
     let url = window.location.toString()
     reportLive(action.pid)
     if (url.indexOf('youtube.com/account') > -1) {
-      reportLive(action.pid)
-      let channels = document.querySelectorAll('ytd-account-item-renderer img')
-      if (action.loadFirstUser) {
-          action.loadFirstUser = false
-          await setActionData(action)
-          await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-          await sleep(60000)
-          return
-      }
-
-      if (!channels.length) {
-          await sleep(15000)
-          channels = document.querySelectorAll('ytd-account-item-renderer img')
-      }
-
-      let checkboxDontShow = document.querySelector('#checkboxContainer')
-      if (document.querySelector('#primary-content')) {
-          await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-          await sleep(60000)
-      }
-
-      // handle not found channels
-      if (!channels.length) {
-          await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
-          await sleep(5000)
-          let switchChannelOpt = document.querySelectorAll('yt-multi-page-menu-section-renderer #endpoint #content-icon').item(3)
-          if (switchChannelOpt) {
-              await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
-              await sleep(5000)
-              let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
-              if (fisUser) {
-                  await userClick(action.pid, 'fisUser', fisUser)
-                  await sleep(60000)
-              }
-          }
-      }
-
-      if (!channels || !channels.length || checkboxDontShow) {
-          action.loadFirstUser = true
-          await setActionData(action)
-          await goToLocation(action.pid, 'youtube.com/account')
-          await sleep(60000)
-          return
-      }
-
-      if (channels.length <= action.channel_position) {
-          reportPositionChannel(action.pid, 0)
-          await reportScript(action)
-          return
-      }
-
-      action.channel_position += 1
-      let channel = channels.item(action.channel_position)
-      if (channel) {
-          if (action.channel_position < channels.length - 2) {
-              reportPositionChannel(action.pid, action.channel_position)
-          }
-
-          await setActionData(action)
-          await userClick(action.pid, '', channel)
-      } else {
-        await reportScript(action)
-      }
-      return
+      await handleAccountPage(action)
+    }
+    else if (url.indexOf('https://www.youtube.com/shorts/') > -1) {
+      await gotoWatch(action)
     }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
       closeUnactiveTabs()
-      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')  
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
       await sleep(5000)
       let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
@@ -122,7 +63,7 @@ async function handleStudioSetting (action) {
   await sleep(2000)
 
   while (document.querySelector('#single-step-navigation')) {
-    await userClick(action.pid, '#single-step-navigation')
+    await userClick(action.pid, '#single-step-navigation #close-button')
     await sleep(1000)
   }
 
@@ -165,4 +106,70 @@ async function afterComment (action) {
 
 async function handleChannelPage (action) {
   await processWatchChannelPage(action)
+}
+
+async function handleAccountPage (action) {
+  reportLive(action.pid)
+  let channels = document.querySelectorAll('ytd-account-item-renderer img')
+  if (action.loadFirstUser) {
+      action.loadFirstUser = false
+      await setActionData(action)
+      await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+      await sleep(60000)
+      return
+  }
+
+  if (!channels.length) {
+      await sleep(15000)
+      channels = document.querySelectorAll('ytd-account-item-renderer img')
+  }
+
+  let checkboxDontShow = document.querySelector('#checkboxContainer')
+  if (document.querySelector('#primary-content')) {
+      await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+      await sleep(60000)
+  }
+
+  // handle not found channels
+  if (!channels.length) {
+      await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
+      await sleep(5000)
+      let switchChannelOpt = document.querySelectorAll('yt-multi-page-menu-section-renderer #endpoint #content-icon').item(3)
+      if (switchChannelOpt) {
+          await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
+          await sleep(5000)
+          let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
+          if (fisUser) {
+              await userClick(action.pid, 'fisUser', fisUser)
+              await sleep(60000)
+          }
+      }
+  }
+
+  if (!channels || !channels.length || checkboxDontShow) {
+      action.loadFirstUser = true
+      await setActionData(action)
+      await goToLocation(action.pid, 'youtube.com/account')
+      await sleep(60000)
+      return
+  }
+
+  if (channels.length <= action.channel_position) {
+      reportPositionChannel(action.pid, 0)
+      await reportScript(action)
+      return
+  }
+
+  action.channel_position += 1
+  let channel = channels.item(action.channel_position)
+  if (channel) {
+      if (action.channel_position < channels.length - 2) {
+          reportPositionChannel(action.pid, action.channel_position)
+      }
+
+      await setActionData(action)
+      await userClick(action.pid, '', channel)
+  } else {
+    await reportScript(action)
+  }
 }
