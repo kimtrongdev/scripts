@@ -59,7 +59,11 @@ async function handleBraveSetting (action) {
   }
 
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-  await goToLocation(action.pid, 'accounts.google.com')
+
+  await handleBeforeTrickAds(action)
+
+  await reportScript(action)
+  //await goToLocation(action.pid, 'accounts.google.com')
   await sleep(15000)
 }
 

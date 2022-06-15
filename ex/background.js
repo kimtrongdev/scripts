@@ -148,15 +148,7 @@ function getTotalTabs () {
 // trong code
 chrome.webRequest.onBeforeSendHeaders.addListener(
     function(details) {
-        if (RE_SET_USER_AGENT) {
-            for (var i = 0; i < details.requestHeaders.length; ++i) {
-                if (details.requestHeaders[i].name === 'User-Agent') {
-                    details.requestHeaders[i].value = RE_SET_USER_AGENT;
-                    break;
-                }
-            }
-        }
-
+        if (RE_SET_USER_AGENT) {}
         return {requestHeaders: details.requestHeaders};
 }, {urls: ['<all_urls>']}, ['blocking', 'requestHeaders']);
 
