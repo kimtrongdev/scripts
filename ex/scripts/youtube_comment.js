@@ -76,6 +76,11 @@ async function youtubeComment(action) {
       let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
       if (switchChannelOpt) {
           await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
+          
+          await sleep(5000)
+          if (document.querySelector('#create-channel-button')) {
+            await userClick(action.pid, '#create-channel-button')
+          }
       }
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
@@ -115,6 +120,12 @@ async function handleStudioSetting (action) {
   await waitForSelector('#content')
   await userClick(action.pid, '#content')
   await sleep(2000)
+
+  while (document.querySelector('#single-step-navigation')) {
+    await userClick(action.pid, '#single-step-navigation')
+    await sleep(1000)
+  }
+
   await userClick(action.pid, '#publish-button')
   await sleep(2000)
   await userClick(action.pid, '#discard-changes-button')
