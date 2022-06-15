@@ -22,9 +22,11 @@ let closeSizes = [968, 1125, 1225, 1325]
 
 async function scriptCheckBat(action) {
   let url = window.location.toString()
-  if (url.indexOf('youtube.com') > -1) {
-
-    await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
+  reportLive(action.pid)
+  if (url.indexOf('https://www.google.com/') > -1) {
+    await goToLocation(action.pid, 'youtube.com/')
+  }
+  else if (url.indexOf('youtube.com/watch') > -1) {
     await sleep(15000)
     action.checkingBAT = true
     await setActionData(action)
@@ -35,6 +37,11 @@ async function scriptCheckBat(action) {
     await scrollForViewAds(action)
     
     await checkBAT(action) //await handleBeforeTrickAds(action)
+  }
+  else if (url.indexOf('youtube.com') > -1) {
+    await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
+    await sleep(5000)
+    await updateUserInput(action.pid,'CLICK', 582,720,0,0,"",'click')
   }
 }
 

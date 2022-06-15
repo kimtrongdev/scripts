@@ -47,7 +47,7 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'check_bat') {
-        await goToLocation(action.pid, 'youtube.com/')
+        await goToLocation(action.pid, 'google.com/')
     }
     else if (action.id == 'google_news') {
         if (!action.is_searched) {
