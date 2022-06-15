@@ -55,7 +55,7 @@ async function handleStudioSetting (action) {
 
   await userClick(action.pid, '#add-section-button')
   await userClick(action.pid, 'tp-yt-paper-item[test-id="playlist"]')
-  await sleep(3000)
+  await waitForSelector('#search-any')
   await userType(action.pid, '#search-any', action.playlist_id)
   await sleep(2000)
   await waitForSelector('#content')
