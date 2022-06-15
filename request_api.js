@@ -12,7 +12,7 @@ function rq (data) {
 
 module.exports = {
     getComment: async () => {
-        return await rq({uri: SUB_URL + '/api/data/comment',json: true})
+        return await rq({uri: SUB_URL + '/api/data/comment?type=youtube',json: true})
     },
     getPhone: async () => {
         return await rq({uri: SUB_URL + '/api/phone',json: true})
