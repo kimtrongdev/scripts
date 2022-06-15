@@ -11,15 +11,7 @@ async function scriptMap(action) {
       }
     } else if (url.indexOf('google.com/maps/@') > -1) {
       if (!action.searched) {
-        action.searched = true
-        await setActionData(action)
-
-        let searchData = action.seach_data
-        if (!searchData) {
-          searchData = makeName(3)
-        }
-        await userTypeEnter(action.pid,'#searchboxinput', searchData)
-        await sleep(5000)
+        await handleSearch(action)
       }
       return
     } else if (url.indexOf('google.com/maps/search') > -1) {
@@ -29,7 +21,7 @@ async function scriptMap(action) {
         searchRs = document.querySelectorAll('div[role="article"] span[role="img"]')
       }
 
-      if (searchRs && searchRs.length) {
+      if (searchRs && searchRs.length > 2) {
         let randomPo = randomRanger(2, searchRs.length - 1)
 
         let itemMap = searchRs.item(randomPo)
@@ -38,7 +30,7 @@ async function scriptMap(action) {
         }
         return
       } else {
-        await reportScript(action)
+        await handleSearch(action)
       }
     } 
     else {
@@ -47,6 +39,18 @@ async function scriptMap(action) {
   } catch (error) {
     
   }
+}
+
+async function handleSearch (action) {
+  action.searched = true
+  await setActionData(action)
+
+  let searchData = action.seach_data
+  if (!searchData) {
+    searchData = makeName(3)
+  }
+  await userTypeEnter(action.pid,'#searchboxinput', searchData)
+  await sleep(5000)
 }
 
 async function handleRating (action) {
