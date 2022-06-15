@@ -1075,6 +1075,7 @@ async function handleAction (actionData) {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
         await utils.sleep(5000)
         runnings = runnings.filter(i => i.pid != actionData.pid)
+        closeChrome(actionData.pid)
     }
 
     //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)

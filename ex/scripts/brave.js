@@ -21,7 +21,11 @@ var newsNames = [
 let closeSizes = [968, 1125, 1225, 1325]
 
 async function scriptCheckBat(action) {
-  if (!action.checkingBAT) {
+  let url = window.location.toString()
+  if (url.indexOf('youtube.com') > -1) {
+
+    await updateUserInput(action.pid,'CLICK', 582,650,0,0,"",'click')
+    await sleep(15000)
     action.checkingBAT = true
     await setActionData(action)
 
@@ -43,10 +47,10 @@ async function handleBraveSetting (action) {
     await updateUserInput(action.pid,'CLICK', 750, 790,0,0,"",'click')
     // select option
     await updateUserInput(action.pid,'CLICK', 742, 815,0,0,"",'click')
-    // click Trackers & ads blocking
-    await updateUserInput(action.pid,'CLICK', 746, 640,0,0,"",'click')
-    // select option
-    await updateUserInput(action.pid,'CLICK', 750, 705,0,0,"",'click')
+    // // click Trackers & ads blocking
+    // await updateUserInput(action.pid,'CLICK', 746, 640,0,0,"",'click')
+    // // select option
+    // await updateUserInput(action.pid,'CLICK', 750, 705,0,0,"",'click')
   } else {
     //click Fingerprinting blocking
     await updateUserInput(action.pid,'CLICK', 755, 692,0,0,"",'click')
@@ -73,7 +77,7 @@ async function scrollForViewAds (action) {
   await sleep(1000)
 
   await userScroll(action.pid, 6)
-  await sleep(12000)
+  await sleep(19000)
   await userScroll(action.pid, 6)
   await sleep(4000)
   await userScroll(action.pid, 6)
