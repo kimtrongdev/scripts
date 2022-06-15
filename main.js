@@ -137,40 +137,7 @@ async function loadSystemConfig () {
     }
 
     // handle browsers for centos and ubuntu
-    let browsers = []
-    systemConfig.browsers.forEach(br => {
-        if (process.OS == 'centos') {
-            if (br == 'brave') {
-                br = 'brave-browser'
-            }
-
-            if (br == 'microsoft-edge') {
-                br = 'microsoft-edge-stable'
-            }
-
-            if (br == 'vivaldi-stable') {
-                br = 'vivaldi'
-            }
-            browsers.push(br)
-        } else {
-            if (br != 'iridium-browser') {
-                browsers.push(br)
-            }
-        }
-    })
-    systemConfig.browsers = browsers
-
-    if (config.browser_map) {
-        Object.keys(config.browser_map).forEach(browserMaped => {
-            if (!systemConfig.browsers.includes(browserMaped)) {
-                config.browser_map[browserMaped].forEach(pid => {
-                    closeChrome(pid)
-                    execSync('rm -rf profiles/'+pid)
-                });
-                delete config.browser_map[browserMaped]
-            }  
-        })
-    }
+    systemConfig.browsers = ['brave']
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
