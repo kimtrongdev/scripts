@@ -305,23 +305,7 @@ async function startChromeAction(action, _browser) {
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
 
-    let exs = ["ex", "quality"]
-    if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
-        let traceName = 'trace'
-
-        if (trace[action.pid] && systemConfig.trace_names_ex.includes(trace[action.pid])) {
-            traceName = 'trace_ex/' + trace[action.pid]
-        } else {
-            if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
-                traceName = systemConfig.trace_names_ex[Math.floor(Math.random()*systemConfig.trace_names_ex.length)]
-                trace[action.pid] = traceName
-                traceName = 'trace_ex/' + traceName
-                fs.writeFileSync("trace_config.json", JSON.stringify(trace))
-            }
-        }
-        
-        exs.push(traceName)
-    }
+    let exs = ["ex"]
 
     exs = exs.map(x => path.resolve(x)).join(",")
     utils.log('--BROWSER--', _browser)
@@ -877,26 +861,6 @@ function handlePlaylistData (playlist) {
 function initExpress() {
     const express = require('express')
     const app = express()
-
-    app.get('/debug', (req, res) => {
-        isPauseAction = true
-        res.send({ rs: 'ok' })
-        return
-    })
-
-    app.get('/get-phone', async (req, res) => {
-        let rs = await request_api.getPhone()
-        res.send(rs)
-        return
-    })
-
-    app.get('/get-phone-code', async (req, res) => {
-        let order_id = req.query.order_id
-        let api_name = req.query.api_name
-        let rs = await request_api.getPhoneCode(order_id, api_name)
-        res.send(rs)
-        return
-    })
 
     app.get('/login', (req, res) => {
         utils.log(req.query)
