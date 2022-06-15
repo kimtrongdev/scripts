@@ -847,8 +847,8 @@ function initExpress() {
     app.get('/get-proxy', async (req, res) => {
         let _proxy = {}
         if (proxy[req.query.pid].username) {
-            _proxy.proxy_username = proxy[action.pid].username
-            _proxy.proxy_password = proxy[action.pid].password
+            _proxy.proxy_username = proxy[req.query.pid].username
+            _proxy.proxy_password = proxy[req.query.pid].password
         }
 
         res.send(_proxy)

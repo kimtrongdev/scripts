@@ -94,8 +94,6 @@ async function initAction(){
         action.lastRequest = Date.now()
         initSettingData(action)
         let proxy = await getProxy(action.pid)
-        console.log('proxy', proxy);
-        await sleep(20000)
         Object.assign(action, proxy)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
