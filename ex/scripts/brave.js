@@ -35,6 +35,10 @@ async function scriptCheckBat(action) {
     await scrollForViewAds(action)
     await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
     await scrollForViewAds(action)
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await scrollForViewAds(action)
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await scrollForViewAds(action)
     
     await checkBAT(action) //await handleBeforeTrickAds(action)
   }
