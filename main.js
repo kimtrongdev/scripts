@@ -233,9 +233,9 @@ function getProfileIds() {
 }
 
 async function startChromeAction(action, _browser) {
-    let widthSizes = [950, 1100, 1200]
+    let widthSizes = [950]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
-    let screenWidth = widthSizes[positionSize]
+    let screenWidth = 950 //widthSizes[positionSize]
     let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
@@ -248,8 +248,8 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
-    windowSize = ' --start-maximized'
-    windowPosition = ''
+    //windowSize = ' --start-maximized'
+    //windowPosition = ''
 
     // handle proxy
     let userProxy = ''
@@ -970,8 +970,7 @@ function initExpress() {
     })
 
     app.get('/input', async (req, res) => {
-        actionsData.push(req.query)
-        res.send({ rs: 'ok' })
+        actionsData.push({...req.query, res})
     })
 
     app.listen(LOCAL_PORT, () => {
@@ -980,7 +979,6 @@ function initExpress() {
 }
 
 async function handleAction (actionData) {
-    utils.log('--->', actionData);
     setDisplay(actionData.pid)
     // copy str
     if(actionData.str){
@@ -1203,6 +1201,10 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'SCREENSHOT') {
         utils.errorScreenshot(actionData.pid + '_input')
+    }
+
+    if (actionData.res) {
+        actionData.res.json({ success: true })
     }
 }
 
