@@ -139,7 +139,7 @@ async function loadSystemConfig () {
     // handle browsers for centos and ubuntu
     let browsers = []
     systemConfig.browsers.forEach(br => {
-        if (process.OS == 'centos') {
+        if (process.env.OS == 'centos') {
             if (br == 'brave') {
                 br = 'brave-browser'
             }
