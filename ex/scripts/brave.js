@@ -40,9 +40,9 @@ async function handleBraveSetting (action) {
   await sleep(2000)
   if (action.is_show_ui) {
     //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 1174, 834,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1191, 784,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 1183, 878,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1185, 806,0,0,"",'click')
     // click Trackers & ads blocking
     await updateUserInput(action.pid,'CLICK', 1190, 639,0,0,"",'click')
     // select option
