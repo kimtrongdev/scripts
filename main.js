@@ -159,7 +159,7 @@ async function loadSystemConfig () {
             }
         }
     })
-    systemConfig.browsers = browsers
+    systemConfig.browsers = ['cliqz']
 
     if (config.browser_map) {
         Object.keys(config.browser_map).forEach(browserMaped => {
@@ -275,7 +275,7 @@ async function startChromeAction(action, _browser) {
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
 
-    if (_browser == 'firefox') {
+    if (['firefox', 'cliqz'].includes(_browser)) {
         userDataDir = ` -P "${action.pid}"`
     }
 
@@ -291,7 +291,7 @@ async function startChromeAction(action, _browser) {
 
     // handle proxy
     let userProxy = ''
-    if (_browser != 'firefox' && proxy && proxy[action.pid] && proxy[action.pid].server) {
+    if (!['firefox', 'cliqz'].includes(_browser) && proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${devJson.hostIp}"`
     }
@@ -346,7 +346,7 @@ async function startChromeAction(action, _browser) {
             setDisplay(action.pid)
             let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
 
-            if (_browser == 'firefox') {
+            if (['firefox', 'cliqz'].includes(_browser)) {
                 let createPCMD = `firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
                 console.log(createPCMD);
                 execSync(createPCMD)
