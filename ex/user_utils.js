@@ -21,7 +21,11 @@ var newsNames = [
 
 async function runAction (action) {
     if (action.id == 'reg_account') {
-        await regAccount(action)
+        if (action.account_type == 'facebook'){
+            await reqFacebook(action)
+        } else {
+            await regAccount(action)
+        }
     }
     else if (action.id == 'check_bat') {
         await scriptCheckBat(action)
@@ -100,7 +104,7 @@ async function initActionData(action) {
         if (action.account_type == 'gmail') {
             await goToLocation(action.pid, 'https://accounts.google.com/signup/v2/webcreateaccount?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&flowName=GlifWebSignIn&flowEntry=SignUp')
         } else if (action.account_type == 'facebook') {
-            await goToLocation(action.pid, '')
+            await goToLocation(action.pid, 'facebook.com/reg')
         }
     }
     else if (action.id == 'check_bat') {
@@ -283,20 +287,22 @@ function getPlaylistData (action) {
 }
 
 async function getActionData(){
-    return new Promise(resolve => chrome.storage.sync.get('action', function(data) {
-            resolve(data);
-        })
-    )
+    return await browser.storage.get({ action: {} })
+    // return new Promise(resolve => chrome.storage.sync.get('action', function(data) {
+    //         resolve(data);
+    //     })
+    // )
 }
 
 async function setActionData(data){
     if (Number(data.id)) {
         data.id = data.script_code
     }
-    return new Promise(resolve => chrome.storage.sync.set({action: data}, function() {
-            resolve();
-        })
-    )
+    await browser.storage.set({ action: data })
+    // return new Promise(resolve => chrome.storage.sync.set({action: data}, function() {
+    //         resolve();
+    //     })
+    // )
 }
 
 async function sendUserAction(action){
@@ -641,4 +647,9 @@ async function getRandomVietnamesName () {
     })
 
     return rs
+}
+
+async function getTempEmail () {
+    let email = 'test4e546499@gmail.com'
+    return email
 }

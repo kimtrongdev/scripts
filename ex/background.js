@@ -9,7 +9,7 @@ let REPORT_URL = 'http://localhost:2000'
 let RE_SET_USER_AGENT = null;
 
 // handle msg from tab or background
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if(sender.tab){
           if(request.type == 'GET'){
@@ -80,7 +80,7 @@ chrome.runtime.onMessage.addListener(
 
 function clearBrowserData () {
     return new Promise((res, rej) => {
-        chrome.browsingData.remove({
+        browser.browsingData.remove({
          //"since": 1000
         }, {
             "appcache": false,
@@ -103,35 +103,35 @@ function clearBrowserData () {
 }
 
 function closeBrowser(){
-    chrome.storage.sync.set({action: {}})
-    chrome.tabs.query({}, function (tabs) {
+    browser.storage.sync.set({action: {}})
+    browser.tabs.query({}, function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
-            chrome.tabs.remove(tabs[i].id);
+            browser.tabs.remove(tabs[i].id);
         }
     });
 }
 
 function closeOldTabs() {
-    chrome.tabs.query({}, function (tabs) {
+    browser.tabs.query({}, function (tabs) {
         for (var i = tabs.length - 1; i >= 0; i--) {
             if (tabs[i].active) {
                 if (tabs[i].url.indexOf('localhost') == -1) {
-                    chrome.tabs.remove(tabs[i].id);
+                    browser.tabs.remove(tabs[i].id);
                     closeOldTabs()
                     break;
                 }
             } else {
-                chrome.tabs.remove(tabs[i].id);
+                browser.tabs.remove(tabs[i].id);
             }
         }
     });
 }
 
 function closeAdsTabs() {
-    chrome.tabs.query({}, function (tabs) {
+    browser.tabs.query({}, function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
             if (i > 0) {
-                chrome.tabs.remove(tabs[i].id);
+                browser.tabs.remove(tabs[i].id);
             }
         }
     });
@@ -139,14 +139,14 @@ function closeAdsTabs() {
 
 function getTotalTabs () {
     return new Promise((res, rej) => {
-        chrome.tabs.query({}, function (tabs) {
+        browser.tabs.query({}, function (tabs) {
             res(tabs.length)
         });
     })
 }
 
 // trong code
-chrome.webRequest.onBeforeSendHeaders.addListener(
+browser.webRequest.onBeforeSendHeaders.addListener(
     function(details) {
         if (RE_SET_USER_AGENT) {
             for (var i = 0; i < details.requestHeaders.length; ++i) {
@@ -161,7 +161,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 }, {urls: ['<all_urls>']}, ['blocking', 'requestHeaders']);
 
 // var CHROME_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36';
-// chrome.webRequest.onBeforeSendHeaders.addListener(
+// browser.webRequest.onBeforeSendHeaders.addListener(
 //     function(details) {
 //         for (var i = 0; i < details.requestHeaders.length; ++i) {
 //             if (details.requestHeaders[i].name === 'User-Agent') {
@@ -174,7 +174,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
 // check report time
 setInterval(_=> {
-    chrome.storage.sync.get('action', function(data) {
+    browser.storage.sync.get('action', function(data) {
         try{
             if(Date.now() - data.action.lastReport > 5*60*1000){
                 let report = {pid: data.action.pid,id: data.action.id, status: 0, stop: true, msg: 'TIMEOUT'}
@@ -189,10 +189,9 @@ setInterval(_=> {
     })
 },60000)
 
-chrome.webRequest.onAuthRequired.addListener(
+browser.webRequest.onAuthRequired.addListener(
     function(details, callbackFn) {
-        console.log("onAuthRequired!", details, callbackFn);
-        chrome.storage.sync.get('action', function(data) {
+        browser.storage.sync.get('action', function(data) {
             callbackFn({
                 authCredentials: {username: data.action.proxy_username, password: data.action.proxy_password}
             });

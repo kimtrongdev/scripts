@@ -25,7 +25,8 @@
         "./scripts/google_news.js",
         "./scripts/youtube_sub.js",
         "./scripts/brave.js",
-        "./scripts/reg_account.js"
+        "./scripts/reg_account.js",
+        "./scripts/reg_fb.js"
       ]
     },
     {

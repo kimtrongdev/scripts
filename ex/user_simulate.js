@@ -12,7 +12,7 @@ function makeName(length) {
 async function userType(pid,selector,str,element,iframe){
     console.log('userType',selector,str)
     let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
-    el.scrollIntoViewIfNeeded()
+   // el.scrollIntoViewIfNeeded()
     let pos = getElementPosition(el,iframe)
     await updateUserInput(pid,'TYPE',pos.x,pos.y,scrollX,scrollY,str,selector)
 }
@@ -21,7 +21,7 @@ async function userTypeEnter(pid,selector,str,element,iframe){
     try{
         console.log('userTypeEnter',selector,str)
         let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
-        el.scrollIntoViewIfNeeded()
+        //el.scrollIntoViewIfNeeded()
         let pos = getElementPosition(el,iframe)
         await updateUserInput(pid,'TYPE_ENTER',pos.x,pos.y,scrollX,scrollY,str,selector)
     }
@@ -34,7 +34,7 @@ async function userOnlyTypeEnter(pid,selector,str,element,iframe){
     try{
         console.log('userTypeEnter',selector,str)
         let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
-        el.scrollIntoViewIfNeeded()
+       // el.scrollIntoViewIfNeeded()
         let pos = getElementPosition(el,iframe)
         await updateUserInput(pid,'ONLY_TYPE_ENTER',pos.x,pos.y,scrollX,scrollY,str,selector)
     }
@@ -47,7 +47,7 @@ async function userClick(pid, selector,element,iframe, xPlus = 0){
     console.log('userClick',selector)
     let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
     if(el){
-        el.scrollIntoViewIfNeeded()
+        el.scrollIntoView()
         // await userScrollTo(pid,selector,element)
         // el.click()
         let pos = getElementPosition(el,iframe)

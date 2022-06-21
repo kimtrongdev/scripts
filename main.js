@@ -129,13 +129,14 @@ async function loadSystemConfig () {
         isSystemChecking = false
     }
 
-    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
-    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
-    (systemConfig.is_reg_acc && systemConfig.is_reg_acc != 'false')
-    if (IS_REG_USER != IS_REG_USER_new) {
-        await resetAllProfiles()
-        IS_REG_USER = IS_REG_USER_new
-    }
+    // let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
+    // (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
+    // (systemConfig.is_reg_acc && systemConfig.is_reg_acc != 'false')
+    // if (IS_REG_USER != IS_REG_USER_new) {
+    //     await resetAllProfiles()
+    //     IS_REG_USER = IS_REG_USER_new
+    // }
+    IS_REG_USER = true
 
     // handle browsers for centos and ubuntu
     let browsers = []
@@ -308,7 +309,7 @@ async function startChromeAction(action, _browser) {
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
-    let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
+    let startPage = `http://stackoverflow.com/help?` + param
 
     let exs = ["ex", "quality"]
     if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
@@ -348,9 +349,8 @@ async function startChromeAction(action, _browser) {
 
             if (['firefox', 'cliqz'].includes(_browser)) {
                 let createPCMD = `firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
-                console.log(createPCMD);
                 execSync(createPCMD)
-                cmdRun = `${_browser} -setDefaultBrowser -url "${startPage}" -install-global-extension "${exs}"`
+                cmdRun = `cd ex && web-ext run --firefox=${_browser} --no-reload --firefox-profile="${action.pid}" --start-url "${startPage}"`
             }
 
             if (_browser == 'opera') {
@@ -491,6 +491,11 @@ function getBrowserOfProfile (pid) {
 async function newRunProfile() {
     utils.log('ids: ', ids)
     let pid = ids.shift()
+
+    if (IS_REG_USER) {
+        pid = Date.now()
+    }
+
     if (pid || IS_REG_USER) {
         if (pid) {
             // handle remove undefined folder
@@ -537,7 +542,10 @@ async function getScriptData(pid, isNewProxy = false) {
             return
         }
     } else {
-        action = await request_api.getNewScript(pid)
+        action = {
+            script_code: 'reg_account', 
+            account_type: 'facebook'
+        }//await request_api.getNewScript(pid)
     }
 
     if (action) {
@@ -1223,12 +1231,13 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'GO_ADDRESS') {
         execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
-        if (actionData.str.length > 40) {
-            execSync(`xdotool key Control_L+v`)
-            await utils.sleep(2000)
-        } else {
-            execSync(`xdotool type "${actionData.str}"`)
-        }
+        // if (actionData.str.length > 40) {
+        //     execSync(`xdotool key Control_L+v`)
+        //     await utils.sleep(2000)
+        // } else {
+        //     execSync(`xdotool type "${actionData.str}"`)
+        // }
+        execSync(`xdotool key Control_L+v`)
         await utils.sleep(1000)
         execSync(`xdotool key KP_Enter`)
         await utils.sleep(2000)
