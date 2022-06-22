@@ -453,7 +453,6 @@ async function startChromeAction(action, _browser) {
     // handle proxy
     let userProxy = ''
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
-        utils.log('set proxy', proxy[action.pid])
         userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${devJson.hostIp}"`
     }
     // if (proxy && proxy[action.pid] && proxy[action.pid].username) {
@@ -589,18 +588,13 @@ async function newProfileManage() {
             }
         })
 
-        //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
-        // get new profile
         let newProfile = await request_api.getNewProfile()
-        utils.log('newProfile: ', newProfile)
         if (!newProfile.err && newProfile.profile) {
             // copy main to clone profile
             let profile = newProfile.profile
             if (proxy) {
                 proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
-                utils.log('pid', profile.id, 'proxy', proxy[profile.id])
                 if (!proxy[profile.id]) {
-                    utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
                     await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
                     return
                 }
@@ -1244,12 +1238,12 @@ async function handleAction (actionData) {
                             if (braveInfo.total_bat == currentBat) {
                                 request_api.updateProfileData({ is_disabled_ads: true, pid: actionData.pid, count_brave_rounds: 0 })
                                 request_api.getProfileProxy(actionData.pid, PLAYLIST_ACTION.WATCH, true)
-                                return res.send({ disable_ads: true })
+                                return actionData.res.send({ disable_ads: true })
                             }
                         } else {
                             if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
                                 request_api.updateProfileData({ is_disabled_ads: false, pid: actionData.pid })
-                                return res.send({ enable_ads: true })
+                                return actionData.res.send({ enable_ads: true })
                             }
                         }
                     }
