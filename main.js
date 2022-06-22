@@ -68,6 +68,233 @@ const PLAYLIST_ACTION = {
 }
 const ADDNEW_ACTION = 3
 
+
+// --------------------------
+
+
+
+
+
+const utils = {
+    getRndInteger: (min, max) => {
+        return Math.floor(Math.random() * (max - min) ) + min;
+    },
+    log: (...pr) => {
+        if (DEBUG) {
+            console.log(...pr)
+        }
+    },
+    randomRanger: function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+    },
+    sleep: function(ms) {
+        return new Promise(resolve => setTimeout(function () {
+            resolve('ok')
+        }, ms));
+    },
+    screenshot: async function(pid){
+        if (!DEBUG) {
+            return
+        }
+        try{
+            let fullPath = path.resolve('screen',pid+'_'+(+ new Date())+'.jpg')
+            // console.log('screenshot: ', fullPath)
+            if(WIN_ENV){
+                execSync('call screenCapture ' + fullPath)
+            }
+            else{
+                // execSync('import -window root ' + fullPath)
+            }
+            // await page.screenshot({path: fullPath})
+        }
+        catch (e) {
+            console.log('error','screenshot: ', pid, 'err: ', e)
+        }
+    },
+    errorScreenshot: async function(fileName){
+        if (!DEBUG) {
+            return
+        }
+        try{
+            if (is_show_ui) {
+                return
+            }
+            let fullPath = path.join('error',fileName+'_'+(+ new Date())+'.jpg')
+            console.log('errorScreenshot: ', fullPath)
+            if(WIN_ENV){
+                execSync('call screenCapture ' + fullPath)
+            }
+            else{
+                execSync('import -window root ' + fullPath)
+            }
+            // await page.screenshot({path: fullPath})
+        }
+        catch (e) {
+            console.log('error','errorScreenshot: ', fileName, 'err: ', e)
+        }
+    },
+    logScreenshot: async function(fileName){
+        if (!IS_LOG_SCREEN) {
+            return
+        }
+        try{
+            let images = fs.readdirSync('logscreen/')
+            if (images.length > 50) {
+                let count = 0
+                for (let fileName of images) {
+                    if (count < 20) {
+                        fs.unlinkSync('logscreen/' + fileName)
+                    }
+                    count++ 
+                }
+            }
+            
+            let fullPath = path.join('logscreen',fileName+'_'+(+ new Date())+'.jpg')
+            console.log('Screenshot: ', fullPath)
+            if(WIN_ENV){
+                execSync('call screenCapture ' + fullPath)
+            }
+            else{
+                execSync('import -window root ' + fullPath)
+            }
+            // await page.screenshot({path: fullPath})
+        }
+        catch (e) {
+            console.log('error','errorScreenshot: ', fileName, 'err: ', e)
+        }
+    },
+    getIp: async function(pid){
+        console.log('pid: ', pid, ' rr ip')
+        return ''
+    },
+    shuffleArray: function (array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array
+    }
+}
+
+const request = require('request-promise')
+const SUB_URL = `http://${ devJson.hostIp }`
+function rq (data) {
+    data.headers = {
+        api_key: process.env.API_KEY
+    }
+    return request(data)
+}
+const request_api = {
+    getPhone: async () => {
+        return await rq({uri: SUB_URL + '/api/phone',json: true})
+    },
+    getPhoneCode: async (orderID, api_name) => {
+        return await rq({uri: SUB_URL + `/api/phone/code?order_id=${orderID}&api_name=${api_name}`,json: true})
+    },
+    getProfileForRegChannel: async (pid = 0) => {
+        return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel?pid='+pid,json: true})
+    },
+    reportUpgrade: async () => {
+        return await rq({uri: SUB_URL + '/report-upgrade?vmId=' + config.vm_id,json: true})
+    },
+    getProxyV4: async (data) => {
+        let query = ''
+        if (data) {
+            query = '?api_id='+data.api_id+'&isLoadNewProxy='+data.isLoadNewProxy
+        }
+        
+        return await rq({uri: SUB_URL + '/api/proxy/get-proxy-v4' + query, json: true})
+    },
+    updateProfileData: async (data) => {
+        return await rq({method: 'POST', uri: SUB_URL + '/api/profile/update-data', body: data, json: true})
+    },
+    getBraveInfo: async (pid) => {
+        return await rq({uri: SUB_URL + '/api/profile/get-brave-info?pid='+pid, json: true})
+    },
+    getRandomKeyWord: async () => {
+        return await rq({uri: 'https://random-data-api.com/api/commerce/random_commerce',json: true})
+    },
+    reportScript: async (pid, serviceId = '', status = true) => {
+        return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})
+    },
+    getNewScript: async (pid) => {
+        return await rq({uri: SUB_URL + '/api/script/get-new?pid='+pid, json: true})
+    },
+    checkToUpdate: async () => {
+        try {
+            return await rq({uri: SUB_URL + '/get-to-update?vmId=' + config.vm_id, json: true})
+        } catch (error) {
+            console.log(error);
+            return false
+        }
+    },
+    getYTVideo: async (pid = '') => {
+        return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
+    },
+    getNewProfile: async () => {
+        return await rq({uri: SUB_URL + '/api/profile',json: true,qs: {vmId: config.vm_id}})
+    },
+    updateProfileStatus: async (pid, vmId, status, description) => {
+        return await rq({method: 'POST', uri: SUB_URL + '/profile/update-status',body: {pid: pid, vmId: vmId, status: status, description: description}, json: true})
+    },
+    getSubChannels: async (pid, vmId, proxy) => {
+        return await rq({uri: SUB_URL + '/playlist/get-sub-channels',json: true, qs: {pid: pid, vmId: vmId, proxy: proxy}})
+    },
+    getPlaylist: async (pid, action) => {
+        return await rq({uri: SUB_URL + '/playlist/get-playlist',json: true, qs: {pid: pid, vmId: config.vm_id, action: action}})
+    },
+    updateWatchedVideo: async (pid, viewedAds) => {
+        return await rq({method: 'POST',uri: SUB_URL + '/profile/update-watched',json: true, body: {pid: pid, viewed_ads: viewedAds}})
+    },
+    getChannelSub: async (channelId) => {
+        const apiUrl = 'https://www.googleapis.com/youtube/v3/channels?part=statistics&key=AIzaSyCVfKZdlQgwiFY-lEeZ6xKsgUBTbTEDZWA&id='
+        return await rq({uri: apiUrl+channelId, json: true, qs: {vmId: config.vm_id}})
+    },
+    getProfileProxy: async (pid,action, isLoadNewProxy = '') => {
+        return await rq({uri: SUB_URL + '/api/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
+    },
+    getSystemConfig: async () => {
+        try{
+            return await rq({ uri: SUB_URL + '/api/config/system?vmId=' + config.vm_id, json: true })
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    getComment: async (keyword) => {
+        try{
+            return await rq({uri: 'https://dominhit.pro/get-comment-api',json: true,qs: {keyword: keyword}})
+        }
+        catch (e) {
+        }
+    },
+    reportVM: async (data = {}) => {
+        try{
+            return await rq({uri: SUB_URL + '/api/vm/report',json: true,qs: data})
+        }
+        catch (e) {
+        }
+    },
+    getNavigator: async (pid,os = 'Windows',browser = 'Chrome',seo) => {
+        try{
+            let nav = await rq({uri: `https://dominhit.pro/api?action=get-fingerprint&os=${os}&browser=${browser}&id=${pid}&seo=${seo}`})
+            nav = JSON.parse(nav)
+            nav = JSON.parse(nav.data.data)
+            return nav
+        }
+        catch (e){
+            console.log('error','getNavigator',e)
+        }
+    }
+}
+
+
+
+
+
+//-------------------------------
 function addOpenBrowserAction (action, browser) {
     actionsData.push({
         action: 'OPEN_BROWSER',
@@ -1451,219 +1678,3 @@ async function checkToUpdate () {
     }
 }
 start()
-
-
-const utils = {
-    getRndInteger: (min, max) => {
-        return Math.floor(Math.random() * (max - min) ) + min;
-    },
-    log: (...pr) => {
-        if (DEBUG) {
-            console.log(...pr)
-        }
-    },
-    randomRanger: function(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min
-    },
-    sleep: function(ms) {
-        return new Promise(resolve => setTimeout(function () {
-            resolve('ok')
-        }, ms));
-    },
-    screenshot: async function(pid){
-        if (!DEBUG) {
-            return
-        }
-        try{
-            let fullPath = path.resolve('screen',pid+'_'+(+ new Date())+'.jpg')
-            // console.log('screenshot: ', fullPath)
-            if(WIN_ENV){
-                execSync('call screenCapture ' + fullPath)
-            }
-            else{
-                // execSync('import -window root ' + fullPath)
-            }
-            // await page.screenshot({path: fullPath})
-        }
-        catch (e) {
-            console.log('error','screenshot: ', pid, 'err: ', e)
-        }
-    },
-    errorScreenshot: async function(fileName){
-        if (!DEBUG) {
-            return
-        }
-        try{
-            if (is_show_ui) {
-                return
-            }
-            let fullPath = path.join('error',fileName+'_'+(+ new Date())+'.jpg')
-            console.log('errorScreenshot: ', fullPath)
-            if(WIN_ENV){
-                execSync('call screenCapture ' + fullPath)
-            }
-            else{
-                execSync('import -window root ' + fullPath)
-            }
-            // await page.screenshot({path: fullPath})
-        }
-        catch (e) {
-            console.log('error','errorScreenshot: ', fileName, 'err: ', e)
-        }
-    },
-    logScreenshot: async function(fileName){
-        if (!IS_LOG_SCREEN) {
-            return
-        }
-        try{
-            let images = fs.readdirSync('logscreen/')
-            if (images.length > 50) {
-                let count = 0
-                for (let fileName of images) {
-                    if (count < 20) {
-                        fs.unlinkSync('logscreen/' + fileName)
-                    }
-                    count++ 
-                }
-            }
-            
-            let fullPath = path.join('logscreen',fileName+'_'+(+ new Date())+'.jpg')
-            console.log('Screenshot: ', fullPath)
-            if(WIN_ENV){
-                execSync('call screenCapture ' + fullPath)
-            }
-            else{
-                execSync('import -window root ' + fullPath)
-            }
-            // await page.screenshot({path: fullPath})
-        }
-        catch (e) {
-            console.log('error','errorScreenshot: ', fileName, 'err: ', e)
-        }
-    },
-    getIp: async function(pid){
-        console.log('pid: ', pid, ' rr ip')
-        return ''
-    },
-    shuffleArray: function (array) {
-        for (var i = array.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-        }
-        return array
-    }
-}
-
-const request = require('request-promise')
-const SUB_URL = `http://${ devJson.hostIp }`
-function rq (data) {
-    data.headers = {
-        api_key: process.env.API_KEY
-    }
-    return request(data)
-}
-const request_api = {
-    getPhone: async () => {
-        return await rq({uri: SUB_URL + '/api/phone',json: true})
-    },
-    getPhoneCode: async (orderID, api_name) => {
-        return await rq({uri: SUB_URL + `/api/phone/code?order_id=${orderID}&api_name=${api_name}`,json: true})
-    },
-    getProfileForRegChannel: async (pid = 0) => {
-        return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel?pid='+pid,json: true})
-    },
-    reportUpgrade: async () => {
-        return await rq({uri: SUB_URL + '/report-upgrade?vmId=' + config.vm_id,json: true})
-    },
-    getProxyV4: async (data) => {
-        let query = ''
-        if (data) {
-            query = '?api_id='+data.api_id+'&isLoadNewProxy='+data.isLoadNewProxy
-        }
-        
-        return await rq({uri: SUB_URL + '/api/proxy/get-proxy-v4' + query, json: true})
-    },
-    updateProfileData: async (data) => {
-        return await rq({method: 'POST', uri: SUB_URL + '/api/profile/update-data', body: data, json: true})
-    },
-    getBraveInfo: async (pid) => {
-        return await rq({uri: SUB_URL + '/api/profile/get-brave-info?pid='+pid, json: true})
-    },
-    getRandomKeyWord: async () => {
-        return await rq({uri: 'https://random-data-api.com/api/commerce/random_commerce',json: true})
-    },
-    reportScript: async (pid, serviceId = '', status = true) => {
-        return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})
-    },
-    getNewScript: async (pid) => {
-        return await rq({uri: SUB_URL + '/api/script/get-new?pid='+pid, json: true})
-    },
-    checkToUpdate: async () => {
-        try {
-            return await rq({uri: SUB_URL + '/get-to-update?vmId=' + config.vm_id, json: true})
-        } catch (error) {
-            console.log(error);
-            return false
-        }
-    },
-    getYTVideo: async (pid = '') => {
-        return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
-    },
-    getNewProfile: async () => {
-        return await rq({uri: SUB_URL + '/api/profile',json: true,qs: {vmId: config.vm_id}})
-    },
-    updateProfileStatus: async (pid, vmId, status, description) => {
-        return await rq({method: 'POST', uri: SUB_URL + '/profile/update-status',body: {pid: pid, vmId: vmId, status: status, description: description}, json: true})
-    },
-    getSubChannels: async (pid, vmId, proxy) => {
-        return await rq({uri: SUB_URL + '/playlist/get-sub-channels',json: true, qs: {pid: pid, vmId: vmId, proxy: proxy}})
-    },
-    getPlaylist: async (pid, action) => {
-        return await rq({uri: SUB_URL + '/playlist/get-playlist',json: true, qs: {pid: pid, vmId: config.vm_id, action: action}})
-    },
-    updateWatchedVideo: async (pid, viewedAds) => {
-        return await rq({method: 'POST',uri: SUB_URL + '/profile/update-watched',json: true, body: {pid: pid, viewed_ads: viewedAds}})
-    },
-    getChannelSub: async (channelId) => {
-        const apiUrl = 'https://www.googleapis.com/youtube/v3/channels?part=statistics&key=AIzaSyCVfKZdlQgwiFY-lEeZ6xKsgUBTbTEDZWA&id='
-        return await rq({uri: apiUrl+channelId, json: true, qs: {vmId: config.vm_id}})
-    },
-    getProfileProxy: async (pid,action, isLoadNewProxy = '') => {
-        return await rq({uri: SUB_URL + '/api/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
-    },
-    getSystemConfig: async () => {
-        try{
-            return await rq({ uri: SUB_URL + '/api/config/system?vmId=' + config.vm_id, json: true })
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    },
-    getComment: async (keyword) => {
-        try{
-            return await rq({uri: 'https://dominhit.pro/get-comment-api',json: true,qs: {keyword: keyword}})
-        }
-        catch (e) {
-        }
-    },
-    reportVM: async (data = {}) => {
-        try{
-            return await rq({uri: SUB_URL + '/api/vm/report',json: true,qs: data})
-        }
-        catch (e) {
-        }
-    },
-    getNavigator: async (pid,os = 'Windows',browser = 'Chrome',seo) => {
-        try{
-            let nav = await rq({uri: `https://dominhit.pro/api?action=get-fingerprint&os=${os}&browser=${browser}&id=${pid}&seo=${seo}`})
-            nav = JSON.parse(nav)
-            nav = JSON.parse(nav.data.data)
-            return nav
-        }
-        catch (e){
-            console.log('error','getNavigator',e)
-        }
-    }
-}
