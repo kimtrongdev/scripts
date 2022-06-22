@@ -41,7 +41,6 @@ try {
 require('log-timestamp')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
-global.workingDir = getScriptDir()
 const path = require('path')
 const del = require('del');
 const fs = require('fs')
