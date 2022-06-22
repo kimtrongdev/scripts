@@ -49,29 +49,6 @@ async function initActionData(action) {
     if (action.id == 'check_bat') {
         await goToLocation(action.pid, 'google.com/')
     }
-    else if (action.id == 'google_news') {
-        if (!action.is_searched) {
-            action.is_searched = true
-            await setActionData(action)
-            let randomPoSite = randomRanger(0, newsNames.length - 1)
-            let link = action.news_link || `https://www.${newsNames[randomPoSite]}/`
-            await goToLocation(action.pid, link)
-        }
-    }
-    else if (action.id == 'search') {
-        action.search_keywords = action.search_keywords.split(',')
-        await setActionData(action)
-        await goToLocation(action.pid, 'https://www.google.com/')
-    }
-    else if (action.id == 'map') {
-        await goToLocation(action.pid,'google.com/maps')
-    }
-    else if (action.id == 'youtube_sub') {
-        await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
-    }
-    else if(action.id == 'reg_user'){
-        await goToLocation(action.pid,'accounts.google.com')
-    }
     else if(action.id == 'login'){
         if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
             await handleBraveSetting(action)
@@ -79,29 +56,6 @@ async function initActionData(action) {
     }
     else if(action.id == 'logout'){
         await goToLocation(action.pid,'accounts.google.com/logout')
-    }
-    else if(action.id == 'confirm'){
-        // await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
-        await goToLocation(action.pid,'families.google.com')
-    }
-    else if(action.id == 'changepass'){
-        await goToLocation(action.pid,'myaccount.google.com/security')
-    }
-    else if(action.id == 'checkpremium'){
-        await goToLocation(action.pid,'m.youtube.com//')
-    }
-    else if(action.id == 'checkcountry'){
-        await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
-    }
-    else if (action.id == 'watch' || action.id == 'watch_video') {
-        // await goToLocation(action.pid,'youtube.com/feed/history//')
-        // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
-        if (action.google) {
-            await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
-            await sleep(3000)
-        } else {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
-        }
     }
 }
 

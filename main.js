@@ -212,9 +212,6 @@ const request_api = {
     getBraveInfo: async (pid) => {
         return await rq({uri: SUB_URL + '/api/profile/get-brave-info?pid='+pid, json: true})
     },
-    getRandomKeyWord: async () => {
-        return await rq({uri: 'https://random-data-api.com/api/commerce/random_commerce',json: true})
-    },
     reportScript: async (pid, serviceId = '', status = true) => {
         return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})
     },
@@ -247,10 +244,6 @@ const request_api = {
     updateWatchedVideo: async (pid, viewedAds) => {
         return await rq({method: 'POST',uri: SUB_URL + '/profile/update-watched',json: true, body: {pid: pid, viewed_ads: viewedAds}})
     },
-    getChannelSub: async (channelId) => {
-        const apiUrl = 'https://www.googleapis.com/youtube/v3/channels?part=statistics&key=AIzaSyCVfKZdlQgwiFY-lEeZ6xKsgUBTbTEDZWA&id='
-        return await rq({uri: apiUrl+channelId, json: true, qs: {vmId: config.vm_id}})
-    },
     getProfileProxy: async (pid,action, isLoadNewProxy = '') => {
         return await rq({uri: SUB_URL + '/api/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
     },
@@ -262,13 +255,6 @@ const request_api = {
             return false;
         }
     },
-    getComment: async (keyword) => {
-        try{
-            return await rq({uri: 'https://dominhit.pro/get-comment-api',json: true,qs: {keyword: keyword}})
-        }
-        catch (e) {
-        }
-    },
     reportVM: async (data = {}) => {
         try{
             return await rq({uri: SUB_URL + '/api/vm/report',json: true,qs: data})
@@ -276,17 +262,6 @@ const request_api = {
         catch (e) {
         }
     },
-    getNavigator: async (pid,os = 'Windows',browser = 'Chrome',seo) => {
-        try{
-            let nav = await rq({uri: `https://dominhit.pro/api?action=get-fingerprint&os=${os}&browser=${browser}&id=${pid}&seo=${seo}`})
-            nav = JSON.parse(nav)
-            nav = JSON.parse(nav.data.data)
-            return nav
-        }
-        catch (e){
-            console.log('error','getNavigator',e)
-        }
-    }
 }
 
 
@@ -1467,15 +1442,15 @@ function startDisplay(pid) {
             exec(`Xvfb :${pid} -ac -screen 0, 1920x1040x24`)
             // execSync(`unzip -o -P Trung@123456 ex.zip`)
             // execSync(`unzip -o -P Trung@123456 quality.zip`)
-            let core = (pid % 4 + 1) * 2
-            let ram = core * (pid % 2 + 1) * 2
-            execSync(`sed -i '241 s/"value":.*/"value":${core}/' trace/js/background/prefs.js;sed -i '245 s/"value":.*/"value":${ram}/' trace/js/background/prefs.js`)
-            if (pid % 10 < 0) {
-                execSync(`sed -i '404 s/"enabled":.*/"enabled":false,/' trace/js/background/prefs.js`)
-            }
-            else {
-                execSync(`sed -i '404 s/"enabled":.*/"enabled":true,/' trace/js/background/prefs.js`)
-            }
+           // let core = (pid % 4 + 1) * 2
+           // let ram = core * (pid % 2 + 1) * 2
+           // execSync(`sed -i '241 s/"value":.*/"value":${core}/' trace/js/background/prefs.js;sed -i '245 s/"value":.*/"value":${ram}/' trace/js/background/prefs.js`)
+            // if (pid % 10 < 0) {
+            //     execSync(`sed -i '404 s/"enabled":.*/"enabled":false,/' trace/js/background/prefs.js`)
+            // }
+            // else {
+            //     execSync(`sed -i '404 s/"enabled":.*/"enabled":true,/' trace/js/background/prefs.js`)
+            // }
         }
     }
     catch (e) {
