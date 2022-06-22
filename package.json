@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node main.js",
+    "start": "bytenode main.jsc",
     "build": "bytenode --compile main.js"
   },
   "dependencies": {
