@@ -39,10 +39,8 @@ try {
 } catch (e) { trace = {} }
 
 require('log-timestamp')
-const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
-const request_api = require('./request_api')
 global.workingDir = getScriptDir()
 const path = require('path')
 const del = require('del');
