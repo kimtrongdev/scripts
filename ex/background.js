@@ -1,7 +1,3 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 
 let URL = 'http://{url_server_host}'
@@ -151,18 +147,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
         if (RE_SET_USER_AGENT) {}
         return {requestHeaders: details.requestHeaders};
 }, {urls: ['<all_urls>']}, ['blocking', 'requestHeaders']);
-
-// var CHROME_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36';
-// chrome.webRequest.onBeforeSendHeaders.addListener(
-//     function(details) {
-//         for (var i = 0; i < details.requestHeaders.length; ++i) {
-//             if (details.requestHeaders[i].name === 'User-Agent') {
-//                 details.requestHeaders[i].value = CHROME_USER_AGENT;
-//                 break;
-//             }
-//         }
-//         return {requestHeaders: details.requestHeaders};
-//     }, {urls: ['<all_urls>']}, ['blocking', 'requestHeaders']);
 
 // check report time
 setInterval(_=> {

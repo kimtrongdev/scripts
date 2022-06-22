@@ -104,57 +104,6 @@ async function userScroll(pid, n){
     await updateUserInput(pid,'SCROLL',x, y ,0, 0,  n)
 }
 
-async function userScrollMobile(pid, n){
-    console.log('userScroll',n)
-    let x = window.screenX + windowWide/2
-    let y = window.screenY + mobileMenuBarHeight + window.innerHeight/2
-    await updateUserInput(pid,'SCROLL',x, y ,0, 0,  n)
-}
-
-async function userClickRandomVideo(pid) {
-    console.log('userClickRandomVideo')
-    let watches = document.querySelectorAll('#content a#thumbnail[href*="watch"]:not([href*="list="])')
-    let visibles = Array.from(watches).filter(x => x.getBoundingClientRect().x > 0 && x.getBoundingClientRect().y > 100 && x.getBoundingClientRect().y < window.innerHeight - x.getBoundingClientRect().height)
-    if(visibles.length){
-        let random = visibles[randomRanger(0,visibles.length-1)]
-        let pos = getElementPosition(random)
-        await updateUserInput(pid,'CLICK',pos.x,pos.y,pos.scrollX,pos.scrollY,"", 'random video: #content a#thumbnail[href*="watch"]')
-    }
-    else{
-        throw 'no random video'
-    }
-}
-
-async function userClickRandomVideoMobile(pid) {
-    console.log('userClickRandomVideoMobile')
-    let watches = [...document.querySelectorAll('ytm-browse a.large-media-item-thumbnail-container[href*="watch"]:not([href*="list="])')]
-    let visibles = watches  //Array.from(watches).filter(x => x.getBoundingClientRect().x > 0 && x.getBoundingClientRect().y > 0 && x.getBoundingClientRect().y < window.innerHeight - x.getBoundingClientRect().height)
-    if(visibles.length){
-        let random = visibles[randomRanger(0,visibles.length-1)]
-        await userClick(pid,'random video: #content a#thumbnail[href*="watch"]',random)
-        // let pos = getElementPosition(random)
-        // await updateUserInput(pid,'CLICK',pos.x,pos.y,pos.scrollX,pos.scrollY,"", 'random video: ytm-browse a#thumbnail[href*="watch"]')
-    }
-    else{
-        throw 'no random video'
-    }
-}
-
-async function userClickRandomVideoMobileComplact(pid) {
-    console.log('userClickRandomVideoMobile')
-    let watches = [...document.querySelectorAll('ytm-search a.compact-media-item-image[href*="watch"]:not([href*="list="])')]
-    let visibles = watches//Array.from(watches).filter(x => x.getBoundingClientRect().x > 0 && x.getBoundingClientRect().y > 0 && x.getBoundingClientRect().y < window.innerHeight - x.getBoundingClientRect().height)
-    if(visibles.length){
-        let random = visibles[randomRanger(0,visibles.length-1)]
-        await userClick(pid,'random video: #content a#thumbnail[href*="watch"]',random)
-        // let pos = getElementPosition(random)
-        // await updateUserInput(pid,'CLICK',pos.x,pos.y,pos.scrollX,pos.scrollY,"", 'random video: #content a#thumbnail[href*="watch"]')
-    }
-    else{
-        throw 'no random video'
-    }
-}
-
 async function goToLocation(pid, url){
     console.log('goToLocation',url)
     await updateUserInput(pid,'GO_ADDRESS',0, 0 ,0, 0,  url)
@@ -167,73 +116,10 @@ async function sendKey(pid, key){
 
 async function nextVideo(pid){
     console.log('nextVideo')
-    if (IS_MOBILE) {
-       await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]') 
-    } else {
-        await updateUserInput(pid,'NEXT_VIDEO')
-    }
 }
 
 async function switchMobile(action){
     console.log('switchMobile')
-    action.windowWide = 1920    //window.outerWidth
-    action.mobileMenuBarHeight = 138
-
-    await updateUserInput(action.pid,'OPEN_DEV',window.screenX,window.screenY)
-    await sleep(3000)
-
-    if(action.availWidth && action.userAgent){
-        let temp = action.availHeight
-        action.availHeight = action.availWidth
-        action.availWidth = temp
-        action.zoom = 576 > action.availHeight ? 1 : (576/action.availHeight).toFixed(2)
-        if(576/action.availHeight > 2){
-            action.zoom = 1
-            action.availWidth = action.availWidth*2
-            action.availHeight = action.availHeight*2
-        }
-        await setActionData(action)
-        if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
-            await updateUserInput(action.pid,'OPEN_MOBILE_CUSTOM', action.availWidth, action.availHeight, 0, 0,  action.userAgent)
-        }
-        else if(window.outerHeight != action.availHeight || window.outerWidth != action.availWidth){            
-            await updateUserInput(action.pid,'REOPEN_MOBILE_CUSTOM', action.availWidth, action.availHeight, 0, 0,  action.userAgent)
-        }
-        else{
-            await updateUserInput(action.pid,'SELECT_MOBILE_CUSTOM')
-        }
-    }
-    else{
-        // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
-        //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
-
-        //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
-        action.zoom = [0.68, 0.75, 0.63, 0.45, 0.5, 0.42, 0.8, 0.88, 0.5, 0.5][action.pid%10]
-        // ipse 86
-        // xr 50
-        // ip 12 pro 50
-
-        // pixel 5 68 
-        // samsung s8 75 
-        // sam sung s20 63   
-        // ipad air 40 45 
-        // ipad mini 50  
-        // sur pro 7 38  42 
-        // sur dou 70 80  
-        // glx fold 88 --
-        // samsung A51/71 50
-
-        await setActionData(action)
-        if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
-            await updateUserInput(action.pid,'OPEN_MOBILE')
-        }
-        else{
-            await updateUserInput(action.pid,'SELECT_MOBILE')
-        }
-    }
-
-    await sleep(1000)
-    await updateUserInput(action.pid,'SHOW_PAGE')
 }
 
 async function screenshot(pid){
