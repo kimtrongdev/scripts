@@ -50,30 +50,30 @@ async function scriptCheckBat(action) {
 }
 
 async function handleBraveSetting (action) {
-  await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-  await goToLocation(action.pid, `brave://settings/shields`)
+  //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+ // await goToLocation(action.pid, `brave://settings/shields`)
   await sleep(2000)
   if (action.is_show_ui) {
     //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 750, 790,0,0,"",'click')
+   // await updateUserInput(action.pid,'CLICK', 750, 790,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 742, 815,0,0,"",'click')
+    //await updateUserInput(action.pid,'CLICK', 742, 815,0,0,"",'click')
     // // click Trackers & ads blocking
     // await updateUserInput(action.pid,'CLICK', 746, 640,0,0,"",'click')
     // // select option
     // await updateUserInput(action.pid,'CLICK', 750, 705,0,0,"",'click')
   } else {
     //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 755, 692,0,0,"",'click')
+    //await updateUserInput(action.pid,'CLICK', 755, 692,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 743,722,0,0,"",'click')
+   // await updateUserInput(action.pid,'CLICK', 743,722,0,0,"",'click')
     // click Trackers & ads blocking
-    await updateUserInput(action.pid,'CLICK', 742,550,0,0,"",'click')
+   // await updateUserInput(action.pid,'CLICK', 742,550,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 719,610,0,0,"",'click')
+   // await updateUserInput(action.pid,'CLICK', 719,610,0,0,"",'click')
   }
 
-  await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+  //await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
 
   await handleBeforeTrickAds(action)
 

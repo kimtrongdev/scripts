@@ -101,6 +101,12 @@ async function handleForChangeShowUI() {
 
 async function loadSystemConfig () {
     let rs = await request_api.getSystemConfig();
+
+    if (rs.error_code) {
+        systemConfig.is_stop = true
+        return
+    }
+
     if (rs && !rs.error) {
         systemConfig = rs
     }
@@ -138,7 +144,6 @@ async function loadSystemConfig () {
 
     // handle browsers for centos and ubuntu
     systemConfig.browsers = ['brave']
-    utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
 async function profileRunningManage() {
@@ -195,11 +200,6 @@ async function runUpdateVps () {
         }
 
         try {
-            let gitKey = systemConfig.update_key
-            if (gitKey) {
-                execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`)
-            }
-
             execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull")
         } catch (error) {
             console.log(error);
@@ -495,13 +495,6 @@ async function getScriptData(pid, isNewProxy = false) {
                     proxy[pid] = {
                         server: newProxy.server
                     }
-                    // let proxyInfo = newProxy.server.split(':')
-                    // if (proxyInfo.length >= 2) {
-                    //     execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
-                    //     execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
-                    //     execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
-                    //     proxy[pid] = undefined
-                    // }
                 } else {
                     proxy[pid] = proxyV6
                 }
@@ -1148,67 +1141,6 @@ async function handleAction (actionData) {
         await utils.sleep(1000)
         execSync(`xdotool key KP_Enter`)
         await utils.sleep(2000)
-    }
-    else if (actionData.action == 'OPEN_DEV') {
-        execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
-    }
-    else if (actionData.action == 'OPEN_MOBILE') {
-        utils.log('open mobile simulator')
-        let po = {
-            0: 4, 
-            1: 5, 
-            2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
-            7: 11,
-            8: 12, 
-            9: 12, 
-        }
-        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
-        devicePo -= 1
-        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
-        utils.log('add custom mobile')
-        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'REOPEN_MOBILE_CUSTOM') {
-        utils.log('add custom mobile')
-        execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SELECT_MOBILE') {
-        utils.log('open mobile simulator')
-        let po = {
-            0: 4, 
-            1: 5, 
-            2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
-            7: 11,
-            8: 12, 
-            9: 12, 
-        }
-        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
-        devicePo -= 1
-        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
-        utils.log('open mobile simulator')
-        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SHOW_PAGE') {
-        execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
-    }
-    else if (actionData.action == 'SELECT_OPTION') {
-        execSync(`xdotool key Page_Up && sleep 1`)
-        for(let i = 0; i < actionData.str*1; i++){
-            execSync(`xdotool key Down && sleep 0.2`)
-        }
-        execSync(`xdotool key KP_Enter`)
     }
     else if (actionData.action == 'SCREENSHOT') {
         utils.errorScreenshot(actionData.pid + '_input')

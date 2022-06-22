@@ -6,7 +6,7 @@ package-lock.json
 .idea
 .vscode
 .DS_Store
-
+src
 export
 media
 var

@@ -223,14 +223,6 @@ async function sendUserAction(action){
     }))
 }
 
-function updateWatchingTime(pid, action, readingTime, playlistTime, lastPlaylist){
-    // return new Promise(resolve => chrome.runtime.sendMessage({type: 'POST', url: '/profile/update-watch-time',
-    //         data: {pid: pid, action: action, reading_time: readingTime, playlist_time: playlistTime, last_playlist: lastPlaylist}}, function (response) {
-    //     resolve(response);
-    // }))
-}
-
-
 function updateWatchedVideo(viewedAds, pid){
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: {id: 'watched', viewedAds: viewedAds, pid}}, function (response) {
@@ -252,28 +244,6 @@ async function updateActionStatus(pid, action, status, msg, stop = true){
         resolve(response);
     }))
 }
-
-function getComment(keyword){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'COMMENT', url: 'https://dominhit.pro/get-comment-api',
-        data: {keyword: keyword}}, function (response) {
-        resolve(response);
-    }))
-}
-
-async function getPublicDays(videoId){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'COMMENT', url: 'https://pll.dominhit.pro/playlist/api',
-        data: {action: 'get-public-time-day-ago',id: videoId}}, function (response) {
-        resolve(response);
-    }))
-}
-
-async function getFirstVideo(pllId){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'COMMENT', url: 'https://pll.dominhit.pro/playlist/api',
-        data: {action: 'get-video-of-playlist',id: pllId}}, function (response) {
-        resolve(response);
-    }))
-}
-
 // function updateLoginStatus(pid, status, msg){
 //     console.log('updateLoginStatus',pid,status)
 //     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/login',
@@ -362,32 +332,4 @@ function getTotalTabs() {
     }, function (response) {
         resolve(response);
     }))
-}
-
-async function randomFullName () {
-    let rs = await fetch('https://random-data-api.com/api/name/random_name').then(response => {
-        return response.json()
-    }).then(response => response).catch(error => {
-        return {
-            name: makeName(5)
-        }
-    })
-
-    return rs.name
-}
-
-function getElementContainsInnerText(tagName, innerText) {
-    let headings = document.evaluate(
-        `//${tagName}[contains(., '${innerText}')]`,
-        document,
-        null,
-        XPathResult.ANY_TYPE,
-        null
-    );
-
-    if (headings) {
-        const thisHeading = headings.iterateNext();
-        return thisHeading
-    }
-    return null
 }
