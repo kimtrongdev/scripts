@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node main.js",
-    "build": "bytenode --compile main.js src/main.jsc && bytenode --compile request_api.js src/request_api.jsc && bytenode --compile utils.js src/utils.jsc"
+    "start": "node main.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
