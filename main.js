@@ -723,7 +723,7 @@ async function profileManage() {
 }
 
 async function running() {
-    if (process.env.OS == 'ubuntu') {
+    if (process.env.OS == 'ubuntu' || !process.env.OS) {
         try {
             execSync(`sudo xrandr -s 1600x1200`)
         } catch (error) {
