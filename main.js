@@ -723,11 +723,13 @@ async function profileManage() {
 }
 
 async function running() {
-    // try {
-    //     execSync(`sudo xrandr -s 1600x1200`)
-    // } catch (error) {
-    //     console.log(error);
-    // }
+    if (process.env.OS == 'ubuntu') {
+        try {
+            execSync(`sudo xrandr -s 1600x1200`)
+        } catch (error) {
+            console.log(error);
+        }
+    }
     
     // get profile ids
     if (!fs.existsSync('profiles')) {
