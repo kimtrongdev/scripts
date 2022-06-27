@@ -3,7 +3,10 @@ async function scriptYoutubeSub(action) {
     console.log('start watch')
 
     let url = window.location.toString()
-    if (url.indexOf('youtube.com/account') > -1) {
+
+    if (url.indexOf('/videos')) {
+      await processWatchChannelPageSub(action)
+    } else if (url.indexOf('youtube.com/account') > -1) {
       let channels = document.querySelectorAll('ytd-account-item-renderer')
       if (channels.length <= action.channel_position) {
         await updateActionStatus(action.pid, action.id, 0, 'end playlist')
