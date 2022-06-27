@@ -46,7 +46,7 @@ async function userWatch(action){
             }
 
             if (!channels.length) {
-                await sleep(15000)
+                await sleep(25000)
                 channels = document.querySelectorAll('ytd-account-item-renderer')
             }
 
