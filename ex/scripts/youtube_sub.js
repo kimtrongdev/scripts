@@ -110,7 +110,7 @@ async function processHomePageSub(action) {
   await checkLogin(action)
 
   if (action.channel_id) {
-    await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id)
+    await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id + '/videos')
     return
   }
 
@@ -391,6 +391,37 @@ async function processSearchPageSub(action) {
 }
 
 async function processWatchChannelPageSub(action) {
+  if(url.indexOf('/videos') > -1){
+    let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)]
+    let video
+    if(videos.length){
+      video = videos[randomRanger(0, Math.min(videos.length-1, 15))]
+      await setActionData(action)
+    }
+
+    if (video && Number(action.sub_from_video_percent) > Math.random() * 100) {
+      await userClick(action.pid,'video',video)
+      await sleep(2000)
+    } else {
+      await clickSub(action)
+    }
+
+  } else{
+    // click videos tab
+    let videoTab = document.querySelectorAll('#tabsContent .tab-content').item(1)
+    if(videoTab){
+        await userClick(action.pid,'#tabsContent .tab-content', videoTab)
+    }
+    else if(document.querySelector('#title-text > a.yt-simple-endpoint[href*="/videos?"]')){
+        await userClick(action.pid,'#title-text > a.yt-simple-endpoint[href*="/videos?"]')
+    }
+    else{
+      await clickSub(action)
+    }
+  }
+}
+
+async function clickSub (action) {
   if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
     let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
     await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
@@ -465,11 +496,24 @@ async function processSearchSuggest(action) {
 }
 
 async function processWatchPageSub(action) {
-  let watchVideo = await preWatchingVideoSub(action)
-  if (watchVideo) {
-    let finishVideo = await watchingVideoSub(action)
-    await afterWatchingVideoSub(action, finishVideo)
+  await sleep(10000)
+  try {
+    // like
+    if (Number(action.like_percent) > Math.random() * 100) {
+      await LikeOrDisLikeYoutubeVideo(action.pid, true)
+    }
+    // comment
+    if (Number(action.comment_percent) > Math.random() * 100) {
+      await CommentYoutubeVideo(action.pid, action.comment)
+    } else {
+      await sleep(5000)
+    }
+  } catch (error) {
+    console.log(error);
   }
+
+  await sleep(5000)
+  await clickSub(action)
 }
 
 async function clickPlayIfPauseSub(pid) {
