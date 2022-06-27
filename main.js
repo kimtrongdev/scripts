@@ -19,7 +19,7 @@ global.devJson = {
 global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
-const LOCAL_PORT = 3000
+const LOCAL_PORT = 2000
 let IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 

@@ -5,7 +5,7 @@
 'use strict';
 
 let URL = 'http://{url_server_host}'
-let REPORT_URL = 'http://localhost:3000'
+let REPORT_URL = 'http://localhost:2000'
 let RE_SET_USER_AGENT = null;
 
 // handle msg from tab or background
