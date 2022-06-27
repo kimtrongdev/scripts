@@ -4,7 +4,7 @@ async function scriptYoutubeSub(action) {
 
     let url = window.location.toString()
 
-    if (url.indexOf('/videos')) {
+    if (url.indexOf('/videos') > -1) {
       await processWatchChannelPageSub(action)
     } else if (url.indexOf('youtube.com/account') > -1) {
       let channels = document.querySelectorAll('ytd-account-item-renderer')
@@ -394,6 +394,8 @@ async function processSearchPageSub(action) {
 }
 
 async function processWatchChannelPageSub(action) {
+  let url = window.location.toString()
+
   if(url.indexOf('/videos') > -1){
     let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)]
     let video
