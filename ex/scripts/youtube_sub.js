@@ -394,9 +394,11 @@ async function processWatchChannelPageSub(action) {
   if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
     let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
     await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
-    await sleep(3000)  
+    await sleep(3000)
+    await reportScript(action)
+    return
   }
-  await reportScript(action)
+  await reportScript(action, 0)
   return
 }
 
