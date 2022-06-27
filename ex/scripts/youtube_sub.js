@@ -74,38 +74,7 @@ async function scriptYoutubeSub(action) {
     }
   }
   catch (e) {
-    console.log('error', action.pid, e)
-    if (e.toString() == 'NOT_LOGIN') action.retry = true
-    if (action.retry || window.location.toString().indexOf('https://www.youtube.com/watch') > -1) {
-      await updateActionStatus(action.pid, action.id, 0, e.toString())
-    }
-    else if (e.toString() == 'SEARCH_SKIP') {
-      action.retry = undefined
-      action.filter = action.filter ? action.filter - 1 : undefined
-      await setActionData(action)
-      await goToLocation(action.pid, 'youtube.com//')
-      await sleep(2000)
-    }
-    else if (e.toString() == 'VIDEO_NOT_FOUND') {
-      action.searchList = action.searchList.filter(x => x.trim() != action.video)
-      if (action.searchList.length == 0) {
-        await updateActionStatus(action.pid, action.id, 0, e.toString())
-        return
-      }
-      action.retry = false
-      action.video = action.searchList[randomRanger(0, action.searchList.length - 1)].trim()
-      action.filter = undefined
-      await setActionData(action)
-      await goToLocation(action.pid, 'youtube.com//')
-      await sleep(2000)
-    }
-    else {
-      action.retry = true
-      action.filter = undefined
-      await setActionData(action)
-      await goToLocation(action.pid, 'youtube.com//')
-      await sleep(2000)
-    }
+    await reportScript(action, 0)
   }
 }
 
@@ -427,6 +396,14 @@ async function processWatchChannelPageSub(action) {
 }
 
 async function clickSub (action) {
+  let url = window.location.toString()
+  if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && url.indexOf('/watch') > -1) {
+    await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
+    await sleep(3000)
+    await reportScript(action)
+    return
+  }
+
   if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
     let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
     await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
