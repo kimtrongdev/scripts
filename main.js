@@ -172,10 +172,6 @@ async function loadSystemConfig () {
         })
     }
 
-    if (usersPosition) {
-        config.usersPosition = usersPosition
-        fs.writeFileSync("vm_log.json", JSON.stringify(config))
-    }
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -981,6 +977,11 @@ function initExpress() {
                     pid: req.query.pid,
                     position: req.query.position,
                 })
+            }
+
+            if (usersPosition) {
+                config.usersPosition = usersPosition
+                fs.writeFileSync("vm_log.json", JSON.stringify(config))
             }
         }
         else if (req.query.id == 'watched'){
