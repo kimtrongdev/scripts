@@ -398,9 +398,14 @@ async function processWatchChannelPageSub(action) {
 async function clickSub (action) {
   let url = window.location.toString()
   if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && url.indexOf('/watch') > -1) {
-    await userClick(action.pid,'#meta #subscribe-button ytd-subscribe-button-renderer')
-    await sleep(3000)
-    await reportScript(action)
+    if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+      await userClick(action.pid,'#meta #subscribe-button ytd-subscribe-button-renderer')
+      await sleep(3000)
+      await reportScript(action)
+    } else {
+      await reportScript(action, 0)
+    }
+    
     return
   }
 
