@@ -960,12 +960,17 @@ function initExpress() {
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
-                runnings.forEach(running => {
-                    if (running.pid == req.query.pid) {
-                        running.lastReport = Date.now()
-                    }
-                });
-                return res.json(action)
+                if (req.query.script_code == action.script_code) {
+                    closeChrome(req.query.pid)
+                    runnings = runnings.filter(i => i.pid != req.query.pid)
+                } else {
+                    runnings.forEach(running => {
+                        if (running.pid == req.query.pid) {
+                            running.lastReport = Date.now()
+                        }
+                    });
+                    return res.json(action)
+                }
             }
         }
         else if (req.query.id == 'channel-position') {
