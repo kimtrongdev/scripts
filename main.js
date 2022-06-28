@@ -171,6 +171,11 @@ async function loadSystemConfig () {
             }  
         })
     }
+
+    if (usersPosition) {
+        config.usersPosition = usersPosition
+        fs.writeFileSync("vm_log.json", JSON.stringify(config))
+    }
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -853,6 +858,10 @@ async function initConfig() {
         config.browser_map = {}
     }
 
+    if (config.usersPosition) {
+        usersPosition = config.usersPosition
+    }
+    
     fs.writeFileSync("vm_log.json", JSON.stringify(config))
 
     //utils.log('version: ', version)
