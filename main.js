@@ -604,7 +604,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
                 if (oldUserPosition) {
                     action.channel_position = Number(oldUserPosition.position) + 1
-                   // usersPosition = usersPosition.filter(u => u.pid != action.pid)
+                    oldUserPosition.channel_position = action.channel_position
                 } else {
                     action.channel_position = 0
                 }
