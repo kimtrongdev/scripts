@@ -36,6 +36,9 @@ async function userWatch(action){
         }
         
         if (url.indexOf('youtube.com/account') > -1) {
+            action.fisrtStart = false
+            await setActionData(action)
+            await sleep(4000)
             let channels = document.querySelectorAll('ytd-account-item-renderer')
             if (action.loadFirstUser) {
                 action.loadFirstUser = false
@@ -50,7 +53,6 @@ async function userWatch(action){
                 channels = document.querySelectorAll('ytd-account-item-renderer')
             }
 
-            let checkboxDontShow = document.querySelector('#checkboxContainer')
             if (document.querySelector('#primary-content')) {
                 await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
                 await sleep(60000)
@@ -72,7 +74,7 @@ async function userWatch(action){
                 }
             }
 
-            if (!channels || !channels.length || checkboxDontShow) {
+            if (!channels || !channels.length) {
                 action.loadFirstUser = true
                 await setActionData(action)
                 await goToLocation(action.pid, 'youtube.com/account')
@@ -200,8 +202,6 @@ async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
     if ((action.channel_position == -1 || action.fisrtStart) && !isNonUser) {
-        action.fisrtStart = false
-        await setActionData(action)
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
     }
