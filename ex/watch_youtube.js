@@ -83,7 +83,7 @@ async function userWatch(action){
             action.channel_position += 1
             await setActionData(action)
 
-            if (action.channel_position > channels.length) {
+            if (action.channel_position >= channels.length) {
                 if (channels.length) {
                     action.channel_position = 0
                 }
@@ -199,7 +199,7 @@ async function userWatch(action){
 async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
-    if ((action.channel_position == 0 || action.fisrtStart) && !isNonUser) {
+    if ((action.channel_position == -1 || action.fisrtStart) && !isNonUser) {
         action.fisrtStart = false
         await setActionData(action)
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
