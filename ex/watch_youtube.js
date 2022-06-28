@@ -83,18 +83,17 @@ async function userWatch(action){
             action.channel_position += 1
             await setActionData(action)
 
-            if (channels.length < action.channel_position) {
+            if (action.channel_position > channels.length) {
                 if (channels.length) {
-                    reportPositionChannel(action.pid, -1)
+                    action.channel_position = 0
                 }
-                
-                isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
-                return
             }
 
             let channel = channels.item(action.channel_position)
             if (channel) {
-                if (action.channel_position < channels.length - 2) {
+                if (action.channel_position == channels.length) {
+                    reportPositionChannel(action.pid, -1)
+                } else {
                     reportPositionChannel(action.pid, action.channel_position)
                 }
 
