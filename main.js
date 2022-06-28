@@ -947,7 +947,7 @@ function initExpress() {
             });
         }
         else if (req.query.isScriptReport) {
-            await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status)
+            await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                // execSync(`xdotool key Control_L+w && sleep 1`)
                 // browser will closed by background extention

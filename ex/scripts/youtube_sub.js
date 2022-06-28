@@ -373,6 +373,11 @@ async function processWatchChannelPageSub(action) {
       await setActionData(action)
     }
 
+    if (document.querySelector('#subscriber-count') && document.querySelector('#subscriber-count').innerText ) {
+      action.data_reported = document.querySelector('#subscriber-count').innerText
+      await setActionData(action)
+    }
+
     if (video && Number(action.sub_from_video_percent) > Math.random() * 100) {
       await userClick(action.pid,'video',video)
       await sleep(2000)

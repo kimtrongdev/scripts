@@ -43,8 +43,8 @@ module.exports = {
     getRandomKeyWord: async () => {
         return await rq({uri: 'https://random-data-api.com/api/commerce/random_commerce',json: true})
     },
-    reportScript: async (pid, serviceId = '', status = true) => {
-        return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status }})
+    reportScript: async (pid, serviceId = '', status = true, data_reported = '') => {
+        return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status, data_reported }})
     },
     getNewScript: async (pid) => {
         return await rq({uri: SUB_URL + '/api/script/get-new?pid='+pid, json: true})
