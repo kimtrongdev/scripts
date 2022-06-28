@@ -80,9 +80,12 @@ async function userWatch(action){
                 return
             }
 
-            if (channels.length <= action.channel_position) {
-                if (channels.length > 3) {
-                    reportPositionChannel(action.pid, 0)
+            action.channel_position += 1
+            await setActionData(action)
+
+            if (channels.length < action.channel_position) {
+                if (channels.length) {
+                    reportPositionChannel(action.pid, -1)
                 }
                 
                 isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
@@ -98,9 +101,6 @@ async function userWatch(action){
                 //if (action.id == 'watch') {
                     getPlaylistData(action)
                 //}
-                
-                action.channel_position += 1
-                await setActionData(action)
                 await userClick(action.pid, '', channel)
             } else {
                 isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))

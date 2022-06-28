@@ -604,10 +604,9 @@ async function getScriptData(pid, isNewProxy = false) {
             if (['watch', 'watch_video', 'comment_youtube'].includes(action.id)) {
                 let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
                 if (oldUserPosition) {
-                    action.channel_position = Number(oldUserPosition.position) + 1
-                    oldUserPosition.position = action.channel_position
+                    action.channel_position = Number(oldUserPosition.position)
                 } else {
-                    action.channel_position = 0
+                    action.channel_position = -1
                 }
             }
 
