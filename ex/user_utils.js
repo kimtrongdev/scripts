@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'comment_youtube') {
+    if (action.id == 'create_playlist') {
+        await createPlaylistScript(action)
+    }
+    else if (action.id == 'comment_youtube') {
         await youtubeComment(action)
     }
     else if (action.id == 'check_bat') {
@@ -96,7 +99,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'comment_youtube') {
+    if (action.id == 'create_playlist') {
+        await goToLocation(action.pid, 'https://studio.youtube.com/')
+    }
+    else if (action.id == 'comment_youtube') {
         action.commented_count = 0
         action.video_ids = action.video_ids.split(',')
         action.channel_ids = action.channel_ids.split(',')
@@ -616,4 +622,77 @@ function getElementContainsInnerText(tagName, innerText) {
         return thisHeading
     }
     return null
+}
+
+async function handleUsersSelection (action) {
+    action.fisrtStart = false
+    await setActionData(action)
+    await sleep(4000)
+    let channels = document.querySelectorAll('ytd-account-item-renderer')
+    if (action.loadFirstUser) {
+        action.loadFirstUser = false
+        await setActionData(action)
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await sleep(60000)
+        return
+    }
+
+    if (!channels.length) {
+        await sleep(25000)
+        channels = document.querySelectorAll('ytd-account-item-renderer')
+    }
+
+    if (document.querySelector('#primary-content')) {
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await sleep(60000)
+    }
+
+    // handle not found channels
+    if (!channels.length) {
+        await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
+        await sleep(5000)
+        let switchChannelOpt = document.querySelectorAll('yt-multi-page-menu-section-renderer #endpoint #content-icon').item(3)
+        if (switchChannelOpt) {
+            await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
+            await sleep(5000)
+            let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
+            if (fisUser) {
+                await userClick(action.pid, 'fisUser', fisUser)
+                await sleep(60000)
+            }
+        }
+    }
+
+    if (!channels || !channels.length) {
+        action.loadFirstUser = true
+        await setActionData(action)
+        await goToLocation(action.pid, 'youtube.com/account')
+        await sleep(60000)
+        return
+    }
+
+    action.channel_position += 1
+    await setActionData(action)
+
+    if (action.channel_position >= channels.length) {
+        if (channels.length) {
+            action.channel_position = 0
+        }
+    }
+
+    let channel = channels.item(action.channel_position)
+    if (channel) {
+        if (action.channel_position == channels.length) {
+            reportPositionChannel(action.pid, -1)
+        } else {
+            reportPositionChannel(action.pid, action.channel_position)
+        }
+
+        //if (action.id == 'watch') {
+            getPlaylistData(action)
+        //}
+        await userClick(action.pid, '', channel)
+    } else {
+        isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+    }
 }

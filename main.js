@@ -527,6 +527,13 @@ async function getScriptData(pid, isNewProxy = false) {
         }
     } else {
         action = await request_api.getNewScript(pid)
+        action = {
+            playlist_name: 'avata',
+            suggest_channel: 'channel/UC0tnmAG4GeDQ2W68gr-tjeQ',
+            channel_position: '0',
+            script_code: 'create_playlist',
+
+        }
     }
 
     if (action) {
