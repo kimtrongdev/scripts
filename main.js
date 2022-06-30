@@ -893,7 +893,7 @@ function initExpress() {
     })
 
     app.get('/report-playlist-jct', async (req, res) => {
-        let rs = await request_api.reportPlaylistJCT(req.query.data)
+        let rs = await request_api.reportPlaylistJCT(req.query)
         return res.send(rs)
     })
 
