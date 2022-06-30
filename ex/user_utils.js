@@ -100,7 +100,7 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'create_playlist') {
-        await goToLocation(action.pid, 'https://studio.youtube.com/')
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.id == 'comment_youtube') {
         action.commented_count = 0
@@ -241,6 +241,12 @@ async function reportScript(action, status = true) {
             await runAction(action)
         }
         resolve()
+    }))
+}
+
+function reportPlaylistJCT (data) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-playlist-jct', data: data }, function (response) {
+        resolve(response);
     }))
 }
 

@@ -527,13 +527,6 @@ async function getScriptData(pid, isNewProxy = false) {
         }
     } else {
         action = await request_api.getNewScript(pid)
-        action = {
-            playlist_name: 'avata',
-            suggest_channel: 'channel/UC0tnmAG4GeDQ2W68gr-tjeQ',
-            channel_position: '0',
-            script_code: 'create_playlist',
-
-        }
     }
 
     if (action) {
@@ -897,6 +890,11 @@ function initExpress() {
         isPauseAction = true
         res.send({ rs: 'ok' })
         return
+    })
+
+    app.get('/report-playlist-jct', async (req, res) => {
+        let rs = await request_api.reportPlaylistJCT(req.query.data)
+        return res.send(rs)
     })
 
     app.get('/get-comment', async (req, res) => {
