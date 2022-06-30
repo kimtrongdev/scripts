@@ -4,6 +4,15 @@ async function createPlaylistScript(action) {
     let url = window.location.toString()
 
     if (url == 'https://www.youtube.com/') {
+      if (action.channel_position == 0) {
+        await sleep(5000)
+        let checkCreateChannel = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
+        if (checkCreateChannel) {
+          await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
+          return
+        }
+      }
+
       await goToLocation(action.pid, 'https://studio.youtube.com/')
 
     }
