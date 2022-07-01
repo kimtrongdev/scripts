@@ -140,7 +140,7 @@ async function scriptAddVideoPlaylist(action) {
 
 async function handleSearchAddVideo (action) {
   let videos = document.querySelectorAll('path[d="M12,16.5c0.83,0,1.5,0.67,1.5,1.5s-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5S11.17,16.5,12,16.5z M10.5,12 c0,0.83,0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5S10.5,11.17,10.5,12z M10.5,6c0,0.83,0.67,1.5,1.5,1.5 s1.5-0.67,1.5-1.5S12.83,4.5,12,4.5S10.5,5.17,10.5,6z"]')
-  let total = Math.min(videos.length, Number(action.total_added) || 3)
+  let total = Math.min(videos.length, Number(action.total_added_from_search) || 3)
   let count = 0
   while (count < total) {
     if (count % 5 == 0) {
@@ -151,15 +151,18 @@ async function handleSearchAddVideo (action) {
     if (item) {
       await userClick(action.pid, '', item)
       await sleep(1000)
-      await userClick(action.pid, 'ytd-menu-service-item-renderer path[d="M22,13h-4v4h-2v-4h-4v-2h4V7h2v4h4V13z M14,7H2v1h12V7z M2,12h8v-1H2V12z M2,16h8v-1H2V16z"]')
+      let saveToListItem = document.querySelector('ytd-menu-service-item-renderer path[d="M22,13h-4v4h-2v-4h-4v-2h4V7h2v4h4V13z M14,7H2v1h12V7z M2,12h8v-1H2V12z M2,16h8v-1H2V16z"]')
+      if (saveToListItem) {
+        await userClick(action.pid, 'ytd-menu-service-item-renderer path[d="M22,13h-4v4h-2v-4h-4v-2h4V7h2v4h4V13z M14,7H2v1h12V7z M2,12h8v-1H2V12z M2,16h8v-1H2V16z"]')
       
-      let playlistItem = document.querySelector(`yt-formatted-string[title="${action.playlist_name}"]`)
-      if (playlistItem) {
-        await userClick(action.pid, '', playlistItem)
+        let playlistItem = document.querySelector(`yt-formatted-string[title="${action.playlist_name}"]`)
+        if (playlistItem) {
+          await userClick(action.pid, '', playlistItem)
+        }
+        await userClick(action.pid, 'yt-icon[icon="close"]')
+        count++
       }
-      await userClick(action.pid, 'yt-icon[icon="close"]')
     }
-    count++
   }
 
   // go to suggest channel
