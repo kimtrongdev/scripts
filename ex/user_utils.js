@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'create_playlist') {
+    if (action.id == 'add_video_playlist') {
+        await scriptAddVideoPlaylist(action)
+    }
+    else if (action.id == 'create_playlist') {
         await createPlaylistScript(action)
     }
     else if (action.id == 'comment_youtube') {
@@ -99,7 +102,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'create_playlist') {
+    if (action.id == 'add_video_playlist') {
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    }
+    else if (action.id == 'create_playlist') {
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.id == 'comment_youtube') {

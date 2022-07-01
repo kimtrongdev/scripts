@@ -37,6 +37,13 @@ async function userLogin(action) {
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
         if (url == 'https://www.youtube.com/') {
+            await sleep(5000)
+            let checkCreateChannel = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
+            if (checkCreateChannel) {
+                await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
+                await sleep(60000)
+            }
+
             let avatar = document.querySelector('#avatar-btn')
             if (avatar) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)

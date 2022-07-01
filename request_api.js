@@ -12,7 +12,7 @@ function rq (data) {
 
 module.exports = {
     reportPlaylistJCT: async (data) => {
-        return await rq({method: 'POST', uri: SUB_URL + '/api/playlist/report/playlist_jct', body: data, json: true})
+        return await rq({ method: 'POST', uri: SUB_URL + '/api/playlist/report/playlist_jct', body: data, json: true })
     },
     getComment: async () => {
         return await rq({uri: SUB_URL + '/api/data/comment?type=youtube',json: true})
