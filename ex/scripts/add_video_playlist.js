@@ -23,7 +23,7 @@ async function scriptAddVideoPlaylist(action) {
         await sleep(5000)
       }
 
-      await goToLocation(action.pid, `https://www.youtube.com/results?search_query=${action.playlist_name}&sp=CAMSBAgCEAE%253D`)
+      await goToLocation(action.pid, `https://www.youtube.com/results?search_query=${action.playlist_name}&sp=EgIIAg%253D%253D`)
     }
     else if (url.indexOf('youtube.com/account') > -1) {
       await sleep(4000)
