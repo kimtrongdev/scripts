@@ -23,7 +23,7 @@ async function scriptAddVideoPlaylist(action) {
         await sleep(5000)
       }
 
-      await goToLocation(action.pid, `https://www.youtube.com/results?search_query=${action.playlist_name}&sp=EgIIAg%253D%253D`)
+      await goToLocation(action.pid, `https://www.youtube.com/results?search_query=${action.playlist_name}&sp=CAISAhAB`)
     }
     else if (url.indexOf('youtube.com/account') > -1) {
       await sleep(4000)
@@ -95,7 +95,7 @@ async function scriptAddVideoPlaylist(action) {
     }
     else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1) {
       let videos = document.querySelectorAll('#items #details #menu svg path[d="M12,16.5c0.83,0,1.5,0.67,1.5,1.5s-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5S11.17,16.5,12,16.5z M10.5,12 c0,0.83,0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5S10.5,11.17,10.5,12z M10.5,6c0,0.83,0.67,1.5,1.5,1.5 s1.5-0.67,1.5-1.5S12.83,4.5,12,4.5S10.5,5.17,10.5,6z"]')
-      let total = Math.min(videos.length, 5)
+      let total = Math.min(videos.length, 3)
       let count = 0
       while (count < total) {
         if (count % 5 == 0) {
@@ -140,7 +140,7 @@ async function scriptAddVideoPlaylist(action) {
 
 async function handleSearchAddVideo (action) {
   let videos = document.querySelectorAll('path[d="M12,16.5c0.83,0,1.5,0.67,1.5,1.5s-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5S11.17,16.5,12,16.5z M10.5,12 c0,0.83,0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5S10.5,11.17,10.5,12z M10.5,6c0,0.83,0.67,1.5,1.5,1.5 s1.5-0.67,1.5-1.5S12.83,4.5,12,4.5S10.5,5.17,10.5,6z"]')
-  let total = Math.min(videos.length, 1)
+  let total = Math.min(videos.length, Number(action.total_added) || 3)
   let count = 0
   while (count < total) {
     if (count % 5 == 0) {
