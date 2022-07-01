@@ -182,6 +182,10 @@ async function handlePlaylistSearch (action) {
   }
 
   // go to suggest channel
-  await goToLocation(action.pid, `https://www.youtube.com/${action.suggest_channel}/videos`)
+  if (action.suggest_channel) {
+    await goToLocation(action.pid, `https://www.youtube.com/${action.suggest_channel}/videos`)
+  } else {
+    reportScript(action)
+  }
 
 }
