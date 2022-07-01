@@ -46,7 +46,7 @@ async function scriptSearch(action) {
       await sleep(10000)
       await reportScript(action)
     } else {
-      await reportScript(action, false)
+      await reportScript(action, 0)
     }
   } catch (error) {
     console.log(error);
@@ -60,6 +60,6 @@ async function searchKeyword (action) {
     await userTypeEnter(action.pid,'input[maxLength="2048"]', keyword)
   } else {
     // handle end script
-    await reportScript(action, false)
+    await reportScript(action, 0)
   }
 }
