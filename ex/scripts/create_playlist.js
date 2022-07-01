@@ -143,6 +143,7 @@ async function handlePlaylistSettings (action) {
   await sleep(5000)
   let shareListData = document.querySelector('#bar #share-url').value
   if (shareListData) {
+    shareListData = shareListData.replace('https://www.youtube.com/playlist?', '')
     await reportPlaylistJCT({
       url: shareListData,
       playlist_name: action.playlist_name,
