@@ -100,7 +100,7 @@ async function initAction(){
         //     await sleep(30000)
         //     return
         // }
-        if (action.id !== 'search') {
+        if (action.id !== 'search' && action.id !== 'login') {
             await goToLocation(action.pid,'https://www.google.com/')
         } else {
             await initActionData(action)
