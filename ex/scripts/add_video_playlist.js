@@ -16,7 +16,11 @@ async function scriptAddVideoPlaylist(action) {
       
     }
     else if (url.indexOf('youtube.com/playlist') > -1) {
-      action.data_reported = document.querySelectorAll('#stats yt-formatted-string').item(1).innerText
+      try {
+        action.data_reported = document.querySelectorAll('#stats yt-formatted-string').item(1).innerText
+      } catch (error) {
+        console.log(error);
+      }
 
       if (document.querySelector('ytd-alert-with-button-renderer #button yt-formatted-string')) {
         await userClick(action.pid, 'ytd-alert-with-button-renderer #button yt-formatted-string')
