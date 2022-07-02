@@ -100,14 +100,21 @@ async function initAction(){
         //     await sleep(30000)
         //     return
         // }
-
-        await initActionData(action)
+        if (action.id !== 'search') {
+            await goToLocation(action.pid,'https://www.google.com/')
+        } else {
+            await initActionData(action)
+        }
+        
         await sleep(5000)
     }
     else{
         let data = await getActionData()
         action = data.action
-        initSettingData(action)        
+        initSettingData(action) 
+        if (action.id != 'search' && window.location.toString().indexOf('www.google.com') > -1) {
+            await initActionData(action)
+        }
 
         console.log('action:',action)
     }
