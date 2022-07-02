@@ -242,7 +242,13 @@ async function runUpdateVps () {
         }
 
         fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
-        execSync('sudo systemctl reboot')
+
+        if (Number(systemConfig.reboot_on_update)) {
+            execSync('sudo systemctl reboot')
+        } else {
+            execSync('pm2 restart all')
+        }
+
         await utils.sleep(15000)
         runnings = []
     } catch (error) {
