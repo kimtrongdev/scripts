@@ -16,7 +16,7 @@ async function scriptAddVideoPlaylist(action) {
       
     }
     else if (url.indexOf('youtube.com/playlist') > -1) {
-      //todo check views
+      action.data_reported = document.querySelectorAll('#stats yt-formatted-string').item(1).innerText
 
       if (document.querySelector('ytd-alert-with-button-renderer #button yt-formatted-string')) {
         await userClick(action.pid, 'ytd-alert-with-button-renderer #button yt-formatted-string')
