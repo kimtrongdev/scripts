@@ -139,15 +139,17 @@ async function scriptAddVideoPlaylist(action) {
 }
 
 async function handleSearchAddVideo (action) {
+  await sleep(5000)
   let videos = document.querySelectorAll('path[d="M12,16.5c0.83,0,1.5,0.67,1.5,1.5s-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5S11.17,16.5,12,16.5z M10.5,12 c0,0.83,0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5S10.5,11.17,10.5,12z M10.5,6c0,0.83,0.67,1.5,1.5,1.5 s1.5-0.67,1.5-1.5S12.83,4.5,12,4.5S10.5,5.17,10.5,6z"]')
   let total = Math.min(videos.length, Number(action.total_added_from_search) || 3)
   let count = 0
-  while (count < total) {
+  let indexItem = 0
+  while (count < total && indexItem < videos.length) {
     if (count % 5 == 0) {
       reportLive(action.pid)
     }
 
-    let item = videos.item(count)
+    let item = videos.item(indexItem)
     if (item) {
       await userClick(action.pid, '', item)
       await sleep(1000)
@@ -163,6 +165,7 @@ async function handleSearchAddVideo (action) {
         count++
       }
     }
+    indexItem++
   }
 
   // go to suggest channel
