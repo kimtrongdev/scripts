@@ -17,7 +17,9 @@ async function scriptAddVideoPlaylist(action) {
     }
     else if (url.indexOf('youtube.com/playlist') > -1) {
       try {
+        await sleep(4000)
         action.data_reported = document.querySelectorAll('#stats yt-formatted-string').item(1).innerText
+        await setActionData(action)
       } catch (error) {
         console.log(error);
       }
