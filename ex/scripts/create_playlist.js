@@ -6,7 +6,11 @@ async function createPlaylistScript(action) {
     if (url == 'https://www.youtube.com/') {
       if (action.channel_position == 0) {
         await sleep(5000)
-        let checkCreateChannel = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
+        let checkCreateChannel1 = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
+        let checkCreateChannel2 = await getElementContainsInnerText('yt-formatted-string', 'TẠO KÊNH')
+        let checkCreateChannel3 = await getElementContainsInnerText('yt-formatted-string', 'aaaa')
+
+        let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3
         if (checkCreateChannel) {
           await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
           return
