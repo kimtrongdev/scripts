@@ -2,6 +2,21 @@ async function scriptSearch(action) {
   try {
     let url = window.location.toString()
 
+    if (url.indexOf('https://consent.youtube.com/m') > -1) {
+        try {
+            let btnRejectAll = document.querySelectorAll('form').item(1)
+            if (btnRejectAll) {
+                await userClick(action.pid, 'btnRejectAll', btnRejectAll)
+            } else {
+                await goToLocation(action.pid,'accounts.google.com')
+                await sleep(60000)
+            }
+            return
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     if (url.indexOf('https://www.google.com/search?q') > -1) {
       let site = getElementContainsInnerText('cite', action.site_url)
       if (site) {

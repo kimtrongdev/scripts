@@ -3,6 +3,21 @@ async function scriptAddVideoPlaylist(action) {
     reportLive(action.pid)
     let url = window.location.toString()
 
+    if (url.indexOf('https://consent.youtube.com/m') > -1) {
+        try {
+            let btnRejectAll = document.querySelectorAll('form').item(1)
+            if (btnRejectAll) {
+                await userClick(action.pid, 'btnRejectAll', btnRejectAll)
+            } else {
+                await goToLocation(action.pid,'accounts.google.com')
+                await sleep(60000)
+            }
+            return
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     if (url == 'https://www.youtube.com/') {
       if (action.channel_position == 0) {
         await sleep(5000)
