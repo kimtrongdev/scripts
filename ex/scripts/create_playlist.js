@@ -29,8 +29,8 @@ async function createPlaylistScript(action) {
         let checkCreateChannel1 = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
         let checkCreateChannel2 = await getElementContainsInnerText('yt-formatted-string', 'TẠO KÊNH')
         let checkCreateChannel3 = await getElementContainsInnerText('yt-formatted-string', 'চ্যানেল তৈরি করুন')
-
-        let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3
+        let checkCreateChannel4 = document.querySelector('#create-channel-button tp-yt-paper-button .style-blue-text')
+        let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3 || checkCreateChannel4
         if (checkCreateChannel) {
           await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
           return
