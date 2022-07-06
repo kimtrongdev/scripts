@@ -28,7 +28,7 @@ async function createPlaylistScript(action) {
         await sleep(5000)
         let checkCreateChannel1 = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
         let checkCreateChannel2 = await getElementContainsInnerText('yt-formatted-string', 'TẠO KÊNH')
-        let checkCreateChannel3 = await getElementContainsInnerText('yt-formatted-string', 'aaaa')
+        let checkCreateChannel3 = await getElementContainsInnerText('yt-formatted-string', 'চ্যানেল তৈরি করুন')
 
         let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3
         if (checkCreateChannel) {
