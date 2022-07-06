@@ -40,6 +40,10 @@ async function createPlaylistScript(action) {
       await goToLocation(action.pid, 'https://studio.youtube.com/')
 
     }
+    else if (url.indexOf('https://support.google.com/accounts/answer/') > -1) {
+      await goToLocation(action.pid, 'https://www.youtube.com/')
+      return
+    }
     else if (url.indexOf('youtube.com/account') > -1) {
       await sleep(4000)
       let channels = document.querySelectorAll('ytd-account-item-renderer')
