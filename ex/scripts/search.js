@@ -25,6 +25,12 @@ async function scriptSearch(action) {
         await searchKeyword(action)
       }
     } else if (url.indexOf('https://www.google.com/') > -1) {
+      let btnRejectAll = document.querySelectorAll('form').item(1)
+      if (btnRejectAll) {
+          await userClick(action.pid, 'btnRejectAll', btnRejectAll)
+          await sleep(15000)
+      }
+
       await searchKeyword(action)
 
       // if (action.isSearched) {
