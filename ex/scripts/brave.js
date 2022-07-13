@@ -40,22 +40,22 @@ async function handleBraveSetting (action) {
   await sleep(2000)
   if (action.is_show_ui) {
     //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 1191, 784,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1183, 737,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 1185, 806,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1188, 760,0,0,"",'click')
     // click Trackers & ads blocking
-    await updateUserInput(action.pid,'CLICK', 1190, 639,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1186, 588,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 1184, 698,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1185, 650,0,0,"",'click')
   } else {
     //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 755, 692,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1183, 737,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 743,722,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1188, 760,0,0,"",'click')
     // click Trackers & ads blocking
-    await updateUserInput(action.pid,'CLICK', 742,550,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1186, 588,0,0,"",'click')
     // select option
-    await updateUserInput(action.pid,'CLICK', 719,610,0,0,"",'click')
+    await updateUserInput(action.pid,'CLICK', 1185, 650,0,0,"",'click')
   }
 
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
