@@ -498,14 +498,16 @@ async function newRunProfile() {
             }
 
             let currentIds = getProfileIds()
-            if (MAX_CURRENT_ACC == 1 && currentIds.length > 1) {
+            currentIds = currentIds.filter(cid => cid != pid)
+            if (currentIds.length > MAX_PROFILE - 1) {
+                currentIds.splice(0, MAX_PROFILE - 1)
                 currentIds.forEach(id => {
                     try {
                         if (id != pid) {
-                            closeChrome(pid)
+                            closeChrome(id)
                             execSync('rm -rf profiles/'+id)
                             ids = ids.filter(_id => _id != id)
-                            runnings = runnings.filter(r => r.pid != pid)
+                            runnings = runnings.filter(r => r.pid != id)
                         }
                     } catch (error) { console.log(error) }
                 });
