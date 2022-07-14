@@ -496,6 +496,20 @@ async function newRunProfile() {
                 } catch (error) { console.log(error) }
                 return
             }
+
+            let currentIds = getProfileIds()
+            if (MAX_CURRENT_ACC == 1 && currentIds.length > 1) {
+                currentIds.forEach(id => {
+                    try {
+                        if (id != pid) {
+                            closeChrome(pid)
+                            execSync('rm -rf profiles/'+id)
+                            ids = ids.filter(_id => _id != id)
+                            runnings = runnings.filter(r => r.pid != pid)
+                        }
+                    } catch (error) { console.log(error) }
+                });
+            }
             ids.push(pid)
         }
 
