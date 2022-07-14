@@ -656,6 +656,12 @@ async function checkRunningProfiles () {
                 utils.log('--- expired time,', pid)
                 try {
                     closeChrome(pid)
+
+                    if (runnings[i].action == 'login') {
+                        execSync('rm -rf profiles/'+pid)
+                        ids = ids.filter(id => id != pid)
+                    }
+                   
                     if (IS_REG_USER) {
                         await utils.sleep(3000)
                         execSync('rm -rf profiles/'+pid)
