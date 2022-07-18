@@ -387,6 +387,9 @@ async function preWatchingVideo(action){
 }
 
 async function watchingVideo(action){
+    action.data_reported = document.querySelector('.view-count').innerText
+    await setActionData(action)
+    
     let url = window.location.toString()
     let interval = 10000
     for(let i = 0; i < action.watch_time;){

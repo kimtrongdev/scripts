@@ -244,6 +244,7 @@ async function reportScript(action, status = true) {
                 action.watch_time = 0
             }
             Object.assign(action, response)
+            action.data_reported = ''
             //if (action.id != 'check_bat') {
                 //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
                 //await scrollForViewAds(action)
