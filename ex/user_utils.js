@@ -159,6 +159,7 @@ async function initActionData(action) {
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
             await goToLocation(action.pid, 'accounts.google.com')
         } else {
+            await handleSelectExOption(action)
             if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
                 await handleBraveSetting(action)
             } else {
@@ -713,5 +714,24 @@ async function handleUsersSelection (action) {
         await userClick(action.pid, '', channel)
     } else {
         isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+    }
+}
+
+async function handleSelectExOption (action) {
+    if (action.trace_name.indexOf('level_') > -1) {
+        await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+        await goToLocation(action.pid, 'chrome-extension://njkmjblmcfiobddjgebnoeldkjcplfjb/html/settings.html')
+
+        if (action.trace_name == 'level_minimum') {
+            await updateUserInput(action.pid,'CLICK', 219, 800,0,0,"",'click')
+        } else if (action.trace_name == 'level_standard') {
+            await updateUserInput(action.pid,'CLICK', 529, 800,0,0,"",'click')
+        } else if (action.trace_name == 'level_high') {
+            await updateUserInput(action.pid,'CLICK', 835, 800,0,0,"",'click')
+        } else if (action.trace_name == 'level_extreme') {
+            await updateUserInput(action.pid,'CLICK', 1136, 800,0,0,"",'click')
+        }
+
+        await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
     }
 }

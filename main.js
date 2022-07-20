@@ -309,9 +309,6 @@ async function startChromeAction(action, _browser) {
         action.isRunBAT = isRunBAT
     }
 
-    let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
-    let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
-
     let exs = ["ex", "quality"]
     if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
@@ -328,9 +325,13 @@ async function startChromeAction(action, _browser) {
         }
         
         exs.push(traceName)
+        action.trace_name = traceName.replace('trace_ex/', '')
     }
-
     exs = exs.map(x => path.resolve(x)).join(",")
+
+    let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
+    let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
+    
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {        
@@ -751,12 +752,10 @@ async function profileManage() {
 }
 
 async function running() {
-    if (process.env.OS == 'ubuntu' || !process.env.OS) {
-        try {
-            execSync(`sudo xrandr -s 1600x1200`)
-        } catch (error) {
-            console.log(error);
-        }
+    try {
+        execSync(`sudo xrandr -s 1600x1200`)
+    } catch (error) {
+        console.log(error);
     }
     
     // get profile ids
