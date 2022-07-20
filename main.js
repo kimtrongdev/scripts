@@ -310,6 +310,7 @@ async function startChromeAction(action, _browser) {
     }
 
     let exs = ["ex", "quality"]
+    let level_name = ''
     if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
 
@@ -320,6 +321,7 @@ async function startChromeAction(action, _browser) {
                 traceName = systemConfig.trace_names_ex[Math.floor(Math.random()*systemConfig.trace_names_ex.length)]
                 
                 if (traceName.includes('level_')) {
+                    level_name = traceName
                     traceName = 'win_10_chrome'
                 }
 
@@ -330,7 +332,8 @@ async function startChromeAction(action, _browser) {
         }
         
         exs.push(traceName)
-        action.trace_name = traceName.replace('trace_ex/', '')
+        action.trace_name = level_name
+        console.log('------action.trace_name', action.trace_name);
     }
     exs = exs.map(x => path.resolve(x)).join(",")
 
