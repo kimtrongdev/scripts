@@ -318,6 +318,11 @@ async function startChromeAction(action, _browser) {
         } else {
             if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
                 traceName = systemConfig.trace_names_ex[Math.floor(Math.random()*systemConfig.trace_names_ex.length)]
+                
+                if (traceName.includes('level_')) {
+                    traceName = 'win_10_chrome'
+                }
+
                 trace[action.pid] = traceName
                 traceName = 'trace_ex/' + traceName
                 fs.writeFileSync("trace_config.json", JSON.stringify(trace))
