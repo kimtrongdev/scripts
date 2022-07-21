@@ -718,7 +718,7 @@ async function handleUsersSelection (action) {
 }
 
 async function handleSelectExOption (action) {
-    if (action.trace_name.indexOf('level_') > -1) {
+    if (action.trace_name && action.trace_name.indexOf('level_') > -1) {
         await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
         await goToLocation(action.pid, 'chrome-extension://njkmjblmcfiobddjgebnoeldkjcplfjb/html/settings.html')
 
