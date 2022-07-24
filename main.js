@@ -489,6 +489,10 @@ function getBrowserOfProfile (pid) {
             _browser = browser
         }
     })
+
+    if (!_browser) {
+        return systemConfig.browsers[0]
+    }
     return _browser
 }
 
