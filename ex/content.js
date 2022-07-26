@@ -18,7 +18,7 @@ var heightCustom = 0
 var IS_MOBILE = false
 async function loadPage(){
     try{
-        await sleep(4000)
+        //await sleep(4000)
 
         await initAction()
 

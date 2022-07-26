@@ -926,7 +926,7 @@ function initExpress() {
     const app = express()
 
     app.get('/favicon.ico', (req, res) => {
-        res.sendFile('./favicon.ico')
+        res.sendFile(path.resolve("favicon.ico"))
         return
     })
 
