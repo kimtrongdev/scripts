@@ -8,6 +8,8 @@ async function scriptMap(action) {
       await sleep(2000)
       if (rs) {
         await reportScript(action)
+      } else {
+        await reportScript(action, 0)
       }
     } else if (url.indexOf('google.com/maps/@') > -1) {
       if (!action.searched) {
@@ -34,7 +36,7 @@ async function scriptMap(action) {
       }
     } 
     else {
-
+      await reportScript(action, 0)
     } 
   } catch (error) {
     
@@ -60,6 +62,7 @@ async function handleRating (action) {
 
   let reviewBtn = document.querySelector(btnSelector)
   if (reviewBtn) {
+    action.data_reported = document.querySelector('span[jsaction="pane.rating.moreReviews"]').innerText
     reviewBtn.scrollIntoViewIfNeeded()
     let pos = getElementPosition(reviewBtn)
     await updateUserInput(action.pid, 'CLICK', pos.x + 30, pos.y, 0,0,"", reviewBtn)
@@ -89,6 +92,8 @@ async function handleRating (action) {
       //report success
       return true
     }
+  } else {
+    return false
   }
 
   let backBtn = document.querySelectorAll('#omnibox-singlebox button img').item(0)
