@@ -4,6 +4,11 @@ async function scriptYoutubeSub(action) {
 
     let url = window.location.toString()
 
+    if (url.indexOf('support.google.com/accounts/answer/40039') > -1) {
+      await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'support.google.com/accounts/answer/40039')
+      return
+    }
+
     if (url.indexOf('/videos') > -1) {
       await processWatchChannelPageSub(action)
     } else if (url.indexOf('youtube.com/account') > -1) {

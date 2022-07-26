@@ -20,6 +20,11 @@ async function userWatch(action){
         //     return
         // }
         
+        if (url.indexOf('support.google.com/accounts/answer/40039') > -1) {
+            await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'support.google.com/accounts/answer/40039')
+            return
+        }
+
         if (url.indexOf('https://consent.youtube.com/m') > -1) {
             try {
                 let btnRejectAll = document.querySelectorAll('form').item(1)
