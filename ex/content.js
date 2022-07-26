@@ -69,9 +69,13 @@ function checkURLchange(currentURL){
     if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange > 3000){
         console.log('oldURL:',oldURL,'currentURL:',currentURL,lastChange,Date.now())
         console.log('url changed:',currentURL)
-        oldURL = currentURL;
-        lastChange = Date.now()
-        loadPage()
+        if (oldURL.includes('google.com/maps@') && currentURL.includes('google.com/maps@')) {
+
+        } else {
+            oldURL = currentURL;
+            lastChange = Date.now()
+            loadPage()
+        }
     }
     else if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange < 3000){
         oldURL = currentURL
