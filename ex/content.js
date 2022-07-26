@@ -66,16 +66,13 @@ window.addEventListener('load', _ => {
 
 let oldURL = "";
 function checkURLchange(currentURL){
-    if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange > 3000){
+    if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange > 3000 && !(oldURL.includes('google.com/maps') && currentURL.includes('google.com/maps/@'))){
         console.log('oldURL:',oldURL,'currentURL:',currentURL,lastChange,Date.now())
         console.log('url changed:',currentURL)
-        if (oldURL.includes('google.com/maps') && currentURL.includes('google.com/maps/@')) {
-
-        } else {
-            oldURL = currentURL;
-            lastChange = Date.now()
-            loadPage()
-        }
+        
+        oldURL = currentURL;
+        lastChange = Date.now()
+        loadPage()
     }
     else if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange < 3000){
         oldURL = currentURL
