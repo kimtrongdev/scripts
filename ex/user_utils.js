@@ -233,8 +233,10 @@ async function reportScript(action, status = true) {
     let isBreak = false
     if ([1, '1', 'true', true].includes(action.is_break)) {
         isBreak = true
-        await clearBSData()
-        await sleep(5000)
+        if (action.is_clear_browser_data) {
+            await clearBSData()
+            await sleep(5000)
+        }
     }
 
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',

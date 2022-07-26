@@ -666,6 +666,10 @@ async function getScriptData(pid, isNewProxy = false) {
                 action.playlist_data = action.playlist_url
             }
         }
+
+        if (Number(systemConfig.is_clear_browser_data)) {
+            action.is_clear_browser_data = true
+        }
         return action
     }
 }
