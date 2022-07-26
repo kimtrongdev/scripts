@@ -925,6 +925,11 @@ function initExpress() {
     const express = require('express')
     const app = express()
 
+    app.get('/favicon.ico', (req, res) => {
+        res.sendFile('./favicon.ico')
+        return
+    })
+
     app.get('/debug', (req, res) => {
         isPauseAction = true
         res.send({ rs: 'ok' })
