@@ -137,9 +137,10 @@ function initSettingData (action) {
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
     }
-    
+
     if (IS_MOBILE) {
         mobileMenuBarHeight = 172
+        windowWide = 1600
     }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide

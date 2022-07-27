@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener(
             closeUnactiveTabs()
           }
           else{
-              if(request.data.stop){
+              if(request.data.stop && request.data.stop != 'false'){
                     closeBrowser()
               }
               let param = new URLSearchParams(request.data).toString();
