@@ -415,15 +415,6 @@ function getElementPosition(el,iframe){
         let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
         let menuLeftWith = IS_MOBILE ? 35 : (window.outerWidth - window.innerWidth)
 
-        console.log({
-            windowWide,
-            menuLeftWith,
-            screenX,
-            'window.innerWidth':innerWidth,
-            'pos.left': pos.left,
-            'pos.width': pos.width
-        });
-
         if (IS_MOBILE) {
             windowWide = 1600 - menuLeftWith
             pos.width = pos.width * 0.3826
