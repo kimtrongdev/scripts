@@ -182,55 +182,55 @@ async function switchMobile(action){
     await updateUserInput(action.pid,'OPEN_DEV',window.screenX,window.screenY)
     await sleep(3000)
 
-    if(action.availWidth && action.userAgent){
-        let temp = action.availHeight
-        action.availHeight = action.availWidth
-        action.availWidth = temp
-        action.zoom = 576 > action.availHeight ? 1 : (576/action.availHeight).toFixed(2)
-        if(576/action.availHeight > 2){
-            action.zoom = 1
-            action.availWidth = action.availWidth*2
-            action.availHeight = action.availHeight*2
-        }
-        await setActionData(action)
-        if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
-            await updateUserInput(action.pid,'OPEN_MOBILE_CUSTOM', action.availWidth, action.availHeight, 0, 0,  action.userAgent)
-        }
-        else if(window.outerHeight != action.availHeight || window.outerWidth != action.availWidth){            
-            await updateUserInput(action.pid,'REOPEN_MOBILE_CUSTOM', action.availWidth, action.availHeight, 0, 0,  action.userAgent)
-        }
-        else{
-            await updateUserInput(action.pid,'SELECT_MOBILE_CUSTOM')
-        }
-    }
-    else{
-        // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
-        //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
+    // if(action.availWidth && action.userAgent){
+    //     let temp = action.availHeight
+    //     action.availHeight = action.availWidth
+    //     action.availWidth = temp
+    //     action.zoom = 576 > action.availHeight ? 1 : (576/action.availHeight).toFixed(2)
+    //     if(576/action.availHeight > 2){
+    //         action.zoom = 1
+    //         action.availWidth = action.availWidth*2
+    //         action.availHeight = action.availHeight*2
+    //     }
+    //     await setActionData(action)
+    //     if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
+    //         await updateUserInput(action.pid,'OPEN_MOBILE_CUSTOM', action.availWidth, action.availHeight, 0, 0,  action.userAgent)
+    //     }
+    //     else if(window.outerHeight != action.availHeight || window.outerWidth != action.availWidth){            
+    //         await updateUserInput(action.pid,'REOPEN_MOBILE_CUSTOM', action.availWidth, action.availHeight, 0, 0,  action.userAgent)
+    //     }
+    //     else{
+    //         await updateUserInput(action.pid,'SELECT_MOBILE_CUSTOM')
+    //     }
+    // }
+    // else{
+    //     // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
+    //     //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
 
-        //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
-        action.zoom = [0.68, 0.75, 0.63, 0.45, 0.5, 0.42, 0.8, 0.88, 0.5, 0.5][action.pid%10]
-        // ipse 86
-        // xr 50
-        // ip 12 pro 50
+    //     //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
+    //     action.zoom = [0.68, 0.75, 0.63, 0.45, 0.5, 0.42, 0.8, 0.88, 0.5, 0.5][action.pid%10]
+    //     // ipse 86
+    //     // xr 50
+    //     // ip 12 pro 50
 
-        // pixel 5 68 
-        // samsung s8 75 
-        // sam sung s20 63   
-        // ipad air 40 45 
-        // ipad mini 50  
-        // sur pro 7 38  42 
-        // sur dou 70 80  
-        // glx fold 88 --
-        // samsung A51/71 50
+    //     // pixel 5 68 
+    //     // samsung s8 75 
+    //     // sam sung s20 63   
+    //     // ipad air 40 45 
+    //     // ipad mini 50  
+    //     // sur pro 7 38  42 
+    //     // sur dou 70 80  
+    //     // glx fold 88 --
+    //     // samsung A51/71 50
 
-        await setActionData(action)
-        if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
-            await updateUserInput(action.pid,'OPEN_MOBILE')
-        }
-        else{
-            await updateUserInput(action.pid,'SELECT_MOBILE')
-        }
-    }
+    //     await setActionData(action)
+    //     if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
+    //         await updateUserInput(action.pid,'OPEN_MOBILE')
+    //     }
+    //     else{
+    //         await updateUserInput(action.pid,'SELECT_MOBILE')
+    //     }
+    // }
 
     await sleep(1000)
     await updateUserInput(action.pid,'SHOW_PAGE')

@@ -71,7 +71,8 @@ async function runAction (action) {
     }
     else if(action.id == 'watch' || action.id == 'watch_video') {
         console.log('watch')
-        !action.mobile ? await userWatch(action) : await userWatchMobile(action)
+        await userWatch(action)
+        //!action.mobile ? await userWatch(action) : await userWatchMobile(action)
     }
     else if(action.id == 'sub'){
         console.log('sub')
@@ -86,7 +87,7 @@ async function runAction (action) {
 
 async function initActionData(action) {
     let mobileRate = action.mobile_percent 
-    action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
+    action.mobile = true//(action.pid % 10) * 10 < mobileRate ? true : false;
 
     if(action.mobile){
         await setUserAgent(action.pid);
@@ -191,7 +192,8 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+            await goToLocation('youtube.com//')
+            //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
         }
     }
 }
