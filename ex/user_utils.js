@@ -414,9 +414,7 @@ function getElementPosition(el,iframe){
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
         let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
         let menuLeftWith = IS_MOBILE ? 35 : (window.outerWidth - window.innerWidth)
-        let innerWidth = IS_MOBILE ? window.screen.width : window.innerWidth
 
-        windowWide = 1600
         console.log({
             windowWide,
             menuLeftWith,
@@ -425,8 +423,20 @@ function getElementPosition(el,iframe){
             'pos.left': pos.left,
             'pos.width': pos.width
         });
-        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?((windowWide - menuLeftWith)-zoom*innerWidth)/2:0) + widthCustom
-        let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
+
+        if (IS_MOBILE) {
+            windowWide = 1600 - menuLeftWith
+            pos.width = pos.width * 0.3826
+            pos.height = pos.height * 0.3826
+        }
+
+        let posTop = IS_MOBILE ? pos.top * 0.38 : pos.top
+        let posLeft = IS_MOBILE ? pos.left * 0.38 : pos.left
+        let innerWidth = IS_MOBILE ? window.screen.width : window.innerWidth
+
+        let x = zoom*(posLeft + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?((windowWide)-zoom*innerWidth)/2:0) + widthCustom
+        let y = zoom*(posTop + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
+
         let scrollX = window.scrollX
         let scrollY = window.scrollY
         console.log({x: x, y: y, scrollX: scrollX, scrollY: scrollY})

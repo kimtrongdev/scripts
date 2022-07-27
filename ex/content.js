@@ -101,7 +101,7 @@ async function initAction(){
         //     await sleep(30000)
         //     return
         // }
-        if (action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
+        if (!IS_MOBILE && action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
             await goToLocation(action.pid,'https://www.google.com/')
         } else {
             await initActionData(action)
@@ -141,6 +141,7 @@ function initSettingData (action) {
     if (IS_MOBILE) {
         mobileMenuBarHeight = 172
         windowWide = 1600
+        widthCustom = 35
     }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide
