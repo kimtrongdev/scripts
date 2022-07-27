@@ -359,11 +359,11 @@ var Prefs = {
 				"values":[-50,50]
 			},
 			"commonResolutions":{
-				"enabled":false,
+				"enabled":true,
 				"resolutions":[
-					[1920,1080,24],
-					[1920,1280,24],
-					[1920,1440,24]
+					[1600,1200,24],
+					[1600,1200,24],
+					[1600,1200,24]
 				]
 			},
 
