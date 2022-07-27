@@ -7,7 +7,7 @@
 let action
 let checkMiniPlayerRef
 var windowWide
-var mobileMenuBarHeight
+var mobileMenuBarHeight = 172
 var menuBarWidth
 var zoom
 var isNonUser = false
@@ -136,6 +136,10 @@ function initSettingData (action) {
 
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
+    }
+    
+    if (IS_MOBILE) {
+        mobileMenuBarHeight = 172
     }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide

@@ -104,7 +104,7 @@ async function initActionData(action) {
     console.log(action)
     await setActionData(action)
 
-    if(action.mobile) await switchMobile(action)
+    if(action.mobile && !navigator.maxTouchPoints) await switchMobile(action)
 
     if (action.id == 'end_script') {
         await reportScript(action)
@@ -192,7 +192,7 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation('youtube.com//')
+            await goToLocation(action.pid, 'youtube.com//')
             //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
         }
     }

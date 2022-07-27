@@ -231,7 +231,7 @@ async function switchMobile(action){
     //         await updateUserInput(action.pid,'SELECT_MOBILE')
     //     }
     // }
-
+    await updateUserInput(action.pid,'OPEN_MOBILE')
     await sleep(1000)
     await updateUserInput(action.pid,'SHOW_PAGE')
 }
