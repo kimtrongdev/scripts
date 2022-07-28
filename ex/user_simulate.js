@@ -181,9 +181,13 @@ async function switchMobile(action){
     action.windowWide = 1920    //window.outerWidth
     action.mobileMenuBarHeight = 138
 
-    await updateUserInput(action.pid,'OPEN_DEV',window.screenX,window.screenY)
-    await sleep(3000)
+    if (action.browser_name == 'vivaldi-stable') {
+        let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
+        await updateUserInput(action.pid,'CLICK', xPos, 339,0,0,"",'close vival btn')
+    }
 
+    await updateUserInput(action.pid,'OPEN_DEV',window.screenX,window.screenY)
+    
     if(false && action.availWidth && action.userAgent){
         let temp = action.availHeight
         action.availHeight = action.availWidth
@@ -206,37 +210,35 @@ async function switchMobile(action){
         }
     }
     else{
-        // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
-        //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
+        if(!navigator.maxTouchPoints){
+            await updateUserInput(action.pid,'OPEN_MOBILE')
+            // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
+            //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
 
-        //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
-        action.zoom = [1, 0.76, 0.81, 0.8, 0.9, 0.74, 0.55, 0.5, 0.5, 0.74][action.pid%10]
-        // ipse 86
-        // xr 50
-        // ip 12 pro 50
+            //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
+            action.zoom = [0.82, 0.9, 0.76, 0.55, 0.5, 0.5, 0.95, 1, 0.76, 0.76][action.pid%10]
+            // ipse 86
+            // xr 50
+            // ip 12 pro 50
 
-        // pixel 5 68 
-        // samsung s8 75 
-        // sam sung s20 63   
-        // ipad air 40 45 
-        // ipad mini 50  
-        // sur pro 7 38  42 
-        // sur dou 70 80  
-        // glx fold 88 --
-        // samsung A51/71 50
+            // pixel 5 68 
+            // samsung s8 75 
+            // sam sung s20 63   
+            // ipad air 40 45 
+            // ipad mini 50  
+            // sur pro 7 38  42 
+            // sur dou 70 80  
+            // glx fold 88 --
+            // samsung A51/71 50
 
-        await setActionData(action)
-        await updateUserInput(action.pid,'SELECT_MOBILE')
-        // if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
-        //     await updateUserInput(action.pid,'OPEN_MOBILE')
-        // }
-        // else{
-        //     await updateUserInput(action.pid,'SELECT_MOBILE')
-        // }
+            await setActionData(action)
+            await updateUserInput(action.pid,'SELECT_MOBILE')
+            await updateUserInput(action.pid,'CLICK', windowWide / 2, 500,0,0,"",'close vival btn')
+        }
     }
-    await updateUserInput(action.pid,'OPEN_MOBILE')
+    
     await sleep(1000)
-    await updateUserInput(action.pid,'SHOW_PAGE')
+    //await updateUserInput(action.pid,'SHOW_PAGE')
 }
 
 async function screenshot(pid){

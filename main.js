@@ -1285,6 +1285,8 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'OPEN_DEV') {
         execSync(`sleep 3;xdotool key Control_L+Shift+i;`)
+        await utils.sleep(5000)
+        execSync(`xdotool mousemove 1424 708 && sleep 1 && xdotool click 1 && sleep 1`)
         //execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
     }
     else if (actionData.action == 'OPEN_MOBILE') {
@@ -1331,8 +1333,8 @@ async function handleAction (actionData) {
         }
         //let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
         let devicePo = po[Number(actionData.pid % 10)]
-        devicePo -= 1
-        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
+        //devicePo -= 1
+        execSync(`xdotool mousemove 752 105;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 752 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
     }
     else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
         utils.log('open mobile simulator')
