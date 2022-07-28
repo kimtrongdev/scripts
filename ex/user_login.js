@@ -500,7 +500,7 @@ function getLoginError() {
 }
 
 async function userCreateChannel(action){
-    let fullname = await randomFullName()
+    let fullname = 'Music 247'//await randomFullName()
     await waitForSelector('#PlusPageName')
     await userTypeEnter(action.pid, '#PlusPageName', fullname)
 
