@@ -93,7 +93,9 @@ async function initAction(){
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
+        action.zoom = [0.82, 0.9, 0.76, 0.55, 0.5, 0.5, 0.95, 1, 0.76, 0.76][action.pid%10]
         initSettingData(action)
+        await setActionData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
         // if (window.location.toString().indexOf('refreshed_localhost') == -1) {
@@ -139,7 +141,7 @@ function initSettingData (action) {
     }
 
     if (IS_MOBILE) {
-        mobileMenuBarHeight = 172
+        mobileMenuBarHeight = 138
         windowWide = 1600
         widthCustom = 35
     }
