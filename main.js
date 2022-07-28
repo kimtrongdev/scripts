@@ -1329,7 +1329,8 @@ async function handleAction (actionData) {
             8: 12, 
             9: 12, 
         }
-        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+        //let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+        let devicePo = po[Number(actionData.pid % 10)]
         devicePo -= 1
         execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
     }
