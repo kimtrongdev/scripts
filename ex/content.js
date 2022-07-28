@@ -101,8 +101,8 @@ async function initAction(){
         //     await sleep(30000)
         //     return
         // }
-        if (!IS_MOBILE && action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
-            await goToLocation(action.pid,'https://www.google.com/')
+        if (action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
+            await goToLocation(action.pid,'gooogle search')
         } else {
             await initActionData(action)
         }
