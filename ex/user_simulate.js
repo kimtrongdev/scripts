@@ -191,7 +191,8 @@ async function switchMobile(action){
     }
 
     await updateUserInput(action.pid,'OPEN_DEV',window.screenX,window.screenY)
-    
+    action.open_dev = true
+    await setActionData(action)
     if(false && action.availWidth && action.userAgent){
         let temp = action.availHeight
         action.availHeight = action.availWidth

@@ -104,7 +104,7 @@ async function initActionData(action) {
     console.log(action)
     await setActionData(action)
 
-    if(action.mobile && !navigator.maxTouchPoints) await switchMobile(action)
+    if(action.mobile && !action.open_dev) await switchMobile(action)
 
     if (action.id == 'end_script') {
         await reportScript(action)
