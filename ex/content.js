@@ -98,6 +98,10 @@ async function initAction(){
         await setActionData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
+        if (IS_MOBILE) {
+            await updateUserInput(action.pid,'CLICK', 443,113,0,0,"",'SET DEFAULT')
+        }
+
         // if (window.location.toString().indexOf('refreshed_localhost') == -1) {
         //     window.open(window.location.toString() + '&refreshed_localhost=true')
         //     await sleep(30000)
