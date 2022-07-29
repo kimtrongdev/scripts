@@ -132,6 +132,9 @@ function initSettingData (action) {
 
     if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
         heightCustom = -23
+        if (!action.is_show_ui || action.is_show_ui == 'false') {
+            heightCustom = -30
+        }
     }
 
     if (navigator.platform == 'iPhone') {
