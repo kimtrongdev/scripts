@@ -132,7 +132,7 @@ function initSettingData (action) {
 
     zoom = action.zoom || 1
 
-    if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
+    if (!IS_MOBILE && action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
         heightCustom = -23
     }
 
@@ -141,9 +141,9 @@ function initSettingData (action) {
     }
 
     if (IS_MOBILE) {
-        mobileMenuBarHeight = 138
+        mobileMenuBarHeight = 160
         windowWide = 1600
-        widthCustom = 35
+        widthCustom = 50
     }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide

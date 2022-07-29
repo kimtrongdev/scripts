@@ -168,9 +168,13 @@ async function sendKey(pid, key){
 async function nextVideo(pid){
     console.log('nextVideo')
     if (IS_MOBILE) {
-        let btnNext = document.querySelector('.ytp-next-button')
-        let pos = getElementPosition(btnNext)
-        await updateUserInput(action.pid,'DOUBLE_CLICK', pos.x, pos.y ,0,0,"",'doubt_click')
+        // let btnNext = document.querySelector('.ytp-next-button')
+        // let pos = getElementPosition(btnNext)
+        // await updateUserInput(action.pid,'DOUBLE_CLICK', pos.x, pos.y ,0,0,"",'doubt_click')
+
+        let videos = document.querySelectorAll('#container #thumbnail-container')
+        let video = videos[randomRanger(0, videos.length - 1)]
+        await userClick(action.pid, 'video', video)
     } else {
         await updateUserInput(pid,'NEXT_VIDEO')
     }

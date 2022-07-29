@@ -138,7 +138,7 @@ async function initActionData(action) {
     else if (action.id == 'search') {
         action.search_keywords = action.search_keywords.split(',')
         await setActionData(action)
-        await goToLocation(action.pid, 'https://www.google.com/')
+        await goToLocation(action.pid, 'seach')
     }
     else if (action.id == 'map') {
         await goToLocation(action.pid,'google.com/maps')
