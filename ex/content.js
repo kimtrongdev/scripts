@@ -101,11 +101,12 @@ async function initAction(){
         //     await sleep(30000)
         //     return
         // }
-        if (action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
-            await goToLocation(action.pid,'https://www.google.com/')
-        } else {
-            await initActionData(action)
-        }
+        // if (action.id !== 'watch_video' && action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
+        //     await goToLocation(action.pid,'https://www.google.com/')
+        // } else {
+        //     await initActionData(action)
+        // }
+        await initActionData(action)
         
         await sleep(5000)
     }
