@@ -148,7 +148,11 @@ async function userLogin(action) {
             console.log('enter email')
             if (action.browser_name == 'vivaldi-stable') {
                 let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
-                await await updateUserInput(action.pid,'CLICK', xPos, 317,0,0,"",'close vival btn')
+                let yPos = 339
+                if (action.os_vm != 'vps') {
+                    yPos = 317
+                }
+                await await updateUserInput(action.pid,'CLICK', xPos, yPos,0,0,"",'close vival btn')
             }
 
             await waitForSelector('#identifierId')
