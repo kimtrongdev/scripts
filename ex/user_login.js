@@ -149,7 +149,7 @@ async function userLogin(action) {
             if (action.browser_name == 'vivaldi-stable') {
                 let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
                 let yPos = 339
-                if (action.os_vm != 'vps') {
+                if (action.os_vm == 'vps') {
                     yPos = 317
                 }
                 await await updateUserInput(action.pid,'CLICK', xPos, yPos,0,0,"",'close vival btn')
