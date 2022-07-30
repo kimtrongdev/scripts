@@ -185,6 +185,8 @@ async function processHomePage(action){
             }
             else if(action.preview == "search"){
                 await userTypeEnter(action.pid,'input#search',action.keyword)
+                await sleep(15000)
+                await userTypeEnter(action.pid,'input#search',action.keyword)
             }
         }
         return
