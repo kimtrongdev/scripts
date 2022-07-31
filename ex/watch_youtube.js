@@ -159,7 +159,7 @@ async function processHomePage(action){
         return
     }
 
-    if (action.search) {
+    if (action.search || action.page) {
         await userTypeEnter(action.pid,'input#search',action.keyword)
         await sleep(20000)
         let url = window.location.toString()
@@ -796,6 +796,8 @@ async function processSearchPage(action){
         await sleep(3000)
     }
     else if(action.url_type=='video'){
+        await userTypeEnter(action.pid,'input#search',action.playlist_url)
+        return
         // if filtered, go to home page
         if(url.indexOf('253D%253D') > -1){
             await userClick(action.pid, '#search-icon-legacy')

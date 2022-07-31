@@ -208,8 +208,8 @@ function setWatchParam(action){
         } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
             action.preview = false
             action.direct = true
-        } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
-            action.google = true
+        //} else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
+        //    action.google = true
         } else {
             // search
             action.search = true
