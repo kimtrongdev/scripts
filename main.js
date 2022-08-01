@@ -20,6 +20,7 @@ global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
+let IP
 let IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 
@@ -44,6 +45,7 @@ const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 const request_api = require('./request_api')
 global.workingDir = getScriptDir()
+const publicIp = require('public-ip')
 const path = require('path')
 const del = require('del');
 const fs = require('fs')
@@ -726,7 +728,8 @@ async function updateVmStatus() {
             vm_id: config.vm_id,
             vm_name: config.vm_name,
             running: runnings.length,
-            pids
+            pids,
+            IP
         })
 
         if (rs && rs.removePid) {
@@ -882,6 +885,9 @@ async function initConfig() {
 
     // utils.log('ip: ', ip)
     // check config
+    let ip = await publicIp.v4()
+    IP = ip
+
     if (process.env.VM_NAME && process.env.VM_NAME != '_VM_NAME') {
         config.vm_name = process.env.VM_NAME
     } else {
