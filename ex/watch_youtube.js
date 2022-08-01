@@ -549,7 +549,13 @@ async function afterWatchingVideo(action,finishVideo){
         }
     }
     await updateWatchedVideo(action.viewed_ads, action.pid)
-    await reportScript(action)
+    
+    let currentUrl = window.location.toString()
+    if(currentUrl.indexOf(action.playlist_url) > -1) {
+        await reportScript(action)
+    } else {
+        await reportScript(action, false)
+    }
 }
 
 async function viewAds(action, onlyVideoType = false) {
