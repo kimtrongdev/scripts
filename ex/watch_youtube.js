@@ -417,6 +417,8 @@ async function watchingVideo(action){
                 await setActionData(action)
                 await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings') 
                 return
+            } else {
+                await reportScript(action, false) 
             }
             console.log('not play video',action.playlist_url)
             return
