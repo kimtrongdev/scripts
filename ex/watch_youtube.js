@@ -549,7 +549,7 @@ async function afterWatchingVideo(action,finishVideo){
         }
     }
     await updateWatchedVideo(action.viewed_ads, action.pid)
-    
+
     let currentUrl = window.location.toString()
     if(currentUrl.indexOf(action.playlist_url) > -1) {
         await reportScript(action)
@@ -804,7 +804,10 @@ async function processSearchPage(action){
         await sleep(3000)
     }
     else if(action.url_type=='video'){
-        await userTypeEnter(action.pid,'input#search',action.playlist_url)
+        if (action.channel_title) {
+            await userTypeEnter(action.pid,'input#search', action.channel_title + ' ' + action.keyword)
+        }
+        
         return
         // if filtered, go to home page
         if(url.indexOf('253D%253D') > -1){
