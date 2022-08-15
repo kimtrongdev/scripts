@@ -407,6 +407,12 @@ async function startChromeAction(action, _browser) {
 
 async function loginProfileChrome(profile) {
     try {
+        try {
+            execSync(`sudo xrandr -s 1600x1200`)
+        } catch (error) {
+            console.log(error);
+        }
+        
         utils.log('loginProfileChrome', profile)
         let action = profile
         action.pid = profile.id
