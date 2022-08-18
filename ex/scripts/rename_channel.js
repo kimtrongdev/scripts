@@ -21,13 +21,13 @@ async function renameChannel(action) {
       }
 
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
       await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
       await sleep(5000)
 
       let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
       if (switchChannelOpt) {
+          switchChannelOpt = switchChannelOpt.parentNode
           await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
           
           await sleep(5000)
