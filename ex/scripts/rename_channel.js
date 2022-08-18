@@ -32,6 +32,7 @@ async function renameChannel(action) {
           await sleep(5000)
           if (document.querySelector('#create-channel-button')) {
             await userClick(action.pid, '#create-channel-button')
+            await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
           }
 
           await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
