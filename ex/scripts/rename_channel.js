@@ -27,13 +27,14 @@ async function renameChannel(action) {
 
       let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
       if (switchChannelOpt) {
-          switchChannelOpt = switchChannelOpt.parentNode
           await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
           
           await sleep(5000)
           if (document.querySelector('#create-channel-button')) {
             await userClick(action.pid, '#create-channel-button')
           }
+
+          await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
       }
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){

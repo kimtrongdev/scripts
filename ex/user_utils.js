@@ -116,7 +116,7 @@ async function initActionData(action) {
         }
         
         await setActionData(action)
-        await goToLocation(action.pid,'accounts.google.com')
+        await handleBraveSetting(action)
     }
     else if (action.id == 'end_script') {
         await reportScript(action)
