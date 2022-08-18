@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'end_script') {
+    if (action.id == 'rename_channel') {
+        await renameChannel(action)
+    }
+    else if (action.id == 'end_script') {
         await reportScript(action)
     }
     else if (action.id == 'add_video_playlist') {
@@ -105,7 +108,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'end_script') {
+    if (action.id == 'rename_channel') {
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    }
+    else if (action.id == 'end_script') {
         await reportScript(action)
     }
     else if (action.id == 'add_video_playlist') {

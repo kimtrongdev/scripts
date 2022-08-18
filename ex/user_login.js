@@ -11,6 +11,12 @@ async function userLogin(action) {
 
         await sleep(5000)
         reportLive(action.pid)
+
+        if (action.is_start_handle_rename_channel) {
+            await renameChannel(action)
+            return
+        }
+
         let url = window.location.toString()
 
         if (url.indexOf('accounts.google.com/b/0/PlusPageSignUp') > -1) {
@@ -354,7 +360,12 @@ async function userLogin(action) {
 
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
-    if (action.is_ver_mail_type) {
+    if (action.is_rename_channel_type) {
+        action.is_start_handle_rename_channel = true
+        await setActionData(action)
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    }
+    else if (action.is_ver_mail_type) {
         let msg = action.order_id ? 'verify_success':'account_ok'
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, msg)
 
@@ -504,7 +515,7 @@ function getLoginError() {
 }
 
 async function userCreateChannel(action){
-    let fullname = 'Music 247'//await randomFullName()
+    let fullname = await randomFullName()
     await waitForSelector('#PlusPageName')
     await userTypeEnter(action.pid, '#PlusPageName', fullname)
 

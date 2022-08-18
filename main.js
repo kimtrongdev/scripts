@@ -132,7 +132,8 @@ async function loadSystemConfig () {
     }
 
     let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
-    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false')
+    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
+    (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false')
     if (IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
