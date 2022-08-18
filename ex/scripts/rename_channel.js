@@ -38,8 +38,6 @@ async function renameChannel(action) {
       }
     } else if (url.indexOf('/editing/sections') > -1) {
       await handleStudioSetting(action)
-    } else {
-      await reportScript(action, false)
     }
   } catch (error) {
     console.log(error);
@@ -47,24 +45,24 @@ async function renameChannel(action) {
 }
 
 async function handleStudioSetting (action) {
-  while (document.querySelector('#shelf-actions-menu .remove-defaults')) {
-    await userClick(action.pid, '#shelf-actions-menu .remove-defaults')
-    await sleep(1000)
-    await userClick(action.pid, 'tp-yt-paper-item[test-id="delete"]')
-    await sleep(2000)
-  }
+  // while (document.querySelector('#shelf-actions-menu .remove-defaults')) {
+  //   await userClick(action.pid, '#shelf-actions-menu .remove-defaults')
+  //   await sleep(1000)
+  //   await userClick(action.pid, 'tp-yt-paper-item[test-id="delete"]')
+  //   await sleep(2000)
+  // }
 
+
+  
+  await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
   await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
   await userClick(action.pid, '#edit-button')
   
-  let currentName = document.querySelector('#brand-name-input').value
-  if (currentName == 'Music 247') {
-    let fullname = await randomFullName()
-    await userType(action.pid, '#brand-name-input', fullname)
-    await userClick(action.pid, '#publish-button')
-    await sleep(2000)
-    await userClick(action.pid, '#discard-changes-button')
-  }
+  let fullname = await randomFullName()
+  await userType(action.pid, '#brand-name-input', fullname)
+  await userClick(action.pid, '#publish-button')
+  await sleep(2000)
+  await userClick(action.pid, '#discard-changes-button')
 
   await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
 }
