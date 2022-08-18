@@ -109,6 +109,13 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'rename_channel') {
+        if (Number(action.total_created_users)) {
+            action.channel_position = Number(action.total_created_users)
+        } else {
+            action.channel_position = -1
+        }
+        
+        await setActionData(action)
         await goToLocation(action.pid,'accounts.google.com')
     }
     else if (action.id == 'end_script') {

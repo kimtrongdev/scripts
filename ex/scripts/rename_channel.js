@@ -156,6 +156,7 @@ async function handleAccountPage (action) {
   action.channel_position += 1
   let channel = channels.item(action.channel_position)
   if (channel) {
+      updateTotalCreatedUsers(action.pid, action.channel_position)
       if (action.channel_position < channels.length - 2) {
         reportPositionChannel(action.pid, action.channel_position)
       }
