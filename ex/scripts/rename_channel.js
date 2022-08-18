@@ -56,7 +56,7 @@ async function renameChannel(action) {
 }
 
 async function handleStudioSetting (action) {
-  await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
+  await userClick(action.pid, '#publish-button')
   await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
 
   //close mini popup
