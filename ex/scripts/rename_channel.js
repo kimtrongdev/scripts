@@ -13,8 +13,20 @@ async function renameChannel(action) {
       closeUnactiveTabs()
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+      
+      while (document.querySelector('#single-step-navigation')) {
+        await userClick(action.pid, '#single-step-navigation #close-button')
+        await sleep(1000)
+      }
+
       await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
       await sleep(5000)
+
+      while (document.querySelector('#single-step-navigation')) {
+        await userClick(action.pid, '#single-step-navigation #close-button')
+        await sleep(1000)
+      }
+
       let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
       if (switchChannelOpt) {
           await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
