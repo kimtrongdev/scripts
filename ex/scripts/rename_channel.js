@@ -45,24 +45,25 @@ async function renameChannel(action) {
 }
 
 async function handleStudioSetting (action) {
-  // while (document.querySelector('#shelf-actions-menu .remove-defaults')) {
-  //   await userClick(action.pid, '#shelf-actions-menu .remove-defaults')
-  //   await sleep(1000)
-  //   await userClick(action.pid, 'tp-yt-paper-item[test-id="delete"]')
-  //   await sleep(2000)
-  // }
+  await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
+  await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
 
-
+  //close mini popup
+  while (document.querySelector('#single-step-navigation')) {
+    await userClick(action.pid, '#single-step-navigation #close-button')
+    await sleep(1000)
+  }
   
-  await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
-  await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
   await userClick(action.pid, '#edit-button')
   
   let fullname = await randomFullName()
   await userType(action.pid, '#brand-name-input', fullname)
+
   await userClick(action.pid, '#publish-button')
   await sleep(2000)
   await userClick(action.pid, '#discard-changes-button')
+
+  await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
 
   await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
 }
