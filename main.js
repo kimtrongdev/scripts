@@ -21,7 +21,7 @@ global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
 let IP
-let IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
+let IS_REG_USER = false
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 
 global.config
@@ -120,12 +120,13 @@ async function loadSystemConfig () {
     }
 
     if (IS_SHOW_UI != newShowUIConfig) {
-        IS_SHOW_UI = newShowUIConfig
         if (IS_SHOW_UI != null) {
             isSystemChecking = true
             await handleForChangeShowUI()
             isSystemChecking = false
         }
+
+        IS_SHOW_UI = newShowUIConfig
 
         if (IS_SHOW_UI) {
             process.env.DISPLAY = ':0'
@@ -135,7 +136,7 @@ async function loadSystemConfig () {
     let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
     (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
     (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false')
-    if (IS_REG_USER != IS_REG_USER_new) {
+    if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
     }
