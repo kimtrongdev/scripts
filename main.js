@@ -16,7 +16,7 @@ global.devJson = {
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
 
-global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
+global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
@@ -120,15 +120,16 @@ async function loadSystemConfig () {
     }
 
     if (IS_SHOW_UI != newShowUIConfig) {
-        isSystemChecking = true
-        await handleForChangeShowUI()
         IS_SHOW_UI = newShowUIConfig
+        if (IS_SHOW_UI != null) {
+            isSystemChecking = true
+            await handleForChangeShowUI()
+            isSystemChecking = false
+        }
 
         if (IS_SHOW_UI) {
             process.env.DISPLAY = ':0'
         }
-
-        isSystemChecking = false
     }
 
     let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
