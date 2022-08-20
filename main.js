@@ -144,7 +144,7 @@ async function loadSystemConfig () {
     // handle browsers for centos and ubuntu
     let browsers = []
     systemConfig.browsers.forEach(br => {
-        if (process.env.OS == 'centos') {
+        if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
             if (br == 'brave') {
                 br = 'brave-browser'
             }
@@ -422,7 +422,7 @@ async function loginProfileChrome(profile) {
         action.id = 'login'
         action.isNew = true
         action.is_show_ui = IS_SHOW_UI
-        action.os_vm = process.env.OS
+        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
 
         // handle log browser for profile
         if (!config.browser_map) {
@@ -626,7 +626,7 @@ async function getScriptData(pid, isNewProxy = false) {
         action.id = action.script_code
         action.pid = pid
         action.is_show_ui = IS_SHOW_UI
-        action.os_vm = process.env.OS
+        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
         if (isRunBAT) {
             action.isRunBAT = isRunBAT
         }
