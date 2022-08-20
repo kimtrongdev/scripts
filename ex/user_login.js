@@ -152,7 +152,7 @@ async function userLogin(action) {
         }
         else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
             console.log('enter email')
-            if (action.browser_name == 'vivaldi-stable') {
+            if (['vivaldi-stable', 'vivaldi'].includes(action.browser_name)) {
                 let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
                 let yPos = 339
                 if (action.os_vm == 'vps') {
