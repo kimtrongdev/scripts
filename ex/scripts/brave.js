@@ -37,7 +37,7 @@ async function scriptCheckBat(action) {
 async function handleBraveSetting (action) {
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await goToLocation(action.pid, `brave://settings/shields`)
-  await sleep(2000)
+  await sleep(10000)
   if (action.is_show_ui) {
     //click Fingerprinting blocking
     await updateUserInput(action.pid,'CLICK', 1183, 737,0,0,"",'click')
@@ -48,14 +48,8 @@ async function handleBraveSetting (action) {
     // select option
     await updateUserInput(action.pid,'CLICK', 1185, 650,0,0,"",'click')
   } else {
-    //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 1183, 737,0,0,"",'click')
-    // select option
-    await updateUserInput(action.pid,'CLICK', 1188, 760,0,0,"",'click')
-    // click Trackers & ads blocking
-    await updateUserInput(action.pid,'CLICK', 1186, 588,0,0,"",'click')
-    // select option
-    await updateUserInput(action.pid,'CLICK', 1185, 650,0,0,"",'click')
+    await sleep(25000)
+    await updateUserInput(action.pid,'BRAVE_SETTINGS', 0, 0,0,0,"",'BRAVE_SETTINGS')
   }
 
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')

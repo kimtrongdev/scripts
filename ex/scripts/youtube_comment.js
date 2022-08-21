@@ -67,6 +67,14 @@ async function handleStudioSetting (action) {
     await sleep(1000)
   }
 
+  if (Number(action.is_rename_channel)) {
+    await userClick(action.pid, 'Thong tin co ban', document.querySelectorAll('tp-yt-paper-tab')[2])
+    await userClick(action.pid, '#edit-button')
+    
+    let fullname = await randomFullName()
+    await userType(action.pid, '#brand-name-input', fullname)
+  }
+
   await userClick(action.pid, '#publish-button')
   await sleep(2000)
   await userClick(action.pid, '#discard-changes-button')

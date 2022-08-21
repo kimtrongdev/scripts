@@ -1151,6 +1151,24 @@ async function handleAction (actionData) {
     if (actionData.action == 'OPEN_BROWSER') {
         await startChromeAction(actionData.data, actionData.browser)
     }
+    else if (actionData.action == 'BRAVE_SETTINGS') {
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+
+        execSync(`xdotool key Down`)
+        execSync(`xdotool key Down`)
+
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+    }
     else if (actionData.action == 'IRIDIUM_SETTING') {
         execSync(`xdotool key Tab && sleep 1`)
         execSync(`xdotool key Tab && sleep 1`)
