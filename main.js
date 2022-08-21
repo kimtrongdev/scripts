@@ -1292,16 +1292,16 @@ async function handleAction (actionData) {
     else if (actionData.action == 'OPEN_MOBILE') {
         utils.log('open mobile simulator')
         let po = {
-            0: 4, 
-            1: 5, 
+            0: 6, 
+            1: 6, 
             2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
-            7: 11,
-            8: 12, 
-            9: 12, 
+            3: 6, 
+            4: 6, 
+            5: 6, 
+            6: 6, 
+            7: 6,
+            8: 6, 
+            9: 6, 
         }
         let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
         devicePo -= 1
@@ -1320,16 +1320,16 @@ async function handleAction (actionData) {
     else if (actionData.action == 'SELECT_MOBILE') {
         utils.log('open mobile simulator')
         let po = {
-            0: 4, 
-            1: 5, 
+            0: 6, 
+            1: 6, 
             2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
-            7: 11,
-            8: 12, 
-            9: 12, 
+            3: 6, 
+            4: 6, 
+            5: 6, 
+            6: 6, 
+            7: 6,
+            8: 6, 
+            9: 6, 
         }
         //let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
         let devicePo = po[Number(actionData.pid % 10)]
