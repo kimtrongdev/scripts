@@ -40,7 +40,7 @@ async function scriptYoutubeSub(action) {
       await sleep(2000)
       await userClick(action.pid, '#search div h3')
     }
-    else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending') {
+    else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://www.youtube.com/?app=desktop') {
       await processHomePageSub(action)
     } else if (url.indexOf('youtube.com/feed/history') > -1) {
       await deleteHistorySub(action)

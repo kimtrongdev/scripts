@@ -147,8 +147,9 @@ function initSettingData (action) {
     if (IS_MOBILE) {
         mobileMenuBarHeight = 160
         windowWide = 1600
-        widthCustom = 50
-        if (action.browser_name == 'brave') {
+        widthCustom = 40
+        if (action.browser_name == 'brave' || action.browser_name == 'brave-browser') {
+            widthCustom = 50
             widthCustom = 15
         }
     }
