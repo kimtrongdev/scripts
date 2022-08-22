@@ -151,7 +151,7 @@ function initSettingData (action) {
         widthCustom = 40
         if (action.browser_name == 'iridium-browser') {
             windowWide = 2233
-            widthCustom = -13
+            widthCustom = -33
         }
         if (action.browser_name == 'brave' || action.browser_name == 'brave-browser') {
             widthCustom = 50
