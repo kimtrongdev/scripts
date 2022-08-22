@@ -275,8 +275,8 @@ function getProfileIds() {
 async function startChromeAction(action, _browser) {
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
-    let screenWidth = 1600//widthSizes[positionSize]
-    let screenHeight = 1200 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
+    let screenWidth = widthSizes[positionSize]
+    let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
