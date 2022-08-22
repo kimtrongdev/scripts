@@ -1123,7 +1123,11 @@ function initExpress() {
 }
 
 async function handleAction (actionData) {
-    utils.log('--->', actionData.action);
+    utils.log('--->', actionData.action, actionData.x, '-' , actionData.y);
+    if (actionData.x) {
+        utils.log(actionData.x, '-' , actionData.y)
+    }
+    
     setDisplay(actionData.pid)
     // copy str
     if(actionData.str){
@@ -1286,8 +1290,8 @@ async function handleAction (actionData) {
     else if (actionData.action == 'OPEN_DEV') {
         execSync(`sleep 3;xdotool key Control_L+Shift+i;`)
         await utils.sleep(5000)
-        if (process.env.os == 'centos' && IS_SHOW_UI) {
-            execSync(`xdotool mousemove 2150 708 && sleep 1 && xdotool click 1 && sleep 1`)
+        if (process.env.OS == 'centos' && IS_SHOW_UI) {
+            execSync(`xdotool mousemove 1939 652 && sleep 1 && xdotool click 1 && sleep 1`)
         } else {
             execSync(`xdotool mousemove 1424 708 && sleep 1 && xdotool click 1 && sleep 1`)
         }
@@ -1312,6 +1316,7 @@ async function handleAction (actionData) {
         devicePo -= 1
         execSync(`xdotool key Control_L+Shift+m;`)
         execSync(`xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
+        execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
         //execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
     }
     else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
@@ -1343,7 +1348,7 @@ async function handleAction (actionData) {
         let y = 105
         let yStart = 150
         if (process.env.OS.indexOf('centos') > -1) {
-            x = 680
+            x = 997
 
             if (IS_SHOW_UI) {
                 y = 118

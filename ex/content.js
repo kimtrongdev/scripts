@@ -93,7 +93,7 @@ async function initAction(){
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
-        action.zoom = [0.76, 0.76, 0.76, 0.76, 0.76, 0.76, 0.76, 0.76, 0.76, 0.76][action.pid%10]
+        action.zoom = [0.87, 0.87, 0.87, 0.87, 0.87, 0.87, 0.87, 0.87, 0.87, 0.87][action.pid%10]
         initSettingData(action)
         await setActionData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
