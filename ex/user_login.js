@@ -22,6 +22,7 @@ async function userLogin(action) {
             try {
                 let btnRejectAll = document.querySelectorAll('form').item(1)
                 if (btnRejectAll) {
+                    await userScroll(action.pid, 5)
                     await userClick(action.pid, 'btnRejectAll', btnRejectAll)
                 } else {
                     await goToLocation(action.pid,'accounts.google.com')
