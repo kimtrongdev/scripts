@@ -20,7 +20,7 @@ async function userLogin(action) {
 
         if (url.indexOf('https://consent.youtube.com/m') > -1) {
             try {
-                let btnRejectAll = document.querySelectorAll('form').item(1)
+                let btnRejectAll = document.querySelectorAll('form').item(2)
                 if (btnRejectAll) {
                     await userScroll(action.pid, 5)
                     await userClick(action.pid, 'btnRejectAll', btnRejectAll)
