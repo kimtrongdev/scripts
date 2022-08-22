@@ -149,6 +149,9 @@ function initSettingData (action) {
         mobileMenuBarHeight = 160
         windowWide = 1600
         widthCustom = 40
+        if (action.browser_name == 'iridium-browser') {
+            widthCustom = -13
+        }
         if (action.browser_name == 'brave' || action.browser_name == 'brave-browser') {
             widthCustom = 50
             widthCustom = 15

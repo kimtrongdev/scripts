@@ -1334,7 +1334,15 @@ async function handleAction (actionData) {
         //let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
         let devicePo = po[Number(actionData.pid % 10)]
         //devicePo -= 1
-        execSync(`xdotool mousemove 752 105;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 752 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
+        let x = 752
+        let y = 105
+        let yStart = 150
+        if (process.env.OS.indexOf('centos') > -1) {
+            x = 680
+            y = 118
+            yStart = 170
+        }
+        execSync(`xdotool mousemove ${x} ${y};sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove ${x} ${yStart + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
     }
     else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
         utils.log('open mobile simulator')
