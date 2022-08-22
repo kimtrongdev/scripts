@@ -1286,7 +1286,12 @@ async function handleAction (actionData) {
     else if (actionData.action == 'OPEN_DEV') {
         execSync(`sleep 3;xdotool key Control_L+Shift+i;`)
         await utils.sleep(5000)
-        execSync(`xdotool mousemove 1424 708 && sleep 1 && xdotool click 1 && sleep 1`)
+        if (process.env.os == 'centos' && IS_SHOW_UI) {
+            execSync(`xdotool mousemove 2150 708 && sleep 1 && xdotool click 1 && sleep 1`)
+        } else {
+            execSync(`xdotool mousemove 1424 708 && sleep 1 && xdotool click 1 && sleep 1`)
+        }
+        
         //execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
     }
     else if (actionData.action == 'OPEN_MOBILE') {
