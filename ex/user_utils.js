@@ -416,7 +416,9 @@ function getElementPosition(el,iframe){
         let menuLeftWith = IS_MOBILE ? 35 : (window.outerWidth - window.innerWidth)
 
         if (IS_MOBILE) {
-            windowWide = 1600 - menuLeftWith
+            if (windowWide == 1600) {
+                windowWide = 1600 - menuLeftWith
+            }
         }
 
         let innerWidth = IS_MOBILE ? window.screen.width : window.innerWidth
