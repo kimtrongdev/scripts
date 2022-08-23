@@ -351,10 +351,10 @@ module.exports = {
         }
         try{
             let images = fs.readdirSync('logscreen/')
-            if (images.length > 50) {
+            if (images.length > 60) {
                 let count = 0
                 for (let fileName of images) {
-                    if (count < 20) {
+                    if (count < 40) {
                         fs.unlinkSync('logscreen/' + fileName)
                     }
                     count++ 
