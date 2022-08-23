@@ -147,13 +147,19 @@ async function userLogin(action) {
         }
         else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
             console.log('enter email')
-            if (action.browser_name == 'vivaldi-stable') {
-                let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
-                await await updateUserInput(action.pid,'CLICK', xPos, 339,0,0,"",'close vival btn')
+            if (TESTV3) {
+                await waitForSelector('#identifierId')
+                await userOnlyTypeEnter(action.pid, '#identifierId',action.email)
+            } else {
+                if (action.browser_name == 'vivaldi-stable') {
+                    let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
+                    await await updateUserInput(action.pid,'CLICK', xPos, 339,0,0,"",'close vival btn')
+                }
+    
+                await waitForSelector('#identifierId')
+                await userTypeEnter(action.pid, '#identifierId', action.email)
             }
-
-            await waitForSelector('#identifierId')
-            await userTypeEnter(action.pid, '#identifierId', action.email)
+            
             await sleep(180000)
         }
         else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
@@ -186,7 +192,12 @@ async function userLogin(action) {
             action.relogin = true
             await setActionData(action)
             await waitForSelector("input[name='password']")
-            await userTypeEnter(action.pid, "input[name='password']", action.password)
+            if (TESTV3) {
+                await userOnlyTypeEnter(action.pid, "input[name='password']",action.password)
+            } else {
+                await userTypeEnter(action.pid, "input[name='password']", action.password)
+            }
+            
             await sleep(190000)
         }
         else if (url.indexOf("accounts.google.com/signin/v2/sl/pwd") > -1) {

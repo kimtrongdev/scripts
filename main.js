@@ -275,8 +275,8 @@ function getProfileIds() {
 async function startChromeAction(action, _browser) {
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
-    let screenWidth = widthSizes[positionSize]
-    let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
+    let screenWidth = 1600//widthSizes[positionSize]
+    let screenHeight = 950//action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
@@ -288,7 +288,7 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
-    windowSize = ' --start-maximized'
+    //windowSize = ' --start-maximized'
     windowPosition = ''
 
     // handle proxy

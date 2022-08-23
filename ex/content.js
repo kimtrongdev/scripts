@@ -16,6 +16,7 @@ var isRunBAT = true
 var widthCustom = 0
 var heightCustom = 0
 var IS_MOBILE = true
+var TESTV3 = true
 async function loadPage(){
     try{
         await sleep(4000)
@@ -150,8 +151,7 @@ function initSettingData (action) {
         windowWide = 1600
         widthCustom = 40
         if (action.browser_name == 'iridium-browser') {
-            windowWide = 2233
-            widthCustom = -33
+            widthCustom = -13
         }
         if (action.browser_name == 'brave' || action.browser_name == 'brave-browser') {
             widthCustom = 50
