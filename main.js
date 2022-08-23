@@ -1348,7 +1348,7 @@ async function handleAction (actionData) {
         let y = 105
         let yStart = 150
         if (process.env.OS.indexOf('centos') > -1) {
-            x = 997
+            x = 684
 
             if (IS_SHOW_UI) {
                 y = 118
