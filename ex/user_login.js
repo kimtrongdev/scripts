@@ -145,7 +145,7 @@ async function userLogin(action) {
             }
             throw "consent.youtube.com"
         }
-        else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
+        else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/v3/signin/identifier') > -1) {
             console.log('enter email')
             if (TESTV3) {
                 await waitForSelector('#identifierId')
