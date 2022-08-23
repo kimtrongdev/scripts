@@ -147,7 +147,12 @@ function initSettingData (action) {
     }
 
     if (IS_MOBILE) {
-        mobileMenuBarHeight = 160
+        if (action.is_show_ui) {
+            mobileMenuBarHeight = 165
+        } else {
+            mobileMenuBarHeight = 155
+        }
+        
         windowWide = 1600
         widthCustom = 40
         if (action.browser_name == 'iridium-browser') {

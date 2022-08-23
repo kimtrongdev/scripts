@@ -288,6 +288,9 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
+    if (IS_SHOW_UI) {
+        windowSize = ' --start-maximized'
+    }
     //windowSize = ' --start-maximized'
     windowPosition = ''
 
@@ -618,7 +621,7 @@ async function getScriptData(pid, isNewProxy = false) {
             action.isRunBAT = isRunBAT
         }
         // init action data
-        if(action.mobile_percent === undefined || action.mobile_percent === null){
+        if(true || action.mobile_percent === undefined || action.mobile_percent === null){
             if (systemConfig.total_rounds_for_change_proxy) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
@@ -1125,7 +1128,7 @@ function initExpress() {
 async function handleAction (actionData) {
     utils.log('--->', actionData.action);
     if (actionData.x) {
-        utils.log(actionData.x, '-' , actionData.y, actionData.str ? actionData.str : '')
+        utils.log(actionData.x, '-' , actionData.y, actionData.str ? actionData.str : '', actionData.selector ? actionData.selector : '')
     }
     
     setDisplay(actionData.pid)
@@ -1348,12 +1351,12 @@ async function handleAction (actionData) {
         let y = 105
         let yStart = 150
         if (process.env.OS.indexOf('centos') > -1) {
-            x = 684
-
             if (IS_SHOW_UI) {
+                x = 997
                 y = 118
                 yStart = 170
             } else {
+                x = 684
                 y = 105
                 yStart = 130
             }
