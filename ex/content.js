@@ -94,7 +94,14 @@ async function initAction(){
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
-        action.zoom = [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8][action.pid%10]
+        
+        let zoom = 0.8
+        if (action.is_show_ui) {
+            zoom = 0.87
+        }
+
+        action.zoom = [zoom, zoom, zoom,zoom,zoom,zoom,zoom,zoom,zoom,zoom][action.pid%10]
+        
         initSettingData(action)
         await setActionData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
@@ -157,7 +164,11 @@ function initSettingData (action) {
         
         widthCustom = 40
         if (action.browser_name == 'iridium-browser') {
-            widthCustom = -13
+            if (action.is_show_ui) {
+                widthCustom = -43
+            } else {
+                widthCustom = -13
+            }
         }
         if (action.browser_name == 'brave' || action.browser_name == 'brave-browser') {
             widthCustom = 50
