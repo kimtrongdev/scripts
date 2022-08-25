@@ -3,7 +3,7 @@ let isSystemChecking = false
 const TIME_REPORT = 110000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
-const EXPIRED_TIME = 440000
+const EXPIRED_TIME = 540000
 let totalRoundForChangeProxy = 5
 let countRun = 0
 let isPauseAction = false
@@ -16,11 +16,12 @@ global.devJson = {
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
 
-global.IS_SHOW_UI = Boolean(Number(process.env.SHOW_UI))
+global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
-let IS_REG_USER = Boolean(Number(process.env.IS_REG_USER))
+let IP
+let IS_REG_USER = false
 const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 
 global.config
@@ -44,6 +45,7 @@ const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 const request_api = require('./request_api')
 global.workingDir = getScriptDir()
+const publicIp = require('public-ip')
 const path = require('path')
 const del = require('del');
 const fs = require('fs')
@@ -118,20 +120,23 @@ async function loadSystemConfig () {
     }
 
     if (IS_SHOW_UI != newShowUIConfig) {
-        isSystemChecking = true
-        await handleForChangeShowUI()
+        if (IS_SHOW_UI != null) {
+            isSystemChecking = true
+            await handleForChangeShowUI()
+            isSystemChecking = false
+        }
+
         IS_SHOW_UI = newShowUIConfig
 
         if (IS_SHOW_UI) {
             process.env.DISPLAY = ':0'
         }
-
-        isSystemChecking = false
     }
 
     let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
-    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false')
-    if (IS_REG_USER != IS_REG_USER_new) {
+    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
+    (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false')
+    if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
     }
@@ -139,7 +144,7 @@ async function loadSystemConfig () {
     // handle browsers for centos and ubuntu
     let browsers = []
     systemConfig.browsers.forEach(br => {
-        if (process.env.OS == 'centos') {
+        if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
             if (br == 'brave') {
                 br = 'brave-browser'
             }
@@ -275,8 +280,8 @@ function getProfileIds() {
 async function startChromeAction(action, _browser) {
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
-    let screenWidth = 1600//widthSizes[positionSize]
-    let screenHeight = 1200//action.isNew ? 950 : utils.getRndInteger(950, 1000)
+    let screenWidth = widthSizes[positionSize]
+    let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
@@ -288,10 +293,7 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
-    if (IS_SHOW_UI) {
-        windowSize = ' --start-maximized'
-    }
-    //windowSize = ' --start-maximized'
+    windowSize = ' --start-maximized'
     windowPosition = ''
 
     // handle proxy
@@ -408,12 +410,19 @@ async function startChromeAction(action, _browser) {
 
 async function loginProfileChrome(profile) {
     try {
+        try {
+            execSync(`sudo xrandr -s 1600x1200`)
+        } catch (error) {
+            console.log(error);
+        }
+        
         utils.log('loginProfileChrome', profile)
         let action = profile
         action.pid = profile.id
         action.id = 'login'
         action.isNew = true
         action.is_show_ui = IS_SHOW_UI
+        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
 
         // handle log browser for profile
         if (!config.browser_map) {
@@ -617,11 +626,12 @@ async function getScriptData(pid, isNewProxy = false) {
         action.id = action.script_code
         action.pid = pid
         action.is_show_ui = IS_SHOW_UI
+        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
         if (isRunBAT) {
             action.isRunBAT = isRunBAT
         }
         // init action data
-        if(true || action.mobile_percent === undefined || action.mobile_percent === null){
+        if(action.mobile_percent === undefined || action.mobile_percent === null){
             if (systemConfig.total_rounds_for_change_proxy) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
@@ -727,7 +737,8 @@ async function updateVmStatus() {
             vm_id: config.vm_id,
             vm_name: config.vm_name,
             running: runnings.length,
-            pids
+            pids,
+            IP
         })
 
         if (rs && rs.removePid) {
@@ -883,6 +894,9 @@ async function initConfig() {
 
     // utils.log('ip: ', ip)
     // check config
+    let ip = await publicIp.v4()
+    IP = ip
+
     if (process.env.VM_NAME && process.env.VM_NAME != '_VM_NAME') {
         config.vm_name = process.env.VM_NAME
     } else {
@@ -1127,10 +1141,6 @@ function initExpress() {
 
 async function handleAction (actionData) {
     utils.log('--->', actionData.action);
-    if (actionData.x) {
-        utils.log(actionData.x, '-' , actionData.y, actionData.str ? actionData.str : '', actionData.selector ? actionData.selector : '')
-    }
-    
     setDisplay(actionData.pid)
     // copy str
     if(actionData.str){
@@ -1140,6 +1150,24 @@ async function handleAction (actionData) {
 
     if (actionData.action == 'OPEN_BROWSER') {
         await startChromeAction(actionData.data, actionData.browser)
+    }
+    else if (actionData.action == 'BRAVE_SETTINGS') {
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+
+        execSync(`xdotool key Down`)
+        execSync(`xdotool key Down`)
+
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
     }
     else if (actionData.action == 'IRIDIUM_SETTING') {
         execSync(`xdotool key Tab && sleep 1`)
@@ -1291,36 +1319,25 @@ async function handleAction (actionData) {
         await utils.sleep(2000)
     }
     else if (actionData.action == 'OPEN_DEV') {
-        execSync(`sleep 3;xdotool key Control_L+Shift+i;`)
-        await utils.sleep(5000)
-        if (process.env.OS == 'centos' && IS_SHOW_UI) {
-            execSync(`xdotool mousemove 1939 652 && sleep 1 && xdotool click 1 && sleep 1`)
-        } else {
-            execSync(`xdotool mousemove 1424 708 && sleep 1 && xdotool click 1 && sleep 1`)
-        }
-        
-        //execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
+        execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
     }
     else if (actionData.action == 'OPEN_MOBILE') {
         utils.log('open mobile simulator')
         let po = {
-            0: 6, 
-            1: 6, 
+            0: 4, 
+            1: 5, 
             2: 6, 
-            3: 6, 
-            4: 6, 
-            5: 6, 
-            6: 6, 
-            7: 6,
-            8: 6, 
-            9: 6, 
+            3: 7, 
+            4: 8, 
+            5: 9, 
+            6: 10, 
+            7: 11,
+            8: 12, 
+            9: 12, 
         }
         let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
         devicePo -= 1
-        execSync(`xdotool key Control_L+Shift+m;`)
-        execSync(`xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
-        execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
-        //execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
+        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
     }
     else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
         utils.log('add custom mobile')
@@ -1333,35 +1350,20 @@ async function handleAction (actionData) {
     else if (actionData.action == 'SELECT_MOBILE') {
         utils.log('open mobile simulator')
         let po = {
-            0: 6, 
-            1: 6, 
+            0: 4, 
+            1: 5, 
             2: 6, 
-            3: 6, 
-            4: 6, 
-            5: 6, 
-            6: 6, 
-            7: 6,
-            8: 6, 
-            9: 6, 
+            3: 7, 
+            4: 8, 
+            5: 9, 
+            6: 10, 
+            7: 11,
+            8: 12, 
+            9: 12, 
         }
-        //let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
-        let devicePo = po[Number(actionData.pid % 10)]
-        //devicePo -= 1
-        let x = 752
-        let y = 105
-        let yStart = 150
-        if (process.env.OS.indexOf('centos') > -1) {
-            if (IS_SHOW_UI) {
-                x = 997
-                y = 118
-                yStart = 170
-            } else {
-                x = 684
-                y = 105
-                yStart = 130
-            }
-        }
-        execSync(`xdotool mousemove ${x} ${y};sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove ${x} ${yStart + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
+        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+        devicePo -= 1
+        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
     }
     else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
         utils.log('open mobile simulator')

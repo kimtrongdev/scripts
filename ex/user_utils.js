@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'end_script') {
+    if (action.id == 'rename_channel') {
+        await userLogin(action)
+    }
+    else if (action.id == 'end_script') {
         await reportScript(action)
     }
     else if (action.id == 'add_video_playlist') {
@@ -71,8 +74,7 @@ async function runAction (action) {
     }
     else if(action.id == 'watch' || action.id == 'watch_video') {
         console.log('watch')
-        await userWatch(action)
-        //!action.mobile ? await userWatch(action) : await userWatchMobile(action)
+        !action.mobile ? await userWatch(action) : await userWatchMobile(action)
     }
     else if(action.id == 'sub'){
         console.log('sub')
@@ -87,7 +89,7 @@ async function runAction (action) {
 
 async function initActionData(action) {
     let mobileRate = action.mobile_percent 
-    action.mobile = true//(action.pid % 10) * 10 < mobileRate ? true : false;
+    action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
     if(action.mobile){
         await setUserAgent(action.pid);
@@ -104,9 +106,19 @@ async function initActionData(action) {
     console.log(action)
     await setActionData(action)
 
-    if(action.mobile && !action.open_dev) await switchMobile(action)
+    if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'end_script') {
+    if (action.id == 'rename_channel') {
+        if (Number(action.total_created_users)) {
+            action.channel_position = Number(action.total_created_users)
+        } else {
+            action.channel_position = -1
+        }
+        
+        await setActionData(action)
+        await handleBraveSetting(action)
+    }
+    else if (action.id == 'end_script') {
         await reportScript(action)
     }
     else if (action.id == 'add_video_playlist') {
@@ -192,8 +204,7 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation(action.pid, 'youtube.com//')
-            //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
         }
     }
 }
@@ -413,26 +424,9 @@ function getElementPosition(el,iframe){
         let pos = el.getBoundingClientRect()
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
         let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
-        let menuLeftWith = IS_MOBILE ? 35 : (window.outerWidth - window.innerWidth)
-
-        if (IS_MOBILE) {
-            if (windowWide == 1600) {
-                windowWide = 1600 - menuLeftWith
-            }
-        }
-
-        let innerWidth = IS_MOBILE ? window.screen.width : window.innerWidth
-
-        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide - zoom * innerWidth)/2:0) + widthCustom
+        let menuLeftWith = (window.outerWidth - window.innerWidth)
+        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide-zoom*window.innerWidth)/2:0) + widthCustom
         let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
-
-        if (IS_MOBILE && window.innerWidth == 980 || window.innerWidth == 981) {
-            let percent = window.screen.width / window.innerWidth
-            let _zoom = zoom * percent
-            x = (pos.left * _zoom + (pos.width * _zoom *0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide - zoom * innerWidth)/2:0) + widthCustom
-            y = (pos.top * _zoom + (pos.height * _zoom *0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
-        }
-
         let scrollX = window.scrollX
         let scrollY = window.scrollY
         console.log({x: x, y: y, scrollX: scrollX, scrollY: scrollY})

@@ -168,13 +168,7 @@ async function sendKey(pid, key){
 async function nextVideo(pid){
     console.log('nextVideo')
     if (IS_MOBILE) {
-        // let btnNext = document.querySelector('.ytp-next-button')
-        // let pos = getElementPosition(btnNext)
-        // await updateUserInput(action.pid,'DOUBLE_CLICK', pos.x, pos.y ,0,0,"",'doubt_click')
-
-        let videos = document.querySelectorAll('#container #thumbnail-container')
-        let video = videos[randomRanger(0, videos.length - 1)]
-        await userClick(action.pid, 'video', video)
+       await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]') 
     } else {
         await updateUserInput(pid,'NEXT_VIDEO')
     }
@@ -185,15 +179,10 @@ async function switchMobile(action){
     action.windowWide = 1920    //window.outerWidth
     action.mobileMenuBarHeight = 138
 
-    if (action.browser_name == 'vivaldi-stable') {
-        let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
-        await updateUserInput(action.pid,'CLICK', xPos, 339,0,0,"",'close vival btn')
-    }
-
     await updateUserInput(action.pid,'OPEN_DEV',window.screenX,window.screenY)
-    action.open_dev = true
-    await setActionData(action)
-    if(false && action.availWidth && action.userAgent){
+    await sleep(3000)
+
+    if(action.availWidth && action.userAgent){
         let temp = action.availHeight
         action.availHeight = action.availWidth
         action.availWidth = temp
@@ -215,35 +204,36 @@ async function switchMobile(action){
         }
     }
     else{
-        if(!navigator.maxTouchPoints){
+        // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
+        //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
+
+        //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
+        action.zoom = [0.68, 0.75, 0.63, 0.45, 0.5, 0.42, 0.8, 0.88, 0.5, 0.5][action.pid%10]
+        // ipse 86
+        // xr 50
+        // ip 12 pro 50
+
+        // pixel 5 68 
+        // samsung s8 75 
+        // sam sung s20 63   
+        // ipad air 40 45 
+        // ipad mini 50  
+        // sur pro 7 38  42 
+        // sur dou 70 80  
+        // glx fold 88 --
+        // samsung A51/71 50
+
+        await setActionData(action)
+        if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
             await updateUserInput(action.pid,'OPEN_MOBILE')
-            // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
-            //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
-
-            //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
-            action.zoom = [0.82, 0.9, 0.76, 0.55, 0.5, 0.5, 0.95, 1, 0.76, 0.76][action.pid%10]
-            // ipse 86
-            // xr 50
-            // ip 12 pro 50
-
-            // pixel 5 68 
-            // samsung s8 75 
-            // sam sung s20 63   
-            // ipad air 40 45 
-            // ipad mini 50  
-            // sur pro 7 38  42 
-            // sur dou 70 80  
-            // glx fold 88 --
-            // samsung A51/71 50
-
-            await setActionData(action)
+        }
+        else{
             await updateUserInput(action.pid,'SELECT_MOBILE')
         }
-        await updateUserInput(action.pid,'CLICK', windowWide / 2, 500,0,0,"",'close vival btn')
     }
-    
+
     await sleep(1000)
-    //await updateUserInput(action.pid,'SHOW_PAGE')
+    await updateUserInput(action.pid,'SHOW_PAGE')
 }
 
 async function screenshot(pid){

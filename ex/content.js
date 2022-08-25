@@ -7,7 +7,7 @@
 let action
 let checkMiniPlayerRef
 var windowWide
-var mobileMenuBarHeight = 172
+var mobileMenuBarHeight
 var menuBarWidth
 var zoom
 var isNonUser = false
@@ -15,8 +15,7 @@ var isRunBAT = true
 
 var widthCustom = 0
 var heightCustom = 0
-var IS_MOBILE = true
-var TESTV3 = true
+var IS_MOBILE = false
 async function loadPage(){
     try{
         await sleep(4000)
@@ -94,29 +93,16 @@ async function initAction(){
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
-        
-        let zoom = 0.8
-        if (action.is_show_ui) {
-            zoom = 0.87
-        }
-
-        action.zoom = [zoom, zoom, zoom,zoom,zoom,zoom,zoom,zoom,zoom,zoom][action.pid%10]
-        
         initSettingData(action)
-        await setActionData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-
-        if (IS_MOBILE) {
-            await updateUserInput(action.pid,'CLICK', 443,113,0,0,"",'SET DEFAULT')
-        }
 
         // if (window.location.toString().indexOf('refreshed_localhost') == -1) {
         //     window.open(window.location.toString() + '&refreshed_localhost=true')
         //     await sleep(30000)
         //     return
         // }
-        // if (action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
-        //     await goToLocation(action.pid,'gooogle search')
+        // if (action.id !== 'watch_video' && action.id !== 'search' && action.id !== 'login' && action.script_code != 'reg_user') {
+        //     await goToLocation(action.pid,'https://www.google.com/')
         // } else {
         //     await initActionData(action)
         // }
@@ -145,35 +131,15 @@ function initSettingData (action) {
 
     zoom = action.zoom || 1
 
-    if (!IS_MOBILE && action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
+    if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
         heightCustom = -23
+        if (action.os_vm != 'vps' && !action.is_show_ui || action.is_show_ui == 'false') {
+            heightCustom = -30
+        }
     }
 
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
-    }
-
-    if (IS_MOBILE) {
-        if (action.is_show_ui) {
-            mobileMenuBarHeight = 165
-            windowWide = 2233
-        } else {
-            mobileMenuBarHeight = 155
-            windowWide = 1600
-        }
-        
-        widthCustom = 40
-        if (action.browser_name == 'iridium-browser') {
-            if (action.is_show_ui) {
-                widthCustom = -43
-            } else {
-                widthCustom = -13
-            }
-        }
-        if (action.browser_name == 'brave' || action.browser_name == 'brave-browser') {
-            widthCustom = 50
-            widthCustom = 15
-        }
     }
    // mobileMenuBarHeight = barHeightMap[action.browser_name]
    // windowWide = action.windowWide
@@ -242,8 +208,8 @@ function setWatchParam(action){
         } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
             action.preview = false
             action.direct = true
-        } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
-            action.google = true
+        //} else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
+        //    action.google = true
         } else {
             // search
             action.search = true
@@ -327,3 +293,4 @@ function checkMiniPlayer(action){
         ,5000,action.pid)
     }
 }
+

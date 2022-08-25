@@ -11,6 +11,12 @@ async function userLogin(action) {
 
         await sleep(5000)
         reportLive(action.pid)
+
+        if (action.is_start_handle_rename_channel) {
+            await renameChannel(action)
+            return
+        }
+
         let url = window.location.toString()
 
         if (url.indexOf('accounts.google.com/b/0/PlusPageSignUp') > -1) {
@@ -20,9 +26,8 @@ async function userLogin(action) {
 
         if (url.indexOf('https://consent.youtube.com/m') > -1) {
             try {
-                let btnRejectAll = document.querySelectorAll('form').item(2)
+                let btnRejectAll = document.querySelectorAll('form').item(1)
                 if (btnRejectAll) {
-                    await userScroll(action.pid, 5)
                     await userClick(action.pid, 'btnRejectAll', btnRejectAll)
                 } else {
                     await goToLocation(action.pid,'accounts.google.com')
@@ -145,21 +150,19 @@ async function userLogin(action) {
             }
             throw "consent.youtube.com"
         }
-        else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/v3/signin/identifier') > -1) {
+        else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
             console.log('enter email')
-            if (TESTV3) {
-                await waitForSelector('#identifierId')
-                await userOnlyTypeEnter(action.pid, '#identifierId',action.email)
-            } else {
-                if (action.browser_name == 'vivaldi-stable') {
-                    let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
-                    await await updateUserInput(action.pid,'CLICK', xPos, 339,0,0,"",'close vival btn')
+            if (['vivaldi-stable', 'vivaldi'].includes(action.browser_name)) {
+                let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
+                let yPos = 339
+                if (action.os_vm == 'vps') {
+                    yPos = 317
                 }
-    
-                await waitForSelector('#identifierId')
-                await userTypeEnter(action.pid, '#identifierId', action.email)
+                await await updateUserInput(action.pid,'CLICK', xPos, yPos,0,0,"",'close vival btn')
             }
-            
+
+            await waitForSelector('#identifierId')
+            await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(180000)
         }
         else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
@@ -192,12 +195,7 @@ async function userLogin(action) {
             action.relogin = true
             await setActionData(action)
             await waitForSelector("input[name='password']")
-            if (TESTV3) {
-                await userOnlyTypeEnter(action.pid, "input[name='password']",action.password)
-            } else {
-                await userTypeEnter(action.pid, "input[name='password']", action.password)
-            }
-            
+            await userTypeEnter(action.pid, "input[name='password']", action.password)
             await sleep(190000)
         }
         else if (url.indexOf("accounts.google.com/signin/v2/sl/pwd") > -1) {
@@ -362,7 +360,12 @@ async function userLogin(action) {
 
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
-    if (action.is_ver_mail_type) {
+    if (action.is_rename_channel_type) {
+        action.is_start_handle_rename_channel = true
+        await setActionData(action)
+        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    }
+    else if (action.is_ver_mail_type) {
         let msg = action.order_id ? 'verify_success':'account_ok'
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, msg)
 

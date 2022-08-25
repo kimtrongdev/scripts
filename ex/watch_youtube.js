@@ -159,8 +159,13 @@ async function processHomePage(action){
         return
     }
 
-    if (action.search) {
+    if (action.search || action.page) {
         await userTypeEnter(action.pid,'input#search',action.keyword)
+        await sleep(20000)
+        let url = window.location.toString()
+        if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+            await userTypeEnter(action.pid,'input#search',action.keyword)
+        }
         return
     }
 
@@ -185,6 +190,11 @@ async function processHomePage(action){
             }
             else if(action.preview == "search"){
                 await userTypeEnter(action.pid,'input#search',action.keyword)
+                await sleep(20000)
+                let url = window.location.toString()
+                if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+                    await userTypeEnter(action.pid,'input#search',action.keyword)
+                }
             }
         }
         return
@@ -407,6 +417,8 @@ async function watchingVideo(action){
                 await setActionData(action)
                 await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings') 
                 return
+            } else {
+                await reportScript(action, false) 
             }
             console.log('not play video',action.playlist_url)
             return
@@ -537,7 +549,13 @@ async function afterWatchingVideo(action,finishVideo){
         }
     }
     await updateWatchedVideo(action.viewed_ads, action.pid)
-    await reportScript(action)
+
+    let currentUrl = window.location.toString()
+    if(currentUrl.indexOf(action.playlist_url) > -1) {
+        await reportScript(action)
+    } else {
+        await reportScript(action, false)
+    }
 }
 
 async function viewAds(action, onlyVideoType = false) {
@@ -786,6 +804,11 @@ async function processSearchPage(action){
         await sleep(3000)
     }
     else if(action.url_type=='video'){
+        if (action.channel_title) {
+            await userTypeEnter(action.pid,'input#search', action.channel_title + ' ' + action.keyword)
+        }
+        
+        return
         // if filtered, go to home page
         if(url.indexOf('253D%253D') > -1){
             await userClick(action.pid, '#search-icon-legacy')
