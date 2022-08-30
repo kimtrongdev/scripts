@@ -1154,6 +1154,24 @@ async function handleAction (actionData) {
         execSync(`xdotool key Tab && sleep 1`)
         execSync(`xdotool key KP_Enter && sleep 1`)
     }
+    else if (actionData.action == 'BRAVE_SETTINGS') {
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+
+        execSync(`xdotool key Down`)
+        execSync(`xdotool key Down`)
+
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Tab && sleep 1`)
+
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+    }
     else if (actionData.action == 'CLOSE_BROWSER') {
         execSync(`xdotool key Control_L+w && sleep 1`)
     }
