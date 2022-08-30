@@ -150,7 +150,7 @@ async function userLogin(action) {
             }
             throw "consent.youtube.com"
         }
-        else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1) {
+        else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/v3/signin/identifier') > -1) {
             console.log('enter email')
             if (['vivaldi-stable', 'vivaldi'].includes(action.browser_name)) {
                 let xPos = (window.outerWidth / 2) + (window.screen.width - window.screen.availWidth) - 194
@@ -190,7 +190,7 @@ async function userLogin(action) {
             await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(190000)
         }
-        else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1) {
+        else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1 || url.indexOf('accounts.google.com/signin/v3/challenge/pwd') > -1) {
             console.log('enter password')
             action.relogin = true
             await setActionData(action)
