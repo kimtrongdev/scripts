@@ -190,7 +190,7 @@ async function userLogin(action) {
             await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(190000)
         }
-        else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1 || url.indexOf('accounts.google.com/signin/v3/challenge/pwd') > -1) {
+        else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1 || url.indexOf('accounts.google.com/v3/signin/challenge/pwd') > -1) {
             console.log('enter password')
             action.relogin = true
             await setActionData(action)
@@ -205,7 +205,7 @@ async function userLogin(action) {
                 return
             }
         }
-        else if (url.indexOf("accounts.google.com/signin/selectchallenge") > -1 || url.indexOf("https://accounts.google.com/signin/v2/challenge/selection") > -1) {
+        else if (url.indexOf("accounts.google.com/signin/selectchallenge") > -1 || url.indexOf("https://accounts.google.com/signin/v2/challenge/selection") > -1 || url.indexOf("https://accounts.google.com/signin/v3/challenge/selection") > -1) {
             if (document.querySelector("[data-challengetype='12']") && emailRecovery && emailRecovery.length > 0) {
                 await userClick(action.pid, "[data-challengetype='12']")
             } else if (await document.querySelector("[data-challengetype='13']") && recoverPhone && recoverPhone.length > 0) {
