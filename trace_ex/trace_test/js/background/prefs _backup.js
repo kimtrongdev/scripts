@@ -515,7 +515,7 @@ var Prefs = {
 			"PremiumCode":""
 		},
 		"Main_Simple":{
-			"enabled":true,
+			"enabled":false,
 			"presets":{
 				"enabled":false,
 				"global":2
