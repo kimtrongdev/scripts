@@ -78,7 +78,9 @@ async function searchKeyword (action) {
   if (action.search_keywords.length) {
     let keyword = action.search_keywords.shift()
     await setActionData(action)
-    await userTypeEnter(action.pid,'input[maxLength="2048"]', keyword)
+
+    await goToLocation(action.pid, 'google.com/search?q=' + keyword)
+   // await userTypeEnter(action.pid,'input[maxLength="2048"]', keyword)
   } else {
     // handle end script
     await reportScript(action, 0)

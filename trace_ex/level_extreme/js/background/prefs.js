@@ -353,17 +353,17 @@ var Prefs = {
 			"enabled":true
 		},
 		"Pref_ScreenRes":{
-			"enabled":true,
+			"enabled":false,
 			"randomOpts":{
-				"enabled":true,
+				"enabled":false,
 				"values":[-50,50]
 			},
 			"commonResolutions":{
 				"enabled":false,
 				"resolutions":[
-					[1920,1080,24],
-					[1920,1280,24],
-					[1920,1440,24]
+					[1600,1200,24],
+					[1600,1200,24],
+					[1600,1200,24]
 				]
 			},
 
@@ -372,7 +372,7 @@ var Prefs = {
 				"enabled":true
 			},
 			"modifyPixelRatio":{
-				"enabled":true
+				"enabled":false
 			}
 		},
 		"Pref_BatteryApi":{
