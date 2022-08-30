@@ -187,7 +187,15 @@ async function userLogin(action) {
             await userTypeEnter(action.pid, '#identifierId', action.email)
             await sleep(190000)
         }
-        else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1 || url.indexOf('accounts.google.com/v3/signin/challenge/pwd') > -1) {
+        else if (url.indexOf('accounts.google.com/v3/signin/challenge/pwd') > -1) {
+            console.log('enter password')
+            action.relogin = true
+            await setActionData(action)
+            await waitForSelector("input[name='Password']")
+            await userTypeEnter(action.pid, "input[name='Password']", action.password)
+            await sleep(190000)
+        }
+        else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1) {
             console.log('enter password')
             action.relogin = true
             await setActionData(action)
