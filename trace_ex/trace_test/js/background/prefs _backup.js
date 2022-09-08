@@ -401,7 +401,7 @@ var Prefs = {
 			"enabled":false
 		},
 		"Pref_UserAgent":{
-			"enabled":true,
+			"enabled":false,
 			"uaOSConfig":{
 				"AllowMac":{
 					"enabled":false
@@ -515,7 +515,7 @@ var Prefs = {
 			"PremiumCode":""
 		},
 		"Main_Simple":{
-			"enabled":false,
+			"enabled":true,
 			"presets":{
 				"enabled":false,
 				"global":2

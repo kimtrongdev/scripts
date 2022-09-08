@@ -353,7 +353,7 @@ var Prefs = {
 			"enabled":true
 		},
 		"Pref_ScreenRes":{
-			"enabled":false,
+			"enabled":true,
 			"randomOpts":{
 				"enabled":false,
 				"values":[-50,50]
@@ -401,7 +401,7 @@ var Prefs = {
 			"enabled":false
 		},
 		"Pref_UserAgent":{
-			"enabled":true,
+			"enabled":false,
 			"uaOSConfig":{
 				"AllowMac":{
 					"enabled":true
