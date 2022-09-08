@@ -237,7 +237,7 @@ async function switchMobile(action){
             // samsung A51/71 50
 
             await setActionData(action)
-            await updateUserInput(action.pid,'SELECT_MOBILE')
+            //await updateUserInput(action.pid,'SELECT_MOBILE')
         }
         await updateUserInput(action.pid,'CLICK', windowWide / 2, 500,0,0,"",'close vival btn')
     }
