@@ -59,7 +59,7 @@ async function userWatch(action){
             await deleteHistory(action)
             await goToLocation(action.pid,'https://www.youtube.com//')
             await sleep(60000)
-        } else if (url.indexOf('https://www.youtube.com/results') > -1) {
+        } else if (url.indexOf('youtube.com/results') > -1) {
             await processSearchPage(action)
         }
         else if(url.indexOf('https://www.youtube.com/watch') > -1 || url.indexOf('https://m.youtube.com/watch') > -1){
@@ -160,7 +160,11 @@ async function processHomePage(action){
     }
 
     if (action.search) {
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+        if (IS_MOBILE) {
+            await searchMobile(action.pid, action.keyword)
+        } else {
+            await userTypeEnter(action.pid,'input#search',action.keyword)
+        }
         return
     }
 
@@ -215,7 +219,11 @@ async function processHomePage(action){
         await userTypeEnter(action.pid,'input#search',action.suggest_videos)
     } 
     else{
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+        if (IS_MOBILE) {
+            await searchMobile(action.pid, action.keyword)
+        } else {
+            await userTypeEnter(action.pid,'input#search',action.keyword)
+        }
     }
 
     await sleep(3000)
