@@ -427,7 +427,7 @@ async function watchingVideo(action){
     }
 
     if (reportEl) {
-        action.data_reported = document.querySelector('.view-count').innerText
+        action.data_reported = reportEl.innerText
         await setActionData(action)
     }
     
@@ -656,37 +656,37 @@ async function skipAds(watchingCheck, action = {}){
     // }
     while (document.querySelector('.ytp-ad-skip-ad-slot')) {
         console.log('skip ads')
-        let adTimeCurrent = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-current').textContent)
-        let adTimeDuration = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-duration').textContent)
+        // let adTimeCurrent = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-current').textContent)
+        // let adTimeDuration = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-duration').textContent)
 
-        let adWatchTime
-        if(Math.random() < SKIP_ADS_PERCENT){
-            // skip ad
-            if(adTimeDuration <= 30){
-                adWatchTime = getWatchAdTime(adTimeCurrent,1,10)
-            }
-            else{
-                adWatchTime = getWatchAdTime(adTimeCurrent,1,28)
-            }
-        }
-        else{
-            // watch ad
-            if(adTimeDuration <= 30){
-                adWatchTime = getWatchAdTime(adTimeCurrent,12,adTimeDuration)
-            }
-            else{
-                if(Math.random() < 0.1){
-                    adWatchTime = getWatchAdTime(adTimeCurrent,0.9*adTimeDuration,adTimeDuration)
-                }
-                else if(Math.random() < 0.4){
-                    adWatchTime = getWatchAdTime(adTimeCurrent,Math.max(30,adTimeDuration*0.5),adTimeDuration*0.9)
-                }
-                else{
-                    adWatchTime = getWatchAdTime(adTimeCurrent,30,Math.max(30,adTimeDuration*0.5))
-                }
-            }
-        }
-        await sleep(adWatchTime*1000)
+        // let adWatchTime
+        // if(Math.random() < SKIP_ADS_PERCENT){
+        //     // skip ad
+        //     if(adTimeDuration <= 30){
+        //         adWatchTime = getWatchAdTime(adTimeCurrent,1,10)
+        //     }
+        //     else{
+        //         adWatchTime = getWatchAdTime(adTimeCurrent,1,28)
+        //     }
+        // }
+        // else{
+        //     // watch ad
+        //     if(adTimeDuration <= 30){
+        //         adWatchTime = getWatchAdTime(adTimeCurrent,12,adTimeDuration)
+        //     }
+        //     else{
+        //         if(Math.random() < 0.1){
+        //             adWatchTime = getWatchAdTime(adTimeCurrent,0.9*adTimeDuration,adTimeDuration)
+        //         }
+        //         else if(Math.random() < 0.4){
+        //             adWatchTime = getWatchAdTime(adTimeCurrent,Math.max(30,adTimeDuration*0.5),adTimeDuration*0.9)
+        //         }
+        //         else{
+        //             adWatchTime = getWatchAdTime(adTimeCurrent,30,Math.max(30,adTimeDuration*0.5))
+        //         }
+        //     }
+        // }
+        await sleep(1000)
         while(!document.querySelector('button.ytp-ad-skip-button') || !document.querySelector('button.ytp-ad-skip-button').getBoundingClientRect().x){
             await sleep(1000)
         }
@@ -781,7 +781,13 @@ async function processSearchPage(action){
     //     return
     // }
 
-    let videoSelector = 'ytd-two-column-search-results-renderer .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]'
+    let videoSelector
+    if (IS_MOBILE) {
+        
+        videoSelector = 'ytm-search a.compact-media-item-image[href*="'+action.playlist_url+'"]'
+    } else {
+        videoSelector = 'ytd-two-column-search-results-renderer .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]'
+    }
     // scroll result
     // if(!document.querySelector(videoSelector) && (!action.filter || url.indexOf('253D%253D') > -1)){
     let element
@@ -809,12 +815,23 @@ async function processSearchPage(action){
             }
         }
         else if(action.page || action.suggest || action.home){
-            console.log('page_watch')
-            let channelLink = element.parentElement.nextElementSibling.querySelector('#channel-info > a')
-            action.channel_url = channelLink.href
-            action.filter = action.filter?action.filter-1:undefined
-            await setActionData(action)
-            await userClick(action.pid, action.playlist_url + ' channel-info',channelLink, '', 5)
+            if (IS_MOBILE) {
+                let channelName = element.nextElementSibling.querySelector('.subhead > .compact-media-item-byline').textContent.trim()
+                console.log('channelName:',channelName)
+                let channels = [...document.querySelectorAll('ytm-search ytm-compact-channel-renderer .compact-media-item-headline')].filter(x => x.textContent == channelName)
+                if(channels.length > 0){
+                    let pageAvt = channels[0].parentElement.parentElement.parentElement.querySelector('a')
+                    await userClick(action.pid,`ytm-compact-channel-renderer ${channelName}`, pageAvt)
+                    return
+                }
+            } else {
+                console.log('page_watch')
+                let channelLink = element.parentElement.nextElementSibling.querySelector('#channel-info > a')
+                action.channel_url = channelLink.href
+                action.filter = action.filter?action.filter-1:undefined
+                await setActionData(action)
+                await userClick(action.pid, action.playlist_url + ' channel-info',channelLink, '', 5)
+            }
         }
         else{
             await userClick(action.pid, videoSelector)
@@ -910,18 +927,36 @@ async function processWatchChannelPage(action){
         if(action.page){
             // process videos page
             let i = 50
-            while(i > 0 && !document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')){
-                await userScroll(action.pid,5)
-                await sleep(1000)
-                i--
-            }
-            let video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')
-            if(video){
-                await userClick(action.pid,'ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]',video)
-                await sleep(2000)
-            }
-            else{
-                throw 'video in page not found'
+            if (IS_MOBILE) {
+                while(i > 0 && !document.querySelector('ytm-browse lazy-list a.compact-media-item-metadata-content[href*="'+action.playlist_url+'"]')){
+                    await userScrollMobile(action.pid,5)
+                    await sleep(1000)
+                    i--
+                }
+                let video = document.querySelector('ytm-browse lazy-list a.compact-media-item-metadata-content[href*="'+action.playlist_url+'"]')
+                if(video){
+                    if(Math.random() < SEARCH_SKIP) throw 'SEARCH_SKIP'
+                    await userClick(action.pid,'ytm-browse lazy-list a.compact-media-item-metadata-content[href*="'+action.playlist_url+'"]',video)
+                    await sleep(2000)
+                    return
+                }
+                else{
+                    throw 'video in page not found'
+                }
+            } else {
+                while(i > 0 && !document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')){
+                    await userScroll(action.pid,5)
+                    await sleep(1000)
+                    i--
+                }
+                let video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')
+                if(video){
+                    await userClick(action.pid,'ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]',video)
+                    await sleep(2000)
+                }
+                else{
+                    throw 'video in page not found'
+                }
             }
         }
         else{
@@ -954,6 +989,9 @@ async function processWatchChannelPage(action){
         let videoTab = document.querySelectorAll('#tabsContent .tab-content').item(1)
         if(videoTab){
             await userClick(action.pid,'#tabsContent .tab-content', videoTab)
+        }
+        else if (document.querySelector('div[role="tablist"] a[href*="videos"]')) {
+            await userClick(action.pid, 'div[role="tablist"] a[href*="videos"]')
         }
         else if(document.querySelector('#title-text > a.yt-simple-endpoint[href*="/videos?"]')){
             await userClick(action.pid,'#title-text > a.yt-simple-endpoint[href*="/videos?"]')
@@ -1151,10 +1189,18 @@ async function CommentYoutubeVideo(pid, msg = '') {
 
 async function clickPlayIfPause(pid) {
     console.log('clickPlayIfPause')
-    let btnPlay = document.querySelector('path[d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"]')
-    if (btnPlay) {
-        console.log('info','clickPlayIfPause')
-        await userClick(pid,'button.ytp-play-button')
+    if (IS_MOBILE) {
+        let btnPlay = document.querySelector('path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
+        if (btnPlay) {
+            console.log('info','clickPlayIfPauseMobile')
+            await userClick(pid,'path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
+        }
+    } else {
+        let btnPlay = document.querySelector('path[d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"]')
+        if (btnPlay) {
+            console.log('info','clickPlayIfPause')
+            await userClick(pid,'button.ytp-play-button')
+        }
     }
 }
 

@@ -155,7 +155,7 @@ function initSettingData (action) {
 
     if (IS_MOBILE) {
         if (action.is_show_ui) {
-            mobileMenuBarHeight = 165
+            mobileMenuBarHeight = 170
             windowWide = 2233
         } else {
             mobileMenuBarHeight = 155
