@@ -1190,10 +1190,10 @@ async function CommentYoutubeVideo(pid, msg = '') {
 async function clickPlayIfPause(pid) {
     console.log('clickPlayIfPause')
     if (IS_MOBILE) {
-        let btnPlay = document.querySelector('path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
+        let btnPlay = document.querySelector('.ytp-large-play-button')//document.querySelector('path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
         if (btnPlay) {
             console.log('info','clickPlayIfPauseMobile')
-            await userClick(pid,'path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
+            await userClick(pid,'.ytp-large-play-button')
         }
     } else {
         let btnPlay = document.querySelector('path[d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"]')
