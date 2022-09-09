@@ -1161,8 +1161,8 @@ async function handleAction (actionData) {
         execSync(`xdotool key Tab && sleep 1`)
         execSync(`xdotool key Tab && sleep 1`)
 
-        execSync(`xdotool key Down`)
-        execSync(`xdotool key Down`)
+       // execSync(`xdotool key Down`)
+       // execSync(`xdotool key Down`)
 
         execSync(`xdotool key Tab && sleep 1`)
         execSync(`xdotool key Tab && sleep 1`)
