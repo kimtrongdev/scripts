@@ -278,6 +278,11 @@ async function startChromeAction(action, _browser) {
     let screenWidth = 1600//widthSizes[positionSize]
     let screenHeight = 1200//action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
+    if (['brave', 'brave-browser'].includes(_browser)) {
+        screenWidth = 950
+        screenHeight = 950
+    }
+
     //handle userDataDir
     let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
 
