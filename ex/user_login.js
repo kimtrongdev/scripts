@@ -103,6 +103,10 @@ async function userLogin(action) {
             if (phoneRs.error || action.entered_phone) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
             } else {
+                if (phoneRs.err) {
+                    phoneRs = await getPhone()
+                }
+                
                 action.order_id = phoneRs.orderID
                 action.api_name = phoneRs.api_name
                 action.entered_phone = true
