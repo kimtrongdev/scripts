@@ -38,7 +38,7 @@ async function handleBraveSetting (action) {
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await goToLocation(action.pid, `brave://settings/shields`)
   await sleep(10000)
-  if (action.is_show_ui) {
+  if (false && action.is_show_ui) {
     //click Fingerprinting blocking
     await updateUserInput(action.pid,'CLICK', 1183, 737,0,0,"",'click')
     // select option
