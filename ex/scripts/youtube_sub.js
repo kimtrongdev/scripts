@@ -411,6 +411,12 @@ async function clickSub (action) {
     if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
       await userClick(action.pid,'#meta #subscribe-button ytd-subscribe-button-renderer')
       await sleep(3000)
+
+      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+        document.querySelector('#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button').click()
+        await sleep(3000)
+      }
+
       await reportScript(action)
     } else {
       await reportScript(action, 0)
