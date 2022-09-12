@@ -49,7 +49,7 @@ async function scriptYoutubeSub(action) {
     } else if (url.indexOf('https://www.youtube.com/results') > -1) {
       await processSearchPageSub(action)
     }
-    else if (url.indexOf('https://www.youtube.com/watch') > -1) {
+    else if (url.indexOf('https://www.youtube.com/watch') > -1 || url.indexOf('youtube.com/shorts') > -1) {
       await processWatchPageSub(action)
     }
     else if (url.indexOf('https://www.youtube.com/playlist?list=') > -1) {
@@ -407,16 +407,26 @@ async function processWatchChannelPageSub(action) {
 
 async function clickSub (action) {
   let url = window.location.toString()
-  if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && url.indexOf('/watch') > -1) {
+  if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && (url.indexOf('/watch') > -1 || url.indexOf('/shorts') > -1)) {
     if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
       await userClick(action.pid,'#meta #subscribe-button ytd-subscribe-button-renderer')
       await sleep(3000)
+
+      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+        await userClick(action.pid, '#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')
+        await sleep(3000)
+      }
 
       if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
         document.querySelector('#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button').click()
         await sleep(3000)
       }
 
+      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+        await reportScript(action, 0)
+        return
+      }
+      
       await reportScript(action)
     } else {
       await reportScript(action, 0)
@@ -499,24 +509,31 @@ async function processSearchSuggest(action) {
 }
 
 async function processWatchPageSub(action) {
-  await sleep(10000)
-  try {
-    // like
-    if (Number(action.like_percent) > Math.random() * 100) {
-      await LikeOrDisLikeYoutubeVideo(action.pid, true)
-    }
-    // comment
-    if (Number(action.comment_percent) > Math.random() * 100) {
-      await CommentYoutubeVideo(action.pid, action.comment)
-    } else {
-      await sleep(5000)
-    }
-  } catch (error) {
-    console.log(error);
-  }
+  let url = window.location.toString()
+  if (url.indexOf('youtube.com/shorts') > -1) {
+    await sleep(3000)
+    await clickSub(action)
 
-  await sleep(5000)
-  await clickSub(action)
+  } else {
+    await sleep(10000)
+    try {
+      // like
+      if (Number(action.like_percent) > Math.random() * 100) {
+        await LikeOrDisLikeYoutubeVideo(action.pid, true)
+      }
+      // comment
+      if (Number(action.comment_percent) > Math.random() * 100) {
+        await CommentYoutubeVideo(action.pid, action.comment)
+      } else {
+        await sleep(5000)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    await sleep(5000)
+    await clickSub(action)
+  }
 }
 
 async function clickPlayIfPauseSub(pid) {
