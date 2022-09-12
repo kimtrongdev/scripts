@@ -409,19 +409,23 @@ async function clickSub (action) {
   let url = window.location.toString()
   if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && (url.indexOf('/watch') > -1 || url.indexOf('/shorts') > -1)) {
     if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-      let subBtns = [...document.querySelectorAll('#subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')]
-      let btn = subBtns.pop()
-      await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', btn)
-      await sleep(3000)
-
-      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-        await userClick(action.pid, '#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')
+      try {
+        let subBtns = [...document.querySelectorAll('#subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')]
+        let btn = subBtns.pop()
+        await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', btn)
         await sleep(3000)
-      }
 
-      if (!document.querySelector('tp-yt-paper-button[subscribed]') && btn) {
-        btn.click()
-        await sleep(3000)
+        if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+          await userClick(action.pid, '#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')
+          await sleep(3000)
+        }
+
+        if (!document.querySelector('tp-yt-paper-button[subscribed]') && btn) {
+          btn.click()
+          await sleep(3000)
+        }
+      } catch (error) {
+        console.log(error);
       }
 
       if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
