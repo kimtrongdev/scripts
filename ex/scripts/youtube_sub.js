@@ -409,7 +409,9 @@ async function clickSub (action) {
   let url = window.location.toString()
   if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && (url.indexOf('/watch') > -1 || url.indexOf('/shorts') > -1)) {
     if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-      await userClick(action.pid,'#meta #subscribe-button ytd-subscribe-button-renderer')
+      let subBtns = [...document.querySelectorAll('#subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')]
+      let btn = subBtns.pop()
+      await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', btn)
       await sleep(3000)
 
       if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
@@ -417,8 +419,8 @@ async function clickSub (action) {
         await sleep(3000)
       }
 
-      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-        document.querySelector('#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button').click()
+      if (!document.querySelector('tp-yt-paper-button[subscribed]') && btn) {
+        btn.click()
         await sleep(3000)
       }
 
@@ -426,7 +428,7 @@ async function clickSub (action) {
         await reportScript(action, 0)
         return
       }
-      
+
       await reportScript(action)
     } else {
       await reportScript(action, 0)
