@@ -306,7 +306,7 @@ async function startChromeAction(action, _browser) {
     let userProxy = ''
     if (proxy && proxy[action.pid] && proxy[action.pid].server) {
         utils.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="random-data-api.com,localhost:2000,${devJson.hostIp}"`
+        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="story-shack-cdn-v2.glitch.me,random-data-api.com,localhost:2000,${devJson.hostIp}"`
     }
     if (proxy && proxy[action.pid] && proxy[action.pid].username) {
         utils.log('set proxy user name', proxy[action.pid].username)
