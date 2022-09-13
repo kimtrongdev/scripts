@@ -54,20 +54,29 @@ async function regMail(action) {
       await userTypeEnter(action.pid, 'form input[name="ConfirmPasswd"]', action.password)
 
     } else if (url.indexOf('accounts.google.com/signup/v2/webgradsidvphone') > -1) {
-      let phoneRs = await getPhone()
-      console.log('getPhone', phoneRs);
-      if (phoneRs.error || action.entered_phone) {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
-      } else {
-        action.order_id = phoneRs.orderID
-        action.api_name = phoneRs.api_name
-        action.entered_phone = true
-        await setActionData(action)
-        await userTypeEnter(action.pid, '#phoneNumberId', phoneRs.phone)
+      async function enterPhone() {
+        let phoneRs = await getPhone()
+        console.log('getPhone', phoneRs);
 
-        await sleep(30000)
+        if (phoneRs.error || action.entered_phone) {
+          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+        } else {
+          action.order_id = phoneRs.orderID
+          action.api_name = phoneRs.api_name
+          action.entered_phone = true
+          await setActionData(action)
+          await userTypeEnter(action.pid, '#phoneNumberId', phoneRs.phone)
+  
+          await sleep(30000)
+        }
       }
 
+      await enterPhone()
+
+      if (document.querySelector('div[aria-live="polite"] div span')) {
+        action.entered_phone = false
+        await enterPhone()
+      }
     } else if (url.indexOf('accounts.google.com/signup/v2/webgradsidvverify') > -1) {
       //enter code
       let phoneRs = await getPhoneCode(action.order_id, action.api_name)
