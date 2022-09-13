@@ -20,6 +20,8 @@ async function regMail(action) {
         if (document.querySelector('button[data-username]')) {
           newEmail = document.querySelector('button[data-username]').dataset.username
           await userClick(action.pid, 'button[data-username]')
+          action.username = newEmail
+          await setActionData(action)
         } else {
           let rsName = await getRandomVietnamesName()
           lastName = rsName.last_name
@@ -32,11 +34,12 @@ async function regMail(action) {
           await userType(action.pid, 'form input[type="email"]', newEmail)
           await updateUserInput(action.pid,'TABS', 1, 0,0,0,"",'click')
           await sleep(9000)
+          action.username = newEmail
           if (document.querySelector(`input[aria-invalid="true"]`)) {
             await sleep(3000)
             await typeEmail()
           } else {
-            action.username = newEmail
+            await setActionData(action)
           }
         }
       }
@@ -61,6 +64,7 @@ async function regMail(action) {
         action.entered_phone = true
         await setActionData(action)
         await userTypeEnter(action.pid, '#phoneNumberId', phoneRs.phone)
+
         await sleep(30000)
       }
 
@@ -79,12 +83,20 @@ async function regMail(action) {
 
     } else if (url.indexOf('accounts.google.com/signup/v2/webpersonaldetails') > -1) {
       await userType(action.pid, '#day', randomRanger(1,28))
-      document.querySelector('#month').value = randomRanger(1,11)
-      await userType(action.pid, '#year', randomRanger(1990,2005))
-      document.querySelector('#gender').value = randomRanger(1,2)
-      document.querySelector('#phoneNumberId').value = ""
-      await userTypeEnter(action.pid, 'form input[name="recoveryEmail"]', action.username + 9 + '@gmail.com')
 
+      await userClick(action.pid, '#month')
+      await userSelect (action.pid, randomRanger(0,11))
+
+      await userType(action.pid, '#year', randomRanger(1990,2005))
+
+      await userClick(action.pid, '#gender')
+      await userSelect (action.pid, randomRanger(0,1))
+
+      await userType(action.pid, '#phoneNumberId', 'none')
+      action.verify = action.username + makeid(3) + '@gmail.com'
+      await setActionData(action)
+      await userTypeEnter(action.pid, 'form input[name="recoveryEmail"]', action.verify)
+      
     } else if (url.indexOf('accounts.google.com/signup/v2/webtermsofservice') > -1) {
       await userClick(action.pid, '#view_container div[data-secondary-action-label] button')
 

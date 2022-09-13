@@ -11,6 +11,26 @@ function rq (data) {
 }
 
 module.exports = {
+    reportAccount: async function (data) {
+        return await rq({method: 'POST', uri: SUB_URL + '/api/account', body: data, json: true})
+    },
+    getRandomName: async () => {
+        let rs = await rq({uri: 'https://story-shack-cdn-v2.glitch.me/generators/vietnamese-name-generator/male', json: true}).then(response => {
+            let fullName = response.data.name
+            let firstName = fullName.split(' ').slice(0, -1).join(' ');
+            let lastName = fullName.split(' ').slice(-1).join(' ');
+            return {
+                last_name: lastName,
+                first_name: firstName,
+            }
+        }).catch(error => {
+            return {
+                last_name: makeName(5),
+                first_name: makeName(5),
+            }
+        })
+        return rs
+    },
     reportPlaylistJCT: async (data) => {
         return await rq({ method: 'POST', uri: SUB_URL + '/api/playlist/report/playlist_jct', body: data, json: true })
     },

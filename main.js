@@ -1,3 +1,4 @@
+const useProxy = true
 let isRunBAT = false
 let isSystemChecking = false
 const TIME_REPORT = 110000
@@ -543,6 +544,8 @@ async function newRunProfile() {
                 });
             }
             ids.push(pid)
+        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
+            pid = 22//Date.now()
         }
 
         try {
@@ -564,9 +567,8 @@ async function getScriptData(pid, isNewProxy = false) {
     if (IS_REG_USER) {
         if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
             action = {
-                id: 'reg_account',
-                account_type: 'gmail',
-                pid: Date.now()
+                script_code: 'reg_account',
+                account_type: 'gmail'
             }
         } else {
             if (ids.length < MAX_PROFILE) {
@@ -590,7 +592,7 @@ async function getScriptData(pid, isNewProxy = false) {
     }
 
     if (action) {
-        if (isNewProxy) {
+        if (useProxy && isNewProxy) {
             let isLoadNewProxy = '' 
             let totalRound = totalRoundForChangeProxy * MAX_PROFILE
             if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
@@ -624,7 +626,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
 
-        if (!proxy[pid] || !proxy[pid].server) {
+        if (useProxy && (!proxy[pid] || !proxy[pid].server)) {
             console.log('Not found proxy')
             return
         }
@@ -1023,7 +1025,20 @@ function initExpress() {
         }
         utils.log(req.query)
 
-        if (req.query.id == 'total_created_channel') {
+        if (req.query.id == 'reg_account') {
+            let action = req.query
+            if (action.username && action.password) {
+                request_api.reportAccount({
+                    username: action.username,
+                    password: action.password,
+                    verify: action.verify,
+                    type: action.type
+                })
+            }
+
+            removePidAddnew(req.query.pid, 0)
+        }
+        else if (req.query.id == 'total_created_channel') {
             request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })
         }
         else if (req.query.id == 'live_report') {
@@ -1158,6 +1173,9 @@ async function handleAction (actionData) {
     // copy str
     if(actionData.str){
         const clipboardy = require('clipboardy');
+        if (actionData.str == 'none') {
+            actionData.str = ''
+        }
         clipboardy.writeSync(actionData.str)
     }
 

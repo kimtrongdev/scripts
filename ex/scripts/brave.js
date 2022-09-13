@@ -34,7 +34,7 @@ async function scriptCheckBat(action) {
   }
 }
 
-async function handleBraveSetting (action) {
+async function handleBraveSetting (action, continueLink = 'accounts.google.com') {
   await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
   await goToLocation(action.pid, `brave://settings/shields`)
   await sleep(10000)
@@ -53,7 +53,10 @@ async function handleBraveSetting (action) {
   }
 
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-  await goToLocation(action.pid, 'accounts.google.com')
+
+  if (continueLink) {
+    await goToLocation(action.pid, continueLink)
+  }
   await sleep(15000)
 }
 
