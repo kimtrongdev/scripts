@@ -27,7 +27,8 @@
         "./scripts/brave.js",
         "./scripts/youtube_comment.js",
         "./scripts/create_playlist.js",
-        "./scripts/add_video_playlist.js"
+        "./scripts/add_video_playlist.js",
+        "./scripts/reg_mail.js"
       ]
     },
     {

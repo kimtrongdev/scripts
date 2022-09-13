@@ -135,7 +135,8 @@ async function loadSystemConfig () {
 
     let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
     (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
-    (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false')
+    (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false') ||
+    (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
@@ -561,20 +562,28 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
-        if (ids.length < MAX_PROFILE) {
-            pid = 0
-        }
-        action = await request_api.getProfileForRegChannel(pid)
-        if (action && action.id) {
-            action.pid = action.id
-            ids.push(action.id)
-            ids = ids.map(String)
-            ids = [...new Set(ids)]
-            pid = action.id
-            isNewProxy = true
+        if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
+            action = {
+                id: 'reg_account',
+                account_type: 'gmail',
+                pid: Date.now()
+            }
         } else {
-            console.log('Not found reg user data.');
-            return
+            if (ids.length < MAX_PROFILE) {
+                pid = 0
+            }
+            action = await request_api.getProfileForRegChannel(pid)
+            if (action && action.id) {
+                action.pid = action.id
+                ids.push(action.id)
+                ids = ids.map(String)
+                ids = [...new Set(ids)]
+                pid = action.id
+                isNewProxy = true
+            } else {
+                console.log('Not found reg user data.');
+                return
+            }
         }
     } else {
         action = await request_api.getNewScript(pid)
