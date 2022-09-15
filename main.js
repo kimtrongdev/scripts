@@ -1036,7 +1036,7 @@ function initExpress() {
                 })
             }
 
-            removePidAddnew(req.query.pid, 0)
+            //removePidAddnew(req.query.pid, 0)
         }
         else if (req.query.id == 'total_created_channel') {
             request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })
