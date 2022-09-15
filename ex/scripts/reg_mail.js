@@ -27,9 +27,15 @@ async function regMail(action) {
       await userClick(action.pid, '#experiencedUserLink')
     }
     else if (url.indexOf('ads.google.com/aw/campaigns/new') > -1) {
-      await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(15))
-      await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(23))
-      await userClick(action.pid, 'material-yes-no-buttons material-button')
+      if (document.querySelector('span[buttondecorator]')) {
+        await userClick(action.pid, 'span[buttondecorator]')
+        await userClick(action.pid, 'material-radio-group material-radio')
+        await userClick(action.pid, 'expert-view material-button')
+      } else {
+        await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(15))
+        await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(23))
+        await userClick(action.pid, 'material-yes-no-buttons material-button')
+      }
     }
     else if (url.indexOf('ads.google.com/aw/campaigns/new/video') > -1) {
       await userType(action.pid, 'mask-money-input', '3333')
