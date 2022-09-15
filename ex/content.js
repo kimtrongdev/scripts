@@ -114,9 +114,9 @@ async function initAction(){
         let data = await getActionData()
         action = data.action
         initSettingData(action) 
-        if (action.id != 'search' && window.location.toString().indexOf('www.google.com') > -1) {
-            await initActionData(action)
-        }
+        //if (action.id != 'search' && window.location.toString().indexOf('www.google.com') > -1) {
+        //    await initActionData(action)
+        //}
 
         console.log('action:',action)
     }

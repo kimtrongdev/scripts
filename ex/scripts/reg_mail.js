@@ -26,17 +26,6 @@ async function regMail(action) {
     else if (url.indexOf('ads.google.com/aw/campaigns/new/express') > -1) {
       await userClick(action.pid, '#experiencedUserLink')
     }
-    else if (url.indexOf('ads.google.com/aw/campaigns/new') > -1) {
-      if (document.querySelector('span[buttondecorator]')) {
-        await userClick(action.pid, 'span[buttondecorator]')
-        await userClick(action.pid, 'material-radio-group material-radio')
-        await userClick(action.pid, 'expert-view material-button')
-      } else {
-        await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(15))
-        await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(23))
-        await userClick(action.pid, 'material-yes-no-buttons material-button')
-      }
-    }
     else if (url.indexOf('ads.google.com/aw/campaigns/new/video') > -1) {
       await userType(action.pid, 'mask-money-input', '3333')
 
@@ -57,9 +46,19 @@ async function regMail(action) {
 
       await userClick(action.pid, 'material-yes-no-buttons material-button')
     }
-    else if (url.indexOf('ads.google.com/aw/signup/payment') > -1) {
-      await userClick(action.pid, '.legal-messages-component span[role="checkbox"]')
-      await userClick(action.pid, '#button-panel material-button')
+    else if (url.indexOf('ads.google.com/aw/campaigns/new') > -1) {
+      if (document.querySelector('span[buttondecorator]')) {
+        await userClick(action.pid, 'span[buttondecorator]')
+        await userClick(action.pid, 'material-radio-group material-radio')
+        await userClick(action.pid, 'expert-view material-button')
+      } else {
+        await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(15))
+        await userClick(action.pid, 'safasf', document.querySelectorAll('.unified-goals-card-format').item(24))
+        await userClick(action.pid, 'material-yes-no-buttons material-button')
+      }
+    }
+    else if (url.indexOf('ads.google.com/aw/signup/congrats') > -1 || url.indexOf('ads.google.com/aw/campaigns') > -1 ) {
+      await goToLocation(action.pid, 'ads.google.com/aw/campaigns/new')
     }
     
     // else if (url.indexOf('ads.google.com/aw/overview') > -1) {
@@ -67,10 +66,11 @@ async function regMail(action) {
     // }
     else if (url.indexOf('google.com/adsense/signup/create') > -1) {
       await userClick(action.pid, '.mdc-checkbox__native-control')
+      await userClick(action.pid, 'email-preferences material-radio-group material-radio')
       await userClick(action.pid, 'material-dropdown-select')
       //77 hoa ki
       //218 anh 
-      await userClick(action.pid, document.querySelectorAll('material-select-dropdown-item span').item(77))
+      await userClick(action.pid, 'hoaki', document.querySelectorAll('material-select-dropdown-item span').item(77))
       await userClick(action.pid, '.is-product-agreement-signed-checkbox .mdc-checkbox input')
       await userClick(action.pid, '.submit-button')
     }
