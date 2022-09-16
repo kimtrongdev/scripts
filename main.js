@@ -282,7 +282,7 @@ function getProfileIds() {
 async function startChromeAction(action, _browser) {
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
-    let screenWidth = 950//widthSizes[positionSize]
+    let screenWidth = 1100//widthSizes[positionSize]
     let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
@@ -295,8 +295,12 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
-    if (_browser == 'brave-browser' && action.id == 'login') {
-        screenWidth = 950
+    if (_browser == 'brave-browser' && action.id == 'reg_account') {
+        screenWidth = 1100
+        windowSize = ` --window-size="${screenWidth},${screenHeight}"`
+    }
+    else if (_browser == 'brave-browser' && action.id == 'login') {
+        screenWidth = 1100
     } else {
         windowSize = ' --start-maximized'
         windowPosition = ''
@@ -1187,25 +1191,34 @@ async function handleAction (actionData) {
         await startChromeAction(actionData.data, actionData.browser)
     }
     else if (actionData.action == 'BRAVE_SETTINGS') {
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)//13
+
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)
+
+        execSync(`xdotool key Up`)
+        execSync(`xdotool key Up`)
+
+        execSync(`xdotool key Shift+Tab`)
 
         execSync(`xdotool key KP_Enter && sleep 1`)
-
-        execSync(`xdotool key Tab && sleep 1`)
-
-        execSync(`xdotool key Down`)
-        execSync(`xdotool key Down`)
-
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
     }
     else if (actionData.action == 'IRIDIUM_SETTING') {
         execSync(`xdotool key Tab && sleep 1`)
