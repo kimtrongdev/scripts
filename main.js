@@ -1038,7 +1038,7 @@ function initExpress() {
                 })
             }
 
-            if (action.reg_ga_success || action.stop) {
+            if (action.reg_ga_success || (action.stop && action.stop != 'false')) {
                 removePidAddnew(req.query.pid, 0)
             }
         }

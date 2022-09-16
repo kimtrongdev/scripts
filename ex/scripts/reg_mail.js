@@ -8,6 +8,7 @@ async function regMail(action) {
     if (url.indexOf('mail.google.com/mail') > -1) {
       // success
       action.username = action.username + '@gmail.com'
+      await setActionData(action)
       await reportAccount(action)
 
       await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
@@ -72,7 +73,7 @@ async function regMail(action) {
         'L2Ir7tDK3Mg',
         'ZN7jNEuXrvA'
       ]
-      
+
       let ytLink = `youtube.com/watch?v=${list[randomRanger(0, list.length - 1)]}`
       await userType(action.pid, 'video-picker material-auto-suggest-input material-input input', ytLink)
 
