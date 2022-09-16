@@ -20,7 +20,11 @@ async function regMail(action) {
       await goToLocation(action.pid, 'https://ads.google.com/home/')
     }
     else if (url.indexOf('ads.google.com/home') > -1) {
-      await userClick(action.pid, '.h-c-header__cta-li a[gtm-id="overall-signin-mainnav"]')
+      if (document.querySelector('a[gtm-id="home-startnow-hero"]')) {
+        await userClick(action.pid, 'a[gtm-id="home-startnow-hero"]')
+      } else {
+        await userClick(action.pid, '.h-c-header__cta-li a[gtm-id="overall-signin-mainnav"]')
+      }
     }
     else if (url.indexOf('ads.google.com/nav/selectaccount') > -1) {
       await userClick(action.pid, 'material-button')
