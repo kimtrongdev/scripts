@@ -27,6 +27,19 @@ async function regMail(action) {
     else if (url.indexOf('ads.google.com/aw/campaigns/new/express') > -1) {
       await userClick(action.pid, '#experiencedUserLink')
     }
+    else if (url.indexOf('ads.google.com/aw/signup/business') > -1) {
+      if (document.querySelector('.business-name-container .mdc-button')) {
+        await userClick(action.pid, '.business-name-container .mdc-button')
+        await sleep(3000)
+      }
+
+      try {
+        await userClick(action.pid, 'communications-opt-in material-radio')
+        await userClick(action.pid, 'expert-view material-button')
+      } catch (error) {
+        console.log(error);
+      }
+    }
     else if (url.indexOf('ads.google.com/aw/campaigns/new/video') > -1) {
       if (document.querySelector('.congrats-title')) {
         // hadnle report success reg
@@ -48,15 +61,39 @@ async function regMail(action) {
 
       await userType(action.pid, 'bid-input mask-money-input', '333')
       
-      await userType(action.pid, 'video-picker material-auto-suggest-input material-input input', 'https://www.youtube.com/watch?v=s5K0TEHvwVI')
+      let list = [
+        's5K0TEHvwVI',
+        '7ICKkagL3xA',
+        '4BXHjfg7XPU',
+        'nxsLkEPYR-4',
+        '8VAJGGwL5t8',
+        '11XkLOIsLHI',
+        'Y0oYqspE988',
+        'L2Ir7tDK3Mg',
+        'ZN7jNEuXrvA'
+      ]
+      
+      let ytLink = `youtube.com/watch?v=${list[randomRanger(0, list.length - 1)]}`
+      await userType(action.pid, 'video-picker material-auto-suggest-input material-input input', ytLink)
+
+      await sleep(5000)
 
       await userClick(action.pid, 'ad-construction-subpanel material-radio-group material-radio')
       
-      await userType(action.pid, 'in-stream-panel url-input input', 'youtube.com/watch?v=s5K0TEHvwVI')
+      await userType(action.pid, 'in-stream-panel url-input input', ytLink)
 
-      await userType(action.pid, '.display-url input', 'https://www.youtube.com/watch?v=s5K0TEHvwVI')
+      await userType(action.pid, '.display-url input', ytLink)
 
       await userClick(action.pid, 'material-yes-no-buttons material-button')
+
+      await sleep(4000)
+      if (document.querySelector('.congrats-title')) {
+        // hadnle report success reg
+        action.reg_ga_success = true
+        await setActionData(action)
+        await reportAccount(action)
+        return
+      }
     }
     else if (url.indexOf('ads.google.com/aw/campaigns/new') > -1) {
       if (document.querySelector('span[buttondecorator]')) {
@@ -171,7 +208,7 @@ async function regMail(action) {
       await userClick(action.pid, '#month')
       await userSelect (action.pid, randomRanger(0,11))
 
-      await userType(action.pid, '#year', randomRanger(1990,2005))
+      await userType(action.pid, '#year', randomRanger(1990,2000))
 
       await userClick(action.pid, '#gender')
       await userSelect (action.pid, randomRanger(0,1))
