@@ -189,6 +189,16 @@ async function regMail(action) {
       if (document.querySelector('div[aria-live="polite"] div span')) {
         action.entered_phone = false
         await enterPhone()
+        await sleep(4000)
+      }
+
+      if (document.querySelector('div[aria-live="polite"] div span')) {
+        action.entered_phone = false
+        await enterPhone()
+      }
+
+      if (document.querySelector('div[aria-live="polite"] div span')) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
       }
     } else if (url.indexOf('accounts.google.com/signup/v2/webgradsidvverify') > -1) {
       //enter code
