@@ -3,6 +3,7 @@ async function regMail(action) {
   try {
     await sleep(5000)
     let url = window.location.toString()
+    await reportLive(action.pid)
 
     if (url.indexOf('mail.google.com/mail') > -1) {
       // success
@@ -27,6 +28,17 @@ async function regMail(action) {
       await userClick(action.pid, '#experiencedUserLink')
     }
     else if (url.indexOf('ads.google.com/aw/campaigns/new/video') > -1) {
+      if (document.querySelector('.congrats-title')) {
+        // hadnle report success reg
+        action.reg_ga_success = true
+        await setActionData(action)
+        await reportAccount(action)
+        return
+      }
+
+      await userClick(action.pid, 'budget-and-dates dropdown-button')
+      await userSelect(action.pid, 0)
+
       await userType(action.pid, 'mask-money-input', '3333')
 
       await userClick(action.pid, 'end-date-picker material-datepicker')
@@ -57,13 +69,13 @@ async function regMail(action) {
         await userClick(action.pid, 'material-yes-no-buttons material-button')
       }
     }
-    else if (url.indexOf('ads.google.com/aw/signup/congrats') > -1 || url.indexOf('ads.google.com/aw/campaigns') > -1 ) {
+    else if (
+      url.indexOf('ads.google.com/aw/signup/congrats') > -1 ||
+      url.indexOf('ads.google.com/aw/campaigns') > -1 ||
+      url.indexOf('ads.google.com/aw/overview') > -1
+    ) {
       await goToLocation(action.pid, 'ads.google.com/aw/campaigns/new')
     }
-    
-    // else if (url.indexOf('ads.google.com/aw/overview') > -1) {
-    //   //await userClick(action.pid, '.h-c-header__cta-li a[gtm-id="overall-signin-mainnav"]')
-    // }
     else if (url.indexOf('google.com/adsense/signup/create') > -1) {
       await userClick(action.pid, '.mdc-checkbox__native-control')
       await userClick(action.pid, 'email-preferences material-radio-group material-radio')
@@ -173,7 +185,7 @@ async function regMail(action) {
       await userClick(action.pid, '#view_container div[data-secondary-action-label] button')
 
     } else {
-      await goToLocation(action.pid, 'https://mail.google.com/')
+      await goToLocation(action.pid, 'ads.google.com/aw/campaigns/new')
     }
   } catch (error) {
     console.log(error);

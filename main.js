@@ -139,7 +139,7 @@ async function loadSystemConfig () {
     (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false') ||
     (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
-        await resetAllProfiles()
+       await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
     }
 
@@ -545,7 +545,7 @@ async function newRunProfile() {
             }
             ids.push(pid)
         } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
-            pid = 22//Date.now()
+            pid = Math.floor(Math.random() * 5000)
         }
 
         try {
@@ -1027,16 +1027,19 @@ function initExpress() {
 
         if (req.query.id == 'reg_account') {
             let action = req.query
+            if (action.reg_ga_success) {
+                removePidAddnew(req.query.pid, 0)
+            }
+
             if (action.username && action.password) {
                 request_api.reportAccount({
                     username: action.username,
                     password: action.password,
                     verify: action.verify,
-                    type: action.type
+                    type: action.type,
+                    reg_ga_success: action.reg_ga_success
                 })
             }
-
-            //removePidAddnew(req.query.pid, 0)
         }
         else if (req.query.id == 'total_created_channel') {
             request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })

@@ -231,7 +231,7 @@ async function initActionData(action) {
 
 function reportAccount (action) {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {pid: action.pid, id: action.id, username: action.username, password: action.password, verify: action.verify, type: action.account_type, stop: false }}, function (response) {
+        data: {pid: action.pid, id: action.id, reg_ga_success: action.reg_ga_success, username: action.username, password: action.password, verify: action.verify, type: action.account_type, stop: false }}, function (response) {
         resolve(response);
     }))
 }
