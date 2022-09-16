@@ -1027,10 +1027,7 @@ function initExpress() {
 
         if (req.query.id == 'reg_account') {
             let action = req.query
-            if (action.reg_ga_success) {
-                removePidAddnew(req.query.pid, 0)
-            }
-
+            
             if (action.username && action.password) {
                 request_api.reportAccount({
                     username: action.username,
@@ -1039,6 +1036,10 @@ function initExpress() {
                     type: action.type,
                     reg_ga_success: action.reg_ga_success
                 })
+            }
+
+            if (action.reg_ga_success || action.stop) {
+                removePidAddnew(req.query.pid, 0)
             }
         }
         else if (req.query.id == 'total_created_channel') {
