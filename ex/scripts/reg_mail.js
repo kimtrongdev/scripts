@@ -197,12 +197,10 @@ async function regMail(action) {
       }
 
       if (document.querySelector('div[aria-live="polite"] div span')) {
-        action.entered_phone = false
-        await enterPhone()
-      }
-
-      if (document.querySelector('div[aria-live="polite"] div span')) {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+        action.username = ''
+        action.reg_ga_success = true
+        await setActionData(action)
+        await reportAccount(action)
       }
     } else if (url.indexOf('accounts.google.com/signup/v2/webgradsidvverify') > -1) {
       //enter code
