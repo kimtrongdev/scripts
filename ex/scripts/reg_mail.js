@@ -184,7 +184,7 @@ async function regMail(action) {
           await setActionData(action)
           await userTypeEnter(action.pid, '#phoneNumberId', phoneRs.phone)
   
-          await sleep(30000)
+          await sleep(5000)
         }
       }
 
