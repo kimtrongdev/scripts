@@ -28,7 +28,7 @@ async function regMail(action) {
     else if (url.indexOf('ads.google.com/aw/campaigns/new/express') > -1) {
       await userClick(action.pid, '#experiencedUserLink')
     }
-    else if (url.indexOf('ads.google.com/aw/signup/business') > -1) {
+    else if (url.indexOf('ads.google.com/aw/signup/business') > -1 || url.indexOf('ads.google.com/aw/signup/expert') > -1) {
       if (document.querySelector('.business-name-container .mdc-button')) {
         await userClick(action.pid, '.business-name-container .mdc-button')
         await sleep(3000)
