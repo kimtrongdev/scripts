@@ -24,7 +24,11 @@ async function runAction (action) {
         if (action.account_type == 'facebook'){
             //await reqFacebook(action)
         } else {
-            await regMail(action)
+            if (action.process_login) {
+                await userLogin(action)
+            } else {
+                await regMail(action)
+            }
         }
     }
     else if (action.id == 'rename_channel') {
@@ -117,7 +121,9 @@ async function initActionData(action) {
 
     if (action.id == 'reg_account') {
         let continueLink = ''
-        if (action.account_type == 'gmail') {
+        if (action.process_login) {
+            continueLink = 'accounts.google.com'
+        } else if (action.account_type == 'gmail') {
             continueLink = 'https://accounts.google.com/signup/v2/webcreateaccount?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&flowName=GlifWebSignIn&flowEntry=SignUp'
         } else if (action.account_type == 'facebook') {
             continueLink = 'facebook.com/reg'

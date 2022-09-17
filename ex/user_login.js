@@ -372,6 +372,13 @@ async function userLogin(action) {
 
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
+    if (action.id == 'reg_account' && action.process_login) {
+        action.process_login = false
+        await setActionData(action)
+        await goToLocation(action.pid, 'https://accounts.google.com/Logout')
+        return
+    }
+
     if (action.is_rename_channel_type) {
         action.is_start_handle_rename_channel = true
         await setActionData(action)

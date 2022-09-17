@@ -295,11 +295,11 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
-    if (_browser == 'brave-browser' && action.id == 'reg_account') {
+    if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
         screenWidth = 1100
         windowSize = ` --window-size="${screenWidth},${screenHeight}"`
     }
-    else if (_browser == 'brave-browser' && action.id == 'login') {
+    else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
         screenWidth = 1100
     } else {
         windowSize = ' --start-maximized'
@@ -570,9 +570,20 @@ async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
         if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
-            action = {
-                script_code: 'reg_account',
-                account_type: 'gmail'
+            let newProfile = await request_api.getNewProfile()
+            utils.log('newProfile: ', newProfile)
+            if (!newProfile.err && newProfile.profile) {
+                // copy main to clone profile
+                let profile = newProfile.profile
+                action = {
+                    ...profile,
+                    script_code: 'reg_account',
+                    account_type: 'gmail',
+                    process_login: true
+                }
+            } else {
+                console.log('Not found profile');
+                return
             }
         } else {
             if (ids.length < MAX_PROFILE) {
@@ -1043,6 +1054,7 @@ function initExpress() {
             }
 
             if (action.reg_ga_success || (action.stop && action.stop != 'false')) {
+                request_api.updateProfileData({ pid: Number(action.pid), status: 'NEW' })
                 removePidAddnew(req.query.pid, 0)
             }
         }
@@ -1213,8 +1225,8 @@ async function handleAction (actionData) {
         execSync(`xdotool key Shift+Tab`)
         execSync(`xdotool key Shift+Tab`)
 
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
+        execSync(`xdotool key Down`)
+        execSync(`xdotool key Down`)
 
         execSync(`xdotool key Shift+Tab`)
 

@@ -48,7 +48,7 @@ async function handleBraveSetting (action, continueLink = 'accounts.google.com')
     // select option
     await updateUserInput(action.pid,'CLICK', 1185, 650,0,0,"",'click')
   } else {
-    await sleep(15000)
+    await sleep(5000)
     await updateUserInput(action.pid,'BRAVE_SETTINGS', 0, 0,0,0,"",'BRAVE_SETTINGS')
   }
 
