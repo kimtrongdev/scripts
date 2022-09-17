@@ -575,6 +575,7 @@ async function getScriptData(pid, isNewProxy = false) {
             if (!newProfile.err && newProfile.profile) {
                 // copy main to clone profile
                 let profile = newProfile.profile
+                pid = profile.id
                 action = {
                     ...profile,
                     script_code: 'reg_account',
