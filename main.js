@@ -1054,7 +1054,7 @@ function initExpress() {
             }
 
             if (action.reg_ga_success || (action.stop && action.stop != 'false')) {
-                request_api.updateProfileData({ pid: Number(action.pid), status: 'NEW' })
+                request_api.updateProfileData({ pid: Number(action.pid), status: 'ERROR', description: 'ga' })
                 removePidAddnew(req.query.pid, 0)
             }
         }

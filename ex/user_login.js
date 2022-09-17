@@ -375,7 +375,7 @@ async function beforeLoginSuccess (action) {
     if (action.id == 'reg_account' && action.process_login) {
         action.process_login = false
         await setActionData(action)
-        await goToLocation(action.pid, 'https://accounts.google.com/Logout')
+        await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
         return
     }
 
