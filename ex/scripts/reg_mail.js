@@ -5,7 +5,10 @@ async function regMail(action) {
     let url = window.location.toString()
     await reportLive(action.pid)
 
-    if (url.indexOf('accounts.google.com/ServiceLogin/signinchooser') > -1) {
+    if (url.indexOf('google.com/adsense/start') > -1) {
+      await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'underage')
+    }
+    else if (url.indexOf('accounts.google.com/ServiceLogin/signinchooser') > -1) {
       await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
     }
     else if (url.indexOf('mail.google.com/mail') > -1) {
