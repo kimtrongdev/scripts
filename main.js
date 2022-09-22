@@ -10,6 +10,7 @@ let countRun = 0
 let isPauseAction = false
 let isAfterReboot = false
 let actionsData = []
+let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -1002,6 +1003,11 @@ function initExpress() {
         let rs = await request_api.getPhone()
         res.send(rs)
         return
+    })
+
+    app.get('/get-address-random', async (req, res) => {
+        const randomAddress = addresses[Math.floor(Math.random() * addresses.length)]
+        return res.send(randomAddress)
     })
 
     app.get('/get-phone-code', async (req, res) => {

@@ -820,3 +820,8 @@ function makeid(length) {
    }
    return result;
 }
+function getRandomAddress () {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-address-random' }, function (response) {
+        resolve(response);
+    }))
+}

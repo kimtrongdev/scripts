@@ -22,8 +22,57 @@ async function regMail(action) {
       // failed
 
     }
+    else if (url.indexOf('google.com/adsense/new/u/0/pub') > -1 && url.indexOf('onboarding/payments') > -1) {
+      if (document.querySelector('material-input[exactmatch="phone-number"] input')) {
+        let phoneRs = await getPhone()
+        if (phoneRs.error || action.entered_phone) {
+          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+        } else {
+          action.order_id = phoneRs.orderID
+          action.api_name = phoneRs.api_name
+          action.entered_phone = true
+          await setActionData(action)
+
+          await userType(action.pid, 'material-input[exactmatch="phone-number"] input', phoneRs.phone)
+          await userClick(action.pid, `material-radio`)
+
+          await sleep(5000)
+          
+          if (document.querySelector('material-input[exactmatch="phone-pin"] input')) {
+            let phoneRs = await getPhoneCode(action.order_id, action.api_name)
+            console.log('getPhoneCode', phoneRs);
+            if (phoneRs.error || action.entered_code) {
+              await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+            } else {
+              action.entered_code = true
+              await setActionData(action)
+              await userTypeEnter(action.pid, 'material-input[exactmatch="phone-pin"] input', phoneRs.code)
+              await sleep(30000)
+            }
+          }
+        }
+      } else {
+        let add = await getRandomAddress()
+        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="RECIPIENT"]', 'nmae')
+
+        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1)
+        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_2"]', add.ad2)
+        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="LOCALITY"]', add.city)
+
+        await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content')
+        await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`)
+
+        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC)
+
+        await userClick(action.pid, `material-yes-no-buttons material-ripple`)
+      }
+    }
     else if (url.indexOf('google.com/adsense/new/u') > -1) {
-      await goToLocation(action.pid, 'https://ads.google.com/home/')
+      if (document.querySelector('.in-progress-button-container button')) {
+        await userClick(action.pid, '.in-progress-button-container button')
+      } else {
+        await goToLocation(action.pid, 'https://ads.google.com/home/')
+      }
     }
     else if (url.indexOf('ads.google.com/home') > -1) {
       if (document.querySelector('a[gtm-id="home-startnow-hero"]')) {
