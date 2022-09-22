@@ -23,19 +23,22 @@ async function regMail(action) {
 
     }
     else if (url.indexOf('google.com/adsense/new/u/0/pub') > -1 && url.indexOf('onboarding/payments') > -1) {
+      await waitForSelector('#signup-containerIframe')
+      let iframe = document.querySelector('#signup-containerIframe')
+
       let add = await getRandomAddress()
-      await waitForSelector('.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]') 
+      await waitForSelector('.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', 30000, iframe) 
       
       //await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="RECIPIENT"]', 'nmae')
 
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1)
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_2"]', add.ad2)
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="LOCALITY"]', add.city)
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1, '', iframe)
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_2"]', add.ad2, '', iframe)
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="LOCALITY"]', add.city, '', iframe)
 
-      await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content')
-      await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`)
+      await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content', '', iframe)
+      await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`, '', iframe)
 
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC)
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC, '', iframe)
 
       await userClick(action.pid, `material-yes-no-buttons material-ripple`)
       
