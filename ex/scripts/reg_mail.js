@@ -23,6 +23,24 @@ async function regMail(action) {
 
     }
     else if (url.indexOf('google.com/adsense/new/u/0/pub') > -1 && url.indexOf('onboarding/payments') > -1) {
+      let add = await getRandomAddress()
+      await waitForSelector('.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]') 
+      
+      //await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="RECIPIENT"]', 'nmae')
+
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1)
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_2"]', add.ad2)
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="LOCALITY"]', add.city)
+
+      await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content')
+      await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`)
+
+      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC)
+
+      await userClick(action.pid, `material-yes-no-buttons material-ripple`)
+      
+      await sleep(5000)
+
       if (document.querySelector('material-input[exactmatch="phone-number"] input')) {
         let phoneRs = await getPhone()
         if (phoneRs.error || action.entered_phone) {
@@ -33,7 +51,7 @@ async function regMail(action) {
           action.entered_phone = true
           await setActionData(action)
 
-          await userType(action.pid, 'material-input[exactmatch="phone-number"] input', phoneRs.phone)
+          await userType(action.pid, 'material-input[exactmatch="phone-number"] input', '+84' + phoneRs.phone)
           await userClick(action.pid, `material-radio`)
 
           await sleep(5000)
@@ -51,20 +69,6 @@ async function regMail(action) {
             }
           }
         }
-      } else {
-        let add = await getRandomAddress()
-        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="RECIPIENT"]', 'nmae')
-
-        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1)
-        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_2"]', add.ad2)
-        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="LOCALITY"]', add.city)
-
-        await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content')
-        await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`)
-
-        await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC)
-
-        await userClick(action.pid, `material-yes-no-buttons material-ripple`)
       }
     }
     else if (url.indexOf('google.com/adsense/new/u') > -1) {
