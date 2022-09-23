@@ -1006,7 +1006,9 @@ function initExpress() {
     })
 
     app.get('/get-address-random', async (req, res) => {
+        console.log(addresses.length);
         const randomAddress = addresses[Math.floor(Math.random() * addresses.length)]
+        console.log(randomAddress);
         return res.send(randomAddress)
     })
 
