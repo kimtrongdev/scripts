@@ -23,22 +23,34 @@ async function regMail(action) {
 
     }
     else if (url.indexOf('google.com/adsense/new/u/0/pub') > -1 && url.indexOf('onboarding/payments') > -1) {
-      await waitForSelector('#signup-containerIframe')
-      let iframe = document.querySelector('#signup-containerIframe')
-
       let add = await getRandomAddress()
-      await waitForSelector('.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', 30000, iframe) 
+      await sleep(10000)
+
+      await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.ad1)
+      await updateUserInput(pid,'TABS', 1)
+
+      if (add.ad2) {
+        await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.ad2)
+      }
       
-      //await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="RECIPIENT"]', 'nmae')
+      await updateUserInput(pid,'TABS', 1)
+      await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.city)
 
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1, '', iframe)
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_2"]', add.ad2, '', iframe)
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="LOCALITY"]', add.city, '', iframe)
+      await updateUserInput(pid,'TABS', 1)
+      await updateUserInput(pid,'KEY_ENTER')
+      let stateSelect = 3
+      await userSelect(action.pid, stateSelect)
 
-      await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content', '', iframe)
-      await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`, '', iframe)
+      await updateUserInput(pid,'TABS', 1)
+      await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.posC)
 
-      await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC, '', iframe)
+      // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="RECIPIENT"]', 'nmae')
+      // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1)
+      // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_2"]', add.ad2)
+      // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="LOCALITY"]', add.city)
+      // await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content')
+      // await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`)
+      // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC)
 
       await userClick(action.pid, `material-yes-no-buttons material-ripple`)
       
@@ -186,7 +198,13 @@ async function regMail(action) {
       await userClick(action.pid, 'material-dropdown-select')
       //77 hoa ki
       //218 anh 
-      await userClick(action.pid, 'hoaki', document.querySelectorAll('material-select-dropdown-item span').item(77))
+      let elItem = getElementContainsInnerText('span', 'United States')
+      if (elItem) {
+        await userClick(action.pid, 'hoaki', elItem)
+      } else {
+        await userClick(action.pid, 'hoaki', document.querySelectorAll('material-select-dropdown-item span').item(77))
+      }
+      
       await userClick(action.pid, '.is-product-agreement-signed-checkbox .mdc-checkbox input')
       await userClick(action.pid, '.submit-button')
     }
