@@ -25,7 +25,7 @@ async function regMail(action) {
     else if (url.indexOf('google.com/adsense/new/u/0/pub') > -1 && url.indexOf('onboarding/payments') > -1) {
       let add = await getRandomAddress()
       console.log('----> random add', add);
-      await sleep(10000)
+      await sleep(15000)
 
       await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.ad1)
       await updateUserInput(action.pid,'TABS', 1)
@@ -145,7 +145,6 @@ async function regMail(action) {
       await userType(action.pid, 'bid-input mask-money-input', '333')
       
       let list = [
-        's5K0TEHvwVI',
         '7ICKkagL3xA',
         '4BXHjfg7XPU',
         'nxsLkEPYR-4',
