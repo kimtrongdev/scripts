@@ -26,24 +26,24 @@ async function regMail(action) {
       let add = await getRandomAddress()
       await sleep(10000)
 
-      await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.ad1)
-      await updateUserInput(pid,'TABS', 1)
+      await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.ad1)
+      await updateUserInput(action.pid,'TABS', 1)
 
       if (add.ad2) {
-        await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.ad2)
+        await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.ad2)
       }
       
-      await updateUserInput(pid,'TABS', 1)
-      await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.city)
+      await updateUserInput(action.pid,'TABS', 1)
+      await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.city)
 
-      await updateUserInput(pid,'TABS', 1)
-      await updateUserInput(pid,'KEY_ENTER')
+      await updateUserInput(action.pid,'TABS', 1)
+      await updateUserInput(action.pid,'KEY_ENTER')
       let statePosMap = { "AL": 0, "AK": 1, "AS": 2, "AZ": 3, "AR": 4, "AA": 5, "AE": 6, "AP": 7, "CA": 8, "CO": 9, "CT": 10, "DE": 11, "DC": 12, "FL": 13, "GA": 14, "GU": 15, "HI": 16, "ID": 17, "IL": 18, "IN": 19, "IA": 20, "KS": 21, "KY": 22, "LA": 23, "ME": 24, "MH": 25, "MD": 26, "MA": 27, "MI": 28, "FM": 29, "MN": 30, "MS": 31, "MO": 32, "MT": 33, "NE": 34, "NV": 35, "NH": 36, "NJ": 37, "NM": 38, "NY": 39, "NC": 40, "ND": 41, "MP": 42, "OH": 43, "OK": 44, "OR": 45, "PW": 46, "PA": 47, "PR": 48, "RI": 49, "SC": 50, "SD": 51, "TN": 52, "TX": 53, "UT": 54, "VT": 55, "VI": 56, "VA": 57, "WA": 58, "WV": 59, "WI": 60, "WY": 61 }
       let selectPos = statePosMap[add.state]
       await userSelect(action.pid, selectPos)
 
-      await updateUserInput(pid,'TABS', 1)
-      await updateUserInput(pid,'ONLY_TYPE', 0, 0, 0,0, add.posC)
+      await updateUserInput(action.pid,'TABS', 1)
+      await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.posC)
 
       // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="RECIPIENT"]', 'nmae')
       // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="ADDRESS_LINE_1"]', add.ad1)
