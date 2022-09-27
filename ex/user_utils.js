@@ -129,7 +129,11 @@ async function initActionData(action) {
             continueLink = 'facebook.com/reg'
         }
 
-        await handleBraveSetting(action, continueLink)
+        if (action.browser_name == 'brave' ||action.browser_name == 'brave-browser') {
+            await handleBraveSetting(action, continueLink)
+        } else {
+            await goToLocation(action.pid, continueLink)
+        }
     }
     else if (action.id == 'rename_channel') {
         if (Number(action.total_created_users)) {
