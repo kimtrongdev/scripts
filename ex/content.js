@@ -138,9 +138,6 @@ function initSettingData (action) {
         }
     }
 
-    if (action.browser_name == 'chromium-browser') {
-        heightCustom = 27
-    }
 
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
