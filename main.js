@@ -166,7 +166,7 @@ async function loadSystemConfig () {
             }
         }
     })
-    systemConfig.browsers = browsers
+    systemConfig.browsers = ['chromium-browser']
 
     if (config.browser_map) {
         Object.keys(config.browser_map).forEach(browserMaped => {
@@ -422,6 +422,8 @@ async function startChromeAction(action, _browser) {
 async function loginProfileChrome(profile) {
     try {
         try {
+            let ramdom = utils.getRndInteger(1000, 9000)
+            execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822630${ramdom}"`)
             execSync(`sudo xrandr -s 1600x1200`)
         } catch (error) {
             console.log(error);
