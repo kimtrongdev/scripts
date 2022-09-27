@@ -1079,13 +1079,12 @@ function initExpress() {
                     username: action.username,
                     password: action.password,
                     verify: action.verify,
-                    type: action.type,
-                    reg_ga_success: action.reg_ga_success
+                    type: action.type
                 })
             }
 
             if (action.reg_ga_success || (action.stop && action.stop != 'false')) {
-                request_api.updateProfileData({ pid: Number(action.pid), status: 'ERROR', description: 'ga' })
+                //request_api.updateProfileData({ pid: Number(action.pid), status: 'ERROR', description: 'ga' })
                 removePidAddnew(req.query.pid, 0)
             }
         }
