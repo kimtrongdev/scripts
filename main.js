@@ -590,7 +590,6 @@ async function getScriptData(pid, isNewProxy = false) {
             //     return
             // }
             action = {
-                ...profile,
                 script_code: 'reg_account',
                 account_type: 'gmail'
             }
