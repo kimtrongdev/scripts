@@ -66,7 +66,12 @@ async function userWatch(action){
             await processWatchPage(action)
         }
         else if (url.indexOf('m.youtube.com/playlist?list=') > -1) {
-            await userClick(action.pid, '.playlist-play-all-button')
+            if (document.querySelector('.playlist-play-all-button')) {
+                await userClick(action.pid, '.playlist-play-all-button')
+            } else if (document.querySelector('.yt-spec-button-shape-next path[d="M0 0h24v24H0V0z"]')) {
+                await userClick(action.pid, '.yt-spec-button-shape-next path[d="M0 0h24v24H0V0z"]')
+            }
+            
             await sleep(15000)
         }
         else if(url.indexOf('https://www.youtube.com/playlist?list=') > -1){
@@ -1190,11 +1195,11 @@ async function CommentYoutubeVideo(pid, msg = '') {
 async function clickPlayIfPause(pid) {
     console.log('clickPlayIfPause')
     if (IS_MOBILE) {
-        let btnPlay = document.querySelector('.ytp-large-play-button')//document.querySelector('path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
-        if (btnPlay) {
-            console.log('info','clickPlayIfPauseMobile')
-            await userClick(pid,'.ytp-large-play-button')
-        }
+        // let btnPlay = document.querySelector('.ytp-large-play-button')//document.querySelector('path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
+        // if (btnPlay) {
+        //     console.log('info','clickPlayIfPauseMobile')
+        //     await userClick(pid,'.ytp-large-play-button')
+        // }
     } else {
         let btnPlay = document.querySelector('path[d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"]')
         if (btnPlay) {
