@@ -15,7 +15,7 @@ var isRunBAT = true
 
 var widthCustom = 0
 var heightCustom = 0
-var IS_MOBILE = false
+var IS_MOBILE = true
 async function loadPage(){
     try{
         await sleep(4000)
