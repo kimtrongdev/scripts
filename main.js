@@ -296,7 +296,10 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
-    if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
+    if (_browser == 'chromium-browser' && !IS_SHOW_UI) {
+        screenWidth = 1100
+        windowSize = ` --window-size="${screenWidth},${screenHeight}"`
+    } else if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
         screenWidth = 1100
         windowSize = ` --window-size="${screenWidth},${screenHeight}"`
     }
