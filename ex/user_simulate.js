@@ -236,7 +236,7 @@ async function switchMobile(action){
     }
 
     await sleep(1000)
-    //await updateUserInput(action.pid,'SHOW_PAGE')
+    await updateUserInput(action.pid,'SHOW_PAGE')
 }
 
 async function screenshot(pid){

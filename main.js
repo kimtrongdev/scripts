@@ -298,7 +298,7 @@ async function startChromeAction(action, _browser) {
     //debug
     if (_browser == 'chromium-browser' && !IS_SHOW_UI) {
         screenWidth = 1100
-        windowSize = ` --window-size="${screenWidth},${screenHeight}"`
+        windowSize = ` --window-size="${screenWidth},${1200}"`
     } else if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
         screenWidth = 1100
         windowSize = ` --window-size="${screenWidth},${screenHeight}"`
@@ -1573,7 +1573,7 @@ function closeChrome(pid) {
 function startDisplay(pid) {
     try {
         if (!WIN_ENV) {
-            exec(`Xvfb :${pid} -ac -screen 0, 1920x1040x24`)
+            exec(`Xvfb :${pid} -ac -screen 0, 1920x1300x24`)
             // execSync(`unzip -o -P Trung@123456 ex.zip`)
             // execSync(`unzip -o -P Trung@123456 quality.zip`)
             let core = (pid % 4 + 1) * 2
