@@ -117,7 +117,7 @@ async function initActionData(action) {
     console.log(action)
     await setActionData(action)
 
-    if(action.mobile) await switchMobile(action)
+    if(true) await switchMobile(action)
 
     if (action.id == 'reg_account') {
         let continueLink = ''
