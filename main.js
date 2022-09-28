@@ -298,7 +298,7 @@ async function startChromeAction(action, _browser) {
     //debug
     if (_browser == 'chromium-browser' && !IS_SHOW_UI) {
         screenWidth = 1100
-        windowSize = ` --window-size="${screenWidth},${1200}"`
+        windowSize = ` --window-size="${screenWidth},${1300}"`
     } else if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
         screenWidth = 1100
         windowSize = ` --window-size="${screenWidth},${screenHeight}"`
