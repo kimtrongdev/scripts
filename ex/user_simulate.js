@@ -168,7 +168,10 @@ async function sendKey(pid, key){
 async function nextVideo(pid){
     console.log('nextVideo')
     if (IS_MOBILE) {
-        await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]')
+        let videos = document.querySelectorAll('ytm-playlist-panel-video-renderer .compact-media-item-image img')
+        let indexRd = randomRanger(0, videos.length - 1)
+        await userClick(pid, 'click video' + indexRd, videos.item(indexRd))
+        //await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]')
     } else {
         await updateUserInput(pid,'NEXT_VIDEO')
     }

@@ -66,11 +66,15 @@ async function userWatch(action){
             await processWatchPage(action)
         }
         else if (url.indexOf('m.youtube.com/playlist?list=') > -1) {
-            if (document.querySelector('.playlist-play-all-button')) {
-                await userClick(action.pid, '.playlist-play-all-button')
-            } else if (document.querySelector('.yt-spec-button-shape-next path[d="M0 0h24v24H0V0z"]')) {
-                await userClick(action.pid, '.yt-spec-button-shape-next path[d="M0 0h24v24H0V0z"]')
-            }
+            let videos = document.querySelectorAll('.video-thumbnail-overlay-bottom-group')
+            let indexRd = randomRanger(0, videos.length - 1)
+            await userClick(action.pid, 'click video' + indexRd, videos.item(indexRd))
+            
+            // if (document.querySelector('.playlist-play-all-button')) {
+            //     await userClick(action.pid, '.playlist-play-all-button')
+            // } else if (document.querySelector('.yt-spec-button-shape-next path[d="M0 0h24v24H0V0z"]')) {
+            //     await userClick(action.pid, '.yt-spec-button-shape-next path[d="M0 0h24v24H0V0z"]')
+            // }
             
             await sleep(15000)
         }
