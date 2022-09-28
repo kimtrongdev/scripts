@@ -129,7 +129,7 @@ function initSettingData (action) {
         isRunBAT = false
     }
 
-    zoom = action.zoom || 1
+    zoom = 1
 
     if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
         heightCustom = -23
@@ -141,8 +141,8 @@ function initSettingData (action) {
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
     }
-   // mobileMenuBarHeight = barHeightMap[action.browser_name]
-   // windowWide = action.windowWide
+    mobileMenuBarHeight = 172//barHeightMap[action.browser_name]
+    windowWide = 2358//action.windowWide
    // menuBarWidth = 27
 }
 

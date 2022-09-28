@@ -53,13 +53,13 @@ async function userWatch(action){
             await sleep(2000)
             await userClick(action.pid,'#search div h3')
         }
-        else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+        else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/' || url == 'https://m.youtube.com/?noapp=1') {
             await processHomePage(action)
         } else if (url.indexOf('youtube.com/feed/history') > -1) {
             await deleteHistory(action)
             await goToLocation(action.pid,'https://www.youtube.com//')
             await sleep(60000)
-        } else if (url.indexOf('https://www.youtube.com/results') > -1) {
+        } else if (url.indexOf('youtube.com/results') > -1) {
             await processSearchPage(action)
         }
         else if(url.indexOf('https://www.youtube.com/watch') > -1 || url.indexOf('https://m.youtube.com/watch') > -1){
@@ -72,7 +72,7 @@ async function userWatch(action){
         else if(url.indexOf('https://www.youtube.com/playlist?list=') > -1){
             await processPlaylistPage(action)
         }
-        else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
+        else if(url.indexOf('youtube.com/channel/') > -1 || url.indexOf('youtube.com/user/') > -1 || url.indexOf('youtube.com/c/') > -1){
             if(action.create_channel) {
                 action.filter = undefined
                 await setActionData(action)
@@ -159,11 +159,10 @@ async function processHomePage(action){
         return
     }
 
-    if (action.search || action.page) {
-        await userTypeEnter(action.pid,'input#search',action.keyword)
-        await sleep(20000)
-        let url = window.location.toString()
-        if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+    if (action.search) {
+        if (IS_MOBILE) {
+            await searchMobile(action.pid, action.keyword)
+        } else {
             await userTypeEnter(action.pid,'input#search',action.keyword)
         }
         return
@@ -173,6 +172,8 @@ async function processHomePage(action){
         let ids = action.suggest_channel_ids.split(',')
         if (ids.length) {
             let channelId = ids[randomRanger(0, ids.length - 1)]
+            action.suggest_channel_id = channelId
+            await setActionData(action)
             // handle channel id 
             await goToLocation(action.pid,'https://www.youtube.com/'+channelId)
         }
@@ -190,11 +191,6 @@ async function processHomePage(action){
             }
             else if(action.preview == "search"){
                 await userTypeEnter(action.pid,'input#search',action.keyword)
-                await sleep(20000)
-                let url = window.location.toString()
-                if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-                    await userTypeEnter(action.pid,'input#search',action.keyword)
-                }
             }
         }
         return
@@ -223,7 +219,11 @@ async function processHomePage(action){
         await userTypeEnter(action.pid,'input#search',action.suggest_videos)
     } 
     else{
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+        if (IS_MOBILE) {
+            await searchMobile(action.pid, action.keyword)
+        } else {
+            await userTypeEnter(action.pid,'input#search',action.keyword)
+        }
     }
 
     await sleep(3000)
@@ -323,18 +323,35 @@ async function preWatchingVideo(action){
                 //await setActionData(action)
                 // await userTypeEnter(action.pid,'input#search',action.video)
                 let randomNext = randomRanger(1,4)
-                let nextSelector = `ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(${randomNext})`
-                let next = document.querySelector(nextSelector)
-                for (let  i = 1; i<=4;i++) {
-                    nextSelector = `ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(${i})`
-                    next = document.querySelector(nextSelector)
-                    if (next) {
-                        break
+                
+                if (IS_MOBILE) {
+                    let nextSelector = `ytm-single-column-watch-next-results-renderer lazy-list ytm-video-with-context-renderer:nth-of-type(${randomNext})`
+                    let next = document.querySelector(nextSelector)
+                    if(!next) {
+                        nextSelector = `ytm-single-column-watch-next-results-renderer lazy-list ytm-video-with-context-renderer:nth-of-type(${randomNext})`
+                        next = document.querySelector(nextSelector)
                     }
+                    // next.insertAdjacentHTML('beforebegin', '<ytm-compact-video-renderer class="item"><div class="compact-media-item"><a class="compact-media-item-image" aria-hidden="true" href="/watch?v=zf8Lu8-eFrY"><div class="video-thumbnail-container-compact center"><div class="cover video-thumbnail-img video-thumbnail-bg"></div><img alt="" class="cover video-thumbnail-img" src="https://i.ytimg.com/vi/zf8Lu8-eFrY/default.jpg"><div class="video-thumbnail-overlay-bottom-group"><ytm-thumbnail-overlay-time-status-renderer data-style="DEFAULT">8:52</ytm-thumbnail-overlay-time-status-renderer></div></div></a><div class="compact-media-item-metadata" data-has-badges="false"><a class="compact-media-item-metadata-content" href="/watch?v=zf8Lu8-eFrY"><h4 class="compact-media-item-headline">Chị em thi nhau rụng tim với giọng hát ngọt ngào của rapper BIGCITYBOI</h4><div class="subhead" extend-height="false" aria-hidden="true"><div class="compact-media-item-byline small-text">DONG TAY ENTERTAINMENT</div><div class="compact-media-item-stats small-text">6.4M views</div></div></a><ytm-menu-renderer class="compact-media-item-menu"><ytm-menu><button class="icon-button " aria-label="Action menu" aria-haspopup="true"><c3-icon flip-for-rtl="false"><svg viewBox="0 0 24 24" fill=""><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg></c3-icon></button></ytm-menu></ytm-menu-renderer></div></div></ytm-compact-video-renderer>')
+                    next.insertAdjacentHTML('beforebegin', '<ytm-video-with-context-renderer class="item"><ytm-large-media-item><a class="large-media-item-thumbnail-container" aria-hidden="true" href="/watch?v=0dLr9W5BDCA&amp;t=20s"><div class="video-thumbnail-container-large center"><div class="cover video-thumbnail-img video-thumbnail-bg"></div><img alt="" class="cover video-thumbnail-img" src="https://i.ytimg.com/vi/0dLr9W5BDCA/hq720.jpg?sqp=-oaymwEcCK4FEIIDSEbyq4qpAw4IARUAAIhCGAFwAcABBg==&amp;rs=AOn4CLC2PgNBneRJchNr_I_nvokRUq1cIw"><div class="video-thumbnail-overlay-bottom-group"><ytm-thumbnail-overlay-resume-playback-renderer><div class="thumbnail-overlay-resume-playback-progress" style="width: 10%;"></div></ytm-thumbnail-overlay-resume-playback-renderer><ytm-thumbnail-overlay-time-status-renderer data-style="DEFAULT">45:48</ytm-thumbnail-overlay-time-status-renderer></div></div></a><div class="details"><div class="large-media-channel"><ytm-channel-thumbnail-with-link-renderer><a href="/c/M%C3%B9a%C4%90iNgangPh%E1%BB%914U"><ytm-profile-icon class="channel-thumbnail-icon" aria-label="Ir ao canal"><img class="profile-icon-img" alt="" src="https://yt3.ggpht.com/ytc/AAUvwni7OTbXT5QxHVsQAJot7_0QuwBe6CpHEJLicKXr=s68-c-k-c0x00ffffff-no-rj"></ytm-profile-icon></a></ytm-channel-thumbnail-with-link-renderer><a class="large-media-item-extra-endpoint" aria-hidden="true" href="/watch?v=0dLr9W5BDCA&amp;t=20s"></a></div><div class="large-media-item-info cbox" no-channel-avatar="false"><div class="large-media-item-metadata"><a href="/watch?v=0dLr9W5BDCA&amp;t=20s"><h3 class="">Là Gió Thì Gió Cứ Bay Về Trời - Nhạc Chill Cho Ngày Nhẹ Nhàng</h3><div class="" aria-hidden="true"><ytm-badge-and-byline-renderer><span class="ytm-badge-and-byline-item-byline small-text" dir="auto" aria-hidden="true">Mùa Đi Ngang Phố</span><span class="ytm-badge-and-byline-separator" aria-hidden="true">•</span><span class="ytm-badge-and-byline-item-byline small-text" dir="auto" aria-hidden="true">1,9&nbsp;mi de visualizações</span></ytm-badge-and-byline-renderer></div></a></div><ytm-menu-renderer class="large-media-item-menu"><ytm-menu><button class="icon-button " aria-label="Menu de ações" aria-haspopup="true"><c3-icon><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><path d="M12,16.5c0.83,0,1.5,0.67,1.5,1.5s-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5S11.17,16.5,12,16.5z M10.5,12 c0,0.83,0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5S10.5,11.17,10.5,12z M10.5,6c0,0.83,0.67,1.5,1.5,1.5 s1.5-0.67,1.5-1.5S12.83,4.5,12,4.5S10.5,5.17,10.5,6z"></path></svg></c3-icon></button></ytm-menu></ytm-menu-renderer></div></div></ytm-large-media-item></ytm-video-with-context-renderer>')
+                    next.previousElementSibling.querySelector('a').href = action.url_type == 'video'?"/watch?v=" + action.playlist_url:"/watch?v=" + (await getFirstVideo(action.playlist_url)).data + "&list=" + action.playlist_url
+                    await userClick(action.pid, `${nextSelector} a`)
+                } else {
+                    let nextSelector = `ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(${randomNext})`
+                    let next = document.querySelector(nextSelector)
+                    for (let  i = 1; i<=4;i++) {
+                        nextSelector = `ytd-watch-next-secondary-results-renderer > #items .ytd-watch-next-secondary-results-renderer:nth-child(${i})`
+                        next = document.querySelector(nextSelector)
+                        if (next) {
+                            break
+                        }
+                    }
+
+                    next.insertAdjacentHTML('beforebegin', '<ytd-compact-video-renderer class="style-scope ytd-watch-next-secondary-results-renderer" lockup="" thumbnail-width="168">  <div id="dismissable" class="style-scope ytd-compact-video-renderer"> <ytd-thumbnail use-hovered-property="" class="style-scope ytd-compact-video-renderer">  <a id="thumbnail" class="yt-simple-endpoint inline-block style-scope ytd-thumbnail" aria-hidden="true" tabindex="-1" rel="nofollow" href="/watch?v=abcabcabcde"> <yt-img-shadow class="style-scope ytd-thumbnail no-transition" loaded="" style="background-color: transparent;"><img id="img" class="style-scope yt-img-shadow" alt="" width="168" src="https://i.ytimg.com/vi/dpGYmYC3p0I/hqdefault.jpg?sqp=-oaymwEYCKgBEF5IVfKriqkDCwgBFQAAiEIYAXAB&amp;rs=AOn4CLDAbX4Gl4f75wtg594Ix2Hla7Epxw"></yt-img-shadow>  <div id="overlays" class="style-scope ytd-thumbnail"><ytd-thumbnail-overlay-time-status-renderer class="style-scope ytd-thumbnail" overlay-style="DEFAULT"><yt-icon class="style-scope ytd-thumbnail-overlay-time-status-renderer" disable-upgrade="" hidden=""></yt-icon><span class="style-scope ytd-thumbnail-overlay-time-status-renderer" aria-label="1 hour, 14 minutes"> 1:14:08 </span></ytd-thumbnail-overlay-time-status-renderer><ytd-thumbnail-overlay-now-playing-renderer class="style-scope ytd-thumbnail">  <span class="style-scope ytd-thumbnail-overlay-now-playing-renderer">Now playing</span> </ytd-thumbnail-overlay-now-playing-renderer></div> <div id="mouseover-overlay" class="style-scope ytd-thumbnail"></div> <div id="hover-overlays" class="style-scope ytd-thumbnail"></div> </a> </ytd-thumbnail> <div class="details style-scope ytd-compact-video-renderer"> <div class="metadata style-scope ytd-compact-video-renderer"> <a class="yt-simple-endpoint style-scope ytd-compact-video-renderer" rel="nofollow" href="/watch?v=abcabcabcde"> <h3 class="style-scope ytd-compact-video-renderer"> <ytd-badge-supported-renderer class="style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> <span id="video-title" class="style-scope ytd-compact-video-renderer" aria-label="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava by Dave and Ava - Nursery Rhymes and Baby Songs 3 years ago 1 hour, 14 minutes 22,960,714 views" title="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava"> ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava </span> </h3> <div class="secondary-metadata style-scope ytd-compact-video-renderer"> <ytd-video-meta-block class="compact style-scope ytd-compact-video-renderer" no-endpoints="">    <div id="metadata" class="style-scope ytd-video-meta-block"> <div id="byline-container" class="style-scope ytd-video-meta-block"> <ytd-channel-name id="channel-name" class="style-scope ytd-video-meta-block">  <div id="container" class="style-scope ytd-channel-name"> <div id="text-container" class="style-scope ytd-channel-name"> <yt-formatted-string id="text" title="" class="style-scope ytd-channel-name" ellipsis-truncate="">Dave and Ava - Nursery Rhymes and Baby Songs</yt-formatted-string> </div> <paper-tooltip offset="10" class="style-scope ytd-channel-name" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Dave and Ava - Nursery Rhymes and Baby Songs </div> </paper-tooltip> </div> <ytd-badge-supported-renderer class="style-scope ytd-channel-name">   <div class="badge badge-style-type-verified style-scope ytd-badge-supported-renderer"> <yt-icon class="style-scope ytd-badge-supported-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10 S17.52,2,12,2z M9.92,17.93l-4.95-4.95l2.05-2.05l2.9,2.9l7.35-7.35l2.05,2.05L9.92,17.93z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon> <span class="style-scope ytd-badge-supported-renderer"></span> <paper-tooltip position="top" class="style-scope ytd-badge-supported-renderer" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Verified </div> </paper-tooltip></div> <dom-repeat id="repeat" as="badge" class="style-scope ytd-badge-supported-renderer"><template is="dom-repeat"></template></dom-repeat> </ytd-badge-supported-renderer> </ytd-channel-name> <div id="separator" class="style-scope ytd-video-meta-block">•</div> </div> <div id="metadata-line" class="style-scope ytd-video-meta-block">  <span class="style-scope ytd-video-meta-block">22M views</span>  <span class="style-scope ytd-video-meta-block">3 years ago</span> <dom-repeat strip-whitespace="" class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div> </div> <div id="additional-metadata-line" class="style-scope ytd-video-meta-block"> <dom-repeat class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div>  </ytd-video-meta-block> <ytd-badge-supported-renderer class="badges style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> </div> </a> <div id="buttons" class="style-scope ytd-compact-video-renderer"></div> </div> <div id="menu" class="style-scope ytd-compact-video-renderer"><ytd-menu-renderer class="style-scope ytd-compact-video-renderer">  <div id="top-level-buttons" class="style-scope ytd-menu-renderer"></div> <yt-icon-button id="button" class="dropdown-trigger style-scope ytd-menu-renderer" hidden="">   <button id="button" class="style-scope yt-icon-button">  <yt-icon class="style-scope ytd-menu-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon>  </button>  </yt-icon-button> </ytd-menu-renderer></div> <div id="queue-button" class="style-scope ytd-compact-video-renderer"></div> </div> </div> <div id="dismissed" class="style-scope ytd-compact-video-renderer"></div> </ytd-compact-video-renderer>')
+                    next.previousElementSibling.querySelector('a').href = action.url_type == 'video'?"/watch?v=" + action.playlist_url:"/watch?v=" + (await getFirstVideo(action.playlist_url)).data + "&list=" + action.playlist_url
+                    
+                    await userClick(action.pid, `${nextSelector} a#thumbnail`)
                 }
-                next.insertAdjacentHTML('beforebegin', '<ytd-compact-video-renderer class="style-scope ytd-watch-next-secondary-results-renderer" lockup="" thumbnail-width="168">  <div id="dismissable" class="style-scope ytd-compact-video-renderer"> <ytd-thumbnail use-hovered-property="" class="style-scope ytd-compact-video-renderer">  <a id="thumbnail" class="yt-simple-endpoint inline-block style-scope ytd-thumbnail" aria-hidden="true" tabindex="-1" rel="nofollow" href="/watch?v=abcabcabcde"> <yt-img-shadow class="style-scope ytd-thumbnail no-transition" loaded="" style="background-color: transparent;"><img id="img" class="style-scope yt-img-shadow" alt="" width="168" src="https://i.ytimg.com/vi/dpGYmYC3p0I/hqdefault.jpg?sqp=-oaymwEYCKgBEF5IVfKriqkDCwgBFQAAiEIYAXAB&amp;rs=AOn4CLDAbX4Gl4f75wtg594Ix2Hla7Epxw"></yt-img-shadow>  <div id="overlays" class="style-scope ytd-thumbnail"><ytd-thumbnail-overlay-time-status-renderer class="style-scope ytd-thumbnail" overlay-style="DEFAULT"><yt-icon class="style-scope ytd-thumbnail-overlay-time-status-renderer" disable-upgrade="" hidden=""></yt-icon><span class="style-scope ytd-thumbnail-overlay-time-status-renderer" aria-label="1 hour, 14 minutes"> 1:14:08 </span></ytd-thumbnail-overlay-time-status-renderer><ytd-thumbnail-overlay-now-playing-renderer class="style-scope ytd-thumbnail">  <span class="style-scope ytd-thumbnail-overlay-now-playing-renderer">Now playing</span> </ytd-thumbnail-overlay-now-playing-renderer></div> <div id="mouseover-overlay" class="style-scope ytd-thumbnail"></div> <div id="hover-overlays" class="style-scope ytd-thumbnail"></div> </a> </ytd-thumbnail> <div class="details style-scope ytd-compact-video-renderer"> <div class="metadata style-scope ytd-compact-video-renderer"> <a class="yt-simple-endpoint style-scope ytd-compact-video-renderer" rel="nofollow" href="/watch?v=abcabcabcde"> <h3 class="style-scope ytd-compact-video-renderer"> <ytd-badge-supported-renderer class="style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> <span id="video-title" class="style-scope ytd-compact-video-renderer" aria-label="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava by Dave and Ava - Nursery Rhymes and Baby Songs 3 years ago 1 hour, 14 minutes 22,960,714 views" title="ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava"> ABC Song |ABC Songs Plus More Nursery Rhymes! |Alphabet Collection and Baby Songs from Dave and Ava </span> </h3> <div class="secondary-metadata style-scope ytd-compact-video-renderer"> <ytd-video-meta-block class="compact style-scope ytd-compact-video-renderer" no-endpoints="">    <div id="metadata" class="style-scope ytd-video-meta-block"> <div id="byline-container" class="style-scope ytd-video-meta-block"> <ytd-channel-name id="channel-name" class="style-scope ytd-video-meta-block">  <div id="container" class="style-scope ytd-channel-name"> <div id="text-container" class="style-scope ytd-channel-name"> <yt-formatted-string id="text" title="" class="style-scope ytd-channel-name" ellipsis-truncate="">Dave and Ava - Nursery Rhymes and Baby Songs</yt-formatted-string> </div> <paper-tooltip offset="10" class="style-scope ytd-channel-name" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Dave and Ava - Nursery Rhymes and Baby Songs </div> </paper-tooltip> </div> <ytd-badge-supported-renderer class="style-scope ytd-channel-name">   <div class="badge badge-style-type-verified style-scope ytd-badge-supported-renderer"> <yt-icon class="style-scope ytd-badge-supported-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10 S17.52,2,12,2z M9.92,17.93l-4.95-4.95l2.05-2.05l2.9,2.9l7.35-7.35l2.05,2.05L9.92,17.93z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon> <span class="style-scope ytd-badge-supported-renderer"></span> <paper-tooltip position="top" class="style-scope ytd-badge-supported-renderer" role="tooltip" tabindex="-1">  <div id="tooltip" class="hidden style-scope paper-tooltip"> Verified </div> </paper-tooltip></div> <dom-repeat id="repeat" as="badge" class="style-scope ytd-badge-supported-renderer"><template is="dom-repeat"></template></dom-repeat> </ytd-badge-supported-renderer> </ytd-channel-name> <div id="separator" class="style-scope ytd-video-meta-block">•</div> </div> <div id="metadata-line" class="style-scope ytd-video-meta-block">  <span class="style-scope ytd-video-meta-block">22M views</span>  <span class="style-scope ytd-video-meta-block">3 years ago</span> <dom-repeat strip-whitespace="" class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div> </div> <div id="additional-metadata-line" class="style-scope ytd-video-meta-block"> <dom-repeat class="style-scope ytd-video-meta-block"><template is="dom-repeat"></template></dom-repeat> </div>  </ytd-video-meta-block> <ytd-badge-supported-renderer class="badges style-scope ytd-compact-video-renderer" disable-upgrade="" hidden=""> </ytd-badge-supported-renderer> </div> </a> <div id="buttons" class="style-scope ytd-compact-video-renderer"></div> </div> <div id="menu" class="style-scope ytd-compact-video-renderer"><ytd-menu-renderer class="style-scope ytd-compact-video-renderer">  <div id="top-level-buttons" class="style-scope ytd-menu-renderer"></div> <yt-icon-button id="button" class="dropdown-trigger style-scope ytd-menu-renderer" hidden="">   <button id="button" class="style-scope yt-icon-button">  <yt-icon class="style-scope ytd-menu-renderer"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope yt-icon"> <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" class="style-scope yt-icon"></path> </g></svg>   </yt-icon>  </button>  </yt-icon-button> </ytd-menu-renderer></div> <div id="queue-button" class="style-scope ytd-compact-video-renderer"></div> </div> </div> <div id="dismissed" class="style-scope ytd-compact-video-renderer"></div> </ytd-compact-video-renderer>')
-                next.previousElementSibling.querySelector('a').href = action.url_type == 'video'?"/watch?v=" + action.playlist_url:"/watch?v=" + (await getFirstVideo(action.playlist_url)).data + "&list=" + action.playlist_url
-                await userClick(action.pid, `${nextSelector} a#thumbnail`)
+
                 await sleep(100000)
                 return
             }
@@ -402,8 +419,17 @@ async function preWatchingVideo(action){
 }
 
 async function watchingVideo(action){
-    action.data_reported = document.querySelector('.view-count').innerText
-    await setActionData(action)
+    let reportEl
+    if (IS_MOBILE) {
+        reportEl = document.querySelector('.slim-video-information-title-and-badges .secondary-text')
+    } else {
+        reportEl = document.querySelector('.view-count')
+    }
+
+    if (reportEl) {
+        action.data_reported = reportEl.innerText
+        await setActionData(action)
+    }
     
     let url = window.location.toString()
     let interval = 10000
@@ -417,8 +443,6 @@ async function watchingVideo(action){
                 await setActionData(action)
                 await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings') 
                 return
-            } else {
-                await reportScript(action, false) 
             }
             console.log('not play video',action.playlist_url)
             return
@@ -549,13 +573,7 @@ async function afterWatchingVideo(action,finishVideo){
         }
     }
     await updateWatchedVideo(action.viewed_ads, action.pid)
-
-    let currentUrl = window.location.toString()
-    if(currentUrl.indexOf(action.playlist_url) > -1) {
-        await reportScript(action)
-    } else {
-        await reportScript(action, false)
-    }
+    await reportScript(action)
 }
 
 async function viewAds(action, onlyVideoType = false) {
@@ -638,37 +656,37 @@ async function skipAds(watchingCheck, action = {}){
     // }
     while (document.querySelector('.ytp-ad-skip-ad-slot')) {
         console.log('skip ads')
-        let adTimeCurrent = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-current').textContent)
-        let adTimeDuration = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-duration').textContent)
+        // let adTimeCurrent = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-current').textContent)
+        // let adTimeDuration = getTimeFromText(document.querySelector('.ytp-time-display .ytp-time-duration').textContent)
 
-        let adWatchTime
-        if(Math.random() < SKIP_ADS_PERCENT){
-            // skip ad
-            if(adTimeDuration <= 30){
-                adWatchTime = getWatchAdTime(adTimeCurrent,1,10)
-            }
-            else{
-                adWatchTime = getWatchAdTime(adTimeCurrent,1,28)
-            }
-        }
-        else{
-            // watch ad
-            if(adTimeDuration <= 30){
-                adWatchTime = getWatchAdTime(adTimeCurrent,12,adTimeDuration)
-            }
-            else{
-                if(Math.random() < 0.1){
-                    adWatchTime = getWatchAdTime(adTimeCurrent,0.9*adTimeDuration,adTimeDuration)
-                }
-                else if(Math.random() < 0.4){
-                    adWatchTime = getWatchAdTime(adTimeCurrent,Math.max(30,adTimeDuration*0.5),adTimeDuration*0.9)
-                }
-                else{
-                    adWatchTime = getWatchAdTime(adTimeCurrent,30,Math.max(30,adTimeDuration*0.5))
-                }
-            }
-        }
-        await sleep(adWatchTime*1000)
+        // let adWatchTime
+        // if(Math.random() < SKIP_ADS_PERCENT){
+        //     // skip ad
+        //     if(adTimeDuration <= 30){
+        //         adWatchTime = getWatchAdTime(adTimeCurrent,1,10)
+        //     }
+        //     else{
+        //         adWatchTime = getWatchAdTime(adTimeCurrent,1,28)
+        //     }
+        // }
+        // else{
+        //     // watch ad
+        //     if(adTimeDuration <= 30){
+        //         adWatchTime = getWatchAdTime(adTimeCurrent,12,adTimeDuration)
+        //     }
+        //     else{
+        //         if(Math.random() < 0.1){
+        //             adWatchTime = getWatchAdTime(adTimeCurrent,0.9*adTimeDuration,adTimeDuration)
+        //         }
+        //         else if(Math.random() < 0.4){
+        //             adWatchTime = getWatchAdTime(adTimeCurrent,Math.max(30,adTimeDuration*0.5),adTimeDuration*0.9)
+        //         }
+        //         else{
+        //             adWatchTime = getWatchAdTime(adTimeCurrent,30,Math.max(30,adTimeDuration*0.5))
+        //         }
+        //     }
+        // }
+        await sleep(1000)
         while(!document.querySelector('button.ytp-ad-skip-button') || !document.querySelector('button.ytp-ad-skip-button').getBoundingClientRect().x){
             await sleep(1000)
         }
@@ -763,7 +781,13 @@ async function processSearchPage(action){
     //     return
     // }
 
-    let videoSelector = 'ytd-two-column-search-results-renderer .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]'
+    let videoSelector
+    if (IS_MOBILE) {
+        
+        videoSelector = 'ytm-search a.compact-media-item-image[href*="'+action.playlist_url+'"]'
+    } else {
+        videoSelector = 'ytd-two-column-search-results-renderer .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]'
+    }
     // scroll result
     // if(!document.querySelector(videoSelector) && (!action.filter || url.indexOf('253D%253D') > -1)){
     let element
@@ -791,12 +815,23 @@ async function processSearchPage(action){
             }
         }
         else if(action.page || action.suggest || action.home){
-            console.log('page_watch')
-            let channelLink = element.parentElement.nextElementSibling.querySelector('#channel-info > a')
-            action.channel_url = channelLink.href
-            action.filter = action.filter?action.filter-1:undefined
-            await setActionData(action)
-            await userClick(action.pid, action.playlist_url + ' channel-info',channelLink, '', 5)
+            if (IS_MOBILE) {
+                let channelName = element.nextElementSibling.querySelector('.subhead > .compact-media-item-byline').textContent.trim()
+                console.log('channelName:',channelName)
+                let channels = [...document.querySelectorAll('ytm-search ytm-compact-channel-renderer .compact-media-item-headline')].filter(x => x.textContent == channelName)
+                if(channels.length > 0){
+                    let pageAvt = channels[0].parentElement.parentElement.parentElement.querySelector('a')
+                    await userClick(action.pid,`ytm-compact-channel-renderer ${channelName}`, pageAvt)
+                    return
+                }
+            } else {
+                console.log('page_watch')
+                let channelLink = element.parentElement.nextElementSibling.querySelector('#channel-info > a')
+                action.channel_url = channelLink.href
+                action.filter = action.filter?action.filter-1:undefined
+                await setActionData(action)
+                await userClick(action.pid, action.playlist_url + ' channel-info',channelLink, '', 5)
+            }
         }
         else{
             await userClick(action.pid, videoSelector)
@@ -804,11 +839,6 @@ async function processSearchPage(action){
         await sleep(3000)
     }
     else if(action.url_type=='video'){
-        if (action.channel_title) {
-            await userTypeEnter(action.pid,'input#search', action.channel_title + ' ' + action.keyword)
-        }
-        
-        return
         // if filtered, go to home page
         if(url.indexOf('253D%253D') > -1){
             await userClick(action.pid, '#search-icon-legacy')
@@ -897,18 +927,36 @@ async function processWatchChannelPage(action){
         if(action.page){
             // process videos page
             let i = 50
-            while(i > 0 && !document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')){
-                await userScroll(action.pid,5)
-                await sleep(1000)
-                i--
-            }
-            let video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')
-            if(video){
-                await userClick(action.pid,'ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]',video)
-                await sleep(2000)
-            }
-            else{
-                throw 'video in page not found'
+            if (IS_MOBILE) {
+                while(i > 0 && !document.querySelector('ytm-browse lazy-list a.compact-media-item-metadata-content[href*="'+action.playlist_url+'"]')){
+                    await userScrollMobile(action.pid,5)
+                    await sleep(1000)
+                    i--
+                }
+                let video = document.querySelector('ytm-browse lazy-list a.compact-media-item-metadata-content[href*="'+action.playlist_url+'"]')
+                if(video){
+                    if(Math.random() < SEARCH_SKIP) throw 'SEARCH_SKIP'
+                    await userClick(action.pid,'ytm-browse lazy-list a.compact-media-item-metadata-content[href*="'+action.playlist_url+'"]',video)
+                    await sleep(2000)
+                    return
+                }
+                else{
+                    throw 'video in page not found'
+                }
+            } else {
+                while(i > 0 && !document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')){
+                    await userScroll(action.pid,5)
+                    await sleep(1000)
+                    i--
+                }
+                let video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')
+                if(video){
+                    await userClick(action.pid,'ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]',video)
+                    await sleep(2000)
+                }
+                else{
+                    throw 'video in page not found'
+                }
             }
         }
         else{
@@ -918,6 +966,10 @@ async function processWatchChannelPage(action){
             }
             //let watched_videos = action.other_videos.map(x => `:not([href*="${x}"])`).join("")
             let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)]
+            if (!videos || !videos.length) {
+                videos = document.querySelectorAll('.video-thumbnail-container-compact')
+            }
+
             let video
             if(videos.length){
                 video = videos[randomRanger(0, Math.min(videos.length-1, 15))]
@@ -938,8 +990,14 @@ async function processWatchChannelPage(action){
         if(videoTab){
             await userClick(action.pid,'#tabsContent .tab-content', videoTab)
         }
+        else if (document.querySelector('div[role="tablist"] a[href*="videos"]')) {
+            await userClick(action.pid, 'div[role="tablist"] a[href*="videos"]')
+        }
         else if(document.querySelector('#title-text > a.yt-simple-endpoint[href*="/videos?"]')){
             await userClick(action.pid,'#title-text > a.yt-simple-endpoint[href*="/videos?"]')
+        }
+        else if (action.suggest_channel_id && document.querySelector(`a[href="/${action.suggest_channel_id}/videos"]`)) {
+            await userClick(action.pid, `a[href="/${action.suggest_channel_id}/videos"]`)
         }
         else{
             throw 'no videos link'
@@ -1131,10 +1189,18 @@ async function CommentYoutubeVideo(pid, msg = '') {
 
 async function clickPlayIfPause(pid) {
     console.log('clickPlayIfPause')
-    let btnPlay = document.querySelector('path[d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"]')
-    if (btnPlay) {
-        console.log('info','clickPlayIfPause')
-        await userClick(pid,'button.ytp-play-button')
+    if (IS_MOBILE) {
+        let btnPlay = document.querySelector('.ytp-large-play-button')//document.querySelector('path[d="M18.667 11.667v32.666L44.333 28z"],path[d="M6,4l12,8L6,20V4z"]')
+        if (btnPlay) {
+            console.log('info','clickPlayIfPauseMobile')
+            await userClick(pid,'.ytp-large-play-button')
+        }
+    } else {
+        let btnPlay = document.querySelector('path[d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"]')
+        if (btnPlay) {
+            console.log('info','clickPlayIfPause')
+            await userClick(pid,'button.ytp-play-button')
+        }
     }
 }
 
