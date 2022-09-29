@@ -131,12 +131,13 @@ function initSettingData (action) {
 
     zoom = 1
 
-    if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
+    if ((!action.is_show_ui || action.is_show_ui == 'false')) {
         heightCustom = -23
-        if (action.os_vm != 'vps' && !action.is_show_ui || action.is_show_ui == 'false') {
-            heightCustom = -30
-        }
     }
+
+    // if (action.browser_name == 'vivaldi-stable' || action.browser_name == 'vivaldi') {
+    //     heightCustom = -23
+    // }
 
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true

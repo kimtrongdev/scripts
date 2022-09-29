@@ -236,6 +236,9 @@ async function switchMobile(action){
     }
 
     await sleep(1000)
+    if (!action.is_show_ui || action.is_show_ui == 'false') {
+        await updateUserInput(action.pid,'SHOW_PAGE')
+    }
     //await updateUserInput(action.pid,'SHOW_PAGE')
 }
 
