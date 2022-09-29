@@ -408,7 +408,7 @@ async function processWatchChannelPageSub(action) {
 async function clickSub (action) {
   let url = window.location.toString()
   if (IS_MOBILE) {
-    let btn = document.querySelector('.modern-subscribe-button')
+    let btn = document.querySelector('ytm-subscribe-button-renderer c3-material-button .c3-material-button-button')
     if (btn) {
       await userClick(action.pid,'sub', btn)
       await reportScript(action)
