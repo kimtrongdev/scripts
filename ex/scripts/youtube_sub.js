@@ -378,9 +378,16 @@ async function processWatchChannelPageSub(action) {
       await setActionData(action)
     }
 
-    if (document.querySelector('#subscriber-count') && document.querySelector('#subscriber-count').innerText ) {
-      action.data_reported = document.querySelector('#subscriber-count').innerText
-      await setActionData(action)
+    if (IS_MOBILE) {
+      if (document.querySelector('.c4-tabbed-header-subscriber-count')) {
+        action.data_reported = document.querySelector('.c4-tabbed-header-subscriber-count').innerText
+        await setActionData(action)
+      }
+    } else {
+      if (document.querySelector('#subscriber-count') && document.querySelector('#subscriber-count').innerText ) {
+        action.data_reported = document.querySelector('#subscriber-count').innerText
+        await setActionData(action)
+      }
     }
 
     if (video && Number(action.sub_from_video_percent) > Math.random() * 100) {
