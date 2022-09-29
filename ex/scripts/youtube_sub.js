@@ -412,6 +412,7 @@ async function clickSub (action) {
     if (btn) {
       await userClick(action.pid,'sub', btn)
       await reportScript(action)
+      await sleep(30000)
     }
   } else {
     if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && url.indexOf('/watch') > -1) {

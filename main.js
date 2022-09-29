@@ -1220,6 +1220,9 @@ function initExpress() {
 async function handleAction (actionData) {
     utils.log('--->', actionData.action);
     setDisplay(actionData.pid)
+    if (actionData.x) {
+        console.log(actionData.x, actionData.y);
+    }
     // copy str
     if(actionData.str){
         const clipboardy = require('clipboardy');
