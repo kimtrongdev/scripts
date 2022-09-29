@@ -281,6 +281,14 @@ function getProfileIds() {
 }
 
 async function startChromeAction(action, _browser) {
+    try {
+        const ramdom1 = utils.getRndInteger(1000, 9000)
+        const ramdom2 = utils.getRndInteger(1000, 9000)
+        execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`)
+    } catch (error) {
+        console.log(error);
+    }
+
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = 1100//widthSizes[positionSize]
@@ -425,8 +433,6 @@ async function startChromeAction(action, _browser) {
 async function loginProfileChrome(profile) {
     try {
         try {
-            let ramdom = utils.getRndInteger(1000, 9000)
-            execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822630${ramdom}"`)
             execSync(`sudo xrandr -s 1600x1200`)
         } catch (error) {
             console.log(error);
