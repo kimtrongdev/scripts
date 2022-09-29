@@ -304,7 +304,7 @@ async function reportScript(action, status = true) {
                 //await scrollForViewAds(action)
             //}
 
-            await initActionData(action, true)
+            await initActionData(action)
             await runAction(action)
         }
         resolve()
