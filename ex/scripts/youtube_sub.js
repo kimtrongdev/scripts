@@ -40,7 +40,7 @@ async function scriptYoutubeSub(action) {
       await sleep(2000)
       await userClick(action.pid, '#search div h3')
     }
-    else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending') {
+    else if (url == 'https://m.youtube.com/' || url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://www.youtube.com/?app=desktop') {
       await processHomePageSub(action)
     } else if (url.indexOf('youtube.com/feed/history') > -1) {
       await deleteHistorySub(action)
@@ -56,9 +56,9 @@ async function scriptYoutubeSub(action) {
       await processPlaylistPageSub(action)
     }
     else if (
-      url.indexOf('https://www.youtube.com/channel/') > -1 || 
-      url.indexOf('https://www.youtube.com/user/') > -1 || 
-      url.indexOf('https://www.youtube.com/c/') > -1
+      url.indexOf('youtube.com/channel/') > -1 || 
+      url.indexOf('youtube.com/user/') > -1 || 
+      url.indexOf('youtube.com/c/') > -1
     ) {
       await processWatchChannelPageSub(action)
     }
@@ -407,47 +407,34 @@ async function processWatchChannelPageSub(action) {
 
 async function clickSub (action) {
   let url = window.location.toString()
-  if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && (url.indexOf('/watch') > -1 || url.indexOf('/shorts') > -1)) {
-    if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-      try {
-        let subBtns = [...document.querySelectorAll('#subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')]
-        let btn = subBtns.pop()
-        await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', btn)
-        await sleep(3000)
-
-        if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-          await userClick(action.pid, '#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')
-          await sleep(3000)
-        }
-
-        if (!document.querySelector('tp-yt-paper-button[subscribed]') && btn) {
-          btn.click()
-          await sleep(3000)
-        }
-      } catch (error) {
-        console.log(error);
-      }
-
-      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-        await reportScript(action, 0)
-        return
-      }
-
+  if (IS_MOBILE) {
+    let btn = document.querySelector('.modern-subscribe-button')
+    if (btn) {
+      await userClick(action.pid,'sub', btn)
       await reportScript(action)
-    } else {
-      await reportScript(action, 0)
     }
-    
-    return
+  } else {
+    if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && url.indexOf('/watch') > -1) {
+      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+        await userClick(action.pid,'#meta #subscribe-button ytd-subscribe-button-renderer')
+        await sleep(3000)
+        await reportScript(action)
+      } else {
+        await reportScript(action, 0)
+      }
+      
+      return
+    }
+  
+    if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
+      let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
+      await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
+      await sleep(3000)
+      await reportScript(action)
+      return
+    }
   }
 
-  if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-    let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-    await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
-    await sleep(3000)
-    await reportScript(action)
-    return
-  }
   await reportScript(action, 0)
   return
 }
