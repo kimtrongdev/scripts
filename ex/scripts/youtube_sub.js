@@ -49,7 +49,7 @@ async function scriptYoutubeSub(action) {
     } else if (url.indexOf('https://www.youtube.com/results') > -1) {
       await processSearchPageSub(action)
     }
-    else if (url.indexOf('https://www.youtube.com/watch') > -1 || url.indexOf('youtube.com/shorts') > -1) {
+    else if (url.indexOf('youtube.com/watch') > -1 || url.indexOf('youtube.com/shorts') > -1) {
       await processWatchPageSub(action)
     }
     else if (url.indexOf('https://www.youtube.com/playlist?list=') > -1) {
@@ -371,7 +371,7 @@ async function processWatchChannelPageSub(action) {
   let url = window.location.toString()
 
   if(url.indexOf('/videos') > -1){
-    let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)]
+    let videos = [...document.querySelectorAll('ytm-item-section-renderer ytm-compact-video-renderer .video-thumbnail-container-compact')]
     let video
     if(videos.length){
       video = videos[randomRanger(0, Math.min(videos.length-1, 15))]
@@ -411,6 +411,7 @@ async function clickSub (action) {
     let btn = document.querySelector('ytm-subscribe-button-renderer c3-material-button .c3-material-button-button')
     if (btn) {
       await userClick(action.pid,'sub', btn)
+      await sleep(3000)
       await reportScript(action)
       await sleep(30000)
     }
@@ -507,7 +508,6 @@ async function processWatchPageSub(action) {
   if (url.indexOf('youtube.com/shorts') > -1) {
     await sleep(3000)
     await clickSub(action)
-
   } else {
     await sleep(10000)
     try {
