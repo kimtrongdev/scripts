@@ -106,7 +106,7 @@ async function initAction(){
         // } else {
         //     await initActionData(action)
         // }
-        await initActionData(action)
+        await initActionData(action, true)
         
         await sleep(5000)
     }

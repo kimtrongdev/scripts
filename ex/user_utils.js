@@ -98,7 +98,7 @@ async function runAction (action) {
     }
 }
 
-async function initActionData(action) {
+async function initActionData(action, isFirst = false) {
     let mobileRate = action.mobile_percent 
     action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
@@ -117,7 +117,7 @@ async function initActionData(action) {
     console.log(action)
     await setActionData(action)
 
-    if(true) await switchMobile(action)
+    if(isFirst) await switchMobile(action)
 
     if (action.id == 'reg_account') {
         let continueLink = ''
