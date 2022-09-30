@@ -46,6 +46,11 @@ async function youtubeComment(action) {
 }
 
 async function handleStudioSetting (action) {
+  while (document.querySelector('#single-step-navigation')) {
+    await userClick(action.pid, '#single-step-navigation #close-button')
+    await sleep(1000)
+  }
+  
   while (document.querySelector('#shelf-actions-menu .remove-defaults')) {
     await userClick(action.pid, '#shelf-actions-menu .remove-defaults')
     await sleep(1000)
