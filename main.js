@@ -1130,7 +1130,7 @@ function initExpress() {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
                 if (req.query.id == 'reg_user') {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'NEW' })
+                    request_api.updateProfileData({ pid: req.query.pid, status: 'RESET' })
                 } else {
                     request_api.updateProfileData({ pid: req.query.pid, status: 'SYNCED' })
                 }

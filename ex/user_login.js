@@ -322,6 +322,14 @@ async function userLogin(action) {
                 await sleep(5000)
                 channels = document.querySelectorAll('ytd-account-item-renderer')
             }
+            if (!channels || !channels.length) {
+                await sleep(5000)
+                channels = document.querySelectorAll('ytd-account-item-renderer')
+            }
+            if (!channels || !channels.length) {
+                await sleep(5000)
+                channels = document.querySelectorAll('ytd-account-item-renderer')
+            }
 
             if (channels.length) {
                 // update users count to server
