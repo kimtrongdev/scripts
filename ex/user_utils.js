@@ -182,10 +182,11 @@ async function initActionData(action) {
         await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
     }
     else if(action.id == 'reg_user'){
-        if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name) && action.is_ver_mail_type) {
-            await handleBraveSetting(action)
+        if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
+            await handleBraveSetting(action, 'accounts.google.com')
+        } else {
+            await goToLocation(action.pid, 'accounts.google.com')
         }
-        await goToLocation(action.pid,'accounts.google.com')
     }
     else if(action.id == 'login'){
         if (action.browser_name == 'iridium-browser') {
