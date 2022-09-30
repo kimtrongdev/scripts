@@ -148,7 +148,9 @@ async function initActionData(action) {
         await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.id == 'create_playlist') {
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        action.fisrtStart = true
+        await setActionData(action)
+        await goToLocation(action.pid,'youtube.com/')
     }
     else if (action.id == 'comment_youtube') {
         action.commented_count = 0

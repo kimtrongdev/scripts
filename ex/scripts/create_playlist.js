@@ -37,6 +37,14 @@ async function createPlaylistScript(action) {
         }
       }
 
+      if (action.fisrtStart) {
+        action.fisrtStart = false
+        await setActionData(action)
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await sleep(30000)
+        return
+      }
+
       await goToLocation(action.pid, 'https://studio.youtube.com/')
 
     }
@@ -101,6 +109,10 @@ async function createPlaylistScript(action) {
       while (document.querySelector('#single-step-navigation')) {
         await userClick(action.pid, '#single-step-navigation #close-button')
         await sleep(1000)
+      }
+
+      if (document.querySelectorAll('ytcp-playlist-row img').length > 3) {
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
       }
 
       await userClick(action.pid, '#new-playlist-button')
