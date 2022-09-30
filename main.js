@@ -3,7 +3,7 @@ let isSystemChecking = false
 const TIME_REPORT = 110000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
-const EXPIRED_TIME = 540000
+let EXPIRED_TIME = 400000
 let totalRoundForChangeProxy = 5
 let countRun = 0
 let isPauseAction = false
@@ -139,6 +139,9 @@ async function loadSystemConfig () {
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
+        if (IS_REG_USER) {
+            EXPIRED_TIME = 200000
+        }
     }
 
     // handle browsers for centos and ubuntu
@@ -1069,7 +1072,11 @@ function initExpress() {
         else if (req.query.id == 'login' || req.query.id == 'reg_user') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
-                request_api.updateProfileData({ pid: req.query.pid, status: 'SYNCED' })
+                if (req.query.id == 'reg_user') {
+                    request_api.updateProfileData({ pid: req.query.pid, status: 'NEW' })
+                } else {
+                    request_api.updateProfileData({ pid: req.query.pid, status: 'SYNCED' })
+                }
             }
             else {
                 utils.log(req.query.pid, 'login error', req.query.msg)
