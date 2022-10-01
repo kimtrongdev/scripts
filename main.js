@@ -293,7 +293,7 @@ async function startChromeAction(action, _browser) {
                 const ramdom1 = utils.getRndInteger(1000, 9000)
                 const ramdom2 = utils.getRndInteger(1000, 9000)
 
-                //params += `\ \n EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`
+                params = params.replace('123456789', `17349330445822${ramdom2}${ramdom1}`)
                 console.log(params);
             } catch (error) {
                 console.log(error);
