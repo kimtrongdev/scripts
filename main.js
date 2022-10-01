@@ -281,6 +281,24 @@ function getProfileIds() {
 }
 
 async function startChromeAction(action, _browser) {
+    if (systemConfig.systemParams) {
+        let ss = systemConfig.systemParams.split(',')
+        if (ss.length) {
+            let index = utils.getRndInteger(0, ss.length - 1)
+            let params = ss[index]
+
+            try {
+                execSync(params)
+                utils.log(params);
+                const ramdom1 = utils.getRndInteger(1000, 9000)
+                const ramdom2 = utils.getRndInteger(1000, 9000)
+                execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
     try {
         const ramdom1 = utils.getRndInteger(1000, 9000)
         const ramdom2 = utils.getRndInteger(1000, 9000)
@@ -918,7 +936,7 @@ function makeid(length) {
 }
 
 async function initConfig() {
-    execSync(`export EZTUB_CPU_ARCHITECTURE="x86" \
+    /*execSync(`export EZTUB_CPU_ARCHITECTURE="x86" \
     EZTUB_CPU_BITNESS="64" \
     EZTUB_DEVICE_SCALE_FACTOR="1" \
     EZTUB_FINGERPRINT_KEY="17349330445822630091" \
@@ -933,7 +951,7 @@ async function initConfig() {
     EZTUB_SCREEN_WIDTH="1536" \
     EZTUB_USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36" \
     EZTUB_WEBGL_RENDERER="ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)" \
-    EZTUB_WEBGL_VENDOR="Google Inc. (NVIDIA)"`)
+    EZTUB_WEBGL_VENDOR="Google Inc. (NVIDIA)"`)*/
     // load configuration
     //utils.log('config: ', config)
     // let ip = ''
