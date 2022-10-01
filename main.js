@@ -281,30 +281,23 @@ function getProfileIds() {
 }
 
 async function startChromeAction(action, _browser) {
+    let params = ''
     if (systemConfig.systemParams) {
-        let ss = systemConfig.systemParams.split(',')
+        let ss = systemConfig.systemParams.split('##')
         if (ss.length) {
             let index = utils.getRndInteger(0, ss.length - 1)
-            let params = ss[index]
+            params = ss[index]
 
             try {
-                execSync(params)
-                utils.log(params);
+                params = params.replace('\\n', '')
                 const ramdom1 = utils.getRndInteger(1000, 9000)
                 const ramdom2 = utils.getRndInteger(1000, 9000)
-                execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`)
+
+                params += `\ EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`
             } catch (error) {
                 console.log(error);
             }
         }
-    }
-
-    try {
-        const ramdom1 = utils.getRndInteger(1000, 9000)
-        const ramdom2 = utils.getRndInteger(1000, 9000)
-        execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`)
-    } catch (error) {
-        console.log(error);
     }
 
     let widthSizes = [950, 1100, 1200]
@@ -400,7 +393,7 @@ async function startChromeAction(action, _browser) {
         utils.log('start browser', action.pid)
         if (action.id == 'login') {
             setDisplay(action.pid)
-            let cmdRun = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
+            let cmdRun = `${params} ${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
 
             if (_browser == 'opera') {
                 exec(`${_browser}${userDataDir}${windowSize}`)
@@ -435,7 +428,7 @@ async function startChromeAction(action, _browser) {
         }
         else {
             setDisplay(action.pid)
-            let run = `${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
+            let run = `${params} ${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
             exec(run)
             if (IS_REG_USER) {
                 await utils.sleep(10000)
@@ -701,6 +694,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
             Object.assign(action, systemConfig)
+            delete action.systemParams
     
             action.mobile_percent = systemConfig.browser_mobile_percent
             active_devices = systemConfig.active_devices || []
@@ -936,7 +930,7 @@ function makeid(length) {
 }
 
 async function initConfig() {
-    /*execSync(`export EZTUB_CPU_ARCHITECTURE="x86" \
+    /*execSync(`export EZTUB_CPU_ARCHITECTURE="x83" \
     EZTUB_CPU_BITNESS="64" \
     EZTUB_DEVICE_SCALE_FACTOR="1" \
     EZTUB_FINGERPRINT_KEY="17349330445822630091" \
