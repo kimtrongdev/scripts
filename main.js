@@ -183,6 +183,10 @@ async function loadSystemConfig () {
         })
     }
 
+    if (systemConfig.stop_tool == 1) {
+        execSync('pm2 stop all')
+    }
+
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
