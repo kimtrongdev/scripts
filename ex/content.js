@@ -138,6 +138,14 @@ function initSettingData (action) {
         }
     }
 
+    if (action.browser_name == 'chromium-browser') {
+        if ((!action.is_show_ui || action.is_show_ui == 'false')) {
+           // heightCustom = 23
+        } else {
+            heightCustom = 23
+        }
+    }
+
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
     }
