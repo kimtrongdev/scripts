@@ -707,6 +707,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
             Object.assign(action, systemConfig)
+            delete action.systemParams
     
             action.mobile_percent = systemConfig.browser_mobile_percent
             active_devices = systemConfig.active_devices || []
