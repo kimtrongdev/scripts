@@ -259,7 +259,7 @@ module.exports = {
         'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.1805 Safari/537.36'
     ],
     getRndInteger: (min, max) => {
-        return Math.floor(Math.random() * (max - min) ) + min;
+        return Math.floor(Math.random() * (max - min + 1)) + min
     },
     log: (...pr) => {
         if (DEBUG) {
