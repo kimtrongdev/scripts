@@ -1,5 +1,3 @@
-const { sleep } = require("../../utils")
-
 async function regMail(action) {
   try {
     await sleep(5000)
