@@ -140,14 +140,14 @@ async function regMail(action) {
       await userClick(action.pid, 'budget-and-dates dropdown-button')
       await userSelect(action.pid, 0)
 
-      await userType(action.pid, 'mask-money-input', '3333')
+      await userType(action.pid, 'mask-money-input', '3')
 
       await userClick(action.pid, 'end-date-picker material-datepicker')
       
       let listIimer = document.querySelectorAll('.preset-dates-wrapper material-select-item')
       await userClick(action.pid, 'timer', listIimer.item(randomRanger(0, listIimer.length - 1)))
 
-      await userType(action.pid, 'bid-input mask-money-input', '333')
+      await userType(action.pid, 'bid-input mask-money-input', '1')
       
       let list = [
         '7ICKkagL3xA',
