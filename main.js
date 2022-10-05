@@ -607,11 +607,6 @@ async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
         if (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') {
-            action = {
-                script_code: 'reg_account',
-                account_type: 'gmail'
-            }
-        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
             let newProfile = await request_api.getNewProfile()
             utils.log('newProfile: ', newProfile)
             if (!newProfile.err && newProfile.profile) {
@@ -627,6 +622,11 @@ async function getScriptData(pid, isNewProxy = false) {
             } else {
                 console.log('Not found profile');
                 return
+            }
+        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
+            action = {
+                script_code: 'reg_account',
+                account_type: 'gmail'
             }
         } else {
             if (ids.length < MAX_PROFILE) {
