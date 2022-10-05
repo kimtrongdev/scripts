@@ -33,6 +33,7 @@ async function regMail(action) {
       await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.ad1)
       await updateUserInput(action.pid,'TABS', 1)
 
+      /*
       if (add.ad2) {
         await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.ad2)
       }
@@ -56,7 +57,7 @@ async function regMail(action) {
       // await userClick(action.pid, '.addressedit-country-specific-section .goog-menuitem-content')
       // await userClick(action.pid, `.goog-menuitem[data-value="${add.state}"]`)
       // await userType(action.pid, '.addressedit-country-specific-section .b3-text-input-container input[name="POSTAL_CODE"]', add.posC)
-
+      */
       await userClick(action.pid, `material-yes-no-buttons material-ripple`)
       
       await sleep(5000)
