@@ -38,7 +38,6 @@ async function regMail(action) {
       await sleep(6000)
 
       if (!document.querySelector('material-input[exactmatch="phone-number"] input')) {
-        await updateUserInput(action.pid,'TABS', 1)
         await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.city)
 
         await updateUserInput(action.pid,'TABS', 1)
