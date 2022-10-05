@@ -138,7 +138,8 @@ async function loadSystemConfig () {
     let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
     (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
     (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false') ||
-    (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false')
+    (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') ||
+    (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
@@ -605,26 +606,27 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
-        if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
-            // let newProfile = await request_api.getNewProfile()
-            // utils.log('newProfile: ', newProfile)
-            // if (!newProfile.err && newProfile.profile) {
-            //     // copy main to clone profile
-            //     let profile = newProfile.profile
-            //     pid = profile.id
-            //     action = {
-            //         ...profile,
-            //         script_code: 'reg_account',
-            //         account_type: 'gmail',
-            //         process_login: true
-            //     }
-            // } else {
-            //     console.log('Not found profile');
-            //     return
-            // }
+        if (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') {
             action = {
                 script_code: 'reg_account',
                 account_type: 'gmail'
+            }
+        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
+            let newProfile = await request_api.getNewProfile()
+            utils.log('newProfile: ', newProfile)
+            if (!newProfile.err && newProfile.profile) {
+                // copy main to clone profile
+                let profile = newProfile.profile
+                pid = profile.id
+                action = {
+                    ...profile,
+                    script_code: 'reg_account',
+                    account_type: 'gmail',
+                    process_login: true
+                }
+            } else {
+                console.log('Not found profile');
+                return
             }
         } else {
             if (ids.length < MAX_PROFILE) {
@@ -644,7 +646,15 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
     } else {
-        action = await request_api.getNewScript(pid)
+        action = {
+            playlist_name: 'diorama polymer clay scuplture',
+            suggest_channel: '',
+            total_added_from_search: '15',
+            script_code: 'create_playlist',
+            _id: '633c702a1077988583ea7be0',
+            is_break: false,
+            channel_position: 0
+          }//await request_api.getNewScript(pid)
     }
 
     if (action) {

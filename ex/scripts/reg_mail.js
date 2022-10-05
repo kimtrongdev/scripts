@@ -18,8 +18,9 @@ async function regMail(action) {
       await reportAccount(action)
 
       // disable gg GA
-      await goToLocation(action.pid, 'https://ads.google.com/home/')
-     // await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
+      //await goToLocation(action.pid, 'https://ads.google.com/home/')
+
+      await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
     } else if (url.indexOf('accounts.google.com/signin/v2/identifier') > -1) {
       // failed
 
