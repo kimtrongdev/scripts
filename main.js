@@ -646,15 +646,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
     } else {
-        action = {
-            playlist_name: 'diorama polymer clay scuplture',
-            suggest_channel: '',
-            total_added_from_search: '15',
-            script_code: 'create_playlist',
-            _id: '633c702a1077988583ea7be0',
-            is_break: false,
-            channel_position: 0
-          }//await request_api.getNewScript(pid)
+        action = await request_api.getNewScript(pid)
     }
 
     if (action) {
@@ -1279,7 +1271,17 @@ async function handleAction (actionData) {
         clipboardy.writeSync(actionData.str)
     }
 
-    if (actionData.action == 'OPEN_BROWSER') {
+    if (actionData.action == 'SELECT_AVATAR') {
+        del.sync([path.resolve('avatar.jpg')], { force: true })
+        let avatar = await request_api.getAvatar(actionData.pid,path.resolve('avatar.jpg'),actionData.str)
+        if(avatar){
+            execSync(`xdotool type "${path.resolve('avatar.jpg')}";sleep 1;xdotool key KP_Enter`)
+        }
+        else{
+            execSync(`xdotool key Escape`)
+        }
+    }
+    else if (actionData.action == 'OPEN_BROWSER') {
         await startChromeAction(actionData.data, actionData.browser)
     }
     else if (actionData.action == 'BRAVE_SETTINGS') {
