@@ -309,6 +309,10 @@ async function startChromeAction(action, _browser) {
         }
     }
 
+    if (systemConfig.is_setting_brave) {
+        action.is_setting_brave = true
+    }
+
     try {
         const ramdom1 = utils.getRndInteger(1000, 9000)
         const ramdom2 = utils.getRndInteger(1000, 9000)

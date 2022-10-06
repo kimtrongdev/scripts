@@ -35,24 +35,14 @@ async function scriptCheckBat(action) {
 }
 
 async function handleBraveSetting (action, continueLink = 'accounts.google.com') {
-  await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-  await goToLocation(action.pid, `brave://settings/shields`)
-  await sleep(10000)
-  if (false && action.is_show_ui) {
-    //click Fingerprinting blocking
-    await updateUserInput(action.pid,'CLICK', 1183, 737,0,0,"",'click')
-    // select option
-    await updateUserInput(action.pid,'CLICK', 1188, 760,0,0,"",'click')
-    // click Trackers & ads blocking
-    await updateUserInput(action.pid,'CLICK', 1186, 588,0,0,"",'click')
-    // select option
-    await updateUserInput(action.pid,'CLICK', 1185, 650,0,0,"",'click')
-  } else {
-    await sleep(5000)
-    await updateUserInput(action.pid,'BRAVE_SETTINGS', 0, 0,0,0,"",'BRAVE_SETTINGS')
-  }
+  if (action.is_setting_brave) {
+    await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+    await goToLocation(action.pid, `brave://settings/shields`)
+    await sleep(10000)
 
-  await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+    await updateUserInput(action.pid,'BRAVE_SETTINGS', 0, 0,0,0,"",'BRAVE_SETTINGS')
+    await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+  }
 
   if (continueLink) {
     await goToLocation(action.pid, continueLink)
