@@ -106,10 +106,10 @@ async function handleStudioSetting (action) {
 
 async function hanleChangeAvata(action) {
   let gender = ['female', 'male'][randomRanger(0, 1)]
-  if (document.querySelector('#replace-button')) {
-    await userClick(action.pid, '#replace-button')
-  } else {
+  if (document.querySelector('ytcp-profile-image-upload #upload-button')) {
     await userClick(action.pid, '#upload-button')
+  } else {
+    await userClick(action.pid, '#replace-button')
   }
   
   await userSelectAvatar(action.pid, gender)

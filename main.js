@@ -1278,9 +1278,11 @@ async function handleAction (actionData) {
     if (actionData.action == 'SELECT_AVATAR') {
         del.sync([path.resolve('avatar.jpg')], { force: true })
         let avatar = await request_api.getAvatar(actionData.pid,path.resolve('avatar.jpg'),actionData.str)
-        if(avatar){
+
+        if(true && avatar){
             await utils.sleep(5000)
-            execSync(`xdotool mousemove ${1100} ${600} && sleep 1 && xdotool click 1 && sleep 2`)
+            execSync(`xdotool key KP_Enter`)
+            await utils.sleep(5000)
             execSync(`xdotool type "${path.resolve('avatar.jpg')}" && sleep 1 && xdotool key KP_Enter`)
         }
         else{
