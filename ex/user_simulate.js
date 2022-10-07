@@ -245,3 +245,8 @@ async function userSelect(pid,n){
     console.log('userSelect')
     await updateUserInput(pid,'SELECT_OPTION',0, 0 ,0, 0,  n)
 }
+
+async function userSelectAvatar(pid,gender){
+    console.log('userSelectAvatar')
+    await updateUserInput(pid,'SELECT_AVATAR',0, 0 ,0, 0, gender)
+}

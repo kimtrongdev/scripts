@@ -1363,3 +1363,31 @@ function getTWZipcode(city,district){
     let zc =  tw[city][district].split(" ")
     return zc[randomRanger(0,zc.length - 1)]
 }
+
+async function updateAvatar(action) {
+    console.log('updateAvatar')
+    try {
+        if(!document.querySelector('[data-picker="https://docs.google.com/picker"] img[src*="lh3.googleusercontent.com/a-/"]')){
+            let gender = document.querySelector('a[href="gender"]').textContent.indexOf('Female') >= 0 ? 'female' : 'male'
+            await userClick(action.pid,'[data-picker="https://docs.google.com/picker"]')
+            await sleep(5000)
+            let iframe = await waitForSelector('iframe[src^="https://myaccount.google.com/profile-picture"]')
+            let buttons = [...iframe.contentWindow.document.querySelectorAll('button .google-material-icons')]
+            await userClick(action.pid,'button .google-material-icons',buttons[0],iframe)
+            await sleep(1000*randomRanger(4,6))
+            await userSelectAvatar(action.pid,gender)
+            await sleep(1000*randomRanger(5,7))
+            await waitForSelector('[alt="The picture being cropped"]',30000,iframe)
+            await sleep(1000*randomRanger(3,5)) 
+            let saveButton = [...iframe.contentWindow.document.querySelectorAll('button')].filter(x => x.textContent.indexOf('Save as profile picture') >= 0 && x.getBoundingClientRect().width)[0]
+            if(!saveButton) throw 'NO_SAVE_BUTTON'
+            await userClick(action.pid,'button save avatar',saveButton,iframe)
+            await sleep(1000*randomRanger(5,7)) 
+        }   
+        // await goToLocation(action.pid,'youtube.com//')
+    } 
+    catch (err) {
+        console.log('updateAvatar',err)
+        // await goToLocation(action.pid,'youtube.com//') 
+    }
+}

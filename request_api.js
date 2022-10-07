@@ -130,5 +130,29 @@ module.exports = {
         catch (e){
             console.log('error','getNavigator',e)
         }
+    },
+    getAvatar: async function(pid,dir,gender){
+        try{
+            console.log(pid,'getAvatar',gender)
+            let avaUrl
+            if(Math.random() < 0.8){
+                let ava = await rq({uri: `https://dominhit.pro/render/api?action=get-avalist`,json: true})
+                avaUrl = ava.avatar
+            }
+            else{
+                gender = gender || (Math.random() < 0.5 ? "male":"female")
+                let ava = await rq({uri: `https://fakeface.rest/face/json?gender=${gender}`,json: true})
+                avaUrl = ava.image_url
+            }
+            
+            let res = await rq({uri: avaUrl, encoding: null})
+            const buffer = Buffer.from(res, 'utf8');
+            fs.writeFileSync(dir, buffer);
+            return true
+        }
+        catch (e){
+            console.log('error','getNavigator',e)
+            return false
+        }
     }
 }

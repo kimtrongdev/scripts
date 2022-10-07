@@ -26,7 +26,14 @@ async function youtubeComment(action) {
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
-      await waitForSelector('#placeholder-area')
+      await userScroll(action.pid, randomRanger(10,20))
+      await waitForSelector('#placeholder-area', 25000)
+
+      if (!document.querySelector('#placeholder-area')) {
+        await reportScript(action, 0)
+        return
+      }
+
       await CommentYoutubeVideo(action.pid)
       await afterComment(action)
     } else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
@@ -37,6 +44,8 @@ async function youtubeComment(action) {
       }
     } else if (url.indexOf('/editing/sections') > -1) {
       await handleStudioSetting(action)
+    } else if (url.indexOf('/editing/images') > -1) {
+      await hanleChangeAvata(action)
     } else {
       await reportScript(action, false)
     }
@@ -61,7 +70,11 @@ async function handleStudioSetting (action) {
   await userClick(action.pid, '#add-section-button')
   await userClick(action.pid, 'tp-yt-paper-item[test-id="playlist"]')
   await waitForSelector('#search-any')
-  await userType(action.pid, '#search-any', action.playlist_id)
+
+  let playlistIDs = action.playlist_ids.split(',')
+  let playlistID = playlistIDs[randomRanger(0, playlistIDs.length - 1)]
+  await userType(action.pid, '#search-any', playlistID)
+
   await sleep(2000)
   await waitForSelector('#content')
   await userClick(action.pid, '#content')
@@ -76,6 +89,34 @@ async function handleStudioSetting (action) {
   await sleep(2000)
   await userClick(action.pid, '#discard-changes-button')
   
+  if (action.is_change_avata) {
+    let infoItem = document.querySelectorAll('tp-yt-paper-tab').item(1)
+    if (infoItem) {
+      await userClick(action.pid, 'infoItem', infoItem)
+
+    } else {
+      await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+      await gotoWatch(action)
+    }
+  } else {
+    await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+    await gotoWatch(action)
+  }
+}
+
+async function hanleChangeAvata(action) {
+  let gender = ['female', 'male'][randomRanger(0, 1)]
+  if (document.querySelector('#replace-button')) {
+    await userClick(action.pid, '#replace-button')
+  } else {
+    await userClick(action.pid, '#upload-button')
+  }
+  
+  await userSelectAvatar(action.pid, gender)
+
+  await sleep(3000)
+  await userClick(action.pid, '#done-button')
+
   await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
   await gotoWatch(action)
 }
