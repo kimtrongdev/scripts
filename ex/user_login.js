@@ -564,13 +564,38 @@ async function userCreateChannel(action){
     await userClick(action.pid, '.consent-checkmark')
     document.querySelector('#createaccount').setAttribute('target', '_blank')
 
+    let names = []
+    let loadding = 0
+    function loadNames (total) {
+        let countTotal = 0
+        while (countTotal < total) {
+            loadding++
+            randomFullName().then(rs => {
+                loadding--
+                names.push(rs)
+            })
+            countTotal++
+        }
+    }
+    loadNames(10)
     let count = 0
     while (count < 65) {
-        count++
-        let fullname = await randomFullName()
-        await userTypeEnter(action.pid, '#PlusPageName', fullname)
-        document.querySelector('#submitbutton').click()
-        await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+        let fullname = names.pop()
+        if (fullname) {
+            count++
+            document.querySelector('input[name="PlusPageName"]').value = fullname
+            document.querySelector('#submitbutton').click()
+            await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+
+            if (count % 10 == 0) {
+                closeTabs()
+            }
+        } else {
+            if (!loadding) {
+                loadNames(10)
+            }
+            await sleep(5000)
+        }
     }
 }
 
