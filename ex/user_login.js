@@ -277,7 +277,16 @@ async function userLogin(action) {
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            await goToLocation(action.pid,'youtube.com/feed/history')
+            if (action.id == 'reg_user') {
+                if (!action.login_success) {
+                    action.login_success = true
+                    await setActionData(action)
+                    await goToLocation(action.pid,'youtube.com/feed/history')
+                }
+            } else {
+                await goToLocation(action.pid,'youtube.com/feed/history')
+            }
+            
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
@@ -553,15 +562,15 @@ async function userCreateChannel(action){
     await userTypeEnter(action.pid, '#PlusPageName', fullname)
     await sleep(1000)
     await userClick(action.pid, '.consent-checkmark')
+    document.querySelector('#createaccount').setAttribute('target', '_blank')
 
-    let el = document.querySelector('#submitbutton')
-    let pos = getElementPosition(el)
     let count = 0
     while (count < 65) {
         count++
         let fullname = await randomFullName()
         await userTypeEnter(action.pid, '#PlusPageName', fullname)
-        await updateUserInput(action.pid,'CTR_CLICK',pos.x, pos.y ,0, 0)
+        document.querySelector('#submitbutton').click()
+        await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
     }
 }
 

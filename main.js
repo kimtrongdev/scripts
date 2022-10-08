@@ -1264,7 +1264,17 @@ function initExpress() {
 }
 
 async function handleAction (actionData) {
-    utils.log('--->', actionData.action);
+    if (isPauseAction) {
+        res.send({ rs: 'ok' })
+        return
+    }
+
+    let logStr = '---> ' + actionData.action
+    if (actionData.x) {
+        logStr += '-' + actionData.x + '-' + actionData.y
+    }
+    utils.log(logStr)
+
     setDisplay(actionData.pid)
     // copy str
     if(actionData.str){
@@ -1411,11 +1421,9 @@ async function handleAction (actionData) {
     }
 
     //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
-    // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
+    // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep brave-browser | head -n 1)) && sleep 1`)
     else if (actionData.action == 'CTR_CLICK') {
-        execSync(`xdotool keydown Control_L`)
-        execSync(`xdotool click 1`)
-        execSync(`xdotool keyup Control_L`)
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool keydown Control_L && xdotool click 1`)
     }
     else if (actionData.action == 'CLICK') {
         if (actionData.x > 65) {
