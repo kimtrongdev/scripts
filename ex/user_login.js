@@ -577,18 +577,19 @@ async function userCreateChannel(action){
             countTotal++
         }
     }
+
     loadNames(10)
     let count = 0
     while (count < 65) {
         let fullname = names.pop()
         if (fullname) {
             count++
-            document.querySelector('input[name="PlusPageName"]').value = fullname
+            await userTypeEnter(action.pid, '#PlusPageName', fullname)
             document.querySelector('#submitbutton').click()
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
 
             if (count % 10 == 0) {
-                closeTabs()
+                closeUnactiveTabs()
             }
         } else {
             if (!loadding) {
