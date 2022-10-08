@@ -279,6 +279,12 @@ async function userLogin(action) {
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             if (action.id == 'reg_user' && action.login_success) {
                 //
+                if (!action.countTotalUser) {
+                    action.countTotalUser = 1
+                } else {
+                    action.countTotalUser += 1
+                }
+                await setActionData(action)
             } else {
                 await goToLocation(action.pid,'youtube.com/feed/history')
             }
@@ -580,7 +586,15 @@ async function userCreateChannel(action){
 
     loadNames(10)
     let count = 0
-    while (count < 65) {
+    let currentTotalUser = 0
+    while (count < 100) {
+        let data = await getActionData()
+        action = data.action
+        if (action.countTotalUser != currentTotalUser) {
+            currentTotalUser = action.countTotalUser
+            updateTotalCreatedUsers(action.pid, currentTotalUser)
+        }
+
         let fullname = names.pop()
         if (fullname) {
             count++
