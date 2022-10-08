@@ -551,12 +551,18 @@ async function userCreateChannel(action){
     let fullname = await randomFullName()
     await waitForSelector('#PlusPageName')
     await userTypeEnter(action.pid, '#PlusPageName', fullname)
-
     await sleep(1000)
-    await userClick(action.pid,'.consent-checkmark')
-    await sleep(1000)
+    await userClick(action.pid, '.consent-checkmark')
 
-    await userClick(action.pid,'#submitbutton')
+    let el = document.querySelector('#submitbutton')
+    let pos = getElementPosition(el)
+    let count = 0
+    while (count < 65) {
+        count++
+        let fullname = await randomFullName()
+        await userTypeEnter(action.pid, '#PlusPageName', fullname)
+        await updateUserInput(action.pid,'CTR_CLICK',pos.x, pos.y ,0, 0)
+    }
 }
 
 async function createChannelMobile(action){

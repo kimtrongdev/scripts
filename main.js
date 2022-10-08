@@ -1412,6 +1412,11 @@ async function handleAction (actionData) {
 
     //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
     // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep chrome | head -n 1)) && sleep 1`)
+    else if (actionData.action == 'CTR_CLICK') {
+        execSync(`xdotool keydown Control_L`)
+        execSync(`xdotool click 1`)
+        execSync(`xdotool keyup Control_L`)
+    }
     else if (actionData.action == 'CLICK') {
         if (actionData.x > 65) {
             execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
