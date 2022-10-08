@@ -277,16 +277,12 @@ async function userLogin(action) {
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
             // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            if (action.id == 'reg_user') {
-                if (!action.login_success) {
-                    action.login_success = true
-                    await setActionData(action)
-                    await goToLocation(action.pid,'youtube.com/feed/history')
-                }
+            if (action.id == 'reg_user' && action.login_success) {
+                //
             } else {
                 await goToLocation(action.pid,'youtube.com/feed/history')
             }
-            
+            await goToLocation(action.pid,'youtube.com/feed/history')
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
@@ -325,6 +321,11 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('youtube.com/account') > -1) {
+            if (action.id == 'reg_user' && !action.login_success) {
+                action.login_success = true
+                await setActionData(action)
+            }
+
             let channels = document.querySelectorAll('ytd-account-item-renderer')
 
             if (!channels || !channels.length) {
