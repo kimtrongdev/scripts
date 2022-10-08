@@ -282,7 +282,6 @@ async function userLogin(action) {
             } else {
                 await goToLocation(action.pid,'youtube.com/feed/history')
             }
-            await goToLocation(action.pid,'youtube.com/feed/history')
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
