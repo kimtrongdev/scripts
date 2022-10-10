@@ -126,7 +126,7 @@ async function regMail(action) {
       }
     }
     else if (url.indexOf('ads.google.com/aw/campaigns/new/video') > -1) {
-      await sleep(5000)
+      await sleep(10000)
       if (document.querySelector('.congrats-title')) {
         // hadnle report success reg
         action.reg_ga_success = true
