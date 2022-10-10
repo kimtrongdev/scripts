@@ -279,6 +279,8 @@ async function userLogin(action) {
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
             if (action.id == 'reg_user' && action.login_success) {
                 //
+                let data = await getActionData()
+                action = data.action
                 if (!action.countTotalUser) {
                     action.countTotalUser = 1
                 } else {
