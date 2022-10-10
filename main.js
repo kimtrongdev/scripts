@@ -1269,20 +1269,26 @@ async function handleAction (actionData) {
         return
     }
 
+    setDisplay(actionData.pid)
+    await utils.sleep(1000)
+
     let logStr = '---> ' + actionData.action
     if (actionData.x) {
         logStr += '-' + actionData.x + '-' + actionData.y
     }
     utils.log(logStr)
 
-    setDisplay(actionData.pid)
     // copy str
     if(actionData.str){
-        const clipboardy = require('clipboardy');
-        if (actionData.str == 'none') {
-            actionData.str = ''
+        try {
+            const clipboardy = require('clipboardy');
+            if (actionData.str == 'none') {
+                actionData.str = ''
+            }
+            clipboardy.writeSync(actionData.str)
+        } catch (error) {
+            console.log('----error:', error)
         }
-        clipboardy.writeSync(actionData.str)
     }
 
     if (actionData.action == 'SELECT_AVATAR') {
