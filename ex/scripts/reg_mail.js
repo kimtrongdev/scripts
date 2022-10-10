@@ -171,7 +171,7 @@ async function regMail(action) {
 
       await userClick(action.pid, 'material-yes-no-buttons material-button')
 
-      await sleep(4000)
+      await sleep(10000)
       if (document.querySelector('.congrats-title')) {
         // hadnle report success reg
         action.reg_ga_success = true
