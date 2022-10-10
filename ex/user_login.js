@@ -611,7 +611,8 @@ async function userCreateChannel(action){
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
 
             if (count % 10 == 0) {
-                await sleep(5000)
+                reportLive(action.pid)
+                await sleep(15000)
                 closeUnactiveTabs()
             }
         } else {
