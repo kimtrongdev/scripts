@@ -383,7 +383,7 @@ async function userLogin(action) {
         }
         if (
             url.indexOf("accounts.google.com/signin/newfeatures") > -1 ||
-            url.indexOf("myaccount.google.com") > -1 ||
+            url == "https://myaccount.google.com/" ||
             url.indexOf("RecycledEmailInterstitial") > -1 ||
             url.indexOf("gds.google.com/web/chip") > -1 ||
             url.indexOf("accounts.google.com/speedbump/gaplustos") > -1 ||

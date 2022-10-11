@@ -777,18 +777,13 @@ async function checkRunningProfiles () {
             let timeDiff = Date.now() - runnings[i].lastReport
             if (timeDiff > EXPIRED_TIME) {
                 let pid = runnings[i].pid
-                utils.log('--- expired time,', pid)
+                utils.log('----- expired time -----', pid)
                 try {
                     closeChrome(pid)
 
-                    if (runnings[i].action == 'login') {
+                    if (runnings[i].action == 'login' || IS_REG_USER) {
                         execSync('rm -rf profiles/'+pid)
                         ids = ids.filter(id => id != pid)
-                    }
-                   
-                    if (IS_REG_USER) {
-                        await utils.sleep(3000)
-                        execSync('rm -rf profiles/'+pid)
                     }
                 }
                 catch (e) { }

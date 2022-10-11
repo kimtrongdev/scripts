@@ -27,7 +27,7 @@ async function regMail(action) {
     else if (url.indexOf('google.com/adsense/new/u/0/pub') > -1 && url.indexOf('onboarding/payments') > -1) {
       let add = await getRandomAddress()
       console.log('----> random add', add);
-      await sleep(15000)
+      await sleep(20000)
 
       await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, add.ad1)
       await updateUserInput(action.pid,'TABS', 1)
@@ -59,6 +59,15 @@ async function regMail(action) {
       await userClick(action.pid, `material-yes-no-buttons material-ripple`)
       
       await sleep(5000)
+
+      // aaa
+      let iframeConfirm = document.querySelector('iframe[name="buyFlowInitiatedPopup"]')
+      if (iframeConfirm) {
+        await userClick(action.pid, '.b3-expanding-form-selector-option-content-container svg', '', iframeConfirm)
+        await userClick(action.pid, '.buttons-wrapper .goog-inline-block', '', iframeConfirm)
+        await userClick(action.pid, `material-yes-no-buttons material-ripple`, '', iframeConfirm)
+        await sleep(5000)
+      }
 
       if (document.querySelector('material-input[exactmatch="phone-number"] input')) {
         let phoneRs = await getPhone()
@@ -119,6 +128,7 @@ async function regMail(action) {
       }
 
       try {
+        await sleep(5000)
         await userClick(action.pid, 'communications-opt-in material-radio')
         await userClick(action.pid, 'expert-view material-button')
       } catch (error) {
