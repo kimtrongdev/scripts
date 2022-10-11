@@ -457,6 +457,14 @@ function updateUserInput(pid, action, x, y, sx, sy, str, selector){
         resolve(response);
     }))
 }
+function elementInViewport (el) {
+    if (typeof el == 'string') {
+        el = document.querySelector(el)
+    }
+    
+    let pos = el.getBoundingClientRect()
+    return pos.x || pos.y || pos.width || pos.height
+}
 
 function getElementPosition(el,iframe){
     if(el){

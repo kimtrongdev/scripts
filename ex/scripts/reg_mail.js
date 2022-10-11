@@ -122,6 +122,11 @@ async function regMail(action) {
       await userClick(action.pid, '#experiencedUserLink')
     }
     else if (url.indexOf('ads.google.com/aw/signup/business') > -1 || url.indexOf('ads.google.com/aw/signup/expert') > -1) {
+      await sleep(5000)
+      if (elementInViewport('.start-button')) {
+        await userClick(action.pid, '.start-button')
+      }
+
       if (document.querySelector('.business-name-container .mdc-button')) {
         await userClick(action.pid, '.business-name-container .mdc-button')
         await sleep(3000)
