@@ -461,7 +461,11 @@ function elementInViewport (el) {
     if (typeof el == 'string') {
         el = document.querySelector(el)
     }
-    
+
+    if (!el) {
+        return false
+    }
+
     let pos = el.getBoundingClientRect()
     return pos.x || pos.y || pos.width || pos.height
 }
