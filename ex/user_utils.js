@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'reg_account') {
+    if (action.id == 'check_mail_1') {
+        await checkMail1(action)
+    }
+    else if (action.id == 'reg_account') {
         if (action.account_type == 'facebook'){
             //await reqFacebook(action)
         } else {
@@ -119,7 +122,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'reg_account') {
+    if (action.id == 'check_mail_1') {
+        await goToLocation(action.pid, 'accounts.google.com')
+    }
+    else if (action.id == 'reg_account') {
         let continueLink = ''
         if (action.process_login) {
             continueLink = 'accounts.google.com'
