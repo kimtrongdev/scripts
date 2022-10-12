@@ -24,9 +24,8 @@ async function checkMail1(action) {
     else if (url.indexOf("accounts.google.com/signin/v2/challenge/ipe") > -1) {
       console.log('enter password')
       let mail = action.email.split('@')[0]
-      mail += action.mail_type || ''
+      mail += '@' + action.mail_type
       await userTypeEnter(action.pid, '#knowledgePreregisteredEmailInput', mail)
-      await userClick(action.pid, "button")
       await sleep(5000)
       let errorEl = document.querySelector('div[aria-atomic="true"] span')
 

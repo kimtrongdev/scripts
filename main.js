@@ -620,6 +620,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 pid = profile.id
                 action = {
                     ...profile,
+                    mail_type: systemConfig.check_mail_1_type,
                     script_code: 'check_mail_1'
                 }
             } else {
@@ -1198,7 +1199,7 @@ function initExpress() {
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
-        else if (req.query.id == 'login' || req.query.id == 'reg_user') {
+        else if (req.query.id == 'login' || req.query.id == 'reg_user' || req.query.id == 'check_mail_1') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
                 if (req.query.id == 'reg_user') {
