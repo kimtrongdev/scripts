@@ -610,7 +610,23 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
-        if (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') {
+        if (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') {
+            let newProfile = await request_api.getNewProfile()
+            utils.log('newProfile: ', newProfile)
+            if (!newProfile.err && newProfile.profile) {
+                // copy main to clone profile
+                let profile = newProfile.profile
+                pid = profile.id
+                action = {
+                    ...profile,
+                    script_code: 'check_mail_1'
+                }
+            } else {
+                console.log('Not found profile');
+                return
+            }
+        }
+        else if (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') {
             let newProfile = await request_api.getNewProfile()
             utils.log('newProfile: ', newProfile)
             if (!newProfile.err && newProfile.profile) {
