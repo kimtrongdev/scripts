@@ -21,6 +21,13 @@ async function checkMail1(action) {
       }
       await sleep(190000)
     }
+    else if (url.indexOf("accounts.google.com/signin/v2/challenge/wa") > -1) {
+      let tryBtn = document.querySelector('div[data-primary-action-label] div[data-is-touch-wrapper="true"] button')
+      if (tryBtn) {
+        await userClick(action.pid, "forgotPassBtn", tryBtn)
+      }
+      await sleep(190000)
+    }
     else if (url.indexOf("accounts.google.com/signin/v2/challenge/ipe") > -1) {
       console.log('enter password')
       let mail = action.email.split('@')[0]
