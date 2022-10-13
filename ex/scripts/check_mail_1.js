@@ -18,15 +18,22 @@ async function checkMail1(action) {
       let forgotPassBtn = document.querySelectorAll('div[data-primary-action-label] div[data-is-touch-wrapper="true"] button').item(1)
       if (forgotPassBtn) {
         await userClick(action.pid, "forgotPassBtn", forgotPassBtn)
+        await sleep(190000)
       }
-      await sleep(190000)
+    }
+    else if (url.indexOf("accounts.google.com/signin/v2/challenge/kpp") > -1) {
+      let noPhoneBtn = document.querySelectorAll('div[data-primary-action-label] div[data-is-touch-wrapper="true"] button').item(1)
+      if (noPhoneBtn) {
+        await userClick(action.pid, "noPhoneBtn", noPhoneBtn)
+        await sleep(190000)
+      }
     }
     else if (url.indexOf("accounts.google.com/signin/v2/challenge/wa") > -1) {
       let tryBtn = document.querySelector('div[data-primary-action-label] div[data-is-touch-wrapper="true"] button')
       if (tryBtn) {
-        await userClick(action.pid, "forgotPassBtn", tryBtn)
+        await userClick(action.pid, "tryBtn", tryBtn)
+        await sleep(190000)
       }
-      await sleep(190000)
     }
     else if (url.indexOf("accounts.google.com/signin/v2/challenge/ipe") > -1) {
       console.log('enter password')
