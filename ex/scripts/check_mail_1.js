@@ -28,7 +28,7 @@ async function checkMail1(action) {
         await sleep(190000)
       }
     }
-    else if (url.indexOf("accounts.google.com/signin/v2/challenge/wa") > -1) {
+    else if (url.indexOf("accounts.google.com/signin/v2/challenge/wa") > -1 || url.indexOf("accounts.google.com/signin/v2/challenge/sq") > -1) {
       let tryBtn = document.querySelector('div[data-primary-action-label] div[data-is-touch-wrapper="true"] button')
       if (tryBtn) {
         await userClick(action.pid, "tryBtn", tryBtn)
