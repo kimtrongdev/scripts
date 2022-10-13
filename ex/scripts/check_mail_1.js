@@ -44,9 +44,10 @@ async function checkMail1(action) {
 
       await sleep(190000)
     }
-    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url.split('?')[0])
   } catch (error) {
     console.log(error);
-    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url.split('?')[0])
   }
 }
