@@ -1,7 +1,7 @@
 const useProxy = true
 let isRunBAT = false
 let isSystemChecking = false
-const TIME_REPORT = 110000
+const TIME_REPORT = 290000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
 let EXPIRED_TIME = 400000
@@ -24,7 +24,8 @@ global.DEBUG = Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
 let IP
 let IS_REG_USER = false
-const RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
+const ROOT_RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
+let RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
 
 global.config
 try {
@@ -524,6 +525,7 @@ async function newProfileManage() {
         let newProfile = await request_api.getNewProfile()
         utils.log('newProfile: ', newProfile)
         if (!newProfile.err && newProfile.profile) {
+            RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
             // copy main to clone profile
             let profile = newProfile.profile
             if (proxy) {
@@ -539,6 +541,8 @@ async function newProfileManage() {
             runnings.push({ action: 'login', pid: profile.id, lastReport: Date.now() })
             ids.push(profile.id)
             await loginProfileChrome(profile)
+        } else {
+            RUNNING_CHECK_INTERVAL = utils.randomRanger(180000, 300000)
         }
     }
     catch (e) {
@@ -1154,7 +1158,10 @@ function initExpress() {
             });
         }
         else if (req.query.isScriptReport) {
-            await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
+            if (!['watch', 'create_playlist', 'search', 'end_script'].includes(req.query.script_code)) {
+                await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
+            }
+
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                // execSync(`xdotool key Control_L+w && sleep 1`)
                 // browser will closed by background extention
