@@ -759,7 +759,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
 
             if (action.id == 'watch' || action.id == 'watch_video') {
-                action.total_loop_find_ads = systemConfig.total_loop_find_ads || 1
+                action.total_loop_find_ads = systemConfig.total_loop_find_ads || 0
                 // if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
                 //     action.total_times_next_video = systemConfig.total_times_next_video
                 // }
