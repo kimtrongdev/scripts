@@ -759,19 +759,19 @@ async function getScriptData(pid, isNewProxy = false) {
             }
 
             if (action.id == 'watch' || action.id == 'watch_video') {
-                action.total_loop_find_ads = systemConfig.total_loop_find_ads
-                if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
-                    action.total_times_next_video = systemConfig.total_times_next_video
-                }
-                if (systemConfig.watching_time_non_ads && !Number(action.watching_time_non_ads)) {
-                    action.watching_time_non_ads = systemConfig.watching_time_non_ads
-                }
-                if (systemConfig.watching_time_start_ads && !Number(action.watching_time_start_ads)) {
-                    action.watching_time_start_ads = systemConfig.watching_time_start_ads
-                }
-                if (systemConfig.watching_time_end_ads && !Number(action.watching_time_end_ads)) {
-                    action.watching_time_end_ads = systemConfig.watching_time_end_ads
-                }
+                action.total_loop_find_ads = systemConfig.total_loop_find_ads || 1
+                // if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
+                //     action.total_times_next_video = systemConfig.total_times_next_video
+                // }
+                // if (systemConfig.watching_time_non_ads && !Number(action.watching_time_non_ads)) {
+                //     action.watching_time_non_ads = systemConfig.watching_time_non_ads
+                // }
+                // if (systemConfig.watching_time_start_ads && !Number(action.watching_time_start_ads)) {
+                //     action.watching_time_start_ads = systemConfig.watching_time_start_ads
+                // }
+                // if (systemConfig.watching_time_end_ads && !Number(action.watching_time_end_ads)) {
+                //     action.watching_time_end_ads = systemConfig.watching_time_end_ads
+                // }
     
                 if (!action.playlist_url) {
                     action.playlist_url = action.data
