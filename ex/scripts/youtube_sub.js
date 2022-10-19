@@ -521,6 +521,11 @@ async function processSearchSuggest(action) {
 
 async function processWatchPageSub(action) {
   let url = window.location.toString()
+
+  if (Number(action.watch_time)) {
+    await sleep(Number(action.watch_time))
+  }
+
   if (url.indexOf('youtube.com/shorts') > -1) {
     await sleep(3000)
     await clickSub(action)
