@@ -526,6 +526,15 @@ async function processWatchPageSub(action) {
     await sleep(randomRanger(Number(action.watch_time), Number(action.watch_time) + 15000))
   }
 
+  try {
+    action.data_reported = document.querySelector('.view-count').innerText
+    if (action.data_reported) {
+      await setActionData(action)
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
   if (url.indexOf('youtube.com/shorts') > -1) {
     await sleep(3000)
     await clickSub(action)
