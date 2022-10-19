@@ -527,7 +527,7 @@ async function processWatchPageSub(action) {
   }
 
   try {
-    action.data_reported = document.querySelector('.view-count').innerText
+    action.data_reported = document.querySelector('#top-row #owner-sub-count').textContent
     if (action.data_reported) {
       await setActionData(action)
     }
