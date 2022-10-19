@@ -523,7 +523,7 @@ async function processWatchPageSub(action) {
   let url = window.location.toString()
 
   if (Number(action.watch_time)) {
-    await sleep(Number(action.watch_time))
+    await sleep(randomRanger(Number(action.watch_time), Number(action.watch_time) + 15000))
   }
 
   if (url.indexOf('youtube.com/shorts') > -1) {
