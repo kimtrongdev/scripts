@@ -86,6 +86,11 @@ async function scriptYoutubeSub(action) {
 async function processHomePageSub(action) {
   await checkLogin(action)
 
+  if (action.video_name) {
+    await userTypeEnter(action.pid, 'input#search', action.video_name)
+    return
+  }
+
   if (action.channel_id) {
     await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id + '/videos')
     return
