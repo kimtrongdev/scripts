@@ -26,7 +26,7 @@ async function youtubeComment(action) {
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
-      await userScroll(action.pid, randomRanger(10,20))
+      await userScroll(action.pid, randomRanger(10,15))
       await waitForSelector('#placeholder-area', 25000)
 
       if (!document.querySelector('#placeholder-area')) {
@@ -207,7 +207,18 @@ async function handleAccountPage (action) {
   }
 
   action.channel_position += 1
+
+  if (!action.channel_position || action.channel_position > channels.length - 1) {
+    action.channel_position = 0
+  }
+
   let channel = channels.item(action.channel_position)
+
+  if (!channel) {
+    action.channel_position = 0
+    channel = channels.item(action.channel_position)
+  }
+
   if (channel) {
       if (action.channel_position < channels.length - 2) {
           reportPositionChannel(action.pid, action.channel_position)
