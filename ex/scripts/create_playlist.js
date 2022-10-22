@@ -99,10 +99,10 @@ async function createPlaylistScript(action) {
 
       let channel = channels.item(action.channel_position)
 
-      if (!channel) {
-        action.channel_position = 0
-        channel = channels.item(action.channel_position)
-      }
+      // if (!channel) {
+      //   action.channel_position = 0
+      //   channel = channels.item(action.channel_position)
+      // }
 
       if (channel) {
           await userClick(action.pid, '', channel)
