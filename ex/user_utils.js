@@ -246,7 +246,10 @@ async function initActionData(action) {
 
 function reportAccount (action) {
     let isStop = false
-    if (action.reg_ga_success) {
+    if (action.id == 'reg_account') {
+        action.reg_ga_success = ''
+        isStop = true
+    } else if (action.reg_ga_success) {
         isStop = true
     }
 
