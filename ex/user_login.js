@@ -281,21 +281,7 @@ async function userLogin(action) {
         // }
         else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
-            // await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-            if (action.id == 'reg_user' && action.login_success) {
-                //
-                let data = await getActionData()
-                action = data.action
-                if (!action.countTotalUser) {
-                    action.countTotalUser = 1
-                } else {
-                    action.countTotalUser += 1
-                }
-                await setActionData(action)
-            } else {
-                await goToLocation(action.pid,'youtube.com/feed/history')
-            }
+            await goToLocation(action.pid,'youtube.com/feed/history')
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
@@ -692,15 +678,15 @@ async function pauseHistory(action){
 
 async function oldPauseHistory(action){
     try{
-        let pauseIcon = document.querySelector("a > #button > yt-icon > svg > g > path[d='M11,16H9V8h2V16z M15,8h-2v8h2V8z M12,3c4.96,0,9,4.04,9,9s-4.04,9-9,9s-9-4.04-9-9S7.04,3,12,3 M12,2C6.48,2,2,6.48,2,12 s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2L12,2z']")
+        let pauseIcon = document.querySelector('ytd-button-renderer path[d="M11,16H9V8h2V16z M15,8h-2v8h2V8z M12,3c4.96,0,9,4.04,9,9s-4.04,9-9,9s-9-4.04-9-9S7.04,3,12,3 M12,2C6.48,2,2,6.48,2,12 s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2L12,2z"]')
         if(!pauseIcon) return
         await userClick(action.pid,'saved history button',pauseIcon)
-        await sleep(2000)
+        await sleep(4000)
         let historyOnInput = document.querySelector('.yt-confirm-dialog-renderer #confirm-button')
         if(historyOnInput){
             console.log('pauseHistory')
-            historyOnInput.click()
-            //await userClick(action.pid,'.yt-confirm-dialog-renderer #confirm-button',historyOnInput)
+            //historyOnInput.click()
+            await userClick(action.pid,'.yt-confirm-dialog-renderer #confirm-button',historyOnInput)
             await sleep(4000)
            // await userClick(action.pid,'[role="dialog"] button[jsname] span')
            // await sleep(3000)
