@@ -581,54 +581,12 @@ async function userCreateChannel(action){
     let fullname = await randomFullName()
     await waitForSelector('#PlusPageName')
     await userTypeEnter(action.pid, '#PlusPageName', fullname)
+
     await sleep(1000)
-    await userClick(action.pid, '.consent-checkmark')
-    document.querySelector('#createaccount').setAttribute('target', '_blank')
+    await userClick(action.pid,'.consent-checkmark')
+    await sleep(1000)
 
-    let names = []
-    let loadding = 0
-    function loadNames (total) {
-        let countTotal = 0
-        while (countTotal < total) {
-            loadding++
-            randomFullName().then(rs => {
-                loadding--
-                names.push(rs)
-            })
-            countTotal++
-        }
-    }
-
-    loadNames(10)
-    let count = 0
-    let currentTotalUser = 0
-    while (count < 100) {
-        let data = await getActionData()
-        action = data.action
-        if (action.countTotalUser != currentTotalUser) {
-            currentTotalUser = action.countTotalUser
-            updateTotalCreatedUsers(action.pid, currentTotalUser)
-        }
-
-        let fullname = names.pop()
-        if (fullname) {
-            count++
-            await userTypeEnter(action.pid, '#PlusPageName', fullname)
-            document.querySelector('#submitbutton').click()
-            await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-
-            if (count % 10 == 0) {
-                reportLive(action.pid)
-                await sleep(15000)
-                closeUnactiveTabs()
-            }
-        } else {
-            if (!loadding) {
-                loadNames(10)
-            }
-            await sleep(5000)
-        }
-    }
+    await userClick(action.pid,'#submitbutton')
 }
 
 async function createChannelMobile(action){
