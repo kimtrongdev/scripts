@@ -18,6 +18,20 @@ global.devJson = {
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
 
+let startX = 1000
+let startY = 500
+const totalWindows = 5
+const dis = 50
+let posList = []
+for (let i = 0; i <= totalWindows; i++) {
+    startX += dis
+    startY -= dis
+    posList.push({
+        x: startX,
+        y: startY
+    })
+}
+
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
@@ -356,16 +370,26 @@ async function startChromeAction(action, _browser) {
     action['screenHeight'] = screenHeight
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
-    //debug
-    if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
-        screenWidth = 1100
-        windowSize = ` --window-size="${screenWidth},${screenHeight}"`
-    }
-    else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
-        screenWidth = 1100
+    if (WIN_ENV && MAX_CURRENT_ACC > 1) {
+        let posItem = posList.find(posItem => !posItem.pid)
+        if (posItem) {
+            posItem.pid = action.pid
+            windowSize = ` --window-size="${posItem.x},${posItem.y}"`
+            action['screenWidth'] = posItem.x
+            action['screenHeight'] = posItem.y
+        }
     } else {
-        windowSize = ' --start-maximized'
-        windowPosition = ''
+        //debug
+        if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
+            screenWidth = 1100
+            windowSize = ` --window-size="${screenWidth},${screenHeight}"`
+        }
+        else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
+            screenWidth = 1100
+        } else {
+            windowSize = ' --start-maximized'
+            windowPosition = ''
+        }
     }
 
     // handle proxy
@@ -420,7 +444,7 @@ async function startChromeAction(action, _browser) {
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {
-        exec(`${_browser}${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
+        exec(`${_browser}${userProxy} --lang=en-US,en ${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
         closeChrome(action.pid)
@@ -848,6 +872,14 @@ async function checkRunningProfiles () {
                     i -= 1
                 }
             }
+        }
+
+        if (WIN_ENV && MAX_CURRENT_ACC > 1) {
+            posList = posList.map(posItem => {
+                if (posItem.pid && !runnings.some(running => running.pid == posItem.pid)) {
+                    posItem.pid = 0
+                }
+            })
         }
     }
     catch (e) {
@@ -1790,8 +1822,16 @@ function setDisplay(pid) {
     try {
         if (IS_SHOW_UI) {
             if (MAX_CURRENT_ACC > 1) {
-                let browser = getBrowserOfProfile(pid)
-                execSync(`wmctrl -x -a ${browser}`)
+                if (WIN_ENV) {
+                    let screenPos = posList.find(posItem => posItem.pid == pid)
+                    if (screenPos) {
+                        robot.moveMouse(Number(screenPos.x) - 10, Number(screenPos.y) - 10)
+                        robot.mouseClick('left')
+                    }
+                } else {
+                    let browser = getBrowserOfProfile(pid)
+                    execSync(`wmctrl -x -a ${browser}`)
+                }
             }
         } else {
             if (!WIN_ENV) {
