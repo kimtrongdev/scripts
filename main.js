@@ -157,7 +157,8 @@ async function loadSystemConfig () {
         'opera': 'opera',
         'microsoft-edge': 'microsoft-edge',
         'google-chrome': 'start chrome.exe',
-        'vivaldi-stable': 'vivaldi-stable'
+        'vivaldi-stable': 'vivaldi-stable',
+        'avast': '"C:/Program Files (x86)/AVAST Software/Browser/Application/AvastBrowser.exe"'
     }
 
     systemConfig.browsers.forEach(br => {
@@ -191,7 +192,11 @@ async function loadSystemConfig () {
             if (!systemConfig.browsers.includes(browserMaped)) {
                 config.browser_map[browserMaped].forEach(pid => {
                     closeChrome(pid)
-                    execSync('rm -rf profiles/'+pid)
+                    try {
+                        execSync('rm -rf profiles/'+pid)
+                    } catch (error) {
+                        
+                    }
                 });
                 delete config.browser_map[browserMaped]
             }  
@@ -414,7 +419,7 @@ async function startChromeAction(action, _browser) {
     
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
-    if (WIN_ENV) {        
+    if (WIN_ENV) {
         exec(`${_browser}${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
