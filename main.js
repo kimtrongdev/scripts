@@ -62,7 +62,7 @@ global.subRunnings = []
 global.addnewRunnings = []
 global.proxy = {}
 global.gui = false
-global.WIN_ENV = process.platform === "win32"
+global.WIN_ENV = true//process.platform === "win32"
 global.fisrt_video = 0
 global.active_devices = []
 global.channelInfo = []
@@ -328,9 +328,11 @@ async function startChromeAction(action, _browser) {
     }
 
     try {
-        const ramdom1 = utils.getRndInteger(1000, 9000)
-        const ramdom2 = utils.getRndInteger(1000, 9000)
-        execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`)
+        if (!WIN_ENV) {
+            const ramdom1 = utils.getRndInteger(1000, 9000)
+            const ramdom2 = utils.getRndInteger(1000, 9000)
+            execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`)
+        }
     } catch (error) {
         console.log(error);
     }
@@ -476,7 +478,9 @@ async function startChromeAction(action, _browser) {
 async function loginProfileChrome(profile) {
     try {
         try {
-            execSync(`sudo xrandr -s 1600x1200`)
+            if (!WIN_ENV) {
+                execSync(`sudo xrandr -s 1600x1200`)
+            }
         } catch (error) {
             console.log(error);
         }
@@ -487,7 +491,12 @@ async function loginProfileChrome(profile) {
         action.id = 'login'
         action.isNew = true
         action.is_show_ui = IS_SHOW_UI
-        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
+
+        if (WIN_ENV) {
+            action.os_vm = 'win'
+        } else {
+            action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
+        }
 
         // handle log browser for profile
         if (!config.browser_map) {
@@ -737,7 +746,13 @@ async function getScriptData(pid, isNewProxy = false) {
         action.id = action.script_code
         action.pid = pid
         action.is_show_ui = IS_SHOW_UI
-        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
+
+        if (WIN_ENV) {
+            action.os_vm = 'win'
+        } else {
+            action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
+        }
+
         if (isRunBAT) {
             action.isRunBAT = isRunBAT
         }
@@ -1440,7 +1455,11 @@ async function handleAction (actionData) {
         }
     }
     else if (actionData.action == 'ESC') {
-        execSync(`xdotool key Escape && sleep 0.5`)
+        if (WIN_ENV) {
+            robot.keyTap('escape')
+        } else {
+            execSync(`xdotool key Escape && sleep 0.5`)
+        }
     }
     else if (actionData.action == 'GO_TO_FISRT_TAB') {
         execSync(`xdotool key Control_L+1 && sleep 1`)
@@ -1556,7 +1575,12 @@ async function handleAction (actionData) {
             robot.keyToggle('control', 'down')
             robot.keyTap('l')
             robot.keyToggle('control', 'up')
-            robot.typeString(actionData.str)
+
+            robot.keyToggle('control', 'down')
+            robot.keyTap('v')
+            robot.keyToggle('control', 'up')
+
+            robot.keyTap('enter')
         } else {
             execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
             if (actionData.str.length > 40) {

@@ -146,6 +146,10 @@ function initSettingData (action) {
         }
     }
 
+    if (action.os_vm == 'win') {
+        heightCustom = -42
+    }
+
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
     }
