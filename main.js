@@ -14,8 +14,7 @@ let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
-    hostIp: process.env.HOST_IP,
-    maxProfile: Number(process.env.MAX_PROFILES) || 1,
+    hostIp: process.env.HOST_IP
 }
 const robot = require("robotjs");
 const screenSize = robot.getScreenSize()
@@ -67,8 +66,7 @@ const publicIp = require('public-ip')
 const path = require('path')
 const del = require('del');
 const fs = require('fs')
-const { sleep } = require('./utils')
-let MAX_CURRENT_ACC = Number(devJson.maxProfile)
+let MAX_CURRENT_ACC = 1
 let MAX_PROFILE = 2
 
 let ids = []
@@ -946,7 +944,9 @@ async function profileManage() {
 
 async function running() {
     try {
-        execSync(`sudo xrandr -s 1600x1200`)
+        if (!WIN_ENV) {
+            execSync(`sudo xrandr -s 1600x1200`)
+        }
     } catch (error) {
         console.log(error);
     }
@@ -1366,7 +1366,7 @@ async function handleAction (actionData) {
 
     setDisplay(actionData.pid)
     if (WIN_ENV) {
-        let screenPos = posList.find(posItem => posItem.pid == pid)
+        let screenPos = posList.find(posItem => posItem.pid == actionData.pid)
         if (screenPos) {
             robot.moveMouse(Number(screenPos.x) - 30, Number(screenPos.y) - 30)
             robot.mouseClick('left')
