@@ -94,7 +94,7 @@ async function userWatch(action){
         else if(url.indexOf('https://myaccount.google.com/') == 0){
             await goToLocation(action.pid,'youtube.com//')
         }
-        else if(url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/ServiceLogin') > -1){
+        else if(url.indexOf('https://accounts.google.com/v3/signin/identifier') > -1 || url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/ServiceLogin') > -1){
             throw 'NOT_LOGIN'
         }
         else if(window.location.toString().indexOf('youtube.com/oops') > -1 && document.querySelector('#alerts')){
@@ -735,7 +735,14 @@ async function processBrowserFeature(action){
 
 async function processPlaylistPage(action){
     if (document.querySelector('.shuffle-button')) {
-        await userClick(action.pid, '.shuffle-button')
+        if (elementInViewport('.shuffle-button')) {
+            await userClick(action.pid, '.shuffle-button')
+        } else {
+            let playbtn = document.querySelectorAll('.shuffle-button').item(1)
+            if (playbtn) {
+                await userClick(action.pid, '.shuffle-button', playbtn)
+            }
+        }
     } else {
         let playBtn = document.querySelector('#button > yt-icon > svg > g > path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
         if (playBtn) {

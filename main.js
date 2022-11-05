@@ -17,9 +17,10 @@ global.devJson = {
     hostIp: process.env.HOST_IP,
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
 }
-
-let startX = 1000
-let startY = 500
+const robot = require("robotjs");
+const screenSize = robot.getScreenSize()
+let startX = 600
+let startY = screenSize.height - 100
 const totalWindows = 5
 const dis = 50
 let posList = []
@@ -55,7 +56,7 @@ let trace = {}
 try {
     trace = require('./trace_config.json')
 } catch (e) { trace = {} }
-const robot = require("robotjs");
+
 require('log-timestamp')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
@@ -66,6 +67,7 @@ const publicIp = require('public-ip')
 const path = require('path')
 const del = require('del');
 const fs = require('fs')
+const { sleep } = require('./utils')
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 let MAX_PROFILE = 2
 
@@ -444,7 +446,7 @@ async function startChromeAction(action, _browser) {
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {
-        exec(`${_browser}${userProxy} --lang=en-US,en ${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
+        exec(`${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
         closeChrome(action.pid)
@@ -860,7 +862,7 @@ async function checkRunningProfiles () {
                     closeChrome(pid)
 
                     if (runnings[i].action == 'login' || IS_REG_USER) {
-                        execSync('rm -rf profiles/'+pid)
+                        del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
                         ids = ids.filter(id => id != pid)
                     }
                 }
@@ -875,10 +877,12 @@ async function checkRunningProfiles () {
         }
 
         if (WIN_ENV && MAX_CURRENT_ACC > 1) {
+            let current_pids = getProfileIds()
             posList = posList.map(posItem => {
-                if (posItem.pid && !runnings.some(running => running.pid == posItem.pid)) {
+                if (posItem.pid && !runnings.some(running => running.pid == posItem.pid) && !current_pids.includes(posItem.pid)) {
                     posItem.pid = 0
                 }
+                return posItem
             })
         }
     }
@@ -1231,6 +1235,13 @@ function initExpress() {
                 // browser will closed by background extention
                 closeChrome(req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
+
+                if (WIN_ENV) {
+                    let pos = posList.find(posItem => posItem.pid == req.query.pid)
+                    if (pos) {
+                        pos.pid = 0
+                    }
+                }
             } else {
                 let action = await getScriptData(req.query.pid)
                 if (req.query.script_code == action.script_code) {
@@ -1354,7 +1365,15 @@ async function handleAction (actionData) {
     }
 
     setDisplay(actionData.pid)
-    await utils.sleep(1000)
+    if (WIN_ENV) {
+        let screenPos = posList.find(posItem => posItem.pid == pid)
+        if (screenPos) {
+            robot.moveMouse(Number(screenPos.x) - 30, Number(screenPos.y) - 30)
+            robot.mouseClick('left')
+        }
+    }
+
+    await utils.sleep(2000)
 
     let logStr = '---> ' + actionData.action
     if (actionData.x) {
@@ -1436,7 +1455,13 @@ async function handleAction (actionData) {
         execSync(`xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'CLOSE_BROWSER') {
-        execSync(`xdotool key Control_L+w && sleep 1`)
+        if (WIN_ENV) {
+            robot.keyToggle('control', 'down')
+            robot.keyTap('w')
+            robot.keyToggle('control', 'up')
+        } else {
+            execSync(`xdotool key Control_L+w && sleep 1`)
+        }
     }
     else if (actionData.action == 'TABS') {
         let totalClick = Number(actionData.x)
@@ -1604,7 +1629,11 @@ async function handleAction (actionData) {
         }
     }
     else if (actionData.action == 'SEND_KEY') {
-        execSync(`xdotool type ${actionData.str}`)
+        if (WIN_ENV) {
+            robot.typeString(actionData.str)
+        } else {
+            execSync(`xdotool type ${actionData.str}`)
+        }
     }
     else if (actionData.action == 'GO_ADDRESS') {
         if (WIN_ENV) {
@@ -1772,7 +1801,14 @@ function runAutoRebootVm () {
 function closeChrome(pid) {
     try {
         if (WIN_ENV) {
-            execSync('input CLOSE_CHROME')
+            if (pid) {
+                actionsData.push({ pid, id: 'CLOSE_BROWSER' })
+            } else {
+                const pids = getProfileIds()
+                for (let pid of pids) {
+                    actionsData.push({ pid, id: 'CLOSE_BROWSER' })
+                }
+            }
         }
         else {
             if (pid) {
@@ -1823,11 +1859,7 @@ function setDisplay(pid) {
         if (IS_SHOW_UI) {
             if (MAX_CURRENT_ACC > 1) {
                 if (WIN_ENV) {
-                    let screenPos = posList.find(posItem => posItem.pid == pid)
-                    if (screenPos) {
-                        robot.moveMouse(Number(screenPos.x) - 10, Number(screenPos.y) - 10)
-                        robot.mouseClick('left')
-                    }
+                    
                 } else {
                     let browser = getBrowserOfProfile(pid)
                     execSync(`wmctrl -x -a ${browser}`)
