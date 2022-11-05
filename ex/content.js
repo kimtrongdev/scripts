@@ -142,7 +142,7 @@ function initSettingData (action) {
         if ((!action.is_show_ui || action.is_show_ui == 'false')) {
            // heightCustom = 23
         } else {
-            heightCustom = 23
+            //heightCustom = 23
         }
     }
 
