@@ -381,15 +381,15 @@ async function preWatchingVideo(action){
 
     if(action.url_type == 'playlist') {
         await viewAds(action, true)
-        let randomVideoModeBtn = document.querySelector('#top-level-buttons-computed yt-button-shape .yt-spec-button-shape-next path[d="M21,13h1v5L3.93,18.03l2.62,2.62l-0.71,0.71L1.99,17.5l3.85-3.85l0.71,0.71l-2.67,2.67L21,17V13z M3,7l17.12-0.03 l-2.67,2.67l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71l2.62,2.62L2,6v5h1V7z"]')
-        if (randomVideoModeBtn) {
-            await userClick(action.pid,'', randomVideoModeBtn)
-        }
+        // let randomVideoModeBtn = document.querySelector('#top-level-buttons-computed yt-button-shape .yt-spec-button-shape-next path[d="M21,13h1v5L3.93,18.03l2.62,2.62l-0.71,0.71L1.99,17.5l3.85-3.85l0.71,0.71l-2.67,2.67L21,17V13z M3,7l17.12-0.03 l-2.67,2.67l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71l2.62,2.62L2,6v5h1V7z"]')
+        // if (randomVideoModeBtn) {
+        //     await userClick(action.pid,'', randomVideoModeBtn)
+        // }
 
-        let loopModeBtn = document.querySelector('#top-level-buttons-computed yt-button-shape .yt-spec-button-shape-next path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
-        if (loopModeBtn) {
-            await userClick(action.pid,'', loopModeBtn)
-        }
+        // let loopModeBtn = document.querySelector('#top-level-buttons-computed yt-button-shape .yt-spec-button-shape-next path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
+        // if (loopModeBtn) {
+        //     await userClick(action.pid,'', loopModeBtn)
+        // }
 
         action.playlist_index = action.playlist_index == undefined ? (action.total_times + randomRanger(0, 1)) : action.playlist_index
         console.log('playlist_index:', action.playlist_index)
@@ -532,7 +532,15 @@ async function afterWatchingVideo(action,finishVideo){
                 // nex video
                 action.viewed_ads = false
                 await setActionData(action)
-                await nextVideo(action.pid)
+                if (action.os_vm == 'win') {
+                    let videos = document.querySelectorAll('ytd-playlist-panel-video-renderer #thumbnail #img')
+                    let videoPosRd = videos.item(randomRanger(0, videos.length - 1))
+                    if (videoPosRd) {
+                        await userClick(action.pid, 'random video', videoPosRd)
+                    }
+                } else {
+                    await nextVideo(action.pid)
+                }
            // }
             return
         }
