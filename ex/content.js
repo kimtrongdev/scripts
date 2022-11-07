@@ -95,6 +95,7 @@ async function initAction(){
 
         // handle load system pid
         document.title = 'localhost_' + action.pid
+        await sleep(5000)
         await loadSystemPid(action)
 
         action.lastRequest = Date.now()
