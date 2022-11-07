@@ -371,7 +371,10 @@ async function startChromeAction(action, _browser) {
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     if (WIN_ENV && MAX_CURRENT_ACC > 1) {
-        let posItem = posList.find(posItem => !posItem.pid)
+        let posItem = posList.find(posItem => posItem.pid == action.pid)
+        if (!posItem) {
+            posItem = posList.find(posItem => !posItem.pid)
+        }
         if (posItem) {
             posItem.pid = action.pid
             windowSize = ` --window-size="${posItem.x},${posItem.y}"`
