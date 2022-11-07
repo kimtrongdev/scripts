@@ -10,6 +10,7 @@ let countRun = 0
 let isPauseAction = false
 let isAfterReboot = false
 let actionsData = []
+const robot = require('robotjs')
 let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
@@ -190,6 +191,7 @@ async function loadSystemConfig () {
         execSync('pm2 stop all')
     }
 
+    systemConfig.useRobotJS = true
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -1290,7 +1292,15 @@ async function handleAction (actionData) {
     }
 
     setDisplay(actionData.pid)
-    await utils.sleep(1000)
+    if (WIN_ENV) {
+        let screenPos = posList.find(posItem => posItem.pid == actionData.pid)
+        if (screenPos) {
+            robot.moveMouse(Number(screenPos.x) - 30, Number(screenPos.y) - 30)
+            robot.mouseClick('left')
+        }
+    }
+
+    await utils.sleep(2000)
 
     let logStr = '---> ' + actionData.action
     if (actionData.x) {
@@ -1372,7 +1382,13 @@ async function handleAction (actionData) {
         execSync(`xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'CLOSE_BROWSER') {
-        execSync(`xdotool key Control_L+w && sleep 1`)
+        if (systemConfig.useRobotJS) {
+            robot.keyToggle('control', 'down')
+            robot.keyTap('w')
+            robot.keyToggle('control', 'up')
+        } else {
+            execSync(`xdotool key Control_L+w && sleep 1`)
+        }
     }
     else if (actionData.action == 'TABS') {
         let totalClick = Number(actionData.x)
@@ -1428,7 +1444,11 @@ async function handleAction (actionData) {
         }
     }
     else if (actionData.action == 'ESC') {
-        execSync(`xdotool key Escape && sleep 0.5`)
+        if (systemConfig.useRobotJS) {
+            robot.keyTap('escape')
+        } else {
+            execSync(`xdotool key Escape && sleep 0.5`)
+        }
     }
     else if (actionData.action == 'GO_TO_FISRT_TAB') {
         execSync(`xdotool key Control_L+1 && sleep 1`)
@@ -1452,21 +1472,47 @@ async function handleAction (actionData) {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool keydown Control_L && xdotool click 1`)
     }
     else if (actionData.action == 'CLICK') {
-        if (actionData.x > 65) {
-            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+        if (systemConfig.useRobotJS) {
+            robot.moveMouse(Number(actionData.x), Number(actionData.y))
+            robot.mouseClick('left')
+        } else {
+            if (actionData.x > 65) {
+                execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+            }
         }
     }
     else if (actionData.action == 'TYPE') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
+        if (systemConfig.useRobotJS) {
+            robot.moveMouse(Number(actionData.x), Number(actionData.y))
+            robot.mouseClick('left')
+            robot.typeString(actionData.str)
+        } else {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
+        }
     }
     else if (actionData.action == 'KEY_ENTER') {
-        execSync(`xdotool key KP_Enter && sleep 1`)
+        if (systemConfig.useRobotJS) {
+            robot.keyTap('enter')
+        } else {
+            execSync(`xdotool key KP_Enter && sleep 1`)
+        }
     }
     else if (actionData.action == 'TYPE_ENTER') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+        if (systemConfig.useRobotJS) {
+            robot.moveMouse(Number(actionData.x), Number(actionData.y))
+            robot.mouseClick('left')
+            robot.typeString(actionData.str)
+            robot.keyTap('enter')
+        } else {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+        }
     }
     else if (actionData.action == 'ONLY_TYPE') {
-        execSync(`xdotool key Control_L+v sleep 1`)
+        if (systemConfig.useRobotJS) {
+            robot.typeString(actionData.str)
+        } else {
+            execSync(`xdotool key Control_L+v sleep 1`)
+        }
     }
     else if (actionData.action == 'ONLY_TYPE_ENTER') {
         execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
@@ -1475,43 +1521,71 @@ async function handleAction (actionData) {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'NEXT_VIDEO') {
-        execSync(`xdotool key Shift+n && sleep 1`)
+        if (systemConfig.useRobotJS) {
+            robot.keyToggle('shift', 'down')
+            robot.keyTap('n')
+            robot.keyToggle('shift', 'up')
+        } else {
+            execSync(`xdotool key Shift+n && sleep 1`)
+        }
     }
     else if (actionData.action == 'SCROLL') {
-        if (actionData.str == 6) {
-            execSync(`xdotool key Shift+Tab && sleep 1`)
-            execSync(`xdotool key Page_Down && sleep 1`)
+        if (systemConfig.useRobotJS) {
+            let pageNumber = Number(actionData.str)
+            robot.scrollMouse(0, pageNumber);
         } else {
-            if (actionData.str > 0) {
-                let pageNumber = Math.ceil(actionData.str / 5)
-                while (pageNumber > 0) {
-                    execSync(`xdotool key Page_Down && sleep 1`)
-                    pageNumber--
+            if (actionData.str == 6) {
+                execSync(`xdotool key Shift+Tab && sleep 1`)
+                execSync(`xdotool key Page_Down && sleep 1`)
+            } else {
+                if (actionData.str > 0) {
+                    let pageNumber = Math.ceil(actionData.str / 5)
+                    while (pageNumber > 0) {
+                        execSync(`xdotool key Page_Down && sleep 1`)
+                        pageNumber--
+                    }
                 }
-            }
-            else {
-                let pageNumber = Math.ceil(actionData.str / -5)
-                while (pageNumber > 0) {
-                    execSync(`xdotool key Page_Up && sleep 1`)
-                    pageNumber--
+                else {
+                    let pageNumber = Math.ceil(actionData.str / -5)
+                    while (pageNumber > 0) {
+                        execSync(`xdotool key Page_Up && sleep 1`)
+                        pageNumber--
+                    }
                 }
             }
         }
     }
     else if (actionData.action == 'SEND_KEY') {
-        execSync(`xdotool type ${actionData.str}`)
+        if (systemConfig.useRobotJS) {
+            robot.typeString(actionData.str)
+        } else {
+            execSync(`xdotool type ${actionData.str}`)
+        }
     }
     else if (actionData.action == 'GO_ADDRESS') {
-        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
-        if (actionData.str.length > 40) {
-            execSync(`xdotool key Control_L+v`)
-            await utils.sleep(2000)
+        if (systemConfig.useRobotJS) {
+            robot.keyTap('escape')
+            robot.keyToggle('control', 'down')
+            robot.keyTap('l')
+            robot.keyToggle('control', 'up')
+
+            robot.keyToggle('control', 'down')
+            robot.keyTap('v')
+            robot.keyToggle('control', 'up')
+
+            robot.keyTap('enter')
         } else {
-            execSync(`xdotool type "${actionData.str}"`)
+            execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
+            if (actionData.str.length > 40) {
+                execSync(`xdotool key Control_L+v`)
+                await utils.sleep(2000)
+            } else {
+                execSync(`xdotool type "${actionData.str}"`)
+            }
+            await utils.sleep(1000)
+            execSync(`xdotool key KP_Enter`)
+            await utils.sleep(2000)
         }
-        await utils.sleep(1000)
-        execSync(`xdotool key KP_Enter`)
-        await utils.sleep(2000)
     }
     else if (actionData.action == 'OPEN_DEV') {
         execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
