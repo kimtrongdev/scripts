@@ -248,7 +248,7 @@ function reportAccount (action) {
     let isStop = false
     if (action.id == 'reg_account') {
         action.reg_ga_success = ''
-        isStop = true
+        //isStop = true
     } else if (action.reg_ga_success) {
         isStop = true
     }
