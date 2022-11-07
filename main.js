@@ -17,20 +17,6 @@ global.devJson = {
     hostIp: process.env.HOST_IP
 }
 const robot = require("robotjs");
-const screenSize = robot.getScreenSize()
-let startX = 600
-let startY = screenSize.height - 100
-const totalWindows = 5
-const dis = 50
-let posList = []
-for (let i = 0; i <= totalWindows; i++) {
-    startX += dis
-    startY -= dis
-    posList.push({
-        x: startX,
-        y: startY
-    })
-}
 
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
@@ -370,29 +356,17 @@ async function startChromeAction(action, _browser) {
     action['screenHeight'] = screenHeight
     let windowPosition = ' --window-position=0,0'
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
-    if (WIN_ENV && MAX_CURRENT_ACC > 1) {
-        let posItem = posList.find(posItem => posItem.pid == action.pid)
-        if (!posItem) {
-            posItem = posList.find(posItem => !posItem.pid)
-        }
-        if (posItem) {
-            posItem.pid = action.pid
-            windowSize = ` --window-size="${posItem.x},${posItem.y}"`
-            action['screenWidth'] = posItem.x
-            action['screenHeight'] = posItem.y
-        }
+    
+    //debug
+    if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
+        screenWidth = 1100
+        windowSize = ` --window-size="${screenWidth},${screenHeight}"`
+    }
+    else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
+        screenWidth = 1100
     } else {
-        //debug
-        if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
-            screenWidth = 1100
-            windowSize = ` --window-size="${screenWidth},${screenHeight}"`
-        }
-        else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
-            screenWidth = 1100
-        } else {
-            windowSize = ' --start-maximized'
-            windowPosition = ''
-        }
+        windowSize = ' --start-maximized'
+        windowPosition = ''
     }
 
     // handle proxy
@@ -876,16 +850,6 @@ async function checkRunningProfiles () {
                 }
             }
         }
-
-        if (WIN_ENV && MAX_CURRENT_ACC > 1) {
-            let current_pids = getProfileIds()
-            posList = posList.map(posItem => {
-                if (posItem.pid && !runnings.some(running => running.pid == posItem.pid) && !current_pids.includes(posItem.pid)) {
-                    posItem.pid = 0
-                }
-                return posItem
-            })
-        }
     }
     catch (e) {
         utils.log('error', 'checkWatchingProfile err: ', e)
@@ -1163,6 +1127,20 @@ function initExpress() {
         return res.send(randomAddress)
     })
 
+    app.get('/load-system-pid', async (req, res) => {
+        const systemPid = await loadSystemPid(req.query.pid)
+        if (systemPid) {
+            let running = runnings.find(rn => rn.pid == req.query.pid)
+            if (running) {
+                running.system_pid = systemPid
+                console.log('-------------', running);
+                return res.json({})
+            }
+        }
+        return res.json({})
+        // handle error 
+    })
+
     app.get('/get-phone-code', async (req, res) => {
         let order_id = req.query.order_id
         let api_name = req.query.api_name
@@ -1238,13 +1216,6 @@ function initExpress() {
                 // browser will closed by background extention
                 closeChrome(req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
-
-                if (WIN_ENV) {
-                    let pos = posList.find(posItem => posItem.pid == req.query.pid)
-                    if (pos) {
-                        pos.pid = 0
-                    }
-                }
             } else {
                 let action = await getScriptData(req.query.pid)
                 if (req.query.script_code == action.script_code) {
@@ -1361,6 +1332,31 @@ function initExpress() {
     })
 }
 
+async function loadSystemPid (pid) {
+    return Promise((res, rej) => {
+        exec(`tasklist /v /fo csv | findstr /i "localhost:${pid}"`, (err, stdout) => {
+            console.log('stdout------', stdout);
+            let handlePid = stdout.match(/"[\w|.]*","Console/g)
+            if (handlePid && handlePid[0]) {
+                handlePid = handlePid[0]
+                handlePid = handlePid.replace('"', '')
+                handlePid = handlePid.replace('","Console', '')
+                console.log('------- pid after handler', handlePid);
+                return res(handlePid)
+            }
+            res('')
+        })
+    })
+}
+
+async function getSystemPid (pid) {
+    let running = runnings.find(running => running.pid == pid)
+    if (running) {
+        return running.system_pid
+    }
+    return 0
+}
+
 async function handleAction (actionData) {
     if (isPauseAction) {
         res.send({ rs: 'ok' })
@@ -1368,11 +1364,13 @@ async function handleAction (actionData) {
     }
 
     setDisplay(actionData.pid)
+
     if (WIN_ENV) {
-        let screenPos = posList.find(posItem => posItem.pid == actionData.pid)
-        if (screenPos) {
-            robot.moveMouse(Number(screenPos.x) - 30, Number(screenPos.y) - 30)
-            robot.mouseClick('left')
+        let systemPidRunning = getSystemPid(actionData.pid)
+        if (systemPidRunning) {
+            execSync(`nircmd win activate process /${systemPidRunning}`)
+        } else {
+            return res.json({})
         }
     }
 
@@ -1459,9 +1457,10 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'CLOSE_BROWSER') {
         if (WIN_ENV) {
-            robot.keyToggle('control', 'down')
-            robot.keyTap('w')
-            robot.keyToggle('control', 'up')
+            execSync(`taskkill /PID ${actionData.pid} /F`)
+            // robot.keyToggle('control', 'down')
+            // robot.keyTap('w')
+            // robot.keyToggle('control', 'up')
         } else {
             execSync(`xdotool key Control_L+w && sleep 1`)
         }

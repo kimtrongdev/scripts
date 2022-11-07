@@ -92,6 +92,11 @@ async function initAction(){
         closeTabs()
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
+
+        // handle load system pid
+        document.title = 'localhost:' + action.pid
+        await loadSystemPid(action)
+
         action.lastRequest = Date.now()
         initSettingData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
