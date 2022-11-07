@@ -1333,8 +1333,8 @@ function initExpress() {
 }
 
 async function loadSystemPid (pid) {
-    return Promise((res, rej) => {
-        exec(`tasklist /v /fo csv | findstr /i "localhost:${pid}"`, (err, stdout) => {
+    return new Promise((res, rej) => {
+        exec(`tasklist /v /fo csv | findstr /i "localhost_${pid}"`, (error, stdout, stderr) => {
             console.log('stdout------', stdout);
             let handlePid = stdout.match(/"[\w|.]*","Console/g)
             if (handlePid && handlePid[0]) {
@@ -1349,7 +1349,7 @@ async function loadSystemPid (pid) {
     })
 }
 
-async function getSystemPid (pid) {
+function getSystemPid (pid) {
     let running = runnings.find(running => running.pid == pid)
     if (running) {
         return running.system_pid
@@ -1368,9 +1368,13 @@ async function handleAction (actionData) {
     if (WIN_ENV) {
         let systemPidRunning = getSystemPid(actionData.pid)
         if (systemPidRunning) {
-            execSync(`nircmd win activate process /${systemPidRunning}`)
+            try {
+                execSync(`nircmd win activate process /${systemPidRunning}`)
+            } catch (error) {
+                
+            }
         } else {
-            return res.json({})
+           // return res.json({})
         }
     }
 

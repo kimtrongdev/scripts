@@ -94,7 +94,7 @@ async function initAction(){
         action = JSON.parse(url.searchParams.get("data"))
 
         // handle load system pid
-        document.title = 'localhost:' + action.pid
+        document.title = 'localhost_' + action.pid
         await loadSystemPid(action)
 
         action.lastRequest = Date.now()
