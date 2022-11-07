@@ -13,6 +13,7 @@ async function regMail(action) {
     else if (url.indexOf('mail.google.com/mail') > -1) {
       // success
       action.username = action.username + '@gmail.com'
+      action.reg_ga_success = false
       await setActionData(action)
       await reportAccount(action)
 
