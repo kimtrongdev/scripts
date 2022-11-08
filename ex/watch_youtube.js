@@ -1097,21 +1097,21 @@ async function CommentYoutubeVideo(pid, msg = '') {
         if(!msg) return
         await sleep(2000)
 
-        let chatFrame = document.querySelector('#chatframe')
-        if(chatFrame){
-            if(!chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a')){
-                await userTypeEnter(pid,'yt-live-chat-text-input-field-renderer#input',msg,'',chatFrame)
-                return
-            }
-            else{
-                // create channel
-                let action = (await getActionData()).action
-                action.create_channel = true
-                await setActionData(action)
-                await userClick(pid,'create channel',chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a'),chatFrame)
-                return
-            }
-        }
+        // let chatFrame = document.querySelector('#chatframe')
+        // if(chatFrame){
+        //     if(!chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a')){
+        //         await userTypeEnter(pid,'yt-live-chat-text-input-field-renderer#input',msg,'',chatFrame)
+        //         return
+        //     }
+        //     else{
+        //         // create channel
+        //         let action = (await getActionData()).action
+        //         action.create_channel = true
+        //         await setActionData(action)
+        //         await userClick(pid,'create channel',chatFrame.contentWindow.document.querySelector('yt-live-chat-message-renderer a'),chatFrame)
+        //         return
+        //     }
+        // }
 
         await userScroll(pid,10)
 
