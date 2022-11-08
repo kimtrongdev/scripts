@@ -1342,6 +1342,8 @@ async function handleAction (actionData) {
         execSync(`xdotool key Shift+Tab`)
         execSync(`xdotool key Shift+Tab`)
         execSync(`xdotool key Shift+Tab`)//13
+        execSync(`xdotool key Shift+Tab`)
+        execSync(`xdotool key Shift+Tab`)//15
 
         execSync(`xdotool key Up`)
         execSync(`xdotool key Up`)
