@@ -1354,10 +1354,6 @@ async function handleAction (actionData) {
 
         execSync(`xdotool key Down`)
         execSync(`xdotool key Down`)
-
-        execSync(`xdotool key Shift+Tab`)
-
-        execSync(`xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'IRIDIUM_SETTING') {
         execSync(`xdotool key Tab && sleep 1`)
