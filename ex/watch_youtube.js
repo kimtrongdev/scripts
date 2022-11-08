@@ -533,7 +533,7 @@ async function afterWatchingVideo(action,finishVideo){
                 action.viewed_ads = false
                 await setActionData(action)
                 if (action.os_vm == 'win') {
-                    let videos = document.querySelectorAll('ytd-playlist-panel-video-renderer #thumbnail #img')
+                    let videos = document.querySelectorAll('ytd-playlist-panel-video-renderer:not([selected]) #thumbnail #img')
                     let videoPosRd = videos.item(randomRanger(0, videos.length - 1))
                     if (videoPosRd) {
                         await userClick(action.pid, 'random video', videoPosRd)
