@@ -18,7 +18,7 @@ async function regMail(action) {
       await reportAccount(action)
 
       // disable gg GA
-      await goToLocation(action.pid, 'https://ads.google.com/home/')
+      await goToLocation(action.pid, 'https://www.ads.google.com/home/')
 
       //await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
     } else if (url.indexOf('accounts.google.com/signin/v2/identifier') > -1) {
@@ -106,7 +106,7 @@ async function regMail(action) {
       if (document.querySelectorAll('.in-progress-button-container button').length == 3) {
         await userClick(action.pid, '.in-progress-button-container button')
       } else {
-        await goToLocation(action.pid, 'https://ads.google.com/home/')
+        await goToLocation(action.pid, 'https://www.ads.google.com/home/')
       }
     }
     else if (url.indexOf('ads.google.com/home') > -1) {
@@ -212,7 +212,7 @@ async function regMail(action) {
       url.indexOf('ads.google.com/aw/campaigns') > -1 ||
       url.indexOf('ads.google.com/aw/overview') > -1
     ) {
-      await goToLocation(action.pid, 'ads.google.com/aw/campaigns/new')
+      await goToLocation(action.pid, 'https://www.ads.google.com/aw/campaigns/new')
     }
     else if (url.indexOf('google.com/adsense/signup/create') > -1) {
       await userClick(action.pid, '.mdc-checkbox__native-control')
@@ -337,7 +337,7 @@ async function regMail(action) {
       await userClick(action.pid, '#view_container div[data-secondary-action-label] button')
 
     } else {
-      await goToLocation(action.pid, 'ads.google.com/aw/campaigns/new')
+      await goToLocation(action.pid, 'https://www.ads.google.com/aw/campaigns/new')
     }
   } catch (error) {
     console.log(error);
