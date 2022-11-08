@@ -225,7 +225,13 @@ async function regMail(action) {
       url.indexOf('ads.google.com/aw/campaigns') > -1 ||
       url.indexOf('ads.google.com/aw/overview') > -1
     ) {
-      await goToLocation(action.pid, 'https://www.ads.google.com/aw/campaigns/new')
+      if (document.querySelector('.explore-campaign-button')) {
+        await userClick(action.pid, '.explore-campaign-button')
+      } else if (document.querySelector('.overview-extended-fab-menu')) {
+        await userClick(action.pid, '.overview-extended-fab-menu')
+      }else {
+        await goToLocation(action.pid, 'https://www.ads.google.com/aw/campaigns/new')
+      }
     }
     else if (url.indexOf('google.com/adsense/signup/create') > -1) {
       await userClick(action.pid, '.mdc-checkbox__native-control')
