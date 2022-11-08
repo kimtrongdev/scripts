@@ -1120,7 +1120,6 @@ async function CommentYoutubeVideo(pid, msg = '') {
             return
         }
 
-        await userScrollTo(pid, "#placeholder-area")
         await userClick(pid, "#placeholder-area")
         await sleep(1000)
 
