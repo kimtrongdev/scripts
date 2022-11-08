@@ -11,7 +11,12 @@ async function regMail(action) {
       await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
     }
     else if (url.indexOf('google.com/search?q') > -1) {
-      await goToLocation(action.pid, 'https://www.ads.google.com/home/')
+      let site = getElementContainsInnerText('cite', 'ads.google.com')
+      if (site) {
+        await userClick(action.pid, '', site)
+      } else {
+        await goToLocation(action.pid, 'https://www.ads.google.com/home/')
+      }
     }
     else if (url.indexOf('mail.google.com/mail') > -1) {
       // success
@@ -20,10 +25,8 @@ async function regMail(action) {
       await setActionData(action)
       await reportAccount(action)
 
-      // disable gg GA
-      await goToLocation(action.pid, 'https://www.google.com/search?q=test')
+      await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
       //await goToLocation(action.pid, 'https://www.ads.google.com/home/')
-
       //await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
     } else if (url.indexOf('accounts.google.com/signin/v2/identifier') > -1) {
       // failed
@@ -113,7 +116,7 @@ async function regMail(action) {
         await goToLocation(action.pid, 'https://www.ads.google.com/home/')
       }
     }
-    else if (url.indexOf('ads.google.com/home') > -1) {
+    else if (url.indexOf('ads.google.com/home') > -1 || url.indexOf('ads.google.com/intl') > -1) {
       if (document.querySelector('a[gtm-id="home-startnow-hero"]')) {
         await userClick(action.pid, 'a[gtm-id="home-startnow-hero"]')
       } else {
@@ -141,9 +144,13 @@ async function regMail(action) {
         await sleep(5000)
 
         if (document.querySelector('expert-view-wrapper communications-opt-in .opt-in-title')) {
-          await userClick(action.pid, 'expert-view-wrapper communications-opt-in material-radio-group material-radio[tabindex="-1"]')
-          let secondOpt = document.querySelectorAll('expert-view-wrapper communications-opt-in material-radio-group material-radio[tabindex="-1"]').item(1)
-          await userClick(action.pid, 'secondOpt', secondOpt)
+          try {
+            await userClick(action.pid, 'expert-view-wrapper communications-opt-in material-radio-group material-radio[tabindex="-1"]')
+            let secondOpt = document.querySelectorAll('expert-view-wrapper communications-opt-in material-radio-group material-radio[tabindex="-1"]').item(1)
+            await userClick(action.pid, 'secondOpt', secondOpt)
+          } catch (error) {
+            
+          }
 
           await userClick(action.pid, 'expert-view material-button')
         } else {
