@@ -736,12 +736,14 @@ async function processBrowserFeature(action){
 async function processPlaylistPage(action){
     if (document.querySelector('.shuffle-button')) {
         if (document.querySelectorAll('.shuffle-button').length > 1) {
-            if (!elementInViewport('.shuffle-button')) {
-                let btn = document.querySelectorAll('.shuffle-button').item(1)
-                await userClick(action.pid, '.shuffle-button', btn)
-            } else {
-                await userClick(action.pid, '.shuffle-button')
-            }
+            let btn = document.querySelectorAll('.shuffle-button').item(1)
+            await userClick(action.pid, '.shuffle-button', btn)
+            // if (!elementInViewport('.shuffle-button')) {
+            //     let btn = document.querySelectorAll('.shuffle-button').item(1)
+            //     await userClick(action.pid, '.shuffle-button', btn)
+            // } else {
+            //     await userClick(action.pid, '.shuffle-button')
+            // }
         } else {
             await userClick(action.pid, '.shuffle-button')
         }
