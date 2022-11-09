@@ -739,6 +739,8 @@ async function processPlaylistPage(action){
             if (!elementInViewport('.shuffle-button')) {
                 let btn = document.querySelectorAll('.shuffle-button').item(1)
                 await userClick(action.pid, '.shuffle-button', btn)
+            } else {
+                await userClick(action.pid, '.shuffle-button')
             }
         } else {
             await userClick(action.pid, '.shuffle-button')
