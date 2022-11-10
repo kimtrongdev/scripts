@@ -1207,7 +1207,7 @@ function initExpress() {
             });
             request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
         }
-        else if (req.query.id == 'login' || req.query.id == 'reg_user' || req.query.id == 'check_mail_1') {
+        else if (req.query.id == 'login' || req.query.id == 'reg_user' || req.query.id == 'check_mail_1'|| req.query.id == 'recovery_mail') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
                 if (req.query.id == 'reg_user') {

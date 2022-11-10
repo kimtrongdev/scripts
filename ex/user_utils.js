@@ -123,6 +123,9 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'check_mail_1' || action.id == 'recovery_mail') {
+        if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
+            await handleBraveSetting(action)
+        }
         await goToLocation(action.pid, 'accounts.google.com')
     }
     else if (action.id == 'reg_account') {
