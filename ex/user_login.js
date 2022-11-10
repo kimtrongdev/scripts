@@ -89,7 +89,38 @@ async function userLogin(action) {
             // }
         }
 
-        if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1 && action.order_id) {
+        if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/confirmation') > -1) {
+            if (document.querySelector('#view_container textarea')) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'recovery_ok')
+                return
+            }
+        }
+        else if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/contactaddress') > -1) {
+            if (document.querySelector('#view_container textarea')) {
+                await userTypeEnter(action.pid, '#view_container input', action.contact_email)
+                return
+            }
+        }
+        else if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/additionalinformation') > -1) {
+            if (document.querySelector('#view_container textarea')) {
+                await userTypeEnter(action.pid, '#view_container textarea', action.comment)
+                return
+            }
+        }
+        else if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/reviewconsent') > -1) {
+            if (document.querySelector('#view_container button')) {
+                await userClick(action.pid, '#view_container button')
+                return
+            }
+        }
+        else if (action.id == 'recovery_mail' && url.indexOf('/disabled/explanation') > -1) {
+            // 
+            if (document.querySelector('#view_container button')) {
+                await userClick(action.pid, '#view_container button')
+                return
+            }
+        }
+        else if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1 && action.order_id) {
             //enter code
             let phoneRs = await getPhoneCode(action.order_id, action.api_name)
             console.log('getPhoneCode',phoneRs);
