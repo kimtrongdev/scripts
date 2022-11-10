@@ -90,14 +90,12 @@ async function userLogin(action) {
         }
 
         if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/confirmation') > -1) {
-            if (document.querySelector('#view_container textarea')) {
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'recovery_ok')
-                return
-            }
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'recovery_ok')
+            return
         }
         else if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/contactaddress') > -1) {
-            if (document.querySelector('#view_container textarea')) {
-                await userTypeEnter(action.pid, '#view_container input', action.contact_email)
+            if (document.querySelector('#view_container input')) {
+                await userTypeEnter(action.pid, '#view_container input', action.contact_mail)
                 return
             }
         }
