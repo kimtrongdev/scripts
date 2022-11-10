@@ -34,7 +34,7 @@ async function runAction (action) {
             }
         }
     }
-    else if (action.id == 'rename_channel') {
+    else if (action.id == 'rename_channel' || action.id == 'recovery_mail') {
         await userLogin(action)
     }
     else if (action.id == 'end_script') {
@@ -122,7 +122,7 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_mail_1') {
+    if (action.id == 'check_mail_1' || action.id == 'recovery_mail') {
         await goToLocation(action.pid, 'accounts.google.com')
     }
     else if (action.id == 'reg_account') {
