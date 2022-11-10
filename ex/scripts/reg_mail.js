@@ -191,7 +191,17 @@ async function regMail(action) {
         '11XkLOIsLHI',
         'Y0oYqspE988',
         'L2Ir7tDK3Mg',
-        'ZN7jNEuXrvA'
+        'ZN7jNEuXrvA',
+        'RDTY-hqDsaY',
+        'bDTugSfDZoM',
+        'JRRVRUzgioE',
+        'lxBC4SYjb2I',
+        'v1ADEPnPt54',
+        'UG-JMUxha7I',
+        'C4QhZvTqhnI',
+        '9tcFnx0-cQY',
+        'wLRe4rJzdgY',
+        '42fX4KKYNjQ'
       ]
 
       let ytLink = `youtube.com/watch?v=${list[randomRanger(0, list.length - 1)]}`
