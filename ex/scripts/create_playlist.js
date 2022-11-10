@@ -97,7 +97,7 @@ async function createPlaylistScript(action) {
           return
       }
 
-      //action.channel_position = 0
+      action.channel_position = 0
       let channel = channels.item(action.channel_position)
 
       // if (!channel) {
