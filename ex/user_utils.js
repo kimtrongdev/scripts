@@ -819,6 +819,27 @@ async function handleSelectExOption (action) {
     }
 }
 
+async function getRandomUSName () {
+    let rs = await fetch('https://randomuser.me/api/').then(response => {
+        return response.json()
+    }).then(response => {
+        let name = response.data.results[0].name
+        let firstName = name.first
+        let lastName = name.last
+        return {
+            last_name: lastName,
+            first_name: firstName,
+        }
+    }).catch(error => {
+        return {
+            last_name: makeName(5),
+            first_name: makeName(5),
+        }
+    })
+
+    return rs
+}
+
 async function getRandomVietnamesName () {
     let rs = await fetch('https://story-shack-cdn-v2.glitch.me/generators/vietnamese-name-generator/male').then(response => {
         return response.json()

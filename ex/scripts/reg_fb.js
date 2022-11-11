@@ -9,7 +9,7 @@ async function reqFacebook(action) {
       await reportAccount(action)
     }
     else if (url.indexOf('https://www.facebook.com/reg') > -1) {
-      let name = await getRandomVietnamesName()
+      let name = await getRandomUSName()
       const password = makeid(10)
 
       await userType(action.pid,'#fullname_field input[name="firstname"]', name.first_name)
