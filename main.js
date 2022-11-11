@@ -616,7 +616,21 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
-        if (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') {
+        if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
+            action = await request_api.getProfileForRegChannel(pid)
+            if (action) {
+                action.pid = utils.randomRanger(100, 400)
+                ids.push(action.pid)
+                ids = ids.map(String)
+                ids = [...new Set(ids)]
+                pid = action.pid
+                isNewProxy = true
+            } else {
+                console.log('Not found reg user data.');
+                return
+            }
+        }
+        else if (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') {
             let newProfile = await request_api.getNewProfile()
             utils.log('newProfile: ', newProfile)
             if (!newProfile.err && newProfile.profile) {
