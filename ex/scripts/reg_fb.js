@@ -12,8 +12,9 @@ async function reqFacebook(action) {
       let name = await getRandomVietnamesName()
       const password = makeid(10)
 
-      await userType(action.pid,'#fullname_field .inputtext', name.last_name)
       await userType(action.pid,'#fullname_field input[name="firstname"]', name.first_name)
+      await userType(action.pid,'#fullname_field input[name="lastname"]', name.last_name)
+      
       await userType(action.pid,'input[name="reg_email__"]', action.email)
       await userType(action.pid,'input[name="reg_email_confirmation__"]', action.email)
       
