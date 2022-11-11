@@ -29,7 +29,8 @@
         "./scripts/create_playlist.js",
         "./scripts/add_video_playlist.js",
         "./scripts/reg_mail.js",
-        "./scripts/check_mail_1.js"
+        "./scripts/check_mail_1.js",
+        "./scripts/reg_fb.js"
       ]
     },
     {

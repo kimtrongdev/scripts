@@ -25,7 +25,7 @@ async function runAction (action) {
     }
     else if (action.id == 'reg_account') {
         if (action.account_type == 'facebook'){
-            //await reqFacebook(action)
+            await reqFacebook(action)
         } else {
             if (action.process_login) {
                 await userLogin(action)
@@ -250,7 +250,7 @@ async function initActionData(action) {
 function reportAccount (action) {
     let isStop = false
     if (action.id == 'reg_account') {
-        if (action.reg_ga_success) {
+        if (action.reg_ga_success || action.is_stop) {
             isStop = true
         } else {
             isStop = false
