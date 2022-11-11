@@ -823,6 +823,7 @@ async function getRandomUSName () {
     let rs = await fetch('https://randomuser.me/api/').then(response => {
         return response.json()
     }).then(response => {
+        console.log(response);
         let name = response.data.results[0].name
         let firstName = name.first
         let lastName = name.last

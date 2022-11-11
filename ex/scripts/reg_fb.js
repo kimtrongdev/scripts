@@ -12,6 +12,11 @@ async function reqFacebook(action) {
       let name = await getRandomUSName()
       const password = makeid(10)
 
+      if (document.querySelector('button[data-cookiebanner="accept_button"]')) {
+        await userClick(action.pid, 'button[data-cookiebanner="accept_button"]')
+        await sleep(3000)
+      }
+
       await userType(action.pid,'#fullname_field input[name="firstname"]', name.first_name)
       await userType(action.pid,'#fullname_field input[name="lastname"]', name.last_name)
       
