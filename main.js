@@ -1139,7 +1139,7 @@ function initExpress() {
 
     app.get('/report', async (req, res) => {
         if (isPauseAction) {
-            res.send({ rs: 'ok' })
+            //res.send({ rs: 'ok' })
             return
         }
         utils.log(req.query)
