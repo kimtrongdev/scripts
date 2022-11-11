@@ -9,7 +9,13 @@ async function reqFacebook(action) {
       await reportAccount(action)
     }
     else if (url.indexOf('https://www.facebook.com/reg') > -1) {
-      let name = await getRandomUSName()
+      let name = {}
+      if (action.zone_name == 'vn') {
+        name = await getRandomVietnamesName()
+      } else {
+        name = await getRandomUSName()
+      }
+      
       const password = makeid(10)
 
       if (document.querySelector('button[data-cookiebanner="accept_button"]')) {
