@@ -210,13 +210,16 @@ async function initActionData(action) {
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
             await goToLocation(action.pid, 'accounts.google.com')
         } else {
-            await handleSelectExOption(action)
-            if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
-                await handleBraveSetting(action)
-            } else {
-                await goToLocation(action.pid,'https://accounts.google.com')
-                await sleep(15000)
-            }
+            // await handleSelectExOption(action)
+            // if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
+            //     await handleBraveSetting(action)
+            // } else {
+            //     await goToLocation(action.pid,'https://accounts.google.com')
+            //     await sleep(15000)
+            // }
+
+            await goToLocation(action.pid,'https://accounts.google.com')
+            await sleep(15000)
         }
     }
     else if(action.id == 'logout'){

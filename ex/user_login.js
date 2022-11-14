@@ -36,7 +36,7 @@ async function userLogin(action) {
                 if (btnRejectAll) {
                     await userClick(action.pid, 'btnRejectAll', btnRejectAll)
                 } else {
-                    await goToLocation(action.pid,'accounts.google.com')
+                    await goToLocation(action.pid,'https://accounts.google.com')
                     await sleep(60000)
                 }
                 return
@@ -69,7 +69,7 @@ async function userLogin(action) {
 
             let signinBtn = document.querySelector('ytd-button-renderer > a[href^="https://accounts.google.com/ServiceLogin"]')
             if (signinBtn) {
-                await goToLocation(action.pid,'accounts.google.com')
+                await goToLocation(action.pid,'https://accounts.google.com')
                 await sleep(60000)
             }
 
@@ -176,7 +176,7 @@ async function userLogin(action) {
             return
         }
         else if (url.indexOf('youtube.com/oops') > -1) {
-            await goToLocation(action.pid, 'youtube.com?skip_registered_account_check=true')
+            await goToLocation(action.pid, 'https://youtube.com?skip_registered_account_check=true')
             await sleep(15000)
         }
         else if (url.indexOf('consent.youtube.com') > -1) {
@@ -222,7 +222,7 @@ async function userLogin(action) {
             if(action.backup && !action.retry_backup){
                 action.retry_backup = true
                 await setActionData(action)
-                await goToLocation(action.pid,'accounts.google.com')
+                await goToLocation(action.pid,'https://accounts.google.com')
                 return
             }
             console.log('enter email')
@@ -315,7 +315,7 @@ async function userLogin(action) {
         // }
         else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
-            await goToLocation(action.pid,'youtube.com/feed/history')
+            await goToLocation(action.pid,'https://youtube.com/feed/history')
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
@@ -343,7 +343,7 @@ async function userLogin(action) {
             if (action.id == 'reg_user') {
                 await handleLoginSuccess(action)
             } else {
-                await goToLocation(action.pid,'myactivity.google.com/product/youtube')
+                await goToLocation(action.pid,'https://myactivity.google.com/product/youtube')
             }
             
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
@@ -446,7 +446,7 @@ async function beforeLoginSuccess (action) {
     if (action.is_rename_channel_type) {
         action.is_start_handle_rename_channel = true
         await setActionData(action)
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid,'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.is_ver_mail_type) {
         let msg = action.order_id ? 'verify_success':'account_ok'
@@ -459,21 +459,21 @@ async function beforeLoginSuccess (action) {
         //     await goToLocation(action.pid,'myaccount.google.com/security')
         // }
     } else {
-        await goToLocation(action.pid,'youtube.com/feed/history')
+        await goToLocation(action.pid,'https://www.youtube.com/feed/history')
     }
     await sleep(60000)
 
     if (isNonUser) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     } else {
-        await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'youtube.com/create_channel')
+        await goToLocation(action.pid, action.mobile ? 'https://m.youtube.com/feed/library' : 'https://www.youtube.com/create_channel')
         await sleep(60000)
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     }
 }
 
 async function handleLoginSuccess (action) {
-    await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+    await goToLocation(action.pid,'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
 }
 
 async function checkLogin(action) {
@@ -488,7 +488,7 @@ async function checkLogin(action) {
         if (!action.check_login) {
             action.check_login = true
             await setActionData(action)
-            await goToLocation(action.pid, 'accounts.google.com')
+            await goToLocation(action.pid, 'https://accounts.google.com')
         }
         else {
             return
@@ -661,10 +661,10 @@ async function updateInfo(action){
     finally{
         if(url.indexOf('birthday') > -1){
             // await updateActionStatus(action.pid,action.id,LOGIN_STATUS.SUCCESS)
-            await goToLocation(action.pid, 'youtube.com/create_channel')
+            await goToLocation(action.pid, 'https://www.youtube.com/create_channel')
         }
         else{
-            await goToLocation(action.pid,'myaccount.google.com/birthday')
+            await goToLocation(action.pid,'https://myaccount.google.com/birthday')
         }
     }
 }
@@ -785,7 +785,7 @@ async function changePassword(action){
             await sleep(randomRanger(3,5)*1000)
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS,'RECOVERYMAIL_'+action.newRecoveryMail,false)
             await sleep(randomRanger(3,5)*1000)
-            await goToLocation(action.pid, 'myaccount.google.com/security')
+            await goToLocation(action.pid, 'https://myaccount.google.com/security')
             return
         }
         else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1) {
@@ -812,7 +812,7 @@ async function userConfirm(action) {
                 leaveFamilyGroup.click()
             }
             else{
-                await goToLocation(action.pid,'gmail.com')
+                await goToLocation(action.pid,'https://gmail.com')
             }
             
         }
