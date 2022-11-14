@@ -326,7 +326,7 @@ async function startChromeAction(action, _browser) {
 
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
-    let screenWidth = 1100//widthSizes[positionSize]
+    let screenWidth = 1400//widthSizes[positionSize]
     let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
@@ -340,14 +340,14 @@ async function startChromeAction(action, _browser) {
     let windowSize = ` --window-size="${screenWidth},${screenHeight}"` //(IS_SHOW_UI || action.isNew) ? ` --window-size="${screenWidth},${screenHeight}"` : ' --window-size="1920,1040"'
     //debug
     if (_browser == 'brave-browser' && action.id == 'reg_account' && !IS_SHOW_UI) {
-        screenWidth = 1100
+        screenWidth = 1400
         windowSize = ` --window-size="${screenWidth},${screenHeight}"`
     }
     else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
-        screenWidth = 1100
+        screenWidth = 1400
     } else {
-        windowSize = ' --start-maximized'
-        windowPosition = ''
+        //windowSize = ' --start-maximized'
+        //windowPosition = ''
     }
 
     // handle proxy
