@@ -1384,7 +1384,8 @@ async function handleAction (actionData) {
         execSync(`xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'CLOSE_BROWSER') {
-        execSync(`xdotool key Control_L+w && sleep 1`)
+        //execSync(`xdotool key Control_L+w && sleep 1`)
+        execSync(`pkill -f "profiles/${actionData.pid}"`)
     }
     else if (actionData.action == 'TABS') {
         let totalClick = Number(actionData.x)

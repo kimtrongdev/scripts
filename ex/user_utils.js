@@ -465,13 +465,54 @@ async function getFirstVideo(pllId){
 //     }))
 // }
 
+function simpleClick(x,y){
+    var ev = document.createEvent("MouseEvent");
+    var el = document.elementFromPoint(x,y);
+    ev.initMouseEvent(
+        "click",
+        true /* bubble */, true /* cancelable */,
+        window, null,
+        x, y, 0, 0, /* coordinates */
+        false, false, false, false, /* modifier keys */
+        0 /*left*/, null
+    );
+    el.dispatchEvent(ev);
+}
+
+function simpleSendKey(keyCode) {
+    const ke = new KeyboardEvent('keydown', {
+        bubbles: true, cancelable: true, keyCode: keyCode
+    });
+    document.body.dispatchEvent(ke);
+}
+
 function updateUserInput(pid, action, x, y, sx, sy, str, selector){
     console.log('updateUserInput',pid,action)
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
-        data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
-        resolve(response);
-    }))
+
+    switch (action) {
+        case 'CLICK':
+            simpleClick(x, y)
+            break;
+        case 'TYPE':
+            document.querySelector(selector).value = str
+            break;
+        case 'TYPE_ENTER':
+            document.querySelector(selector).value = str
+            break;
+        case 'GO_ADDRESS':
+            location.replace(str)
+            break;
+        case '':
+        
+            break;
+        default:
+            return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
+                data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
+                resolve(response);
+            }))
+    }
 }
+
 function elementInViewport (el) {
     if (typeof el == 'string') {
         el = document.querySelector(el)
@@ -487,14 +528,14 @@ function elementInViewport (el) {
 
 function getElementPosition(el,iframe){
     if(el){
-        let screenX = window.screen.width - window.screen.availWidth
-        let screenY = window.screen.height - window.screen.availHeight
+        // let screenX = window.screen.width - window.screen.availWidth
+        // let screenY = window.screen.height - window.screen.availHeight
         let pos = el.getBoundingClientRect()
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
-        let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
-        let menuLeftWith = (window.outerWidth - window.innerWidth)
-        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide-zoom*window.innerWidth)/2:0) + widthCustom
-        let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
+        //let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
+        //let menuLeftWith = (window.outerWidth - window.innerWidth)
+        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) //+ screenX + menuLeftWith + (windowWide?(windowWide-zoom*window.innerWidth)/2:0) + widthCustom
+        let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  //+ screenY + menuBarHeight + heightCustom
         let scrollX = window.scrollX
         let scrollY = window.scrollY
         console.log({x: x, y: y, scrollX: scrollX, scrollY: scrollY})
