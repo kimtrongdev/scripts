@@ -214,7 +214,7 @@ async function initActionData(action) {
             if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
                 await handleBraveSetting(action)
             } else {
-                await goToLocation(action.pid,'accounts.google.com')
+                await goToLocation(action.pid,'https://accounts.google.com')
                 await sleep(15000)
             }
         }
@@ -242,7 +242,7 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://youtube.com//')
         }
     }
 }
