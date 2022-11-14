@@ -500,7 +500,7 @@ function updateUserInput(pid, action, x, y, sx, sy, str, selector){
             document.querySelector(selector).value = str
             break;
         case 'GO_ADDRESS':
-            location.replace(str)
+            window.location.assign(str)
             break;
         case '':
         

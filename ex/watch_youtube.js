@@ -31,7 +31,7 @@ async function userWatch(action){
                 if (btnRejectAll) {
                     await userClick(action.pid, 'btnRejectAll', btnRejectAll)
                 } else {
-                    await goToLocation(action.pid,'accounts.google.com')
+                    await goToLocation(action.pid,'https://accounts.google.com')
                     await sleep(60000)
                 }
                 return
@@ -92,7 +92,7 @@ async function userWatch(action){
             await createChannel(action)
         }
         else if(url.indexOf('https://myaccount.google.com/') == 0){
-            await goToLocation(action.pid,'youtube.com//')
+            await goToLocation(action.pid,'https://www.youtube.com//')
         }
         else if(url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/ServiceLogin') > -1){
             throw 'NOT_LOGIN'
@@ -114,7 +114,7 @@ async function userWatch(action){
             action.retry = undefined
             action.filter = action.filter?action.filter-1:undefined
             await setActionData(action)
-            await goToLocation(action.pid,'youtube.com//')
+            await goToLocation(action.pid,'https://www.youtube.com//')
             await sleep(2000)
         }
         else if(e.toString()=='VIDEO_NOT_FOUND'){
@@ -127,14 +127,14 @@ async function userWatch(action){
             action.video = action.searchList[randomRanger(0,action.searchList.length-1)].trim()
             action.filter = undefined
             await setActionData(action)
-            await goToLocation(action.pid,'youtube.com//')
+            await goToLocation(action.pid,'https://www.youtube.com//')
             await sleep(2000)
         }
         else{
             action.retry = true
             action.filter = undefined
             await setActionData(action)
-            await goToLocation(action.pid,'youtube.com//')
+            await goToLocation(action.pid,'https://www.youtube.com//')
             await sleep(2000)
         }
     }
@@ -144,7 +144,7 @@ async function processHomePage(action){
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
     if ((action.channel_position == -1 || action.fisrtStart) && !isNonUser) {
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid,'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         return 
     }
 
@@ -305,7 +305,7 @@ async function preWatchingVideo(action){
                 await userClick(action.pid,'#container a#logo')
             }
             else{
-                await goToLocation(action.pid,'youtube.com//')
+                await goToLocation(action.pid,'https://www.youtube.com//')
             }
             return
         }
@@ -420,7 +420,7 @@ async function watchingVideo(action){
                 action.playlist_index = 1
                 action.viewed_ads = false
                 await setActionData(action)
-                await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings') 
+                await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings') 
                 return
             } else {
                 await reportScript(action, false) 
@@ -510,7 +510,7 @@ async function afterWatchingVideo(action,finishVideo){
             await setActionData(action)
             await goToLocation(action.pid,'https://www.youtube.com/playlist?list='+action.playlist_url)
            } else {
-            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
            }
 
            //action._total_loop_find_ads += 1
