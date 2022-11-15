@@ -4,7 +4,33 @@ async function regMail(action) {
     let url = window.location.toString()
     await reportLive(action.pid)
 
-    if (url.indexOf('google.com/adsense/start') > -1) {
+    const linkAfterSuccess = 'https://www.google.com/search?q=google ads home'
+
+    if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+      await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
+      await sleep(5000)
+      let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
+      if (switchChannelOpt) {
+          await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
+          
+          await sleep(5000)
+          let createChannelBtn = document.querySelector('#create-channel-button')
+          if (createChannelBtn && elementInViewport(createChannelBtn)){
+              if (createChannelBtn) {
+                await userClick(action.pid, 'createChannelBtn', createChannelBtn)
+                await sleep(10000)
+              }
+          } 
+      }
+
+      await goToLocation(action.pid, linkAfterSuccess)
+    }
+    else if (url.indexOf('youtube.com/channel') > -1) {
+      await goToLocation(action.pid, linkAfterSuccess)
+    }
+    else if (url.indexOf('google.com/adsense/start') > -1) {
       await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'underage')
     }
     else if (url.indexOf('accounts.google.com/ServiceLogin/signinchooser') > -1) {
@@ -25,7 +51,8 @@ async function regMail(action) {
       await setActionData(action)
       await reportAccount(action)
 
-      await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
+      await goToLocation(action.pid, 'https://www.youtube.com')
+      //await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
       //await goToLocation(action.pid, 'https://www.ads.google.com/home/')
       //await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
     } else if (url.indexOf('accounts.google.com/signin/v2/identifier') > -1) {
