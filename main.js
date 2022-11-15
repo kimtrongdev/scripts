@@ -402,7 +402,7 @@ async function startChromeAction(action, _browser) {
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {        
-        exec(`start chrome${userProxy} --lang=en-US,en --start-maximized${userDataDir} --load-extension="${exs}" "${startPage}"`)
+        exec(`${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
         closeChrome(action.pid)
