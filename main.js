@@ -216,9 +216,9 @@ async function profileRunningManage() {
                 });
 
                 utils.log('ids--', ids);
-                if (runnings.some(running => running.action == 'login')) {
-                    return
-                }
+                // if (runnings.some(running => running.action == 'login')) {
+                //     return
+                // }
                 if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
