@@ -346,8 +346,10 @@ async function startChromeAction(action, _browser) {
     else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
         screenWidth = 1400
     } else {
-        //windowSize = ' --start-maximized'
-        //windowPosition = ''
+        if (IS_SHOW_UI) {
+            windowSize = ' --start-maximized'
+            windowPosition = ''
+        }
     }
 
     // handle proxy
