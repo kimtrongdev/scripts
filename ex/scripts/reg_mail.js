@@ -211,24 +211,23 @@ async function regMail(action) {
       await userType(action.pid, 'bid-input mask-money-input', '333')
       
       let list = [
-        '7ICKkagL3xA',
-        '4BXHjfg7XPU',
-        'nxsLkEPYR-4',
-        '8VAJGGwL5t8',
-        '11XkLOIsLHI',
-        'Y0oYqspE988',
-        'L2Ir7tDK3Mg',
-        'ZN7jNEuXrvA',
-        'RDTY-hqDsaY',
-        'bDTugSfDZoM',
-        'JRRVRUzgioE',
-        'lxBC4SYjb2I',
-        'v1ADEPnPt54',
-        'UG-JMUxha7I',
-        'C4QhZvTqhnI',
-        '9tcFnx0-cQY',
-        'wLRe4rJzdgY',
-        '42fX4KKYNjQ'
+        "cD5NV99jeOk","iOZY9W3R5fs","0mGSIYCpw8s","KDvXlp1-dlw","YaS4Bi-nvms","u6ni94IGxHc",
+        "U1K4pY7GFxM","UhGXJypxG1s","ryTYNC9XMPc","KA1jaXl5wn4","s0pQpCLBhi8","KjUA-Oopb6A",
+        "NOtW0J-fJGQ","zgnsSXYAdDs","D6BSWq4ETNY","vJ7p7_i-sTg","kvxHOB61HeM","ADK-8d9FvFg",
+        "Xyvka3GRH98","jG4YLAUoUgw","gSlLgvoflzY","cbs0E_Lj2_g","nYRyGKCUK0o","qIgeA6QxQaA",
+        "FW5HlYx9OaI","jg3oaDTMqEQ","GeDAaHqYMec","l9yhMMoO5z8","CarfrR5T3tg","hHGYFB_hAKA",
+        "VOLQv4xQ2qM","HF-ZBRvmPds","sFlTLUI_oVk","qNksHciOaqM","R06n3TudjYI","xAVclaKB5WE",
+        "PKg8FA5PkuA","ysrkvwSIb2g","9jUxX70Q0SQ","JOsClXEd6mI","0jv3ppgZjAo","e5NeNm34FfI",
+        "nnZ0vlvRP3g","gPjbIkoYhiU","uTzoV6QC5m8","_ghHvTJNDMI","hOdcppJW2XY","wkf_Bucd-kg",
+        "IRpsu54X3qw","LFlKCOn1hA0","jdJsKaZnZMI","us7RTWlWesg","dAO_IJtD6wo","Lo3ja6DYntE",
+        "Of6HE3BVDZs","c9CQFXA2eg4","xAdcoaPrIlg","2NiVDjDKaR4","FJ3Y93ITAtM","B8KXEPd_bPA",
+        "Kkf0llk3Dd8","j7Di5Q7iU18","jx8fFdjrsQY","JYqoa7muBPs","kl3YdcxW0Zc","ipVAOHEnO6o",
+        "omqQAIIbBvY","L8YkpCPnfEw","fJ5hs_I68Kc","WAE6OhpH7y0","njX5QfTv3Gg","cdK6v1v5ajQ",
+        "5j3tGBLq5GI","lary4todNxU","fyKjytHL7yo","ldkIVhO6Cng","_kuQzceTQZA","XOnglZExqhk",
+        "77CZtgIVZRs","oYAAdDjhHqE","xtcTOLQuUHM","mTso6B9S4qQ","XUy0ARkG3Zg","0JNB6DMg428",
+        "7IX8nj6GNrI","pmWyG3UKehs","zgyDBKUAwT0","3_WquYnXHc8","H1FBhzADjwA","du4KY9uj_Jg",
+        "7zPQp8oktK8","GE9wM1K23Aw","qsL3P5Im0zA","sr2Pf8FPLKQ","emELyBlfnHE","4d1lY5OXsz0",
+        "AwQWNDxZrbk"
       ]
 
       let ytLink = `youtube.com/watch?v=${list[randomRanger(0, list.length - 1)]}`
