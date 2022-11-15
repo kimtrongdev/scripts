@@ -1667,7 +1667,7 @@ function runAutoRebootVm () {
 function closeChrome(pid) {
     try {
         if (WIN_ENV) {
-            execSync('input CLOSE_CHROME')
+            //execSync('input CLOSE_CHROME')
         }
         else {
             if (pid) {

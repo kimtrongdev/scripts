@@ -62,23 +62,24 @@ async function userScrollTo(pid,selector,element){
     console.log('userScrollTo',selector)
     let el = element?element:document.querySelector(selector)
     if(el){
-        let menuBarHeight = window.outerHeight - window.innerHeight
-        let x = window.screenX + window.innerWidth*0.5
-        let y = window.screenY + menuBarHeight + window.innerHeight*0.5
-        let pos = el.getBoundingClientRect()
-        if(pos.x > 0 && pos.x < window.innerWidth - pos.width && pos.y > 0 && pos.y < window.innerHeight - pos.height){
-            return
-        }
-        let i = 0
-        while(i < 20){
-            await updateUserInput(pid,'SCROLL',x, y ,0, 0,  pos.y<0?-5:5,selector)
-            pos = el.getBoundingClientRect()
-            console.log(selector,pos)
-            if(pos.x > 0 && pos.x < window.innerWidth - pos.width && pos.y > 0 && pos.y < window.innerHeight - pos.height){
-                return
-            }
-            i++
-        }
+        el.scrollIntoView();
+        // let menuBarHeight = window.outerHeight - window.innerHeight
+        // let x = window.screenX + window.innerWidth*0.5
+        // let y = window.screenY + menuBarHeight + window.innerHeight*0.5
+        // let pos = el.getBoundingClientRect()
+        // if(pos.x > 0 && pos.x < window.innerWidth - pos.width && pos.y > 0 && pos.y < window.innerHeight - pos.height){
+        //     return
+        // }
+        // let i = 0
+        // while(i < 20){
+        //     await updateUserInput(pid,'SCROLL',x, y ,0, 0,  pos.y<0?-5:5,selector)
+        //     pos = el.getBoundingClientRect()
+        //     console.log(selector,pos)
+        //     if(pos.x > 0 && pos.x < window.innerWidth - pos.width && pos.y > 0 && pos.y < window.innerHeight - pos.height){
+        //         return
+        //     }
+        //     i++
+        // }
     }
     else{
         console.log('error',selector,'not found')
@@ -170,7 +171,7 @@ async function nextVideo(pid){
     if (IS_MOBILE) {
        await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]') 
     } else {
-        await updateUserInput(pid,'NEXT_VIDEO')
+       await userClick(pid, '.ytp-next-button')
     }
 }
 

@@ -505,8 +505,9 @@ function updateUserInput(pid, action, x, y, sx, sy, str, selector){
         case 'GO_ADDRESS':
             window.location.assign(str)
             break;
-        case '':
-        
+
+        case 'SCROLL':
+        case 'ESC':
             break;
         default:
             return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
