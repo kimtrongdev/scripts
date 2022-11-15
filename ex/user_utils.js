@@ -510,10 +510,10 @@ function updateUserInput(pid, action, x, y, sx, sy, str, selector){
         case 'ESC':
             break;
         default:
-            return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
-                data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
-                resolve(response);
-            }))
+            // return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
+            //     data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
+            //     resolve(response);
+            // }))
     }
 }
 
