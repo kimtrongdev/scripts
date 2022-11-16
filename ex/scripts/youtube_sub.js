@@ -66,7 +66,7 @@ async function scriptYoutubeSub(action) {
       await createChannelSub(action)
     }
     else if (url.indexOf('https://myaccount.google.com/') == 0) {
-      await goToLocation(action.pid, 'youtube.com//')
+      await goToLocation(action.pid, 'https://www.youtube.com//')
     }
     else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/ServiceLogin') > -1) {
       throw 'NOT_LOGIN'

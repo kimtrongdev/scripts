@@ -194,7 +194,7 @@ async function initActionData(action) {
         await goToLocation(action.pid,'google.com/maps')
     }
     else if (action.id == 'youtube_sub') {
-        await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+        await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
     }
     else if(action.id == 'reg_user'){
         await goToLocation(action.pid, 'accounts.google.com')
