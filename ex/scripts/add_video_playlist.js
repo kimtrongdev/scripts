@@ -31,16 +31,25 @@ async function scriptAddVideoPlaylist(action) {
       
     }
     else if (url.indexOf('youtube.com/playlist') > -1) {
-      try {
-        await sleep(4000)
-        action.data_reported = document.querySelectorAll('#stats yt-formatted-string').item(1).innerText
-        await setActionData(action)
-      } catch (error) {
-        console.log(error);
-      }
+      // try {
+      //   await sleep(4000)
+      //   action.data_reported = document.querySelectorAll('#stats yt-formatted-string').item(1).innerText
+      //   await setActionData(action)
+      // } catch (error) {
+      //   console.log(error);
+      // }
 
-      if (document.querySelector('ytd-alert-with-button-renderer button')) {
-        await userClick(action.pid, 'ytd-alert-with-button-renderer button')
+      if (document.querySelector('a[rel="nofollow"]')) {
+        await userClick(action.pid, 'a[rel="nofollow"]')
+        await sleep(5000)
+
+        let createChannelBtn = document.querySelector('#create-channel-button')
+        if (createChannelBtn && elementInViewport(createChannelBtn)){
+          if (createChannelBtn) {
+            await userClick(action.pid, 'createChannelBtn', createChannelBtn)
+            await sleep(10000)
+          }
+        }
         await sleep(10000)
       }
 
@@ -115,7 +124,7 @@ async function scriptAddVideoPlaylist(action) {
       await userClick(action.pid, 'ytcp-playlist-row img')
     }
     else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1) {
-      let videos = document.querySelectorAll('#items #details #menu svg path[d="M12,16.5c0.83,0,1.5,0.67,1.5,1.5s-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5S11.17,16.5,12,16.5z M10.5,12 c0,0.83,0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5S10.5,11.17,10.5,12z M10.5,6c0,0.83,0.67,1.5,1.5,1.5 s1.5-0.67,1.5-1.5S12.83,4.5,12,4.5S10.5,5.17,10.5,6z"]')
+      let videos = document.querySelectorAll('#contents ytd-rich-grid-media #details ytd-menu-renderer yt-icon-button yt-icon')
       let total = Math.min(videos.length, Number(action.total_added_from_channel) || 5)
       let count = 0
       while (count < total) {
