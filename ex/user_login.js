@@ -235,8 +235,14 @@ async function userLogin(action) {
             console.log('enter password')
             action.relogin = true
             await setActionData(action)
-            await waitForSelector("input[name='Passwd']")
-            await userTypeEnter(action.pid, "input[name='Passwd']", action.password)
+            await sleep(5000)
+
+            if (document.querySelector('input[name="password"]')) {
+                await userTypeEnter(action.pid, 'input[name="password"]', action.password)
+            } else if (document.querySelector('input[name="Passwd"]')) {
+                await userTypeEnter(action.pid, 'input[name="Passwd"]', action.password)
+            }
+
             await userClick(action.pid, 'div[data-secondary-action-label] button')
             await sleep(190000)
         }

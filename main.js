@@ -1,5 +1,6 @@
 const useProxy = true
 let isRunBAT = false
+let hourReseted = null
 let isSystemChecking = false
 const TIME_REPORT = 290000
 const TIME_TO_CHECK_UPDATE = 300000
@@ -191,6 +192,38 @@ async function loadSystemConfig () {
         execSync('pm2 stop all')
     }
 
+    let timeNow = new Date(Date.now())
+    const hour = timeNow.getHours()
+    if (hour % 5 == 0 && hour != hourReseted) {
+        hourReseted = hour
+
+        async function loadSystemPid (browser) {
+            return new Promise((res, rej) => {
+                exec(`tasklist /FI "IMAGENAME eq ${browser}.exe" /fo csv /nh`, (error, stdout, stderr) => {
+                    console.log('stdout------', stdout);
+                    let handlePid = stdout.match(/"[\w|.]*","Console/g)
+                    if (handlePid && handlePid[0]) {
+                        handlePid = handlePid[0]
+                        handlePid = handlePid.replace('"', '')
+                        handlePid = handlePid.replace('","Console', '')
+                        console.log('------- pid after handler', handlePid);
+                        return res(handlePid)
+                    }
+                    res('')
+                })
+            })
+        }
+
+        let pid = await loadSystemPid('brave')
+        if (pid) {
+            try {
+                exec(`nircmd closeprocess /${pid}`)
+            } catch (error) {
+              console.log(error);  
+            }
+        }
+    }
+
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -352,8 +385,13 @@ async function startChromeAction(action, _browser) {
     else if (_browser == 'brave-browser' && action.id == 'login' && !IS_SHOW_UI) {
         screenWidth = 1100
     } else {
-        windowSize = ' --start-maximized'
-        windowPosition = ''
+        if (WIN_ENV) {
+            windowSize = ` --window-size="1200,1000"`
+            windowPosition = ` --window-position=10,10`
+        } else {
+            windowSize = ' --start-maximized'
+            windowPosition = ''
+        }
     }
 
     // handle proxy
