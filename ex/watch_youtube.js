@@ -760,7 +760,12 @@ async function processPlaylistPage(action){
         } else {
             await sleep(5000)
             let videos = document.querySelectorAll('ytd-playlist-video-renderer #thumbnail yt-img-shadow')
-            await userClick(action.pid,'random video from list', videos.item(randomRanger(0, videos.length - 2)))
+            if (videos.length) {
+                await userClick(action.pid,'random video from list', videos.item(randomRanger(0, videos.length - 2)))
+            } else {
+                console.log('retry shufft');
+                await userClick(action.pid, '.shuffle-button')
+            }
         }
     }
 }
