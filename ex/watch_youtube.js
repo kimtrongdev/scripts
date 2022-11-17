@@ -739,6 +739,7 @@ async function processBrowserFeature(action){
 }
 
 async function processPlaylistPage(action){
+    await sleep(5000)
     if (document.querySelector('.shuffle-button')) {
         if (document.querySelectorAll('.shuffle-button').length > 1) {
             //let btn = document.querySelectorAll('.shuffle-button').item(1)
