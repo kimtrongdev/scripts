@@ -139,7 +139,7 @@ function initSettingData (action) {
     }
 
     if (action.browser_name == 'chromium-browser') {
-        heightCustom = 13
+        //heightCustom = 13
         if ((!action.is_show_ui || action.is_show_ui == 'false')) {
            // heightCustom = 23
         } else {
