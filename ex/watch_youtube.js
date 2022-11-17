@@ -758,6 +758,7 @@ async function processPlaylistPage(action){
         if (playBtn) {
             await userClick(action.pid, '', playBtn)
         } else {
+            await sleep(5000)
             let videos = document.querySelectorAll('ytd-playlist-video-renderer #thumbnail yt-img-shadow')
             await userClick(action.pid,'random video from list', videos.item(randomRanger(0, videos.length - 2)))
         }
