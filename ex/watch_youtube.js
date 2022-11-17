@@ -1,3 +1,5 @@
+const { randomRanger } = require("../utils")
+
 const SKIP_ADS_PERCENT = 0.55   //0.7  //0.85
 const LIKE_PERCENT = 0.01
 const COMMENT_PERCENT = 0.0015
@@ -758,7 +760,8 @@ async function processPlaylistPage(action){
         if (playBtn) {
             await userClick(action.pid, '', playBtn)
         } else {
-            await userClick(action.pid,'ytd-playlist-sidebar-primary-info-renderer #thumbnail.ytd-playlist-thumbnail')
+            let videos = document.querySelectorAll('ytd-playlist-video-renderer #thumbnail yt-img-shadow')
+            await userClick(action.pid,'random video from list', videos.item(randomRanger(0, Math.min(videos.length - 2))))
         }
     }
 }
