@@ -481,7 +481,7 @@ async function watchingVideo(action){
         //let sleepTime = interval + reactTime //action.watch_time - i > interval ? interval: action.watch_time - i
         await sleep(interval)
 
-        await updateActionStatus(action.pid, action.id, 1, action.playlist_url+'_'+i, false)
+        //await updateActionStatus(action.pid, action.id, 1, action.playlist_url+'_'+i, false)
         action.lastRequest = Date.now()
         await setActionData(action)
 
