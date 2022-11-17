@@ -483,27 +483,27 @@ async function handleLoginSuccess (action) {
 }
 
 async function checkLogin(action) {
-    await waitForSelector('ytd-topbar-menu-button-renderer,.topbar-menu-button-avatar-button')
-    if (!document.querySelector('#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')) {
-        // recheck
-        let allowBtn = document.querySelector('.dialog-buttons .consent-bump-button-wrapper button')
-        if(allowBtn){
-            await userClick(action.pid,'.dialog-buttons .consent-bump-button-wrapper button',allowBtn)
-            await sleep(5000)
-        }
-        if (!action.check_login) {
-            action.check_login = true
-            await setActionData(action)
-            await goToLocation(action.pid, 'https://accounts.google.com')
-        }
-        else {
-            return
-        }
-    }
-    else if(window.location.toString().split('?')[0] == 'https://m.youtube.com/'){
-        let iconLength = [...document.querySelectorAll('#home-icon path')].length
-        await updateActionStatus(action.pid, 'login', LOGIN_STATUS.SUCCESS,iconLength==3?'PREMIUM':'FREE',false)
-    }
+    // await waitForSelector('ytd-topbar-menu-button-renderer,.topbar-menu-button-avatar-button')
+    // if (!document.querySelector('#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')) {
+    //     // recheck
+    //     let allowBtn = document.querySelector('.dialog-buttons .consent-bump-button-wrapper button')
+    //     if(allowBtn){
+    //         await userClick(action.pid,'.dialog-buttons .consent-bump-button-wrapper button',allowBtn)
+    //         await sleep(5000)
+    //     }
+    //     if (!action.check_login) {
+    //         action.check_login = true
+    //         await setActionData(action)
+    //         await goToLocation(action.pid, 'https://accounts.google.com')
+    //     }
+    //     else {
+    //         return
+    //     }
+    // }
+    // else if(window.location.toString().split('?')[0] == 'https://m.youtube.com/'){
+    //     let iconLength = [...document.querySelectorAll('#home-icon path')].length
+    //     await updateActionStatus(action.pid, 'login', LOGIN_STATUS.SUCCESS,iconLength==3?'PREMIUM':'FREE',false)
+    // }
 }
 
 async function checkPremium(action){
