@@ -1,3 +1,5 @@
+const { sleep } = require("../utils")
+
 const SKIP_ADS_PERCENT = 0.55   //0.7  //0.85
 const LIKE_PERCENT = 0.01
 const COMMENT_PERCENT = 0.0015
@@ -762,10 +764,10 @@ async function processPlaylistPage(action){
             let videos = document.querySelectorAll('ytd-playlist-video-renderer #thumbnail yt-img-shadow')
             if (videos.length) {
                 await userClick(action.pid,'random video from list', videos.item(randomRanger(0, videos.length - 2)))
-            } else {
-                console.log('retry shufft');
-                await userClick(action.pid, '.shuffle-button')
+                await sleep(5000)
             }
+
+            await userClick(action.pid, '.shuffle-button')
         }
     }
 }
