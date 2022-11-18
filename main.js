@@ -15,8 +15,8 @@ let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
-    hostIp: process.env.HOST_IP,
-    maxProfile: Number(process.env.MAX_PROFILES) || 1,
+    hostIp: '45.77.168.169:9001',
+    maxProfile: 1,
 }
 
 global.IS_SHOW_UI = null

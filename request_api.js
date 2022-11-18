@@ -5,7 +5,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 function rq (data) {
     data.headers = {
-        api_key: process.env.API_KEY
+        api_key: 'k1wtr0ng'
     }
     return request(data)
 }
