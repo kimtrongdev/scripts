@@ -1,0 +1,66 @@
+{
+  "manifest_version": 2,
+
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "7.5.1",
+  "default_locale": "en",
+  "homepage_url": "https://getfoxyproxy.org/",
+  "author": "Eric Jung",
+
+  "icons": {
+    "16": "images/icon.svg",
+    "32": "images/icon.svg",
+    "48": "images/icon.svg",
+    "64": "images/icon.svg",
+    "128": "images/icon.svg"
+  },
+
+  "background": {
+    "scripts": ["scripts/utils.js", "scripts/background.js", "scripts/matcher.js"]
+  },
+
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true,
+    "browser_style": true
+  },
+
+  "browser_action": {
+    "default_icon": "images/icon.svg",
+    "default_title": "__MSG_extensionName__",
+    "default_popup": "popup.html",
+    "browser_style": true
+  },
+
+  "permissions": [
+    "browsingData",
+    "proxy",
+    "storage",
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "downloads",
+    "notifications",
+    "<all_urls>"
+  ],
+  
+  "commands": {
+    "modePatterns": {
+      "description": "__MSG_modePatterns__"
+    },
+    "modeDisabled": {
+      "description": "__MSG_modeDisabled__"
+    },
+    "forAll": {
+      "description": "__MSG_forAll__"
+    }    
+  },
+  
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "foxyproxy@eric.h.jung",
+      "strict_min_version": "60.0"
+    }
+  }
+}
