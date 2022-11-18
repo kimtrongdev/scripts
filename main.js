@@ -369,6 +369,8 @@ async function startChromeAction(action, _browser) {
         if (action.id == 'login') {
             exec(`mkdir "./profiles/${action.pid}"`)
         }
+    } else if (_browser == 'firefox') {
+        userDataDir = ` -P "${action.pid}"`
     }
 
     //handle browser size
@@ -413,6 +415,10 @@ async function startChromeAction(action, _browser) {
     }
 
     let exs = ["ex", "quality"]
+    if (_browser == 'firefox') {
+        exs.push('firefox-proxy')
+    }
+
     let level_name = ''
     if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
@@ -445,8 +451,17 @@ async function startChromeAction(action, _browser) {
     
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
-    if (WIN_ENV) {        
-        exec(`start ${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
+    if (WIN_ENV) {
+        let cmdRun = `start ${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`
+        if (_browser == 'firefox') {
+            if (action.id == 'login') {
+                let createPCMD = `firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
+                execSync(createPCMD)
+            }
+            
+            cmdRun = `start ${_browser}${userDataDir} -setDefaultBrowser -url "${startPage}" -install-global-extension "${exs}"`
+        }
+        exec(cmdRun)
     }
     else {
         closeChrome(action.pid)
