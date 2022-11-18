@@ -388,8 +388,8 @@ async function startChromeAction(action, _browser) {
         screenWidth = 1100
     } else {
         if (WIN_ENV) {
-            windowSize = ` --window-size="1200,1000"`
-            windowPosition = ` --window-position=10,10`
+            windowSize = ` --window-size="1200,850"`
+            windowPosition = ``
         } else {
             windowSize = ' --start-maximized'
             windowPosition = ''
@@ -455,7 +455,7 @@ async function startChromeAction(action, _browser) {
         let cmdRun = `start ${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`
         if (_browser == 'firefox') {
             if (action.id == 'login') {
-                let createPCMD = `firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
+                let createPCMD = `start firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
                 execSync(createPCMD)
             }
             
