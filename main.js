@@ -622,10 +622,7 @@ async function getScriptData(pid, isNewProxy = false) {
         if (systemConfig.is_change_pass) {
             action = await request_api.getProfileForRegChannel(pid)
             if (action) {
-                action.pid = utils.randomRanger(100, 400)
-                ids.push(action.pid)
-                ids = ids.map(String)
-                ids = [...new Set(ids)]
+                action.pid = action.id
                 pid = action.pid
                 isNewProxy = true
             } else {
@@ -716,7 +713,7 @@ async function getScriptData(pid, isNewProxy = false) {
             //     utils.log('Load new proxy for pid')
             // }
 
-            if (isLoadNewProxy && isRunBAT || action.is_ver_mail_type) {
+            if (isLoadNewProxy || action.is_ver_mail_type) {
                 //let newProxy = await request_api.getProxyV4()
                 let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
                 // if (newProxy.server) {

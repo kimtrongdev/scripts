@@ -90,7 +90,11 @@ async function userLogin(action) {
         }
 
         
-        if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/signinoptions/password') > -1) {
+        if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/security-checkup-welcome') > -1) {
+            await beforeLoginSuccess(action)
+            return
+        }
+        else if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/signinoptions/password') > -1) {
             action.new_password = makeid(10)
             await userType(action.pid, 'input[name="password"]', action.new_password)
             await userTypeEnter(action.pid, 'input[name="confirmation_password"]', action.new_password)
@@ -456,6 +460,7 @@ async function beforeLoginSuccess (action) {
             await reportAccount(action)
         } else {
             await goToLocation(action.pid, 'https://myaccount.google.com/signinoptions/password')
+            await sleep(20000)
         }
     }
 
