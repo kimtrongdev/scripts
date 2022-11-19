@@ -390,7 +390,7 @@ async function startChromeAction(action, _browser) {
         screenWidth = 1100
     } else {
         if (WIN_ENV) {
-            windowSize = ` --window-size="1200,850"`
+            windowSize = ` --window-size="700,400"`
             windowPosition = ``
         } else {
             windowSize = ' --start-maximized'
