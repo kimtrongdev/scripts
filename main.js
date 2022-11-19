@@ -194,7 +194,8 @@ async function loadSystemConfig () {
 
     let timeNow = new Date(Date.now())
     const hour = timeNow.getHours()
-    if (hour % 5 == 0 && hour != hourReseted) {
+
+    if (hour % 2 == 0 && hour != hourReseted) {
         hourReseted = hour
 
         async function loadSystemPid (browser) {
@@ -218,6 +219,7 @@ async function loadSystemConfig () {
         if (pid) {
             try {
                 exec(`nircmd closeprocess /${pid}`)
+                runnings = []
             } catch (error) {
               console.log(error);  
             }
@@ -524,7 +526,9 @@ async function startChromeAction(action, _browser) {
 async function loginProfileChrome(profile) {
     try {
         try {
-            execSync(`sudo xrandr -s 1600x1200`)
+            if (!WIN_ENV) {
+                execSync(`sudo xrandr -s 1600x1200`)
+            }
         } catch (error) {
             console.log(error);
         }
@@ -952,7 +956,9 @@ async function profileManage() {
 
 async function running() {
     try {
-        execSync(`sudo xrandr -s 1600x1200`)
+        if (!WIN_ENV) {
+            execSync(`sudo xrandr -s 1600x1200`)
+        }
     } catch (error) {
         console.log(error);
     }
