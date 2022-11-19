@@ -122,8 +122,8 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_mail_1' || action.id == 'recovery_mail' || action.id == 'change_pass') {
-        if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
+    if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
+        if (action.browser_name.includes('brave')) {
             await handleBraveSetting(action)
         }
         await goToLocation(action.pid, 'accounts.google.com')
@@ -195,9 +195,6 @@ async function initActionData(action) {
     }
     else if (action.id == 'youtube_sub') {
         await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
-    }
-    else if(action.id == 'reg_user'){
-        await goToLocation(action.pid, 'accounts.google.com')
     }
     else if(action.id == 'login'){
         if (action.browser_name == 'iridium-browser') {
