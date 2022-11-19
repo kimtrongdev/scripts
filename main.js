@@ -142,6 +142,7 @@ async function loadSystemConfig () {
     (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') ||
     (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') ||
     (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') ||
+    (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
     (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
@@ -618,7 +619,21 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
-        if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
+        if (systemConfig.is_change_pass) {
+            action = await request_api.getProfileForRegChannel(pid)
+            if (action) {
+                action.pid = utils.randomRanger(100, 400)
+                ids.push(action.pid)
+                ids = ids.map(String)
+                ids = [...new Set(ids)]
+                pid = action.pid
+                isNewProxy = true
+            } else {
+                console.log('Not found reg user data.');
+                return
+            }
+        }
+        else if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
             action = await request_api.getProfileForRegChannel(pid)
             if (action) {
                 action.pid = utils.randomRanger(100, 400)
@@ -1146,7 +1161,7 @@ function initExpress() {
         }
         utils.log(req.query)
 
-        if (req.query.id == 'reg_account') {
+        if (req.query.id == 'reg_account' || req.query.id == 'change_pass') {
             let action = req.query
             
             if (action.username && action.password) {
@@ -1157,10 +1172,17 @@ function initExpress() {
                     type: action.type,
                     reg_ga_success: action.reg_ga_success
                 })
+
+                if (req.query.id == 'change_pass') {
+                    request_api.updateProfileData({ pid: req.query.pid, status: 'TRASH', description: 'update_pass_to_' + action.password })
+                }
             }
 
-            if (action.reg_ga_success || (action.stop && action.stop != 'false')) {
+            if (action.reg_ga_success) {
                 request_api.updateProfileData({ pid: Number(action.pid), status: 'ERROR', description: 'ga' })
+            }
+
+            if (action.stop && action.stop != 'false') {
                 removePidAddnew(req.query.pid, 0)
             }
         }

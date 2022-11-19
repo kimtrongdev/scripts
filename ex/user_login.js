@@ -89,7 +89,22 @@ async function userLogin(action) {
             // }
         }
 
-        if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/confirmation') > -1) {
+        
+        if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/signinoptions/password') > -1) {
+            action.new_password = makeid(10)
+            await userType(action.pid, 'input[name="password"]', action.new_password)
+            await userTypeEnter(action.pid, 'input[name="confirmation_password"]', action.new_password)
+            await setActionData(action)
+            return
+        }
+        else if (action.id == 'change_pass' && url.indexOf('/speedbump/changepassword') > -1) {
+            action.new_password = makeid(10)
+            await userType(action.pid, 'input[name="Passwd"]', action.new_password)
+            await userTypeEnter(action.pid, 'input[name="ConfirmPasswd"]', action.new_password)
+            await setActionData(action)
+            return
+        }
+        else if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/confirmation') > -1) {
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'recovery_ok')
             return
         }
@@ -408,6 +423,7 @@ async function userLogin(action) {
             url.indexOf("RecycledEmailInterstitial") > -1 ||
             url.indexOf("gds.google.com/web/chip") > -1 ||
             url.indexOf("accounts.google.com/speedbump/gaplustos") > -1 ||
+            url.indexOf("myaccount.google.com/security-checkup-welcome") > -1 ||
             url.indexOf("youtube.com/") > -1) {
                 if(false && !action.updateInfo){
                     action.updateInfo = true
@@ -430,6 +446,19 @@ async function userLogin(action) {
 
 async function beforeLoginSuccess (action) {
     console.log('beforeLoginSuccess');
+    if (action.id == 'change_pass') {
+        if (action.new_password) {
+            action.username = action.email
+            action.password = action.new_password
+            action.verify = action.recover_mail
+            action.end_script = true
+            await setActionData(action)
+            await reportAccount(action)
+        } else {
+            await goToLocation(action.pid, 'https://myaccount.google.com/signinoptions/password')
+        }
+    }
+
     if (action.id == 'reg_account' && action.process_login) {
         action.process_login = false
         await setActionData(action)

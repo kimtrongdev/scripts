@@ -34,7 +34,7 @@ async function runAction (action) {
             }
         }
     }
-    else if (action.id == 'rename_channel' || action.id == 'recovery_mail') {
+    else if (action.id == 'rename_channel' || action.id == 'recovery_mail' || action.id == 'change_pass') {
         await userLogin(action)
     }
     else if (action.id == 'end_script') {
@@ -122,7 +122,7 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_mail_1' || action.id == 'recovery_mail') {
+    if (action.id == 'check_mail_1' || action.id == 'recovery_mail' || action.id == 'change_pass') {
         if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
             await handleBraveSetting(action)
         }
@@ -255,7 +255,7 @@ function reportAccount (action) {
         } else {
             isStop = false
         }
-    } else if (action.reg_ga_success) {
+    } else if (action.reg_ga_success || action.end_script) {
         isStop = true
     }
 
