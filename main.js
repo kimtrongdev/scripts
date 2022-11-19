@@ -709,28 +709,32 @@ async function getScriptData(pid, isNewProxy = false) {
 
     if (action) {
         if (useProxy && isNewProxy) {
-            let isLoadNewProxy = '' 
-            let totalRound = totalRoundForChangeProxy * MAX_PROFILE
-            if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
-                isLoadNewProxy = true
-                utils.log('Load new proxy for pid')
-            }
+            let isLoadNewProxy = true
+            // let totalRound = totalRoundForChangeProxy * MAX_PROFILE
+            // if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
+            //     isLoadNewProxy = true
+            //     utils.log('Load new proxy for pid')
+            // }
 
             if (isLoadNewProxy && isRunBAT || action.is_ver_mail_type) {
-                let newProxy = await request_api.getProxyV4()
+                //let newProxy = await request_api.getProxyV4()
                 let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-                if (newProxy.server) {
-                    proxy[pid] = {
-                        server: newProxy.server
-                    }
-                    // let proxyInfo = newProxy.server.split(':')
-                    // if (proxyInfo.length >= 2) {
-                    //     execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
-                    //     execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
-                    //     execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
-                    //     proxy[pid] = undefined
-                    // }
-                } else {
+                // if (newProxy.server) {
+                //     proxy[pid] = {
+                //         server: newProxy.server
+                //     }
+                //     // let proxyInfo = newProxy.server.split(':')
+                //     // if (proxyInfo.length >= 2) {
+                //     //     execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
+                //     //     execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
+                //     //     execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
+                //     //     proxy[pid] = undefined
+                //     // }
+                // } else {
+                //     proxy[pid] = proxyV6
+                // }
+
+                if (proxyV6) {
                     proxy[pid] = proxyV6
                 }
             } else {
