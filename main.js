@@ -1165,6 +1165,11 @@ function initExpress() {
         if (req.query.id == 'reg_account' || req.query.id == 'change_pass') {
             let action = req.query
             
+            if (req.query.id == 'change_pass' && req.query.status == '0') {
+                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
+                return res.json({})
+            }
+
             if (action.username && action.password) {
                 request_api.reportAccount({
                     username: action.username,
