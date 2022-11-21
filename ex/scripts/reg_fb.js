@@ -5,7 +5,7 @@ async function reqFacebook(action) {
     await reportLive(action.pid)
 
 
-    if (url == 'https://www.facebook.com/') {
+    if (url == 'https://www.facebook.com/' || url.indexOf('facebook.com/getting_started') > -1) {
       await goToLocation(action.pid, `https://www.facebook.com/search/people/?q=${action.last_name}`)
     }
     else if (url.indexOf('facebook.com/pages/creation') > -1) {
@@ -13,6 +13,8 @@ async function reqFacebook(action) {
       await userType(action.pid,'div[role="form"] label input[type="search"]', 'web')
       await userClick(action.pid, 'ul[role="listbox"] li')
 
+      await userClick(action.pid, 'div[role="button"] span[dir="auto"]')
+      
       await sleep(10000)
       action.is_stop = true
       await reportAccount(action)
@@ -20,9 +22,9 @@ async function reqFacebook(action) {
     else if (url.indexOf('facebook.com/search/people') > -1) {
       let count = 0
       let items = document.querySelectorAll('div[data-visualcompletion="ignore-dynamic"] div[role="button"] span[dir="auto"]')
-      const max = Math.min(15, items.length)
+      const max = Math.min(10, items.length)
 
-      while(count > max) {
+      while(count < max) {
         await userClick(action.pid, 'click add fr', items.item(count))
         count++
       }
