@@ -58,6 +58,11 @@ async function reqFacebook(action) {
           action.api_name = phoneRs.api_name
           action.entered_phone = true
           action.username = phoneRs.phone
+
+          if (!action.username.startsWith('0')) {
+            action.username = '+84' + action.username
+          }
+
           await userType(action.pid,'input[name="reg_email__"]', action.username)
           await setActionData(action)
         }
