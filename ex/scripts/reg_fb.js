@@ -5,8 +5,29 @@ async function reqFacebook(action) {
     await reportLive(action.pid)
 
     if (url.indexOf('facebook.com/confirmemail') > -1) {
-      action.is_stop = true
-      await reportAccount(action)
+      if (action.verify_type == 'phone') {
+        let phoneRs = await getPhoneCode(action.order_id, action.api_name)
+        console.log('getPhoneCode', phoneRs);
+        if (phoneRs.error || action.entered_code) {
+          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+        } else {
+          action.entered_code = true
+          await setActionData(action)
+          await userTypeEnter(action.pid, '#code', phoneRs.code)
+          await sleep(30000)
+        }
+
+        await userTypeEnter(action.pid,'input[name="code"]', phoneRs.code)
+
+        await sleep(10000)
+        if (document.querySelector('div[role="dialog"] span[dir="ltr"]')) {
+          action.is_stop = true
+          await reportAccount(action)
+        }
+      } else {
+        action.is_stop = true
+        await reportAccount(action)
+      }
     }
     else if (url.indexOf('https://www.facebook.com/reg') > -1) {
       let name = {}
@@ -26,8 +47,25 @@ async function reqFacebook(action) {
       await userType(action.pid,'#fullname_field input[name="firstname"]', name.first_name)
       await userType(action.pid,'#fullname_field input[name="lastname"]', name.last_name)
       
-      await userType(action.pid,'input[name="reg_email__"]', action.email)
-      await userType(action.pid,'input[name="reg_email_confirmation__"]', action.email)
+      if (action.verify_type == 'phone') {
+        let phoneRs = await getPhone()
+        console.log('getPhone', phoneRs);
+
+        if (phoneRs.error || action.entered_phone) {
+          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+        } else {
+          action.order_id = phoneRs.orderID
+          action.api_name = phoneRs.api_name
+          action.entered_phone = true
+          action.username = phoneRs.phone
+          await userType(action.pid,'input[name="reg_email__"]', action.username)
+          await setActionData(action)
+        }
+      } else {
+        action.username = action.email
+        await userType(action.pid,'input[name="reg_email__"]', action.email)
+        await userType(action.pid,'input[name="reg_email_confirmation__"]', action.email)
+      }
       
       await userType(action.pid,'#password_step_input', password)
 
@@ -43,7 +81,6 @@ async function reqFacebook(action) {
       let s = document.querySelectorAll('input[type="radio"]').item(randomRanger(0,1))
       await userClick(action.pid, 's', s)
 
-      action.username = action.email
       action.password = password
       action.type = action.account_type
       await setActionData(action)
