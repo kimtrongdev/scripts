@@ -15,14 +15,14 @@ async function reqFacebook(action) {
 
       await userClick(action.pid, 'div[role="button"] span[dir="auto"]')
       
-      await sleep(10000)
+      await sleep(15000)
       action.is_stop = true
       await reportAccount(action)
     }
     else if (url.indexOf('facebook.com/search/people') > -1) {
-      let count = 0
+      let count = 4
       let items = document.querySelectorAll('div[data-visualcompletion="ignore-dynamic"] div[role="button"] span[dir="auto"]')
-      const max = Math.min(10, items.length)
+      const max = Math.min(15, items.length)
 
       while(count < max) {
         await userClick(action.pid, 'click add fr', items.item(count))
