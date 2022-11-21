@@ -4,7 +4,32 @@ async function reqFacebook(action) {
     let url = window.location.toString()
     await reportLive(action.pid)
 
-    if (url.indexOf('facebook.com/confirmemail') > -1) {
+
+    if (url == 'https://www.facebook.com/') {
+      await goToLocation(action.pid, `https://www.facebook.com/search/people/?q=${action.last_name}`)
+    }
+    else if (url.indexOf('facebook.com/pages/creation') > -1) {
+      await userType(action.pid,'div[role="form"] label input[dir="ltr"]', action.last_name)
+      await userType(action.pid,'div[role="form"] label input[type="search"]', 'web')
+      await userClick(action.pid, 'ul[role="listbox"] li')
+
+      await sleep(10000)
+      action.is_stop = true
+      await reportAccount(action)
+    }
+    else if (url.indexOf('facebook.com/search/people') > -1) {
+      let count = 0
+      let items = document.querySelectorAll('div[data-visualcompletion="ignore-dynamic"] div[role="button"] span[dir="auto"]')
+      const max = Math.min(15, items.length)
+
+      while(count > max) {
+        await userClick(action.pid, 'click add fr', items.item(count))
+        count++
+      }
+
+      await goToLocation(action.pid, `https://www.facebook.com/pages/creation`)
+    }
+    else if (url.indexOf('facebook.com/confirmemail') > -1) {
       if (action.verify_type == 'phone') {
         let phoneRs = await getPhoneCode(action.order_id, action.api_name)
         console.log('getPhoneCode', phoneRs);
@@ -19,10 +44,12 @@ async function reqFacebook(action) {
 
         await userTypeEnter(action.pid,'input[name="code"]', phoneRs.code)
 
-        await sleep(10000)
+        await sleep(20000)
+        await waitForSelector('div[role="dialog"] span[dir="ltr"]')
         if (document.querySelector('div[role="dialog"] span[dir="ltr"]')) {
-          action.is_stop = true
-          await reportAccount(action)
+          await userClick(action.pid, 'div[role="dialog"] .uiOverlayButton')
+        } else {
+          //action.username
         }
       } else {
         action.is_stop = true
@@ -46,6 +73,7 @@ async function reqFacebook(action) {
 
       await userType(action.pid,'#fullname_field input[name="firstname"]', name.first_name)
       await userType(action.pid,'#fullname_field input[name="lastname"]', name.last_name)
+      action.last_name = name.last_name
       
       if (action.verify_type == 'phone') {
         let phoneRs = await getPhone()
