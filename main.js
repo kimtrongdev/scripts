@@ -1364,9 +1364,11 @@ async function handleAction (actionData) {
 
         if(true && avatar){
             await utils.sleep(5000)
-            execSync(`xdotool key KP_Enter`)
+            robot.keyTap('enter')
             await utils.sleep(5000)
-            execSync(`xdotool type "${path.resolve('avatar.jpg')}" && sleep 1 && xdotool key KP_Enter`)
+
+            robot.typeString(path.resolve('avatar.jpg'))
+            robot.keyTap('enter')
         }
         else{
             execSync(`xdotool key Escape`)
