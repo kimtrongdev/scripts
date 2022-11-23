@@ -80,7 +80,7 @@ async function userWatch(action){
         else if(url.indexOf('https://www.youtube.com/playlist?list=') > -1){
             await processPlaylistPage(action)
         }
-        else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
+        else if(url.indexOf('youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
             if(action.create_channel) {
                 action.filter = undefined
                 await setActionData(action)
