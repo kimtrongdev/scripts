@@ -767,6 +767,10 @@ async function getScriptData(pid, isNewProxy = false) {
             if (systemConfig.total_rounds_for_change_proxy) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
+            delete systemConfig.search_percent
+            delete systemConfig.direct_percent
+            delete systemConfig.suggest_percent
+            delete systemConfig.page_percent
             Object.assign(action, systemConfig)
             delete action.systemParams
     
