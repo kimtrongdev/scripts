@@ -65,7 +65,7 @@ async function userWatch(action){
         else if(url.indexOf('https://www.youtube.com/watch') > -1 || url.indexOf('https://m.youtube.com/watch') > -1){
             await processWatchPage(action)
         }
-        else if (url.indexOf('m.youtube.com/playlist?list=') > -1) {
+        else if (url.indexOf('m.youtube.com/playlist') > -1) {
             let videos = document.querySelectorAll('.video-thumbnail-overlay-bottom-group')
             let indexRd = randomRanger(0, videos.length - 1)
             await userClick(action.pid, 'click video' + indexRd, videos.item(indexRd))
@@ -78,7 +78,7 @@ async function userWatch(action){
             
             await sleep(15000)
         }
-        else if(url.indexOf('https://www.youtube.com/playlist?list=') > -1){
+        else if(url.indexOf('https://www.youtube.com/playlist') > -1){
             await processPlaylistPage(action)
         }
         else if(url.indexOf('youtube.com/channel/') > -1 || url.indexOf('youtube.com/user/') > -1 || url.indexOf('youtube.com/c/') > -1){
