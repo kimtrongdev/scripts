@@ -1364,6 +1364,9 @@ async function handleAction (actionData) {
 
         if(true && avatar){
             await utils.sleep(5000)
+            const screen = robot.getScreenSize();
+            robot.moveMouse(Number(screen.width) / 2, Number(screen.height) / 2)
+            robot.mouseClick('left')
             robot.keyTap('enter')
             await utils.sleep(5000)
 

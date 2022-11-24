@@ -13,13 +13,17 @@ async function reqFacebook(action) {
         await userClick(action.pid, 'div[role="main"] div[data-visualcompletion="ignore"] i[data-visualcompletion="css-img"]')
         await sleep(3000)
 
-        let uploadBtn = document.querySelector('div[aria-label="Tải ảnh lên"]') || document.querySelector('div[aria-label="Upload a photo"]')
+        let uploadBtn = document.querySelector('div[aria-label="Tải ảnh lên"]') || document.querySelector('div[aria-label="Upload photo"]')
         await userClick(action.pid, 'uploadBtn', uploadBtn)
 
         let gender = ['female', 'male'][randomRanger(0, 1)]
         await userSelectAvatar(action.pid, gender)
 
         await sleep(5000)
+
+        let confirmBtn = document.querySelector('div[aria-label="Lưu"]') || document.querySelector('div[aria-label="Save"]')
+        await userClick(action.pid, 'confirmBtn', confirmBtn)
+        
         await goToLocation(action.pid, `https://www.facebook.com/search/people/?q=${action.last_name}`)
       }
     }
