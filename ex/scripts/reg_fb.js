@@ -12,7 +12,9 @@ async function reqFacebook(action) {
       if (document.querySelector('div[role="main"] div[data-visualcompletion="ignore"] i[data-visualcompletion="css-img"]')) {
         await userClick(action.pid, 'div[role="main"] div[data-visualcompletion="ignore"] i[data-visualcompletion="css-img"]')
         await sleep(3000)
-        await userClick(action.pid, 'div[aria-label="Tải ảnh lên"]')
+
+        let uploadBtn = document.querySelector('div[aria-label="Tải ảnh lên"]') || document.querySelector('div[aria-label="Upload a photo"]')
+        await userClick(action.pid, 'uploadBtn', uploadBtn)
 
         let gender = ['female', 'male'][randomRanger(0, 1)]
         await userSelectAvatar(action.pid, gender)
