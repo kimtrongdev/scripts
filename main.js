@@ -1367,7 +1367,7 @@ async function handleAction (actionData) {
             const screen = robot.getScreenSize();
             robot.moveMouse(Number(screen.width) / 2, Number(screen.height) / 2)
             robot.mouseClick('left')
-            robot.keyTap('enter')
+            robot.mouseClick('left')
             await utils.sleep(5000)
 
             robot.typeString(path.resolve('avatar.jpg'))
