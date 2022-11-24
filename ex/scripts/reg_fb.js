@@ -6,7 +6,20 @@ async function reqFacebook(action) {
 
 
     if (url == 'https://www.facebook.com/' || url.indexOf('facebook.com/getting_started') > -1) {
-      await goToLocation(action.pid, `https://www.facebook.com/search/people/?q=${action.last_name}`)
+      await goToLocation(action.pid, `https://www.facebook.com/profile.php`)
+    }
+    if (url.indexOf('facebook.com/profile.php') > -1) {
+      if (document.querySelector('div[role="main"] div[data-visualcompletion="ignore"] i[data-visualcompletion="css-img"]')) {
+        await userClick(action.pid, 'div[role="main"] div[data-visualcompletion="ignore"] i[data-visualcompletion="css-img"]')
+        await sleep(3000)
+        await userClick(action.pid, 'div[aria-label="Tải ảnh lên"]')
+
+        let gender = ['female', 'male'][randomRanger(0, 1)]
+        await userSelectAvatar(action.pid, gender)
+
+        await sleep(5000)
+        await goToLocation(action.pid, `https://www.facebook.com/search/people/?q=${action.last_name}`)
+      }
     }
     else if (url.indexOf('facebook.com/pages/creation') > -1) {
       await userType(action.pid,'div[role="form"] label input[dir="ltr"]', action.last_name)
