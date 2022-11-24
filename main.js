@@ -1363,7 +1363,7 @@ async function handleAction (actionData) {
         let avatar = await request_api.getAvatar(actionData.pid,path.resolve('avatar.jpg'),actionData.str)
 
         if(true && avatar){
-            await utils.sleep(5000)
+            await utils.sleep(8000)
             const screen = robot.getScreenSize();
             robot.moveMouse(Number(screen.width) / 2, Number(screen.height) / 2)
             robot.mouseClick('left')

@@ -23,7 +23,6 @@ async function reqFacebook(action) {
 
         let confirmBtn = document.querySelector('div[aria-label="Lưu"]') || document.querySelector('div[aria-label="Save"]')
         await userClick(action.pid, 'confirmBtn', confirmBtn)
-        
         await goToLocation(action.pid, `https://www.facebook.com/search/people/?q=${action.last_name}`)
       }
     }
@@ -109,7 +108,7 @@ async function reqFacebook(action) {
           action.username = phoneRs.phone
 
           if (!action.username.startsWith('0')) {
-            action.username = '+84' + action.username
+            action.username = '84' + action.username
           }
 
           await userType(action.pid,'input[name="reg_email__"]', action.username)
