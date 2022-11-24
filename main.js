@@ -1364,11 +1364,11 @@ async function handleAction (actionData) {
 
         if(true && avatar){
             await utils.sleep(8000)
-            const screen = robot.getScreenSize();
-            robot.moveMouse(Number(screen.width) / 2, Number(screen.height) / 2)
-            robot.mouseClick('left')
-            robot.mouseClick('left')
-            await utils.sleep(5000)
+            // const screen = robot.getScreenSize();
+            // robot.moveMouse(Number(screen.width) / 2, Number(screen.height) / 2)
+            // robot.mouseClick('left')
+            // robot.mouseClick('left')
+            // await utils.sleep(5000)
 
             robot.typeString(path.resolve('avatar.jpg'))
             robot.keyTap('enter')
