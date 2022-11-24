@@ -1524,7 +1524,11 @@ async function handleAction (actionData) {
         if (systemConfig.useRobotJS) {
             robot.moveMouse(Number(actionData.x), Number(actionData.y))
             robot.mouseClick('left')
-            robot.typeString(actionData.str)
+
+            robot.keyToggle('control', 'down')
+            robot.keyTap('v')
+            robot.keyToggle('control', 'up')
+           // robot.typeString(actionData.str)
         } else {
             execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
         }
@@ -1540,7 +1544,11 @@ async function handleAction (actionData) {
         if (systemConfig.useRobotJS) {
             robot.moveMouse(Number(actionData.x), Number(actionData.y))
             robot.mouseClick('left')
-            robot.typeString(actionData.str)
+            
+            robot.keyToggle('control', 'down')
+            robot.keyTap('v')
+            robot.keyToggle('control', 'up')
+            //robot.typeString(actionData.str)
             robot.keyTap('enter')
         } else {
             execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
