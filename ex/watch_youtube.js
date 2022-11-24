@@ -246,24 +246,24 @@ async function preWatchingVideo(action){
         let videoTime
         await skipAds(false, action)
 
-        function loadVideoTime() {
-            videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
-            videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
-            if(action.url_type=='playlist' && videoTime > 3600){
-                videoTime = 3600
-            }
-        }
-        loadVideoTime()
-        let countGetVideoTime = 0
-        // get video time
-        console.log('videoTime:',videoTime)
-        while (videoTime < 31 && countGetVideoTime < 5) {
-            countGetVideoTime++
-            console.log('videoTime:',videoTime)
-            await skipAds(false, action)
-            loadVideoTime()
-            await sleep(1000)
-        }
+        // function loadVideoTime() {
+        //     videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
+        //     videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
+        //     if(action.url_type=='playlist' && videoTime > 3600){
+        //         videoTime = 3600
+        //     }
+        // }
+        // loadVideoTime()
+        // let countGetVideoTime = 0
+        // // get video time
+        // console.log('videoTime:',videoTime)
+        // while (videoTime < 31 && countGetVideoTime < 5) {
+        //     countGetVideoTime++
+        //     console.log('videoTime:',videoTime)
+        //     await skipAds(false, action)
+        //     loadVideoTime()
+        //     await sleep(1000)
+        // }
 
         if (action.viewed_ads) {
             action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
