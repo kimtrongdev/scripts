@@ -25,6 +25,27 @@ async function regMail(action) {
           } 
       }
 
+      await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
+    }
+    else if (url.indexOf('google.com/personal-info') > -1) {
+      await userClick(action.pid, 'div[data-picker="https://docs.google.com/picker"] figure')
+      await userClick(action.pid, 'c-wiz main button .google-material-icons')
+      
+      
+      if (document.querySelectorAll('main div[role="tablist"] button[data-skip-focus-on-activate] path[d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2M4 6h16v10H4V6zm.67 13H1v2h22v-2h-3.67"]')) {
+        let btn = document.querySelectorAll('main div[role="tablist"] button[data-skip-focus-on-activate] path[d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2M4 6h16v10H4V6zm.67 13H1v2h22v-2h-3.67"]').item(1)
+        await userClick(action.pid, 'btn', btn)
+
+        let uploadBtn = document.querySelectorAll('path[d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2M4 6h16v10H4V6zm.67 13H1v2h22v-2h-3.67"]').item(2)
+        await userClick(action.pid, 'uploadBtn', uploadBtn)
+
+        let gender = ['female', 'male'][randomRanger(0, 1)]
+        await userSelectAvatar(action.pid, gender)
+        await sleep(10000)
+
+        await userClick(action.pid, 'uploadBtn', document.querySelectorAll('c-wiz > div > div > div > button span').item(2))
+        await sleep(10000)
+      }
       await goToLocation(action.pid, linkAfterSuccess)
     }
     else if (url.indexOf('youtube.com/channel') > -1) {
