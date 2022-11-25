@@ -135,7 +135,7 @@ module.exports = {
         try{
             console.log(pid,'getAvatar',gender)
             let avaUrl
-            if(Math.random() < 0.8){
+            if(true && Math.random() < 0.8){
                 let ava = await rq({uri: `https://dominhit.pro/render/api?action=get-avalist`,json: true})
                 avaUrl = ava.avatar
             }
