@@ -31,23 +31,21 @@ async function regMail(action) {
       await userClick(action.pid, 'div[data-picker="https://docs.google.com/picker"] figure')
       await sleep(4000)
 
-      let aa = getElementContainsInnerText('i', 'add_a_photo')
-      await userClick(action.pid, '.google-material-icons', aa)
+      await userClick(action.pid, 'Thêm ảnh hồ sơ', getElementContainsInnerText('span', 'Thêm ảnh hồ sơ'))
+
       await sleep(3000)
-      if (document.querySelectorAll('main div[role="tablist"] button[data-skip-focus-on-activate] path[d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2M4 6h16v10H4V6zm.67 13H1v2h22v-2h-3.67"]')) {
-        let btn = document.querySelectorAll('main div[role="tablist"] button[data-skip-focus-on-activate] path[d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2M4 6h16v10H4V6zm.67 13H1v2h22v-2h-3.67"]').item(1)
-        await userClick(action.pid, 'btn', btn)
 
-        let uploadBtn = document.querySelectorAll('path[d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2M4 6h16v10H4V6zm.67 13H1v2h22v-2h-3.67"]').item(2)
-        await userClick(action.pid, 'uploadBtn', uploadBtn)
+      await userClick(action.pid, 'Từ máy tính', getElementContainsInnerText('button', 'Từ máy tính'))
+      await userClick(action.pid, 'Tải lên từ máy tính', getElementContainsInnerText('button', 'Tải lên từ máy tính'))
+     
+      let gender = ['female', 'male'][randomRanger(0, 1)]
+      await userSelectAvatar(action.pid, gender)
 
-        let gender = ['female', 'male'][randomRanger(0, 1)]
-        await userSelectAvatar(action.pid, gender)
-        await sleep(15000)
+      await sleep(10000)
 
-        await userClick(action.pid, 'uploadBtn', document.querySelectorAll('c-wiz > div > div > div > button span').item(2))
-        await sleep(10000)
-      }
+      await userClick(action.pid, 'Lưu làm ảnh hồ sơ', getElementContainsInnerText('button', 'Lưu làm ảnh hồ sơ'))
+      await sleep(10000)
+
       await goToLocation(action.pid, linkAfterSuccess)
     }
     else if (url.indexOf('youtube.com/channel') > -1) {
