@@ -49,7 +49,8 @@ async function regMail(action) {
       await goToLocation(action.pid, linkAfterSuccess)
     }
     else if (url.indexOf('youtube.com/channel') > -1) {
-      await goToLocation(action.pid, linkAfterSuccess)
+      await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
+     //await goToLocation(action.pid, linkAfterSuccess)
     }
     else if (url.indexOf('google.com/adsense/start') > -1) {
       await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'underage')
