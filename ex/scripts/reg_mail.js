@@ -31,19 +31,25 @@ async function regMail(action) {
       await userClick(action.pid, 'div[data-picker="https://docs.google.com/picker"] figure')
       await sleep(4000)
 
-      await userClick(action.pid, 'Thêm ảnh hồ sơ', getElementContainsInnerText('span', 'Thêm ảnh hồ sơ'))
+      await userClick(action.pid, 'Thêm ảnh hồ sơ', 
+      getElementContainsInnerText('span', 'Thêm ảnh hồ sơ') || getElementContainsInnerText('span', 'Add profile picture'))
 
       await sleep(3000)
 
-      await userClick(action.pid, 'Từ máy tính', getElementContainsInnerText('button', 'Từ máy tính'))
-      await userClick(action.pid, 'Tải lên từ máy tính', getElementContainsInnerText('button', 'Tải lên từ máy tính'))
+      await userClick(action.pid, 'Từ máy tính', 
+      getElementContainsInnerText('button', 'Từ máy tính') || getElementContainsInnerText('button', 'From computer'))
+
+      await userClick(action.pid, 'Tải lên từ máy tính', 
+      getElementContainsInnerText('button', 'Tải lên từ máy tính') || getElementContainsInnerText('button', 'Upload from computer'))
      
       let gender = ['female', 'male'][randomRanger(0, 1)]
       await userSelectAvatar(action.pid, gender)
 
       await sleep(10000)
 
-      await userClick(action.pid, 'Lưu làm ảnh hồ sơ', getElementContainsInnerText('button', 'Lưu làm ảnh hồ sơ'))
+      // Save as profile picture
+      await userClick(action.pid, 'Lưu làm ảnh hồ sơ', 
+      getElementContainsInnerText('button', 'Lưu làm ảnh hồ sơ') || getElementContainsInnerText('button', 'Lưu làm ảnh hồ sơ'))
       await sleep(10000)
 
       await goToLocation(action.pid, linkAfterSuccess)
