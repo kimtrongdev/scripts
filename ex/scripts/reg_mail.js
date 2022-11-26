@@ -31,16 +31,17 @@ async function regMail(action) {
       await userClick(action.pid, 'div[data-picker="https://docs.google.com/picker"] figure')
       await sleep(4000)
 
+      let fr = document.querySelector('iframe')
       await userClick(action.pid, 'Thêm ảnh hồ sơ', 
-      getElementContainsInnerText('span', 'Thêm ảnh hồ sơ') || getElementContainsInnerText('span', 'Add profile picture'))
+      getElementContainsInnerText('span', 'Thêm ảnh hồ sơ') || getElementContainsInnerText('span', 'Add profile picture'),fr)
 
       await sleep(3000)
 
       await userClick(action.pid, 'Từ máy tính', 
-      getElementContainsInnerText('button', 'Từ máy tính') || getElementContainsInnerText('button', 'From computer'))
+      getElementContainsInnerText('button', 'Từ máy tính') || getElementContainsInnerText('button', 'From computer'), fr)
 
       await userClick(action.pid, 'Tải lên từ máy tính', 
-      getElementContainsInnerText('button', 'Tải lên từ máy tính') || getElementContainsInnerText('button', 'Upload from computer'))
+      getElementContainsInnerText('button', 'Tải lên từ máy tính') || getElementContainsInnerText('button', 'Upload from computer'), fr)
      
       let gender = ['female', 'male'][randomRanger(0, 1)]
       await userSelectAvatar(action.pid, gender)
