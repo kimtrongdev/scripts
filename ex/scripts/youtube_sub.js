@@ -56,6 +56,7 @@ async function scriptYoutubeSub(action) {
       await processPlaylistPageSub(action)
     }
     else if (
+      url.indexOf('youtube.com/@') > -1 ||
       url.indexOf('https://www.youtube.com/channel/') > -1 || 
       url.indexOf('https://www.youtube.com/user/') > -1 || 
       url.indexOf('https://www.youtube.com/c/') > -1

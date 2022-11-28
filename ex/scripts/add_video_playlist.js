@@ -123,7 +123,7 @@ async function scriptAddVideoPlaylist(action) {
       // goto playlist setting
       await userClick(action.pid, 'ytcp-playlist-row img')
     }
-    else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1) {
+    else if (url.indexOf('youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1) {
       let videos = document.querySelectorAll('#contents ytd-rich-grid-media #details ytd-menu-renderer yt-icon-button yt-icon')
       let total = Math.min(videos.length, Number(action.total_added_from_channel) || 5)
       let count = 0

@@ -36,7 +36,7 @@ async function youtubeComment(action) {
 
       await CommentYoutubeVideo(action.pid)
       await afterComment(action)
-    } else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
+    } else if(url.indexOf('youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
       if (document.querySelector('#edit-buttons a')) {
         await userClick(action.pid, '#edit-buttons a')
       } else {
