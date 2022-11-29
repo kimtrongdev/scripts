@@ -163,7 +163,7 @@ async function initActionData(action) {
     else if (action.id == 'create_playlist') {
         action.fisrtStart = true
         await setActionData(action)
-        await goToLocation(action.pid,'youtube.com/')
+        await goToLocation(action.pid,'https://www.youtube.com/')
     }
     else if (action.id == 'comment_youtube') {
         action.commented_count = 0
@@ -239,7 +239,7 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
         }
     }
 }
