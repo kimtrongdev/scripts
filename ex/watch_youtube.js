@@ -82,7 +82,7 @@ async function userWatch(action){
         else if(url.indexOf('https://www.youtube.com/playlist?list=') > -1){
             await processPlaylistPage(action)
         }
-        else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
+        else if(url.indexOf('https://www.youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
             if(action.create_channel) {
                 action.filter = undefined
                 await setActionData(action)
@@ -170,12 +170,14 @@ async function processHomePage(action){
     }
 
     if (action.search || action.page) {
-        await userTypeEnter(action.pid,'input#search',action.keyword)
-        await sleep(20000)
-        let url = window.location.toString()
-        if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-            await userTypeEnter(action.pid,'input#search',action.keyword)
-        }
+        await goToLocation(action.pid, 'https://www.youtube.com/results?search_query=' + action.keyword)
+       
+        // await userTypeEnter(action.pid,'input#search',action.keyword)
+        // await sleep(20000)
+        // let url = window.location.toString()
+        // if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+        //     await userTypeEnter(action.pid,'input#search',action.keyword)
+        // }
         return
     }
 
@@ -199,11 +201,11 @@ async function processHomePage(action){
                 await userClickRandomVideo(action.pid)
             }
             else if(action.preview == "search"){
-                await userTypeEnter(action.pid,'input#search',action.keyword)
+                await goToLocation(action.pid, 'https://www.youtube.com/results?search_query=' + action.keyword)
                 await sleep(20000)
                 let url = window.location.toString()
                 if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-                    await userTypeEnter(action.pid,'input#search',action.keyword)
+                    await goToLocation(action.pid, 'https://www.youtube.com/results?search_query=' + action.keyword)
                 }
             }
         }
@@ -224,7 +226,7 @@ async function processHomePage(action){
         await userClickRandomVideo(action.pid)
     }
     else if(action.preview == "search"){
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+        await goToLocation(action.pid, 'https://www.youtube.com/results?search_query=' + action.keyword)
     }
     else if(action.home){
         await processBrowserFeature(action)
@@ -233,7 +235,7 @@ async function processHomePage(action){
         await userTypeEnter(action.pid,'input#search',action.suggest_videos)
     } 
     else{
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+        await goToLocation(action.pid, 'https://www.youtube.com/results?search_query=' + action.keyword)
     }
 
     await sleep(3000)
@@ -930,12 +932,12 @@ async function processWatchChannelPage(action){
         if(action.page){
             // process videos page
             let i = 50
-            while(i > 0 && !document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')){
+            while(i > 0 && !document.querySelector('ytd-rich-item-renderer a#thumbnail[href*="'+action.playlist_url+'"]')){
                 await userScroll(action.pid,5)
                 await sleep(1000)
                 i--
             }
-            let video = document.querySelector('ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]')
+            let video = document.querySelector('ytd-rich-item-renderer a#thumbnail[href*="'+action.playlist_url+'"]')
             if(video){
                 await userClick(action.pid,'ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail[href*="'+action.playlist_url+'"]',video)
                 await sleep(2000)

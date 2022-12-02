@@ -390,7 +390,7 @@ async function startChromeAction(action, _browser) {
         screenWidth = 1100
     } else {
         if (WIN_ENV) {
-            windowSize = ` --window-size="700,400"`
+            windowSize = ` --window-size="700,700"`
             windowPosition = ``
         } else {
             windowSize = ' --start-maximized'
@@ -812,6 +812,13 @@ async function getScriptData(pid, isNewProxy = false) {
             if (systemConfig.total_rounds_for_change_proxy) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
+            delete systemConfig.home_percent
+            delete systemConfig.google_percent
+            delete systemConfig.search_percent
+            delete systemConfig.direct_percent
+            delete systemConfig.suggest_percent
+            delete systemConfig.page_percent
+
             Object.assign(action, systemConfig)
             delete action.systemParams
     

@@ -199,26 +199,20 @@ function setWatchParam(action){
             }
         }
     
-        let totalValue = action.home_percent +
-                         action.suggest_percent + 
+        let totalValue = action.suggest_percent + 
                          action.page_watch +
                          action.direct_percent +
-                         action.google_percent +
                          action.search_percent
                          
         let watchTypeRand = randomRanger(0, totalValue)
-        if (watchTypeRand < action.home_percent) {
-            action.home = true
-        } else if (watchTypeRand < action.home_percent + action.suggest_percent) {
+        if (watchTypeRand < action.suggest_percent) {
             action.suggest = true
             action.preview = "search"
-        } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch) {
+        } else if (watchTypeRand < action.suggest_percent + action.page_watch) {
             action.page = true
-        } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
+        } else if (watchTypeRand < action.suggest_percent + action.page_watch + action.direct_percent) {
             action.preview = false
             action.direct = true
-        //} else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
-        //    action.google = true
         } else {
             // search
             action.search = true
