@@ -139,7 +139,7 @@ function initSettingData (action) {
     }
 
     if (action.os_vm == 'vps') {
-        heightCustom = -23
+        heightCustom = 23
     }
 
     if (action.browser_name == 'chromium-browser') {
