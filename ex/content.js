@@ -138,8 +138,8 @@ function initSettingData (action) {
         }
     }
 
-    if (action.os_vm != 'vps' && !action.is_show_ui || action.is_show_ui == 'false') {
-        heightCustom = -30
+    if (action.os_vm == 'vps') {
+        heightCustom = -23
     }
 
     if (action.browser_name == 'chromium-browser') {
