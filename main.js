@@ -442,6 +442,10 @@ async function startChromeAction(action, _browser) {
                 }
                 setDisplay(action.pid)
 
+                if (process.env.OS == 'vps') {
+                    await utils.sleep(10000)
+                }
+
                 if (_browser != 'iridium-browser') {
                     sendEnter(action.pid)
                 }
