@@ -479,7 +479,7 @@ async function loginProfileChrome(profile) {
         action.id = 'login'
         action.isNew = true
         action.is_show_ui = IS_SHOW_UI
-        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
+        action.os_vm = process.env.OS
 
         // handle log browser for profile
         if (!config.browser_map) {
@@ -758,7 +758,7 @@ async function getScriptData(pid, isNewProxy = false) {
         action.id = action.script_code
         action.pid = pid
         action.is_show_ui = IS_SHOW_UI
-        action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
+        action.os_vm = process.env.OS
         if (isRunBAT) {
             action.isRunBAT = isRunBAT
         }
