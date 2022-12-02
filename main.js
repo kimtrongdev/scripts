@@ -1691,13 +1691,14 @@ async function deleteProfile(pid, retry = 0) {
     ids = ids.filter(x => x != pid)
     runnings = runnings.filter(r => r.pid != pid)
     try {
-        stopDisplay(pid)
-        closeChrome(pid)
         if (WIN_ENV) {
             del.sync(['C:/Users/Pixel/AppData/Local/BraveSoftware/Brave-Browser/User Data/' + 'profile-' + pid], { force: true })
+            del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
         } else {
             del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
         }
+        stopDisplay(pid)
+        closeChrome(pid)
     }
     catch (e) {
         utils.log('error', 'deleteProfile', pid, retry)
