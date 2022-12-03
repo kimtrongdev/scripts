@@ -1190,12 +1190,15 @@ function initExpress() {
     app.get('/login', (req, res) => {
         utils.log(req.query)
         if (req.query.status == 1) {
-            utils.log(req.query.pid, 'login success')
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED')
+            request_api.updateProfileData({ pid: req.query.pid, status: 'SYNCED' })
         }
         else {
             utils.log(req.query.pid, 'login error', req.query.msg)
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
+            if (req.query.msg == 'NOT_LOGIN') {
+                request_api.updateProfileData({ pid: req.query.pid, status: 'SUSPEND' })
+            } else {
+                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
+            }
         }
         removePidAddnew(req.query.pid, req.query.status)
 

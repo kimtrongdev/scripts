@@ -43,7 +43,7 @@ async function userWatch(action){
             url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || 
             url.indexOf('https://accounts.google.com/ServiceLogin') > -1 || 
             url.indexOf('accounts.google.com/v3/signin/identifier') > -1) {
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'NOT_LOGIN')
+            await updateLoginStatus(action.pid, LOGIN_STATUS.ERROR, 'NOT_LOGIN')
         }
         else if (url.indexOf('youtube.com/account') > -1) {
             await handleUsersSelection(action)

@@ -67,6 +67,9 @@ chrome.runtime.onMessage.addListener(
           else if (request.type == 'CLOSE_UNACTIVE_TABS') {
             closeUnactiveTabs()
           }
+          else if (request.type == 'CLOSE_BROWSER') {
+            closeBrowser()
+          }
           else{
               if(request.data.stop && request.data.stop != 'false'){
                     closeBrowser()

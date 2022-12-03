@@ -99,6 +99,9 @@ async function runAction (action) {
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
         }
     }
+
+    await sleep(30000)
+    closeBrowser()
 }
 
 async function initActionData(action) {
@@ -376,6 +379,15 @@ function closeUnactiveTabs () {
     }))
 }
 
+function closeBrowser () {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+            type: 'CLOSE_BROWSER', 
+            url: '/report',
+        }, function (response) {
+        resolve(response);
+    }))
+}
+
 function reportPositionChannel(pid, position) {
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: { id: 'channel-position', position, pid }}, function (response) {
@@ -460,13 +472,13 @@ async function getFirstVideo(pllId){
     }))
 }
 
-// function updateLoginStatus(pid, status, msg){
-//     console.log('updateLoginStatus',pid,status)
-//     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/login',
-//         data: {pid: pid, stop: true, status: status, msg: msg}}, function (response) {
-//         resolve(response);
-//     }))
-// }
+function updateLoginStatus(pid, status, msg){
+    console.log('updateLoginStatus',pid,status)
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/login',
+        data: {pid: pid, stop: true, status: status, msg: msg}}, function (response) {
+        resolve(response);
+    }))
+}
 
 function simpleClick(x,y){
     var ev = document.createEvent("MouseEvent");
