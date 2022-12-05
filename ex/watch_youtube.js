@@ -414,6 +414,12 @@ async function preWatchingVideo(action){
 }
 
 async function watchingVideo(action){
+    if (action.id == 'watch_video' && !action.reloaded) {
+        action.reloaded = true
+        await setActionData(action)
+        location.reload()
+    }
+
     action.data_reported = document.querySelector('.view-count').innerText
     await setActionData(action)
     
