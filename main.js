@@ -15,13 +15,13 @@ let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
-    hostIp: '45.77.168.169:9001',
+    hostIp: '45.77.168.169:7000',
     maxProfile: 1,
 }
 
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
-global.DEBUG = Boolean(Number(process.env.DEBUG))
+global.DEBUG = true//Boolean(Number(process.env.DEBUG))
 const LOCAL_PORT = 2000
 let IP
 let IS_REG_USER = false
@@ -1671,12 +1671,11 @@ async function handleAction (actionData) {
     }
 }
 
-function removePidAddnew(pid, status) {
+async function removePidAddnew(pid, status) {
     try {
-        runnings = runnings.filter(x => x.pid != pid)
         if (status != 1 || IS_REG_USER) {
             // login error
-            deleteProfile(pid)
+            await deleteProfile(pid)
             utils.log('removePidAddnew', pid, status)
         }
         else {
@@ -1687,6 +1686,7 @@ function removePidAddnew(pid, status) {
             }
         }
 
+        runnings = runnings.filter(x => x.pid != pid)
         if (IS_REG_USER) {
             ids = ids.filter(x => x != pid)
         }
@@ -1698,11 +1698,15 @@ function removePidAddnew(pid, status) {
 }
 
 async function deleteProfile(pid, retry = 0) {
-    ids = ids.filter(x => x != pid)
-    runnings = runnings.filter(r => r.pid != pid)
     try {
         if (WIN_ENV) {
-            del.sync(['C:/Users/Pixel/AppData/Local/BraveSoftware/Brave-Browser/User Data/' + 'profile-' + pid], { force: true })
+            try {
+                await utils.sleep(3000)
+                del.sync(['C:/Users/Pixel/AppData/Local/BraveSoftware/Brave-Browser/User Data/' + 'profile-' + pid], { force: true })
+            } catch (error) {
+                console.log(error);
+            }
+            
             del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
         } else {
             del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
@@ -1712,11 +1716,14 @@ async function deleteProfile(pid, retry = 0) {
     }
     catch (e) {
         utils.log('error', 'deleteProfile', pid, retry)
+        console.log(e);
         if (retry < 3) {
             await utils.sleep(3000)
             await deleteProfile(pid, retry + 1)
         }
     }
+    ids = ids.filter(x => x != pid)
+    runnings = runnings.filter(r => r.pid != pid)
 }
 
 function runAutoRebootVm () {

@@ -99,9 +99,6 @@ async function runAction (action) {
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
         }
     }
-
-    await sleep(30000)
-    closeBrowser()
 }
 
 async function initActionData(action) {
