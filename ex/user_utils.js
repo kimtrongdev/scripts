@@ -169,9 +169,7 @@ async function initActionData(action) {
         await goToLocation(action.pid,'https://www.youtube.com/')
     }
     else if (action.id == 'like_youtube') {
-        action.commented_count = 0
         action.video_ids = action.video_ids.split(',')
-        action.channel_ids = action.channel_ids.split(',')
         await setActionData(action)
         await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
