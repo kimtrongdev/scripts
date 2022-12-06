@@ -30,7 +30,7 @@ async function youtubeLike(action) {
         await processWatchChannelPage(action)
       }
     } else {
-      await reportScript(action, false)
+      //await reportScript(action, false)
     }
   } catch (error) {
     console.log(error);
