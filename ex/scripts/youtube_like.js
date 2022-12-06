@@ -13,15 +13,10 @@ async function youtubeLike(action) {
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
-      await userScroll(action.pid, randomRanger(10,15))
-      await waitForSelector('#placeholder-area', 25000)
-
-      if (!document.querySelector('#placeholder-area')) {
-        await reportScript(action, 0)
-        return
-      }
+      await sleep(10000)
 
       await LikeOrDisLikeYoutubeVideo(action.pid, true)
+      await sleep(3000)
       await reportScript(action)
     } else if(url.indexOf('youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
       if (document.querySelector('#edit-buttons a')) {
@@ -41,7 +36,7 @@ async function gotoLike (action) {
   if (!action.video_ids.length) {
     await reportScript(action)
   } else {
-    let videoId = action.video_ids.shift()
+    let videoId = action.video_ids[randomRanger(0, action.video_ids.length - 1)]
     await setActionData(action)
     await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
   }

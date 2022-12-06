@@ -52,7 +52,7 @@ async function youtubeComment(action) {
     } else if (url.indexOf('/editing/images') > -1) {
       await hanleChangeAvata(action)
     } else {
-      await reportScript(action, false)
+      //await reportScript(action, false)
     }
   } catch (error) {
     console.log(error);
@@ -134,7 +134,7 @@ async function gotoWatch (action) {
     if (!action.video_ids.length) {
       await reportScript(action)
     } else {
-      let videoId = action.video_ids.shift()
+      let videoId = action.video_ids[randomRanger(0, action.video_ids.length - 1)]
       await setActionData(action)
       await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
     }
