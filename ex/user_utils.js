@@ -46,6 +46,9 @@ async function runAction (action) {
     else if (action.id == 'create_playlist') {
         await createPlaylistScript(action)
     }
+    else if (action.id == 'like_youtube') {
+        await youtubeLike(action)
+    }
     else if (action.id == 'comment_youtube') {
         await youtubeComment(action)
     }
@@ -164,6 +167,13 @@ async function initActionData(action) {
         action.fisrtStart = true
         await setActionData(action)
         await goToLocation(action.pid,'https://www.youtube.com/')
+    }
+    else if (action.id == 'like_youtube') {
+        action.commented_count = 0
+        action.video_ids = action.video_ids.split(',')
+        action.channel_ids = action.channel_ids.split(',')
+        await setActionData(action)
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.id == 'comment_youtube') {
         action.commented_count = 0
