@@ -38,17 +38,12 @@ async function youtubeLike(action) {
 }
 
 async function gotoLike (action) {
-  if (action.channel_ids && action.channel_ids.length) {
-    let channel_id = action.channel_ids[randomRanger(0, action.channel_ids.length - 1)]
-    await goToLocation(action.pid, 'https://www.youtube.com/' + channel_id + '/videos')
+  if (!action.video_ids.length) {
+    await reportScript(action)
   } else {
-    if (!action.video_ids.length) {
-      await reportScript(action)
-    } else {
-      let videoId = action.video_ids.shift()
-      await setActionData(action)
-      await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
-    }
+    let videoId = action.video_ids.shift()
+    await setActionData(action)
+    await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
   }
 }
 
