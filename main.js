@@ -196,7 +196,7 @@ async function loadSystemConfig () {
     let timeNow = new Date(Date.now())
     const hour = timeNow.getHours()
 
-    if (hour % 2 == 0 && hour != hourReseted) {
+    if (false && hour % 2 == 0 && hour != hourReseted) {
         hourReseted = hour
 
         async function loadSystemPid (browser) {
@@ -216,15 +216,15 @@ async function loadSystemConfig () {
             })
         }
 
-        let pid = await loadSystemPid('brave')
-        if (pid) {
-            try {
-                exec(`nircmd closeprocess /${pid}`)
-                runnings = []
-            } catch (error) {
-              console.log(error);  
-            }
-        }
+        // let pid = await loadSystemPid('brave')
+        // if (pid) {
+        //     try {
+        //         exec(`nircmd closeprocess /${pid}`)
+        //         runnings = []
+        //     } catch (error) {
+        //       console.log(error);  
+        //     }
+        // }
     }
 
     utils.log('SYSTEMCONFIG--', systemConfig);
