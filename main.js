@@ -2,6 +2,7 @@ const useProxy = true
 let isRunBAT = false
 let hourReseted = null
 let isSystemChecking = false
+const WIN_PROFILE_PATH = `C:/Users/Pixel/AppData/Local/BraveSoftware/Brave-Browser/User Data/`
 const TIME_REPORT = 290000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
@@ -234,6 +235,17 @@ async function resetScreen () {
     if (!fisrt) {
         isPauseAction = true
         exec('Taskkill /IM brave.exe /F')
+        await utils.sleep(3000)
+
+        // handle remove profiles not running
+        // let dirNames = fs.readdirSync(WIN_PROFILE_PATH, { withFileTypes: true })
+        // .filter(dirent => (dirent.isDirectory() && dirent.name.startsWith('profile-')) )
+        // .map(dirent => dirent.name)
+        // dirNames.forEach(name => {
+        //     del.sync([WIN_PROFILE_PATH + name], { force: true })
+        // });
+
+
         runnings = []
         exec('start brave.exe --window-size="700,700" --window-position="10,10" --profile-directory="profile-test3"')
         await utils.sleep(4000)
@@ -1728,7 +1740,7 @@ async function deleteProfile(pid, retry = 0) {
         if (WIN_ENV) {
             try {
                 await utils.sleep(3000)
-                del.sync(['C:/Users/Pixel/AppData/Local/BraveSoftware/Brave-Browser/User Data/' + 'profile-' + pid], { force: true })
+                del.sync([WIN_PROFILE_PATH + 'profile-' + pid], { force: true })
             } catch (error) {
                 console.log(error);
             }
