@@ -425,6 +425,11 @@ async function watchingVideo(action){
     
     let url = window.location.toString()
     let interval = 10000
+
+    if (document.querySelector('.ytp-mute-button defs')) {
+        simpleSendKey('77')
+    }
+
     for(let i = 0; i < action.watch_time;){
         let currentUrl = window.location.toString()
         // check current url

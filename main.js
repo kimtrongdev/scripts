@@ -260,7 +260,7 @@ async function resetScreen () {
     
     setTimeout(() => {
         resetScreen()
-    }, 60000)
+    }, 3600000)
 }
 
 async function profileRunningManage() {
