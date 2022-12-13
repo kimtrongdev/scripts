@@ -15,7 +15,7 @@ let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
-    hostIp: '45.77.168.169:7000',
+    hostIp: '103.149.28.15:8002',
     maxProfile: 1,
 }
 
@@ -227,6 +227,24 @@ async function loadSystemConfig () {
     }
 
     utils.log('SYSTEMCONFIG--', systemConfig);
+}
+
+let fisrt = true
+async function resetScreen () {
+    if (!fisrt) {
+        isPauseAction = true
+        exec('Taskkill /IM brave.exe /F')
+        runnings = []
+        exec('start brave.exe --window-size="700,700" --profile-directory="profile-test"')
+        await utils.sleep(4000)
+        isPauseAction = false
+    } else {
+        fisrt = false
+    }
+    
+    setTimeout(() => {
+        resetScreen()
+    }, 60000)
 }
 
 async function profileRunningManage() {
@@ -751,6 +769,9 @@ async function getScriptData(pid, isNewProxy = false) {
         }
     } else {
         action = await request_api.getNewScript(pid)
+        if (isNewProxy && action.script_code == 'end_script') {
+            action = await request_api.getNewScript(pid)
+        }
     }
 
     if (action) {
@@ -982,6 +1003,7 @@ async function running() {
     runAutoRebootVm()
     // manage profile actions
     await profileManage()
+    resetScreen()
 }
 
 function initDir() {
@@ -1375,7 +1397,7 @@ function initExpress() {
 
 async function handleAction (actionData) {
     if (isPauseAction) {
-        res.send({ rs: 'ok' })
+        //res.send({ rs: 'ok' })
         return
     }
 
