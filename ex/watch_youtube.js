@@ -264,10 +264,18 @@ async function preWatchingVideo(action){
             await sleep(1000)
         }
 
-        if (action.viewed_ads) {
-            action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
+        if (action.watching_time_ads_random && action.watching_time_non_ads_random) {
+            if (action.viewed_ads) {
+                action.watch_time = randomRanger(Number(action.watching_time_ads_random.split('-')[0]), Number(action.watching_time_ads_random.split('-')[1]))
+            } else {
+                action.watch_time = randomRanger(Number(action.watching_time_non_ads_random.split('-')[0]), Number(action.watching_time_non_ads_random.split('-')[1]))
+            }
         } else {
-            action.watch_time = action.watching_time_non_ads
+            if (action.viewed_ads) {
+                action.watch_time = randomRanger(action.watching_time_start_ads, action.watching_time_end_ads)
+            } else {
+                action.watch_time = action.watching_time_non_ads
+            }
         }
     }
     else{
@@ -486,12 +494,26 @@ async function watchingVideo(action){
     return true
 }
 
+function randomBoolean(percent = 0) {
+    return Math.random() < (percent / 100)
+}
+
 async function afterWatchingVideo(action,finishVideo){
     let url = window.location.toString()
     if(action.url_type == 'playlist'){
         await updateWatchedVideo(action.viewed_ads, action.pid)
-            
-        if(action.viewed_ads || Math.abs(action.playlist_index - 1) > action.total_times_next_video || url.indexOf(action.playlist_url) < 0){
+        let isNext = action.viewed_ads ? randomBoolean(action.percent_next_not_ads) : randomBoolean(action.percent_next_ads)
+        if (!action.total_next) {
+            action.total_next = 0
+        }
+
+        if (isNext && action.total_next < Number(action.total_next_max)) {
+            action.total_next += 1
+            action.viewed_ads = false
+            await setActionData(action)
+            await nextVideo(action.pid)
+        }
+        else {
            // await updateActionStatus(action.pid, action.id, 0,'end playlist')
           // action.channel_position += 1
           action._total_loop_find_ads += 1
@@ -528,15 +550,6 @@ async function afterWatchingVideo(action,finishVideo){
         //         await setActionData(action) 
         //         await goToLocation(action.pid, 'youtube.com//')
         //    }
-            return
-        }
-        else{
-           // if(finishVideo){
-                // nex video
-                action.viewed_ads = false
-                await setActionData(action)
-                await nextVideo(action.pid)
-           // }
             return
         }
     }
