@@ -502,7 +502,7 @@ async function afterWatchingVideo(action,finishVideo){
     let url = window.location.toString()
     if(action.url_type == 'playlist'){
         await updateWatchedVideo(action.viewed_ads, action.pid)
-        let isNext = action.viewed_ads ? randomBoolean(action.percent_next_not_ads) : randomBoolean(action.percent_next_ads)
+        let isNext = action.viewed_ads ? randomBoolean(action.percent_next_ads) : randomBoolean(action.percent_next_not_ads)
         if (!action.total_next) {
             action.total_next = 0
         }
