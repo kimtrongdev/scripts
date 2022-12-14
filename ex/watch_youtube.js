@@ -512,6 +512,7 @@ async function afterWatchingVideo(action,finishVideo){
             action.viewed_ads = false
             await setActionData(action)
             await nextVideo(action.pid)
+            return
         }
         else {
            // await updateActionStatus(action.pid, action.id, 0,'end playlist')
