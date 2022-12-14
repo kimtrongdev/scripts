@@ -418,7 +418,12 @@ async function preWatchingVideo(action){
 }
 
 async function watchingVideo(action){
-    action.data_reported = document.querySelector('.view-count').innerText
+    try {
+        action.data_reported = document.querySelector('.view-count').innerText
+    } catch (error) {
+        console.log(error);
+    }
+
     await setActionData(action)
     
     let url = window.location.toString()
