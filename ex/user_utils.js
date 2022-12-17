@@ -66,6 +66,9 @@ async function runAction (action) {
         await setActionData(action)
         await scriptYoutubeSub(action)
     } 
+    else if (action.id == 'like_youtube') {
+        await youtubeLike(action)
+    }
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
         await userLogin(action)
@@ -192,6 +195,11 @@ async function initActionData(action) {
     }
     else if (action.id == 'map') {
         await goToLocation(action.pid,'google.com/maps')
+    }
+    else if (action.id == 'like_youtube') {
+        action.video_ids = action.video_ids.split(',')
+        await setActionData(action)
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.id == 'youtube_sub') {
         await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
