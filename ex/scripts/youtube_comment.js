@@ -154,7 +154,7 @@ async function afterComment (action) {
   await setActionData(action)
   if (action.commented_count <= action.commented_count_max) {
     if (action.commented_count % action.comment_change_user == 0) {
-      await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+      await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     } else {
       await gotoWatch(action)
     }
@@ -173,7 +173,7 @@ async function handleAccountPage (action) {
   if (action.loadFirstUser) {
       action.loadFirstUser = false
       await setActionData(action)
-      await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+      await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
       await sleep(60000)
       return
   }
@@ -185,7 +185,7 @@ async function handleAccountPage (action) {
 
   let checkboxDontShow = document.querySelector('#checkboxContainer')
   if (document.querySelector('#primary-content')) {
-      await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+      await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
       await sleep(60000)
   }
 
@@ -208,7 +208,7 @@ async function handleAccountPage (action) {
   if (!channels || !channels.length || checkboxDontShow) {
       action.loadFirstUser = true
       await setActionData(action)
-      await goToLocation(action.pid, 'youtube.com/account')
+      await goToLocation(action.pid, 'https://www.youtube.com/account')
       await sleep(60000)
       return
   }

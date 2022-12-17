@@ -173,7 +173,7 @@ async function initActionData(action) {
         action.video_ids = action.video_ids.split(',')
         action.channel_ids = action.channel_ids.split(',')
         await setActionData(action)
-        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
        // await goToLocation(action.pid, 'https://www.youtube.com/')
     }
     else if (action.id == 'check_bat') {
@@ -199,7 +199,7 @@ async function initActionData(action) {
     else if (action.id == 'like_youtube') {
         action.video_ids = action.video_ids.split(',')
         await setActionData(action)
-        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.id == 'youtube_sub') {
         await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
