@@ -247,13 +247,13 @@ async function resetScreen () {
 
 
         runnings = []
-        exec('start brave.exe --window-size="700,700" --window-position="10,10" --profile-directory="profile-test3"')
-        await utils.sleep(4000)
-        exec('Taskkill /IM brave.exe /F')
-        await utils.sleep(2000)
+        // exec('start brave.exe --window-size="700,700" --window-position="10,10" --profile-directory="profile-test3"')
+        // await utils.sleep(4000)
+        // exec('Taskkill /IM brave.exe /F')
+        // await utils.sleep(2000)
         let exs = ['ex']
         exs = exs.map(x => path.resolve(x)).join(",")
-        exec(`start brave.exe --window-size="700,700" --load-extension="${exs}" --profile-directory="profile-test3"`)
+        exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
 
         await utils.sleep(4000)
         isPauseAction = false
@@ -427,7 +427,7 @@ async function startChromeAction(action, _browser) {
         screenWidth = 1100
     } else {
         if (WIN_ENV) {
-            windowSize = ` --window-size="700,700"`
+            windowSize = ` --window-size="400,400"`
             windowPosition = ``
         } else {
             windowSize = ' --start-maximized'
