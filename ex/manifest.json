@@ -30,7 +30,8 @@
         "./scripts/add_video_playlist.js",
         "./scripts/reg_mail.js",
         "./scripts/check_mail_1.js",
-        "./scripts/reg_fb.js"
+        "./scripts/reg_fb.js",
+        "./scripts/youtube_like.js"
       ]
     },
     {
