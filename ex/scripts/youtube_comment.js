@@ -51,6 +51,8 @@ async function youtubeComment(action) {
       await handleStudioSetting(action)
     } else if (url.indexOf('/editing/images') > -1) {
       await hanleChangeAvata(action)
+      await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+      await gotoWatch(action)
     } else {
       //await reportScript(action, false)
     }
@@ -121,9 +123,6 @@ async function hanleChangeAvata(action) {
 
   await sleep(3000)
   await userClick(action.pid, '#done-button')
-
-  await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-  await gotoWatch(action)
 }
 
 async function gotoWatch (action) {

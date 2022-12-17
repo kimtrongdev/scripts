@@ -59,6 +59,7 @@ async function regMail(action) {
       await handleStudioSetting(action)
     } else if (url.indexOf('/editing/images') > -1) {
       await hanleChangeAvata(action)
+      await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'reg success')
     } 
     else if (url.indexOf('youtube.com/channel') > -1 || url.indexOf('youtube.com/@') > -1) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
