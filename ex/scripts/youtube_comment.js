@@ -9,19 +9,24 @@ async function youtubeComment(action) {
       await gotoWatch(action)
     }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-      closeUnactiveTabs()
-      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
-      await sleep(5000)
-      let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
-      if (switchChannelOpt) {
-          await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
-          
-          await sleep(5000)
-          if (document.querySelector('#create-channel-button')) {
-            await userClick(action.pid, '#create-channel-button')
-          }
+      if (action.playlist_ids) {
+        closeUnactiveTabs()
+      
+        await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+        await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+        await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
+        await sleep(5000)
+        let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
+        if (switchChannelOpt) {
+            await userClick(action.pid, 'switchChannelOpt', switchChannelOpt)
+            
+            await sleep(5000)
+            if (document.querySelector('#create-channel-button')) {
+              await userClick(action.pid, '#create-channel-button')
+            }
+        }
+      } else {
+        await gotoWatch(action)
       }
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
@@ -36,7 +41,7 @@ async function youtubeComment(action) {
 
       await CommentYoutubeVideo(action.pid)
       await afterComment(action)
-    } else if(url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
+    } else if(url.indexOf('youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
       if (document.querySelector('#edit-buttons a')) {
         await userClick(action.pid, '#edit-buttons a')
       } else {
@@ -47,7 +52,7 @@ async function youtubeComment(action) {
     } else if (url.indexOf('/editing/images') > -1) {
       await hanleChangeAvata(action)
     } else {
-      await reportScript(action, false)
+      //await reportScript(action, false)
     }
   } catch (error) {
     console.log(error);
@@ -122,17 +127,25 @@ async function hanleChangeAvata(action) {
 }
 
 async function gotoWatch (action) {
-  if (action.channel_ids && action.channel_ids.length) {
-    let channel_id = action.channel_ids[randomRanger(0, action.channel_ids.length - 1)]
-    await goToLocation(action.pid, 'https://www.youtube.com/' + channel_id + '/videos')
+  // if (action.channel_ids && action.channel_ids.length) {
+  //   let channel_id = action.channel_ids[randomRanger(0, action.channel_ids.length - 1)]
+  //   await goToLocation(action.pid, 'https://www.youtube.com/' + channel_id + '/videos')
+  // } else {
+  //   if (!action.video_ids.length) {
+  //     await reportScript(action)
+  //   } else {
+  //     let videoId = action.video_ids[randomRanger(0, action.video_ids.length - 1)]
+  //     await setActionData(action)
+  //     await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
+  //   }
+  // }
+
+  if (!action.video_ids.length) {
+    await reportScript(action)
   } else {
-    if (!action.video_ids.length) {
-      await reportScript(action)
-    } else {
-      let videoId = action.video_ids.shift()
-      await setActionData(action)
-      await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
-    }
+    let videoId = action.video_ids[randomRanger(0, action.video_ids.length - 1)]
+    await setActionData(action)
+    await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
   }
 }
 
