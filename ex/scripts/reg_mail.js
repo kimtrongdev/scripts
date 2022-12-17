@@ -4,7 +4,7 @@ async function regMail(action) {
     let url = window.location.toString()
     await reportLive(action.pid)
 
-    const linkAfterSuccess = 'https://www.google.com/search?q=google ads home'
+    const linkAfterSuccess = 'https://www.youtube.com/create_channel'
 
     if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
@@ -55,10 +55,22 @@ async function regMail(action) {
 
       await goToLocation(action.pid, linkAfterSuccess)
     }
-    else if (url.indexOf('youtube.com/channel') > -1) {
-      await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
-     //await goToLocation(action.pid, linkAfterSuccess)
+    else if (url.indexOf('youtube.com/channel') > -1 || url.indexOf('youtube.com/@') > -1) {
+      
+
+      if (document.querySelector('#edit-buttons a')) {
+        await userClick(action.pid, '#edit-buttons a')
+      } else {
+        await handleChannelPage(action)
+      }
+      //await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
+      //await goToLocation(action.pid, linkAfterSuccess)
     }
+    else if (url.indexOf('/editing/sections') > -1) {
+      await handleStudioSetting(action)
+    } else if (url.indexOf('/editing/images') > -1) {
+      await hanleChangeAvata(action)
+    } 
     else if (url.indexOf('google.com/adsense/start') > -1) {
       await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'underage')
     }
@@ -80,7 +92,7 @@ async function regMail(action) {
       await setActionData(action)
       await reportAccount(action)
 
-      await goToLocation(action.pid, 'https://www.youtube.com')
+      await goToLocation(action.pid, 'https://www.youtube.com/create_channel')
       //await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
       //await goToLocation(action.pid, 'https://www.ads.google.com/home/')
       //await goToLocation(action.pid, 'https://www.google.com/adsense/signup/create?sac=true&pli=1&authuser=0&sac=true')
