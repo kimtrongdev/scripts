@@ -25,7 +25,7 @@ async function regMail(action) {
           } 
       }
 
-      await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
+      //await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
     }
     else if (url.indexOf('google.com/personal-info') > -1) {
       await userClick(action.pid, 'div[data-picker="https://docs.google.com/picker"] figure')
@@ -55,9 +55,13 @@ async function regMail(action) {
 
       await goToLocation(action.pid, linkAfterSuccess)
     }
+    else if (url.indexOf('/editing/sections') > -1) {
+      await handleStudioSetting(action)
+    } else if (url.indexOf('/editing/images') > -1) {
+      await hanleChangeAvata(action)
+    } 
     else if (url.indexOf('youtube.com/channel') > -1 || url.indexOf('youtube.com/@') > -1) {
-      
-
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (document.querySelector('#edit-buttons a')) {
         await userClick(action.pid, '#edit-buttons a')
       } else {
@@ -66,11 +70,6 @@ async function regMail(action) {
       //await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
       //await goToLocation(action.pid, linkAfterSuccess)
     }
-    else if (url.indexOf('/editing/sections') > -1) {
-      await handleStudioSetting(action)
-    } else if (url.indexOf('/editing/images') > -1) {
-      await hanleChangeAvata(action)
-    } 
     else if (url.indexOf('google.com/adsense/start') > -1) {
       await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'underage')
     }
