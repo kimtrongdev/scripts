@@ -114,6 +114,12 @@ function closeBrowser(){
         for (var i = 0; i < tabs.length; i++) {
             chrome.tabs.remove(tabs[i].id);
         }
+        for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.remove(tabs[i].id);
+        }
+        for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.remove(tabs[i].id);
+        }
     });
 }
 

@@ -230,12 +230,25 @@ async function loadSystemConfig () {
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
-let fisrt = true
+let rx = 10
 async function resetScreen () {
-    if (!fisrt) {
-        isPauseAction = true
-        exec('Taskkill /IM brave.exe /F')
+    if (true) {
+        //isPauseAction = true
+        exec(`nircmd win close ititle "New Tab"`)
+        let exs = ['ex']
+        exs = exs.map(x => path.resolve(x)).join(",")
+        exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
         await utils.sleep(3000)
+
+        rx += 10
+        if (rx > 600) {
+            rx = 10
+        }
+        let rdY = utils.randomRanger(1, 200)
+        exec(`nircmd win setsize ititle "New Tab" ${rx}, ${rdY}, 400, 400`)
+
+        //exec('Taskkill /IM brave.exe /F')
+        //await utils.sleep(3000)
 
         // handle remove profiles not running
         // let dirNames = fs.readdirSync(WIN_PROFILE_PATH, { withFileTypes: true })
@@ -246,24 +259,22 @@ async function resetScreen () {
         // });
 
 
-        runnings = []
+        //runnings = []
         // exec('start brave.exe --window-size="700,700" --window-position="10,10" --profile-directory="profile-test3"')
         // await utils.sleep(4000)
         // exec('Taskkill /IM brave.exe /F')
         // await utils.sleep(2000)
-        let exs = ['ex']
-        exs = exs.map(x => path.resolve(x)).join(",")
-        exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
+        //let exs = ['ex']
+        //exs = exs.map(x => path.resolve(x)).join(",")
+        //exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
 
-        await utils.sleep(4000)
-        isPauseAction = false
-    } else {
-        fisrt = false
+        //await utils.sleep(4000)
+        //isPauseAction = false
     }
     
     setTimeout(() => {
         resetScreen()
-    }, 3600000)
+    }, 60000 * 30)
 }
 
 async function profileRunningManage() {

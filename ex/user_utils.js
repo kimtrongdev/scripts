@@ -253,7 +253,7 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://youtube.com//')
+            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
         }
     }
 }
