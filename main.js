@@ -682,29 +682,29 @@ async function newRunProfile() {
     if (pid || IS_REG_USER) {
         if (pid) {
             // handle remove undefined folder
-            if (pid == 'undefined' && !IS_REG_USER) {
-                console.log('Handle remove undefined folder');
-                try {
-                    execSync('rm -rf profiles/undefined')
-                } catch (error) { console.log(error) }
-                return
-            }
+            // if (pid == 'undefined' && !IS_REG_USER) {
+            //     console.log('Handle remove undefined folder');
+            //     try {
+            //         execSync('rm -rf profiles/undefined')
+            //     } catch (error) { console.log(error) }
+            //     return
+            // }
 
-            let currentIds = getProfileIds()
-            currentIds = currentIds.filter(cid => cid != pid)
-            if (currentIds.length > MAX_PROFILE - 1) {
-                currentIds.splice(0, MAX_PROFILE - 1)
-                currentIds.forEach(id => {
-                    try {
-                        if (id != pid) {
-                            closeChrome(id)
-                            execSync('rm -rf profiles/'+id)
-                            ids = ids.filter(_id => _id != id)
-                            runnings = runnings.filter(r => r.pid != id)
-                        }
-                    } catch (error) { console.log(error) }
-                });
-            }
+            //let currentIds = getProfileIds()
+            //currentIds = currentIds.filter(cid => cid != pid)
+            // if (currentIds.length > MAX_PROFILE - 1) {
+            //     currentIds.splice(0, MAX_PROFILE - 1)
+            //     currentIds.forEach(id => {
+            //         try {
+            //             if (id != pid) {
+            //                 closeChrome(id)
+            //                 execSync('rm -rf profiles/'+id)
+            //                 ids = ids.filter(_id => _id != id)
+            //                 runnings = runnings.filter(r => r.pid != id)
+            //             }
+            //         } catch (error) { console.log(error) }
+            //     });
+            // }
             ids.push(pid)
         } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
             pid = Math.floor(Math.random() * 5000)
