@@ -91,6 +91,8 @@ async function reqFacebook(action) {
 
           if (!action.username.startsWith('0')) {
             action.username = '+84' + action.username
+          } else {
+            action.username = '+84' + action.username.slice(1, action.username.length)
           }
 
           await userType(action.pid,'input[name="reg_email__"]', action.username)
