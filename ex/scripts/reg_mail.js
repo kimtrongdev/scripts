@@ -69,7 +69,7 @@ async function regMail(action) {
       await goToLocation(action.pid, linkAfterSuccess)
     }
     else if (url.indexOf('/editing/sections') > -1) {
-      await handleStudioSetting(action)
+      await handleStudioSetting(action, true)
     } else if (url.indexOf('/editing/images') > -1) {
       await hanleChangeAvata(action)
       await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'reg success')

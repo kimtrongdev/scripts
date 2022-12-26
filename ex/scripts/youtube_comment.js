@@ -61,42 +61,44 @@ async function youtubeComment(action) {
   }
 }
 
-async function handleStudioSetting (action) {
+async function handleStudioSetting (action, regMail = false) {
   while (document.querySelector('#single-step-navigation')) {
     await userClick(action.pid, '#single-step-navigation #close-button')
     await sleep(1000)
   }
   
-  while (document.querySelector('#shelf-actions-menu .remove-defaults')) {
-    await userClick(action.pid, '#shelf-actions-menu .remove-defaults')
-    await sleep(1000)
-    await userClick(action.pid, 'tp-yt-paper-item[test-id="delete"]')
+  if (!regMail) {
+    while (document.querySelector('#shelf-actions-menu .remove-defaults')) {
+      await userClick(action.pid, '#shelf-actions-menu .remove-defaults')
+      await sleep(1000)
+      await userClick(action.pid, 'tp-yt-paper-item[test-id="delete"]')
+      await sleep(2000)
+    }
+  
+    await userClick(action.pid, '#add-section-button')
+    await userClick(action.pid, 'tp-yt-paper-item[test-id="playlist"]')
+    await waitForSelector('#search-any')
+  
+    let playlistIDs = action.playlist_ids.split(',')
+    let playlistID = playlistIDs[randomRanger(0, playlistIDs.length - 1)]
+    await userType(action.pid, '#search-any', playlistID)
+  
     await sleep(2000)
-  }
-
-  await userClick(action.pid, '#add-section-button')
-  await userClick(action.pid, 'tp-yt-paper-item[test-id="playlist"]')
-  await waitForSelector('#search-any')
-
-  let playlistIDs = action.playlist_ids.split(',')
-  let playlistID = playlistIDs[randomRanger(0, playlistIDs.length - 1)]
-  await userType(action.pid, '#search-any', playlistID)
-
-  await sleep(2000)
-  await waitForSelector('#content')
-  await userClick(action.pid, '#content')
-  await sleep(2000)
-
-  while (document.querySelector('#single-step-navigation')) {
-    await userClick(action.pid, '#single-step-navigation #close-button')
-    await sleep(1000)
-  }
-
-  await userClick(action.pid, '#publish-button')
-  await sleep(2000)
-  await userClick(action.pid, '#discard-changes-button')
+    await waitForSelector('#content')
+    await userClick(action.pid, '#content')
+    await sleep(2000)
   
-  if (action.is_change_avata) {
+    while (document.querySelector('#single-step-navigation')) {
+      await userClick(action.pid, '#single-step-navigation #close-button')
+      await sleep(1000)
+    }
+  
+    await userClick(action.pid, '#publish-button')
+    await sleep(2000)
+    await userClick(action.pid, '#discard-changes-button')
+  }
+  
+  if (action.is_change_avata || regMail) {
     let infoItem = document.querySelectorAll('tp-yt-paper-tab').item(1)
     if (infoItem) {
       await userClick(action.pid, 'infoItem', infoItem)
