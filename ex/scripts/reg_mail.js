@@ -9,6 +9,18 @@ async function regMail(action) {
     if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+
+      let checkCreateChannel1 = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
+      let checkCreateChannel2 = await getElementContainsInnerText('yt-formatted-string', 'TẠO KÊNH')
+      let checkCreateChannel3 = await getElementContainsInnerText('yt-formatted-string', 'চ্যানেল তৈরি করুন')
+
+      let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3
+      if (checkCreateChannel) {
+          await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
+          await sleep(60000)
+      }
+
+
       await userClick(action.pid, '#avatar-btn,ytm-topbar-menu-button-renderer .profile-icon-img')
       await sleep(5000)
       let switchChannelOpt = document.querySelector('yt-multi-page-menu-section-renderer #endpoint #content-icon')
