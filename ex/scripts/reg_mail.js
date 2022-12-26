@@ -72,7 +72,8 @@ async function regMail(action) {
       await handleStudioSetting(action, true)
     } else if (url.indexOf('/editing/images') > -1) {
       await hanleChangeAvata(action)
-      await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'reg success')
+      //await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'reg success')
+      await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
     } 
     else if (url.indexOf('youtube.com/channel') > -1 || url.indexOf('youtube.com/@') > -1) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
