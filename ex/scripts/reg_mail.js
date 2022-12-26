@@ -7,6 +7,7 @@ async function regMail(action) {
     const linkAfterSuccess = 'https://www.youtube.com/create_channel'
 
     if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+      await sleep(5000)
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
