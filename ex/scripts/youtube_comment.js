@@ -123,8 +123,11 @@ async function hanleChangeAvata(action) {
   
   await userSelectAvatar(action.pid, gender)
 
-  await sleep(3000)
+  await sleep(10000)
   await userClick(action.pid, '#done-button')
+  await userClick(action.pid, '#publish-button')
+  await sleep(2000)
+  await userClick(action.pid, '#discard-changes-button')
 }
 
 async function gotoWatch (action) {
