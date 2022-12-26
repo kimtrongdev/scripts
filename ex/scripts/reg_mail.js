@@ -10,11 +10,11 @@ async function regMail(action) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
-      let checkCreateChannel1 = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
-      let checkCreateChannel2 = await getElementContainsInnerText('yt-formatted-string', 'TẠO KÊNH')
+      let checkCreateChannel1 = await getElementContainsInnerText('button', 'CREATE CHANNEL')
+      let checkCreateChannel2 = await getElementContainsInnerText('button', 'Tạo kênh')
       let checkCreateChannel3 = await getElementContainsInnerText('yt-formatted-string', 'চ্যানেল তৈরি করুন')
 
-      let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3
+      let checkCreateChannel = checkCreateChannel2 || checkCreateChannel1 || checkCreateChannel3
       if (checkCreateChannel) {
           await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
           await sleep(60000)
