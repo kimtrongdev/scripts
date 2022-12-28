@@ -1365,13 +1365,14 @@ async function handleAction (actionData) {
     }
 
     if (actionData.action == 'SELECT_AVATAR') {
+        await utils.sleep(5000)
         del.sync([path.resolve('avatar.jpg')], { force: true })
         let avatar = await request_api.getAvatar(actionData.pid,path.resolve('avatar.jpg'),actionData.str)
 
         if(true && avatar){
             await utils.sleep(5000)
             execSync(`xdotool mousemove 660 240 && sleep 1 && xdotool click 1 && sleep 1`)
-            execSync(`xdotool mousemove 828 260 && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+            execSync(`xdotool mousemove 828 260 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
         }
         else{
             execSync(`xdotool key Escape`)
