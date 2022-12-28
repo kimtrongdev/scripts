@@ -1371,8 +1371,13 @@ async function handleAction (actionData) {
 
         if(true && avatar){
             await utils.sleep(5000)
-            execSync(`xdotool mousemove 660 240 && sleep 1 && xdotool click 1 && sleep 1`)
-            execSync(`xdotool mousemove 828 260 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+            execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 1`)
+            execSync(`xdotool key a`)
+            execSync(`xdotool key v`)
+            execSync(`xdotool key a`)
+            execSync(`xdotool key t`)
+            execSync(`xdotool key a`)
+            execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
         }
         else{
             execSync(`xdotool key Escape`)
