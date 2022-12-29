@@ -361,6 +361,7 @@ async function startChromeAction(action, _browser) {
     }
     if (proxy && proxy[action.pid] && proxy[action.pid].username) {
         utils.log('set proxy user name', proxy[action.pid].username)
+        action.proxy_server = proxy[action.pid].server
         action.proxy_username = proxy[action.pid].username
         action.proxy_password = proxy[action.pid].password
     }
@@ -1184,7 +1185,8 @@ function initExpress() {
                     password: action.password,
                     verify: action.verify,
                     type: action.type,
-                    reg_ga_success: action.reg_ga_success
+                    reg_ga_success: action.reg_ga_success,
+                    savedData: action.savedData
                 })
 
                 if (req.query.id == 'change_pass') {
