@@ -77,13 +77,13 @@ async function regMail(action) {
     } 
     else if (url.indexOf('youtube.com/channel') > -1 || url.indexOf('youtube.com/@') > -1) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      if (document.querySelector('#edit-buttons a')) {
-        await userClick(action.pid, '#edit-buttons a')
-      } else {
-        await handleChannelPage(action)
-      }
-      //await goToLocation(action.pid, 'https://myaccount.google.com/personal-info')
-      //await goToLocation(action.pid, linkAfterSuccess)
+      await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
+      
+      // if (document.querySelector('#edit-buttons a')) {
+      //   await userClick(action.pid, '#edit-buttons a')
+      // } else {
+      //   await handleChannelPage(action)
+      // }
     }
     else if (url.indexOf('google.com/adsense/start') > -1) {
       await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'underage')
