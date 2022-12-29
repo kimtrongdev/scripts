@@ -75,10 +75,22 @@ async function regMail(action) {
       //await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'reg success')
       await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
     } 
+    else if (url.indexOf('google.com/localguides/signup') > -1) {
+      await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, 'Hà Nội')
+      await sleep(2000)
+      await userClick(action.pid, `ul`)
+
+      await userClick(action.pid, `input[type="checkbox"]`)
+      await userClick(action.pid, `input[type="checkbox"]`, document.querySelectorAll('input[type="checkbox"]').item(1))
+      
+      await userClick(action.pid, `button`)
+      await sleep(2000)
+      await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
+    }
     else if (url.indexOf('youtube.com/channel') > -1 || url.indexOf('youtube.com/@') > -1) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
-      
+      await goToLocation(action.pid, 'https://www.google.com/localguides/signup')
+
       // if (document.querySelector('#edit-buttons a')) {
       //   await userClick(action.pid, '#edit-buttons a')
       // } else {
