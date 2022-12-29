@@ -1187,9 +1187,9 @@ function initExpress() {
                     type: action.type,
                     reg_ga_success: action.reg_ga_success,
                     savedData: {
-                        server: proxy[action.pid],
-                        username: proxy[action.username],
-                        password: proxy[action.password]
+                        server: proxy[action.pid].server,
+                        username: proxy[action.pid].username,
+                        password: proxy[action.pid].password
                     }
                 })
 
