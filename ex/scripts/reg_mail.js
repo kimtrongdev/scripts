@@ -76,7 +76,7 @@ async function regMail(action) {
       await goToLocation(action.pid, 'https://www.google.com/search?q=google ads home')
     } 
     else if (url.indexOf('google.com/localguides/signup') > -1) {
-      await updateUserInput(action.pid,'ONLY_TYPE', 0, 0, 0,0, 'Hà Nội')
+      await userType(action.pid, 'input', 'Hà Nội')
       await sleep(2000)
       await userClick(action.pid, `ul`)
 
