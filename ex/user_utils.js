@@ -264,14 +264,8 @@ function reportAccount (action) {
         isStop = true
     }
 
-    savedData = {
-        server: action.proxy_server,
-        username: action.proxy_username,
-        password: action.proxy_password
-    }
-
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {pid: action.pid, id: action.id, savedData, reg_ga_success: action.reg_ga_success, username: action.username, password: action.password, verify: action.verify, type: action.account_type, stop: isStop }}, function (response) {
+        data: {pid: action.pid, id: action.id, reg_ga_success: action.reg_ga_success, username: action.username, password: action.password, verify: action.verify, type: action.account_type, stop: isStop }}, function (response) {
         resolve(response);
     }))
 }
