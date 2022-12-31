@@ -490,6 +490,10 @@ async function loginProfileChrome(profile) {
         if (!config.browser_map) {
             config.browser_map = {}
         }
+        if (systemConfig.skip_pau_history) {
+            action.skip_pau_history = true
+        }
+        
         systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
         systemConfig.browsers.some((browser) => {
