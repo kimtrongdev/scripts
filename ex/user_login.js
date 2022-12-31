@@ -319,9 +319,14 @@ async function userLogin(action) {
             
         //     return
         // }
-        else if (url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
+        else if (url.indexOf('https://www.youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 
         || url.indexOf('m.youtube.com/feed/library') > -1 ) {
-            await goToLocation(action.pid,'https://youtube.com/feed/history')
+            if (action.skip_pau_history) {
+                await goToLocation(action.pid,'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            } else {
+                await goToLocation(action.pid,'https://youtube.com/feed/history')
+            }
+            
             return
         }
         else if (url.indexOf('https://m.youtube.com/channel/') == 0 || url.indexOf('https://m.youtube.com/user/') == 0 || url.indexOf('https://m.youtube.com/c/') == 0) {
