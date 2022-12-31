@@ -205,7 +205,7 @@ async function initActionData(action) {
         await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
     }
     else if(action.id == 'reg_user'){
-        await goToLocation(action.pid, 'accounts.google.com')
+        await goToLocation(action.pid, 'https://accounts.google.com')
     }
     else if(action.id == 'login'){
         if (action.browser_name == 'iridium-browser') {
