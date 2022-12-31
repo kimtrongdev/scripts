@@ -488,7 +488,11 @@ async function beforeLoginSuccess (action) {
         //     await goToLocation(action.pid,'myaccount.google.com/security')
         // }
     } else {
-        await goToLocation(action.pid,'youtube.com/feed/history')
+        if (action.skip_pau_history) {
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+        } else {
+            await goToLocation(action.pid,'youtube.com/feed/history')
+        }
     }
     await sleep(60000)
 

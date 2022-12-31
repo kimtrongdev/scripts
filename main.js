@@ -1186,11 +1186,7 @@ function initExpress() {
                     verify: action.verify,
                     type: action.type,
                     reg_ga_success: action.reg_ga_success,
-                    savedData: {
-                        server: proxy[action.pid].server,
-                        username: proxy[action.pid].username,
-                        password: proxy[action.pid].password
-                    }
+                    proxy_server: proxy[action.pid].server
                 })
 
                 if (req.query.id == 'change_pass') {
