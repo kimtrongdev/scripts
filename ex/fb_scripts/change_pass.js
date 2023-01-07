@@ -16,7 +16,8 @@ async function changePassFb(action) {
       await sleep(2000)
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let newPass = makeid(9)
-      let changePassSection = getElementContainsInnerText('span', ['Change password', 'Đổi mật khẩu'])
+      let ifr = document.querySelector('iframe')
+      let changePassSection = getElementContainsInnerText('span', ['Change password', 'Đổi mật khẩu'], ifr.contentWindow.document)
 
       if (!changePassSection) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'NOT_FOUND_SECTION')

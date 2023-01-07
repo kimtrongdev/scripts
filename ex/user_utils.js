@@ -739,7 +739,7 @@ async function randomFullName () {
     return rs.name
 }
 
-function getElementContainsInnerText(tagName, innerText) {
+function getElementContainsInnerText(tagName, innerText, document = document) {
     if (!Array.isArray(innerText)) {
         innerText = [innerText]
     }
