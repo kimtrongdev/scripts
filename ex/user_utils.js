@@ -739,7 +739,7 @@ async function randomFullName () {
     return rs.name
 }
 
-function getElementContainsInnerText(tagName, innerText, document = document) {
+function getElementContainsInnerText(tagName, innerText, _document = document) {
     if (!Array.isArray(innerText)) {
         innerText = [innerText]
     }
@@ -747,7 +747,7 @@ function getElementContainsInnerText(tagName, innerText, document = document) {
     for (let text of innerText) {
         let headings = document.evaluate(
             `//${tagName}[contains(., '${text}')]`,
-            document,
+            _document,
             null,
             XPathResult.ANY_TYPE,
             null

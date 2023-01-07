@@ -23,7 +23,7 @@ async function changePassFb(action) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'NOT_FOUND_SECTION')
       }
 
-      await userClick(action.pid, 'changePassSection', changePassSection)
+      await userClick(action.pid, 'changePassSection', changePassSection, ifr)
 
       await userType(action.pid, 'input[type="password"]', action.password, '', ifr)
       await userType(action.pid, 'input[name="password_new"]', newPass, '', ifr)
