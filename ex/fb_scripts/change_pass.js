@@ -23,9 +23,9 @@ async function changePassFb(action) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'NOT_FOUND_SECTION')
       }
 
-      await userType(action.pid, 'input[type="password"]', action.password)
-      await userType(action.pid, 'input[name="password_new"]', newPass)
-      await userTypeEnter(action.pid, 'input[name="password_confirm"]', newPass)
+      await userType(action.pid, 'input[type="password"]', action.password, ifr)
+      await userType(action.pid, 'input[name="password_new"]', newPass, ifr)
+      await userTypeEnter(action.pid, 'input[name="password_confirm"]', newPass, ifr)
 
       await sleep(5000)
       if (document.querySelector('form[action="https://www.facebook.com/ajax/login/password/change_reason/dialog"]')) {
