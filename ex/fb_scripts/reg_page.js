@@ -14,8 +14,8 @@ async function regFbPage(action) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
       }
     } else if (url.includes('facebook.com/pages/creation')) {
-      let pageName = randomFullName()
-      await userType(action.pid,'div[role="form"] label input[dir="ltr"]', pageName)
+      let pageNameData = randomFullName()
+      await userType(action.pid,'div[role="form"] label input[dir="ltr"]', pageNameData.name)
       await userType(action.pid,'div[role="form"] label input[type="search"]', 'web')
       await userClick(action.pid, 'ul[role="listbox"] li')
 
