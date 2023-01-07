@@ -23,16 +23,17 @@ async function regFbPage(action) {
       await userClick(action.pid, 'createPageBtn', createPageBtn)
       await sleep(15000)
       
-      if (!action.total_created) {
-        action.total_created = 0
-      }
-      if (action.total_created < MAX_FB_PAGE) {
-        action.total_created += 1
-        await setActionData(action)
-        await goToLocation(action.pid, 'https://facebook.com/pages/creation')
-      } else {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Done')
-      }
+      await reportScript(action)
+      // if (!action.total_created) {
+      //   action.total_created = 0
+      // }
+      // if (action.total_created < MAX_FB_PAGE) {
+      //   action.total_created += 1
+      //   await setActionData(action)
+      //   await goToLocation(action.pid, 'https://facebook.com/pages/creation')
+      // } else {
+      //   await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Done')
+      // }
     }
   } catch (er) {
     console.log(er);
