@@ -12,7 +12,7 @@ async function changePassFb(action) {
     } else if (url.includes('https://www.facebook.com/login')) {
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
-    } else if (url.includes('https://www.facebook.com/settings?tab=security')) {
+    } else if (url.includes('https://www.facebook.com/settings')) {
       await sleep(2000)
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let newPass = makeid(9)
