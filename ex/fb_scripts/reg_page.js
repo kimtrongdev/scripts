@@ -5,7 +5,7 @@ async function regFbPage(action) {
     reportLive(action.pid)
 
     let url = window.location.toString()
-
+    url = url.split('?')[0]
     if (url == 'https://www.facebook.com/') {
       if (action.id == 'create_fb_page') {
         await goToLocation(action.pid, 'https://facebook.com/pages/creation')

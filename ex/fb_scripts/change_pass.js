@@ -5,6 +5,7 @@ async function changePassFb(action) {
     reportLive(action.pid)
 
     let url = window.location.toString()
+    url = url.split('?')[0]
 
     if (url == 'https://www.facebook.com/') {
       await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=security')
@@ -12,6 +13,8 @@ async function changePassFb(action) {
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
     } else if (url.includes('https://www.facebook.com/settings?tab=security')) {
+      await sleep(2000)
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let newPass = makeid(9)
       let changePassSection = getElementContainsInnerText('span', ['Change password', 'Đổi mật khẩu'])
 
