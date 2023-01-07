@@ -19,7 +19,7 @@ async function regFbPage(action) {
       await userType(action.pid,'div[role="form"] label input[type="search"]', 'web')
       await userClick(action.pid, 'ul[role="listbox"] li')
 
-      const createPageBtn = getElementContainsInnerText('div', ['Create Page', 'Tạo Trang'])
+      const createPageBtn = getElementContainsInnerText('span', ['Create Page', 'Tạo Trang'])
       await userClick(action.pid, 'createPageBtn', createPageBtn)
       await sleep(15000)
       
