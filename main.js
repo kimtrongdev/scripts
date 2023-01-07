@@ -493,6 +493,9 @@ async function loginProfileChrome(profile) {
         if (systemConfig.skip_pau_history) {
             action.skip_pau_history = true
         }
+        if (systemConfig.is_fb) {
+            action.is_fb = true
+        }
         
         systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
@@ -770,6 +773,9 @@ async function getScriptData(pid, isNewProxy = false) {
         action.os_vm = process.env.OS
         if (isRunBAT) {
             action.isRunBAT = isRunBAT
+        }
+        if (systemConfig.is_fb) {
+            action.is_fb = true
         }
         // init action data
         if(action.mobile_percent === undefined || action.mobile_percent === null){
@@ -1179,7 +1185,12 @@ function initExpress() {
             let action = req.query
             
             if (req.query.id == 'change_pass' && req.query.status == '0') {
-                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
+                if (req.query.msg.startsWith('UPDATE_FB_SUCCESS_TO_')) {
+                    req.query.msg = req.query.msg.replace('UPDATE_FB_SUCCESS_TO_', '')
+                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', password: req.query.msg, description: 'update_success', proxy_server: proxy[req.query.pid].server })
+                } else {
+                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
+                }
                 return res.json({})
             }
 

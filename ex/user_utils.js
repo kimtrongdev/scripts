@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'check_mail_1') {
+    if (action.id == 'create_fb_page') {
+        await regFbPage(action)
+    }
+    else if (action.id == 'check_mail_1') {
         await checkMail1(action)
     }
     else if (action.id == 'reg_account') {
@@ -35,7 +38,11 @@ async function runAction (action) {
         }
     }
     else if (action.id == 'rename_channel' || action.id == 'recovery_mail' || action.id == 'change_pass') {
-        await userLogin(action)
+        if (action.is_fb) {
+            await changePassFb(action)
+        } else {
+            await userLogin(action)
+        }
     }
     else if (action.id == 'end_script') {
         await reportScript(action)
@@ -71,7 +78,11 @@ async function runAction (action) {
     } 
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
-        await userLogin(action)
+        if (action.is_fb) {
+            await fbLogin(action)
+        } else {
+            await userLogin(action)
+        }
     }
     else if (action.id == 'confirm') {
         console.log('confirm')
@@ -125,11 +136,19 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
-        if (action.browser_name.includes('brave')) {
-            await handleBraveSetting(action)
+    if (action.id == 'create_fb_page') {
+        await goToLocation(action.pid, 'https://facebook.com/pages/creation')
+    }
+    else if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
+        let continueLink = 'https://accounts.google.com'
+        if (action.is_fb) {
+            continueLink = 'https://www.facebook.com/login'
         }
-        await goToLocation(action.pid, 'accounts.google.com')
+
+        if (action.browser_name.includes('brave')) {
+            await handleBraveSetting(action, continueLink)
+        }
+        await goToLocation(action.pid, continueLink)
     }
     else if (action.id == 'reg_account') {
         let continueLink = ''
@@ -215,11 +234,15 @@ async function initActionData(action) {
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
             await goToLocation(action.pid, 'accounts.google.com')
         } else {
+            let continueLink = 'https://accounts.google.com'
+            if (action.is_fb) {
+                continueLink = 'https://www.facebook.com/login'
+            }
             await handleSelectExOption(action)
             if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
-                await handleBraveSetting(action)
+                await handleBraveSetting(action, continueLink)
             } else {
-                await goToLocation(action.pid,'accounts.google.com')
+                await goToLocation(action.pid, continueLink)
                 await sleep(15000)
             }
         }
@@ -717,18 +740,25 @@ async function randomFullName () {
 }
 
 function getElementContainsInnerText(tagName, innerText) {
-    let headings = document.evaluate(
-        `//${tagName}[contains(., '${innerText}')]`,
-        document,
-        null,
-        XPathResult.ANY_TYPE,
-        null
-    );
-
-    if (headings) {
-        const thisHeading = headings.iterateNext();
-        return thisHeading
+    if (!Array.isArray(innerText)) {
+        innerText = [innerText]
     }
+
+    for (let text of innerText) {
+        let headings = document.evaluate(
+            `//${tagName}[contains(., '${text}')]`,
+            document,
+            null,
+            XPathResult.ANY_TYPE,
+            null
+        );
+    
+        if (headings) {
+            const thisHeading = headings.iterateNext();
+            return thisHeading
+        }
+    }
+    
     return null
 }
 

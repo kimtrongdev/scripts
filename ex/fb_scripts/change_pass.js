@@ -1,0 +1,37 @@
+
+async function changePassFb(action) {
+  try {
+    await sleep(5000)
+    reportLive(action.pid)
+
+    let url = window.location.toString()
+
+    if (url == 'https://www.facebook.com/') {
+      await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=security')
+    } else if (url.includes('https://www.facebook.com/login')) {
+      await userType(action.pid, 'input[name="email"]', action.username)
+      await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
+    } else if (url.includes('https://www.facebook.com/settings?tab=security')) {
+      let newPass = makeid(9)
+      let changePassSection = getElementContainsInnerText('span', ['Change password', 'Đổi mật khẩu'])
+
+      if (!changePassSection) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'NOT_FOUND_SECTION')
+      }
+
+      await userType(action.pid, 'input[type="password"]', action.password)
+      await userType(action.pid, 'input[name="password_new"]', newPass)
+      await userTypeEnter(action.pid, 'input[name="password_confirm"]', newPass)
+
+      await sleep(5000)
+      if (document.querySelector('form[action="https://www.facebook.com/ajax/login/password/change_reason/dialog"]')) {
+        action.password = newPass
+        await setActionData(action)
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'UPDATE_FB_SUCCESS_TO_' + newPass)
+      }
+    } 
+  } catch (er) {
+    console.log(er);
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'err')
+  }
+}
