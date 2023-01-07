@@ -9,7 +9,7 @@ async function changePassFb(action) {
     if (url == 'https://www.facebook.com/') {
       await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=security')
     } else if (url.includes('https://www.facebook.com/login')) {
-      await userType(action.pid, 'input[name="email"]', action.username)
+      await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
     } else if (url.includes('https://www.facebook.com/settings?tab=security')) {
       let newPass = makeid(9)
