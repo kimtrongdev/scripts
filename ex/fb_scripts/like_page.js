@@ -6,7 +6,7 @@ async function likePage(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    if (url.includes('facebook.com/pages/?category=your_pages')) {
+    if (url.includes('facebook.com/pages')) {
       await selectFBPage(action)
     }
     else if (!action.selected_page) {
