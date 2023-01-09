@@ -22,7 +22,7 @@ async function likePage(action) {
         await userClick(action.pid, 'likeBtn', likeBtn)
       }
 
-      await sleep(10000)
+      await sleep(7000)
       await reportScript(action)
     }
   } catch (er) {
