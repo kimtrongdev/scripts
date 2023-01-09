@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'create_fb_page') {
+    if (action.id == 'like_fb_page') {
+        await likePage(action)
+    }
+    else if (action.id == 'create_fb_page') {
         await regFbPage(action)
     }
     else if (action.id == 'check_mail_1') {
@@ -136,7 +139,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'create_fb_page') {
+    if (action.id == 'like_fb_page') {
+        await goToLocation(action.pid, action.page_link)
+    }
+    else if (action.id == 'create_fb_page') {
         await goToLocation(action.pid, 'https://facebook.com/pages/creation')
     }
     else if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
