@@ -17,7 +17,9 @@ async function regFbPage(action) {
       let pageName = await randomFullName()
       await userType(action.pid,'div[role="form"] label input[dir="ltr"]', pageName)
       await userType(action.pid,'div[role="form"] label input[type="search"]', 'web')
-      await userClick(action.pid, 'ul[role="listbox"] li')
+
+      let items = document.querySelectorAll('ul[role="listbox"] li')
+      await userClick(action.pid, 'ul[role="listbox"] li', items[randomRanger(0, items.length - 1)])
 
       const createPageBtn = getElementContainsInnerText('span', ['Create Page', 'Tạo Trang'])
       await userClick(action.pid, 'createPageBtn', createPageBtn)
