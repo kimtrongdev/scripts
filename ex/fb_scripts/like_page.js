@@ -7,6 +7,7 @@ async function likePage(action) {
     url = url.split('?')[0]
     if (url.includes(action.page_link)) {
       let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'])
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (likeBtn) {
         await userClick(action.pid, 'likeBtn', likeBtn)
       }
