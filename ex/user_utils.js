@@ -140,7 +140,7 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'like_fb_page') {
-        await goToLocation(action.pid, action.page_link)
+        await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else if (action.id == 'create_fb_page') {
         await goToLocation(action.pid, 'https://facebook.com/pages/creation')
