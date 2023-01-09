@@ -15,15 +15,15 @@ async function selectFBPage(action) {
   action.selected_page = true
   await setActionData(action)
 
-  if (action.channel_position >= channels.length) {
-      if (channels.length) {
+  if (action.channel_position >= pages.length) {
+      if (pages.length) {
           action.channel_position = 0
       }
   }
 
-  let channel = channels.item(action.channel_position)
+  let channel = pages.item(action.channel_position)
   if (channel) {
-    if (action.channel_position == channels.length) {
+    if (action.channel_position == pages.length) {
         reportPositionChannel(action.pid, -1)
     } else {
         reportPositionChannel(action.pid, action.channel_position)
