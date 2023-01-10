@@ -16,6 +16,7 @@ async function regFbPage(action) {
     } else if (url.includes('facebook.com/pages/creation')) {
       if (getElementContainsInnerText('span', ['Go to News Feed'])) {
         await userClick(action.pid, 'image')
+        await sleep(2000)
         let b = document.querySelectorAll('a svg g circle').item(1)
         if (b) {
           await userClick(action.pid, 'root User', b)
@@ -46,6 +47,7 @@ async function regFbPage(action) {
       //   await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Done')
       // }
     } else if (url.includes('facebook.com/pages/')) {
+      await sleep(2000)
       let pages = document.querySelectorAll('div[aria-label="More"]')
       updateTotalCreatedUsers(action.pid, pages.length)
 
