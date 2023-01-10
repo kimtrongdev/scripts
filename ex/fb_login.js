@@ -11,6 +11,9 @@ async function fbLogin(action) {
     } else if (url.includes('https://www.facebook.com/login')) {
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
+
+      await sleep(15000)
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'CANNOT LOGIN')
     } else {
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url.split('?')[0])
     }

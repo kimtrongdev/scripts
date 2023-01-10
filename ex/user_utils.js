@@ -143,7 +143,7 @@ async function initActionData(action) {
         await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else if (action.id == 'create_fb_page') {
-        await goToLocation(action.pid, 'https://facebook.com/pages/creation')
+        await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
         let continueLink = 'https://accounts.google.com'

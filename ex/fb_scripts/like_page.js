@@ -24,6 +24,8 @@ async function likePage(action) {
 
       await sleep(7000)
       await reportScript(action)
+    } else {
+      await reportScript(action, false)
     }
   } catch (er) {
     console.log(er);
