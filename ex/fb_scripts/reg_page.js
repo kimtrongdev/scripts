@@ -13,11 +13,6 @@ async function regFbPage(action) {
         // succcess login
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
       }
-    } else if (url.includes('facebook.com/pages/')) {
-      let pages = document.querySelectorAll('div[aria-label="More"]')
-      updateTotalCreatedUsers(action.pid, pages.length)
-
-      await goToLocation(action.pid, 'https://facebook.com/pages/creation')
     } else if (url.includes('facebook.com/pages/creation')) {
       if (getElementContainsInnerText('span', ['Go to News Feed'])) {
         await userClick(action.pid, 'image')
@@ -50,6 +45,11 @@ async function regFbPage(action) {
       // } else {
       //   await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Done')
       // }
+    } else if (url.includes('facebook.com/pages/')) {
+      let pages = document.querySelectorAll('div[aria-label="More"]')
+      updateTotalCreatedUsers(action.pid, pages.length)
+
+      await goToLocation(action.pid, 'https://facebook.com/pages/creation')
     } else {
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
     }
