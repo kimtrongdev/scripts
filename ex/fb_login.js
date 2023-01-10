@@ -13,7 +13,13 @@ async function fbLogin(action) {
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
 
       await sleep(15000)
-      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'CANNOT LOGIN')
+      let erMessage = ''
+      try {
+        erMessage = document.querySelectorAll('#loginform div > div').item(4).innerText
+      } catch (error) {
+        console.log(error);
+      }
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
     } else {
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url.split('?')[0])
     }
