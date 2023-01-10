@@ -801,7 +801,7 @@ async function getScriptData(pid, isNewProxy = false) {
     
             action.total_channel_created = Number(systemConfig.total_channel_created)
     
-            if (['watch', 'watch_video', 'comment_youtube', 'like_fb_page'].includes(action.id)) {
+            if (['watch', 'watch_video', 'comment_youtube', 'like_fb_page', 'like_fb_post'].includes(action.id)) {
                 let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
                 if (oldUserPosition) {
                     action.channel_position = Number(oldUserPosition.position)

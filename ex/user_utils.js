@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'like_fb_page') {
+    if (action.id == 'like_fb_post') {
+        await likePost(action)
+    }
+    else if (action.id == 'like_fb_page') {
         await likePage(action)
     }
     else if (action.id == 'create_fb_page') {
@@ -139,7 +142,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'like_fb_page') {
+    if (action.id == 'like_fb_post') {
+        await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+    }
+    else if (action.id == 'like_fb_page') {
         await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else if (action.id == 'create_fb_page') {

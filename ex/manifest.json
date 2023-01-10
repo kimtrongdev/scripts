@@ -33,7 +33,8 @@
         "./fb_scripts/utilFB.js",
         "./fb_login.js",
         "./fb_scripts/reg_page.js",
-        "./fb_scripts/like_page.js"
+        "./fb_scripts/like_page.js",
+        "./fb_scripts/like_post.js"
       ]
     },
     {
