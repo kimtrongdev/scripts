@@ -15,7 +15,7 @@ async function likePage(action) {
     else if (url.includes('https://www.facebook.com/profile')) {
       await goToLocation(action.pid, action.page_link)
     }
-    else if (url.includes(action.page_link)) {
+    else if (url.includes(action.page_link.split('?')[0])) {
       let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'])
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (likeBtn) {

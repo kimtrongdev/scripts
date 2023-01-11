@@ -3,6 +3,7 @@ async function selectFBPage(action) {
   let url = window.location.toString()
   url = url.split('?')[0]
 
+  await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
   let pages = document.querySelectorAll('div[aria-label="More"]')
   if (!pages.length) {
     return
