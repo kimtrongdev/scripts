@@ -8,6 +8,14 @@ async function fbLogin(action) {
 
     if (url == 'https://www.facebook.com/') {
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    } else if (url.includes('https://www.facebook.com/login/device-based/regular/login')) {
+      let erMessage = ''
+      try {
+        erMessage = document.querySelectorAll('#loginform div > div').item(4).innerText
+      } catch (error) {
+        console.log(error);
+      }
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
     } else if (url.includes('https://www.facebook.com/login')) {
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
