@@ -14,6 +14,7 @@ async function selectFBPage(action) {
   }
   action.channel_position += 1
   action.selected_page = true
+  action.after_selected_page = true
   await setActionData(action)
 
   if (action.channel_position >= pages.length) {

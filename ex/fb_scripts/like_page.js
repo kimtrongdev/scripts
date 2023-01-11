@@ -12,10 +12,12 @@ async function likePage(action) {
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
-    else if (url.includes('https://www.facebook.com/profile')) {
+    else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
+      action.after_selected_page = false
+      await setActionData(action)
       await goToLocation(action.pid, action.page_link)
     }
-    else if (url.includes(action.page_link.split('?')[0])) {
+    else {
       let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'])
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (likeBtn) {
@@ -24,8 +26,6 @@ async function likePage(action) {
 
       await sleep(7000)
       await reportScript(action)
-    } else {
-      await reportScript(action, false)
     }
   } catch (er) {
     console.log(er);
