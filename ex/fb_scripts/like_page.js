@@ -9,7 +9,9 @@ async function likePage(action) {
     if (url.includes('facebook.com/pages')) {
       await selectFBPage(action, action.page_link)
     }
-    else if (!action.selected_page) {
+    else if (url.includes('facebook.com/checkpoint')) {
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+    } else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {

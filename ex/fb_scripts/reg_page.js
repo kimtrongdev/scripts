@@ -13,6 +13,8 @@ async function regFbPage(action) {
         // succcess login
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
       }
+    } else if (url.includes('facebook.com/checkpoint')) {
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
     } else if (url.includes('facebook.com/pages/creation')) {
       if (getElementContainsInnerText('span', ['Go to News Feed'])) {
         await userClick(action.pid, 'image')
