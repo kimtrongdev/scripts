@@ -1,13 +1,9 @@
 
-async function selectFBPage(action) {
+async function selectFBPage(action, link = '') {
   let url = window.location.toString()
   url = url.split('?')[0]
 
   await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-  let pages = document.querySelectorAll('div[aria-label="More"]')
-  if (!pages.length) {
-    return
-  }
 
   if (!action.channel_position) {
     action.channel_position = 0
@@ -16,6 +12,14 @@ async function selectFBPage(action) {
   action.selected_page = true
   action.after_selected_page = true
   await setActionData(action)
+
+  let pages = document.querySelectorAll('div[aria-label="More"]')
+  if (!pages.length) {
+    if (link) {
+      await goToLocation(action.pid, link)
+    }
+    return
+  }
 
   if (action.channel_position >= pages.length) {
       if (pages.length) {

@@ -7,7 +7,7 @@ async function likePost(action) {
     url = url.split('?')[0]
 
     if (url.includes('facebook.com/pages')) {
-      await selectFBPage(action)
+      await selectFBPage(action, action.post_link)
     }
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')

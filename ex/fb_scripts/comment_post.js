@@ -7,7 +7,7 @@ async function commentPost(action) {
     url = url.split('?')[0]
 
     if (url.includes('facebook.com/pages')) {
-      await selectFBPage(action)
+      await selectFBPage(action, action.post_link)
     }
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
@@ -15,7 +15,7 @@ async function commentPost(action) {
     else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
       action.after_selected_page = false
       await setActionData(action)
-      await goToLocation(action.pid, action.page_link)
+      await goToLocation(action.pid, action.post_link)
     }
     else {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
