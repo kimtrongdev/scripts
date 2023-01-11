@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'like_fb_post') {
+    if (action.id == 'comment_fb_post') {
+        await commentPost(action)
+    }
+    else if (action.id == 'like_fb_post') {
         await likePost(action)
     }
     else if (action.id == 'like_fb_page') {
@@ -142,11 +145,28 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'like_fb_post') {
-        await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+    if (action.id == 'comment_fb_post') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.post_link)
+        }
+    }
+    else if (action.id == 'like_fb_post') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.post_link)
+        }
     }
     else if (action.id == 'like_fb_page') {
-        await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            action.after_selected_page = false
+            await setActionData(action)
+            await goToLocation(action.pid, action.page_link)
+        }
     }
     else if (action.id == 'create_fb_page') {
         await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
