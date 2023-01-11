@@ -787,7 +787,9 @@ function getElementContainsInnerText(tagName, innerText, _document = document) {
     
         if (headings) {
             const thisHeading = headings.iterateNext();
-            return thisHeading
+            if (thisHeading) {
+                return thisHeading
+            }
         }
     }
     
