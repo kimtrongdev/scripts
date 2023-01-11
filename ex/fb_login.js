@@ -16,6 +16,8 @@ async function fbLogin(action) {
         console.log(error);
       }
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
+    } else if (url.includes('facebook.com/checkpoint')) {
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
     } else if (url.includes('https://www.facebook.com/login')) {
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
