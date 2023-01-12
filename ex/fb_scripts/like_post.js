@@ -20,6 +20,7 @@ async function likePost(action) {
     // facebook.com/lugshop.vn/posts/pfbid
     // facebook.com/story.php?story_fbid=pfbid
     // facebook.com/watch/?v=481708590811457
+    // facebook.com/photo/?fbid=
     else if (url.includes('/posts/') || url.includes('/photo/')) {
       const likeBtn = document.querySelector('div[aria-label="Like"]') || document.querySelector('div[aria-label="Thích"]')
       if (likeBtn) {

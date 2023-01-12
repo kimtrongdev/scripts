@@ -495,10 +495,14 @@ function subStatusReport(pid, channelId, vmId, status, preSub, postSub, note){
     }))
 }
 
-async function updateActionStatus(pid, action, status, msg, stop = true){
+async function updateActionStatus(pid, action, status, msg, stop = true, report_error_profile = false){
     console.log('updateActionStatus',pid,status)
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {pid: pid, id: action, status: status, stop: stop, msg: msg}}, function (response) {
+    if (action.includes('fb')) {
+        report_error_profile = true
+    }
+    
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report-profile',
+        data: {pid: pid, id: action, status: status, stop: stop, msg: msg, report_error_profile}}, function (response) {
         resolve(response);
     }))
 }
