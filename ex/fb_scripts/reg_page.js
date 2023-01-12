@@ -36,13 +36,13 @@ async function regFbPage(action) {
 
       const createPageBtn = getElementContainsInnerText('span', ['Create Page', 'Tạo Trang'])
       await userClick(action.pid, 'createPageBtn', createPageBtn)
-      await sleep(60000)
-      reportLive(action.pid)
-      await sleep(60000)
-      reportLive(action.pid)
-      await sleep(60000)
-      reportLive(action.pid)
-      await sleep(60000)
+      await sleep(10000)
+      // reportLive(action.pid)
+      // await sleep(60000)
+      // reportLive(action.pid)
+      // await sleep(60000)
+      // reportLive(action.pid)
+      // await sleep(60000)
       await reportScript(action)
       // if (!action.total_created) {
       //   action.total_created = 0
