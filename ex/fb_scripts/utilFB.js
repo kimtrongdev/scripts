@@ -48,7 +48,7 @@ async function checkErrorFB (action) {
   let url = window.location.toString()
   url = url.split('?')[0]
 
-  let notFoundContent = getElementContainsInnerText('span', ["Sorry, this content isn't available right now"])
+  let notFoundContent = getElementContainsInnerText('body', ["Sorry, this content isn't available right now"])
 
   if (notFoundContent) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, "Sorry, this content isn't available right now")
