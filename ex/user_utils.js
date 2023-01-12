@@ -500,8 +500,8 @@ async function updateActionStatus(pid, action, status, msg, stop = true, report_
     if (action.includes('fb')) {
         report_error_profile = true
     }
-    
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report-profile',
+
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
         data: {pid: pid, id: action, status: status, stop: stop, msg: msg, report_error_profile}}, function (response) {
         resolve(response);
     }))
