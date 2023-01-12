@@ -43,3 +43,15 @@ async function selectFBPage(action, link = '') {
     await userClick(action.pid, 'div[aria-label="Switch"]')
   }
 }
+
+async function checkErrorFB (action) {
+  let url = window.location.toString()
+  url = url.split('?')[0]
+
+  if (url.includes('index.php')) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+    await sleep(5000)
+  } else if (url.includes('facebook.com/checkpoint')) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+  }
+}

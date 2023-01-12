@@ -6,12 +6,12 @@ async function commentPost(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
+    await checkErrorFB(action)
+
     if (url.includes('facebook.com/pages')) {
       await selectFBPage(action, action.post_link)
     }
-    else if (url.includes('facebook.com/checkpoint')) {
-      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
-    } else if (!action.selected_page) {
+    else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
