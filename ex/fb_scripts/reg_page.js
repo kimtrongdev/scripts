@@ -57,7 +57,9 @@ async function regFbPage(action) {
     } else if (url.includes('facebook.com/pages/')) {
       await sleep(2000)
       let pages = document.querySelectorAll('div[aria-label="More"]')
-      updateTotalCreatedUsers(action.pid, pages.length)
+      if (pages && pages.length) {
+        updateTotalCreatedUsers(action.pid, pages.length)
+      }
 
       await goToLocation(action.pid, 'https://facebook.com/pages/creation')
     } else {
