@@ -48,7 +48,13 @@ async function checkErrorFB (action) {
   let url = window.location.toString()
   url = url.split('?')[0]
 
-  if (url.includes('index.php')) {
+  let notFoundContent = getElementContainsInnerText('span', ["Sorry, this content isn't available right now"])
+
+  if (notFoundContent) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, "Sorry, this content isn't available right now")
+    await sleep(5000)
+  }
+  else if (url.includes('index.php')) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
     await sleep(5000)
   } else if (url.includes('facebook.com/checkpoint')) {
