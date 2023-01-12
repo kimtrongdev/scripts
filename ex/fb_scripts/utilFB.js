@@ -55,7 +55,11 @@ async function checkErrorFB (action) {
   //   await sleep(5000)
   // }
   // else 
-  if (url.includes('index.php')) {
+  if (url.includes('/login.php')) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+    await sleep(5000)
+  }
+  else if (url.includes('index.php')) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
     await sleep(5000)
   } else if (url.includes('facebook.com/checkpoint')) {
