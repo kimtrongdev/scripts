@@ -9,6 +9,11 @@ async function fbLogin(action) {
     if (url == 'https://www.facebook.com/') {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    } else if (url.includes('facebook.com/pages/creation')) {
+      await handleRegPage(action)
+      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+      await sleep(10000)
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Không thể tạo page')
     } else if (url.includes('facebook.com/pages')) {
       let pages = []
       const totalPage = 2
@@ -17,11 +22,6 @@ async function fbLogin(action) {
       } else {
         await goToLocation(action.pid, 'https://facebook.com/pages/creation')
       }
-    } else if (url.includes('facebook.com/pages/creation')) {
-      await handleRegPage(action)
-      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-      await sleep(10000)
-      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Không thể tạo page')
     } else if (url.includes('https://www.facebook.com/login/device-based/regular/login')) {
       let erMessage = ''
       try {
