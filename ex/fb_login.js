@@ -11,11 +11,10 @@ async function fbLogin(action) {
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     } else if (url.includes('facebook.com/pages/creation')) {
       await handleRegPage(action)
-      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-      await updateUserInput(action.pid,'KEY_ENTER')
+      window.open('https://www.facebook.com/pages/?category=your_pages')
+      //await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+      //await updateUserInput(action.pid,'KEY_ENTER')
       await sleep(10000)
-      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Không thể tạo page')
-      await updateUserInput(action.pid,'KEY_ENTER')
     } else if (url.includes('facebook.com/pages')) {
       let pages = document.querySelectorAll('div[aria-label="More"]')
       if (pages && pages.length) {
