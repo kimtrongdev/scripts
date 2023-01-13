@@ -16,7 +16,7 @@ let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
-    hostIp: '103.149.28.15:8002',
+    hostIp: '159.223.85.33:9006',
     maxProfile: 1,
 }
 
@@ -593,6 +593,11 @@ async function loginProfileChrome(profile) {
         if (!config.browser_map) {
             config.browser_map = {}
         }
+
+        if (systemConfig.skip_pau_history) {
+            action.skip_pau_history = true
+        }
+
         systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
         systemConfig.browsers.some((browser) => {
