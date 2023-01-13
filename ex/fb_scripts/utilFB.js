@@ -66,3 +66,26 @@ async function checkErrorFB (action) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
   }
 }
+
+async function handleRegPage (action) {
+  if (getElementContainsInnerText('span', ['Go to News Feed'])) {
+    await userClick(action.pid, 'image')
+    await sleep(2000)
+    let b = document.querySelectorAll('a svg g circle').item(1)
+    if (b) {
+      await userClick(action.pid, 'root User', b)
+    }
+    return
+  }
+
+  let pageName = await randomFullName()
+  await userType(action.pid,'div[role="form"] label input[dir="ltr"]', pageName)
+  await userType(action.pid,'div[role="form"] label input[type="search"]', 'web')
+
+  let items = document.querySelectorAll('ul[role="listbox"] li')
+  await userClick(action.pid, 'ul[role="listbox"] li', items[randomRanger(0, items.length - 1)])
+
+  const createPageBtn = getElementContainsInnerText('span', ['Create Page', 'Tạo Trang'])
+  await userClick(action.pid, 'createPageBtn', createPageBtn)
+  await sleep(10000)
+}
