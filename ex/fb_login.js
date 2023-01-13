@@ -17,10 +17,18 @@ async function fbLogin(action) {
       await sleep(10000)
     } else if (url.includes('facebook.com/pages')) {
       let pages = document.querySelectorAll('div[aria-label="More"]')
+      if (action.current_total_page == pages.length) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'không thể tạo thêm page')
+        return
+      }
       if (pages && pages.length) {
         updateTotalCreatedUsers(action.pid, pages.length)
       }
+
       const totalPage = Number(action.total_page_created) || 2
+      action.current_total_page = pages.length
+      await setActionData(action)
+
       if (pages.length >= totalPage) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
       } else {
