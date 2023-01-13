@@ -504,6 +504,10 @@ async function loginProfileChrome(profile) {
         if (systemConfig.is_fb) {
             action.is_fb = true
         }
+
+        if (systemConfig.total_page_created) {
+            action.total_page_created = systemConfig.total_page_created
+        }
         
         systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
