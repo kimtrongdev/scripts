@@ -7,8 +7,36 @@ async function fbLogin(action) {
     url = url.split('?')[0]
 
     if (url == 'https://www.facebook.com/') {
-      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+      await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
+      //await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    } else if (url.includes('facebook.com/settings')) {
+      if (action.changed_lang) {
+        await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        return
+      }
+
+      let editBtn = getElementContainsInnerText('span', ['Edit'])
+      if (!editBtn) {
+        action.changed_lang = true
+        await setActionData(action)
+        
+        editBtn = getElementContainsInnerText('span', ['Chỉnh sửa'])
+        if (editBtn) {
+          await userClick(action.pid, 'editBtn', editBtn)
+          let selectorVN = getElementContainsInnerText('span', ['Tiếng Việt'])
+          if (selectorVN) {
+            let pos = getElementPosition(selectorVN)
+            await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
+            let saveBtn = document.querySelectorAll('div > div[aria-label="Lưu thay đổi"]').item(1)
+            if (saveBtn) {
+              await userClick(action.pid, 'saveBtn', saveBtn)
+            }
+          }
+        }
+      }
+
+      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     } else if (url.includes('facebook.com/pages/creation')) {
       await handleRegPage(action)
       window.open('https://www.facebook.com/pages/?category=your_pages')
