@@ -36,6 +36,7 @@ async function fbLogin(action) {
         }
       }
 
+      await sleep(10000)
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     } else if (url.includes('facebook.com/pages/creation')) {
       await handleRegPage(action)

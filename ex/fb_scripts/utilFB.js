@@ -87,5 +87,5 @@ async function handleRegPage (action) {
 
   const createPageBtn = getElementContainsInnerText('span', ['Create Page', 'Tạo Trang'])
   await userClick(action.pid, 'createPageBtn', createPageBtn)
-  await sleep(10000)
+  await sleep(15000)
 }
