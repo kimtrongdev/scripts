@@ -1545,7 +1545,7 @@ async function handleAction (actionData) {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'TYPE_KEY_ENTER') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key ${actionData.str} && sleep 1 && xdotool key KP_Enter && sleep 1`)
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key E && xdotool key n && xdotool key g && sleep 1 && xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'ONLY_TYPE') {
         execSync(`xdotool key Control_L+v sleep 1`)
