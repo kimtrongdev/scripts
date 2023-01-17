@@ -64,6 +64,8 @@ async function checkErrorFB (action) {
     await sleep(5000)
   } else if (url.includes('facebook.com/checkpoint')) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+  } else if (document.body.innerText == "Sorry, this content isn't available right now") {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, "Sorry, this content isn't available right now")
   }
 }
 
