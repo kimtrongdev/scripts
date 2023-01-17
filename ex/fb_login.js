@@ -63,7 +63,7 @@ async function fbLogin(action) {
       } else {
         await goToLocation(action.pid, 'https://facebook.com/pages/creation')
       }
-    } else if (url.includes('https://www.facebook.com/login/device-based/regular/login')) {
+    } else if (url.includes('facebook.com/login/device-based/regular/login')) {
       let erMessage = ''
       try {
         erMessage = document.querySelectorAll('#loginform div > div').item(4).innerText
