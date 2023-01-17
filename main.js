@@ -1294,7 +1294,11 @@ function initExpress() {
                 if (req.query.id == 'reg_user') {
                     request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR' })
                 } else {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'SYNCED' })
+                    let params = { pid: req.query.pid, status: 'SYNCED' }
+                    if (systemConfig.is_fb) {
+                        params.proxy_server = proxy[action.pid].server
+                    }
+                    request_api.updateProfileData(params)
                 }
             }
             else {
