@@ -8,7 +8,7 @@ async function likePost(action) {
 
     await checkErrorFB(action)
 
-    if (url.includes('facebook.com/pages')) {
+    if (!action.selected_page && url.includes('facebook.com/pages')) {
       await selectFBPage(action, action.post_link)
     }
     else if (!action.selected_page) {
