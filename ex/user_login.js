@@ -83,7 +83,15 @@ async function userLogin(action) {
             // }
         }
 
-        if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1 && action.order_id) {
+        if (url.includes('accounts.google.com/signin/challenge/kpe/5')) {
+            await userTypeEnter(action.pid, "input[name='email']", emailRecovery)
+            await sleep(30000)
+        }
+        else if (url.includes('accounts.google.com/signin/selectchallenge/2')) {
+            await userClick(action.pid, 'form[action="/signin/challenge/kpe/5"]')
+            await sleep(30000)
+        }
+        else if (url.indexOf('accounts.google.com/speedbump/idvreenable/sendidv') > -1 && action.order_id) {
             //enter code
             let phoneRs = await getPhoneCode(action.order_id, action.api_name)
             console.log('getPhoneCode',phoneRs);
