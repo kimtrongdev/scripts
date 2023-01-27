@@ -83,7 +83,7 @@ async function userLogin(action) {
             // }
         }
 
-        if (url.includes('accounts.google.com/signin/challenge/kpe/5')) {
+        if (url.indexOf('accounts.google.com/signin/challenge/kpe/5') > -1) {
             await userTypeEnter(action.pid, "input[name='email']", emailRecovery)
             await sleep(30000)
         }
