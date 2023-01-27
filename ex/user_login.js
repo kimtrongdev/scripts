@@ -89,8 +89,15 @@ async function userLogin(action) {
             // }
         }
 
-        
-        if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/security-checkup-welcome') > -1) {
+        if (url.indexOf('accounts.google.com/signin/challenge/kpe/5') > -1) {
+            await userTypeEnter(action.pid, "input[name='email']", emailRecovery)
+            await sleep(30000)
+        }
+        else if (url.indexOf('accounts.google.com/signin/selectchallenge/2') > -1) {
+            await userClick(action.pid, 'form[action="/signin/challenge/kpe/5"]')
+            await sleep(30000)
+        }
+        else if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/security-checkup-welcome') > -1) {
             await beforeLoginSuccess(action)
             return
         }
@@ -272,6 +279,10 @@ async function userLogin(action) {
             }
         }
         else if (url.indexOf("accounts.google.com/signin/selectchallenge") > -1 || url.indexOf("https://accounts.google.com/signin/v2/challenge/selection") > -1 || url.indexOf("https://accounts.google.com/v3/signin/challenge/selection") > -1) {
+            if (document.querySelector('form[action="/signin/challenge/kpe/5"]')) {
+                await userClick(action.pid, 'form[action="/signin/challenge/kpe/5"]')
+            }
+            else
             if (document.querySelector("[data-challengetype='12']") && emailRecovery && emailRecovery.length > 0) {
                 await userClick(action.pid, "[data-challengetype='12']")
             } else if (await document.querySelector("[data-challengetype='13']") && recoverPhone && recoverPhone.length > 0) {
