@@ -49,6 +49,9 @@ async function createPlaylistScript(action) {
       await goToLocation(action.pid, 'https://www.youtube.com/verify_phone_number')
       //await goToLocation(action.pid, 'https://studio.youtube.com/')
     }
+    else if (url.indexOf('/content/playlists') > -1) {
+      await userClick(action.pid, 'ytcp-playlist-row img')
+    }
     else if (url.indexOf('youtube.com/verify_phone_number') > -1) {
       if (document.querySelector('input')) {
         //enter phone number
@@ -180,7 +183,8 @@ async function createPlaylistScript(action) {
       await sleep(10000)
       
       // goto playlist setting
-      await userClick(action.pid, 'ytcp-playlist-row img')
+      let channelID = url.split('/')[4]
+      await goToLocation(action.pid, `https://studio.youtube.com/channel/${channelID}/content/playlists`)
     }
     else if (url.indexOf('youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1) {
       await sleep(5000)  
