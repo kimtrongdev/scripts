@@ -77,6 +77,11 @@ async function createPlaylistScript(action) {
               } else {
                   action.entered_code = true
                   await setActionData(action)
+
+                  await userClick(action.pid, '#input input')
+                  let vnOption = getElementContainsInnerText('yt-formatted-string', 'Việt Nam') 
+                  await userClick(action.pid, 'vnOption', vnOption)
+
                   await userTypeEnter(action.pid, '#code-input input', phoneRs.code)
                   await userClick(action.pid, '#submit-button')
                   await sleep(5000)
