@@ -230,7 +230,8 @@ async function createPlaylistScript(action) {
       await sleep(10000)
       
       // goto playlist setting
-      await userClick(action.pid, 'ytcp-playlist-row img')
+      let channelID = url.split('/')[4]
+      await goToLocation(action.pid, `https://studio.youtube.com/channel/${channelID}/content/playlists`)
     }
     else if (url.indexOf('youtube.com/playlist?list=') > -1) {
       await handlePlaylistSettings(action)
