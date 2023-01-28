@@ -65,6 +65,12 @@ async function createPlaylistScript(action) {
             action.api_name = phoneRs.api_name
             action.entered_phone = true
             await setActionData(action)
+
+            // select vn
+            await userClick(action.pid, '#input input')
+            let vnOption = getElementContainsInnerText('yt-formatted-string', 'Việt Nam') 
+            await userClick(action.pid, 'vnOption', vnOption)
+
             await userType(action.pid, 'input[required]', phoneRs.phone)
             await userClick(action.pid, '#send-code-button a')
             await sleep(2000)
@@ -77,10 +83,6 @@ async function createPlaylistScript(action) {
               } else {
                   action.entered_code = true
                   await setActionData(action)
-
-                  await userClick(action.pid, '#input input')
-                  let vnOption = getElementContainsInnerText('yt-formatted-string', 'Việt Nam') 
-                  await userClick(action.pid, 'vnOption', vnOption)
 
                   await userTypeEnter(action.pid, '#code-input input', phoneRs.code)
                   await userClick(action.pid, '#submit-button')
