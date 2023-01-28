@@ -45,8 +45,49 @@ async function createPlaylistScript(action) {
         return
       }
 
-      await goToLocation(action.pid, 'https://studio.youtube.com/')
+      await goToLocation(action.pid, 'https://www.youtube.com/verify_phone_number')
+      //await goToLocation(action.pid, 'https://studio.youtube.com/')
+    }
+    else if (url.indexOf('youtube.com/verify_phone_number') > -1) {
+      if (document.querySelector('input')) {
+        //enter phone number
+        let phoneRs = await getPhone()
+        console.log('getPhone',phoneRs);
+        if (phoneRs.error || action.entered_phone) {
+          await reportScript(action)
+        } else {
+            if (phoneRs.err) {
+                phoneRs = await getPhone()
+            }
+            
+            action.order_id = phoneRs.orderID
+            action.api_name = phoneRs.api_name
+            action.entered_phone = true
+            await setActionData(action)
+            await userType(action.pid, 'input[required]', phoneRs.phone)
+            await userClick(action.pid, '#send-code-button a')
+            await sleep(2000)
+            if (document.querySelector('#code-input input')) {
+              //enter code
+              let phoneRs = await getPhoneCode(action.order_id, action.api_name)
+              console.log('getPhoneCode',phoneRs);
+              if (phoneRs.error || action.entered_code) {
+                  await reportScript(action)
+              } else {
+                  action.entered_code = true
+                  await setActionData(action)
+                  await userTypeEnter(action.pid, '#code-input input', phoneRs.code)
+                  await userClick(action.pid, '#submit-button')
+                  await sleep(5000)
+                  await goToLocation(action.pid, 'https://studio.youtube.com/')
+              }
+            }
+            await sleep(30000)
+        }
 
+      } else {
+        await goToLocation(action.pid, 'https://studio.youtube.com/')
+      }
     }
     else if (url.indexOf('https://support.google.com/accounts/answer/') > -1) {
       await goToLocation(action.pid, 'https://www.youtube.com/')
