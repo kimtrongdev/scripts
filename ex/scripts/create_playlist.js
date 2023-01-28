@@ -205,9 +205,28 @@ async function createPlaylistScript(action) {
       reportScript(action)
     }
     else if (url.indexOf('https://studio.youtube.com/channel/') > -1) {
-      await userClick(action.pid, '#menu-item-2')
-      await userClick(action.pid, '#menu-item-2')
+      // await userClick(action.pid, '#menu-item-2')
+      // await userClick(action.pid, '#menu-item-2')
+      while (document.querySelector('#single-step-navigation')) {
+        await userClick(action.pid, '#single-step-navigation #close-button')
+        await sleep(1000)
+      }
 
+      if (action.max_playlist != 0 && document.querySelectorAll('ytcp-playlist-row img').length > (Number(action.max_playlist) || 3)) {
+        action.channel_position += 1
+        await setActionData(action)
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+      }
+      
+      await userClick(action.pid, '#create-icon')
+      await userClick(action.pid, '#paper-list path[d="M22,13h-4v4h-2v-4h-4v-2h4V7h2v4h4V13z M14,7H2v1h12V7z M2,12h8v-1H2V12z M2,16h8v-1H2V16z"]')
+
+      await userType(action.pid, '#create-playlist-form textarea', action.playlist_name)
+      await userClick(action.pid, '#create-button')
+      await sleep(10000)
+      
+      // goto playlist setting
+      await userClick(action.pid, 'ytcp-playlist-row img')
     }
     else if (url.indexOf('youtube.com/playlist?list=') > -1) {
       await handlePlaylistSettings(action)
