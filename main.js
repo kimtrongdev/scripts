@@ -11,7 +11,7 @@ let isPauseAction = false
 let isAfterReboot = false
 let actionsData = []
 let addresses = require('./src/adress.json').addresses
-let uas = require('./data/ua_mobile.json').uas
+let uas = require('./data/ua_pc.json').uas
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
