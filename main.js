@@ -11,7 +11,9 @@ let isPauseAction = false
 let isAfterReboot = false
 let actionsData = []
 let addresses = require('./src/adress.json').addresses
-let uas = require('./data/ua_pc.json').uas
+let uasMobile = require('./data/ua_mobile.json').uas
+let uasPc = require('./data/ua_pc.json').uas
+let uas = []
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -110,6 +112,14 @@ async function loadSystemConfig () {
         systemConfig = rs
     }
     
+    if (systemConfig.ua_type == 'mobile') {
+        uas = uasMobile
+    } else if (systemConfig.ua_type == 'pc') {
+        uas = uasPc
+    } else {
+        uas = []
+    }
+
     if (Number(systemConfig.max_current_profiles)) {
         MAX_CURRENT_ACC = Number(systemConfig.max_current_profiles)
     }
@@ -381,9 +391,12 @@ async function startChromeAction(action, _browser) {
     }
     exs = exs.map(x => path.resolve(x)).join(",")
 
-    let userAgent = uas[utils.randomRanger(0, uas.length - 1)]
-    if (userAgent) {
-        userAgent = ` --user-agent="${userAgent}"`
+    let userAgent = ''
+    if (uas.length) {
+        let _userAgent = uas[utils.randomRanger(0, uas.length - 1)]
+        if (_userAgent) {
+            userAgent = ` --user-agent="${_userAgent}"`
+        }
     }
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
