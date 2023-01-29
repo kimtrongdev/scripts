@@ -169,6 +169,9 @@ async function nextVideo(pid){
     console.log('nextVideo')
     if (IS_MOBILE) {
         let videos = document.querySelectorAll('ytm-playlist-panel-video-renderer .compact-media-item-image img')
+        if (!videos.length) {
+            videos = document.querySelectorAll('ytd-playlist-panel-video-renderer img')
+        }
         let indexRd = randomRanger(0, videos.length - 1)
         await userClick(pid, 'click video' + indexRd, videos.item(indexRd))
         //await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]')
