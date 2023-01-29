@@ -783,7 +783,18 @@ async function handleUsersSelection (action) {
         isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
     }
 }
+function elementInViewport (el) {
+    if (typeof el == 'string') {
+        el = document.querySelector(el)
+    }
 
+    if (!el) {
+        return false
+    }
+
+    let pos = el.getBoundingClientRect()
+    return pos.x || pos.y || pos.width || pos.height
+}
 async function handleSelectExOption (action) {
     if (action.trace_name && action.trace_name.indexOf('level_') > -1) {
         await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
