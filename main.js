@@ -439,7 +439,7 @@ async function startChromeAction(action, _browser) {
         }
         else {
             setDisplay(action.pid)
-            let run = `${params} ${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
+            let run = `${params} ${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir}${userAgent} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
             exec(run)
             if (IS_REG_USER) {
                 await utils.sleep(10000)
