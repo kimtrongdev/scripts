@@ -143,7 +143,7 @@ function initSettingData (action) {
         IS_MOBILE = true
     }
 
-    mobileMenuBarHeight = 172//barHeightMap[action.browser_name]
+    mobileMenuBarHeight = 0//barHeightMap[action.browser_name]
     windowWide = (!action.is_show_ui || action.is_show_ui == 'false') ? 1100 : 2358//action.windowWide
    // menuBarWidth = 27
 }
