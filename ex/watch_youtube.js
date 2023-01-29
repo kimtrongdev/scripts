@@ -79,7 +79,11 @@ async function userWatch(action){
             await sleep(15000)
         }
         else if(url.indexOf('https://www.youtube.com/playlist') > -1){
-            await processPlaylistPage(action)
+            if (action.ua_type == 'mobile') {
+                await processPlaylistPage(action)
+            } else {
+                await processPlaylistPagePc(action)
+            }
         }
         else if(url.indexOf('youtube.com/channel/') > -1 || url.indexOf('youtube.com/user/') > -1 || url.indexOf('youtube.com/c/') > -1){
             if(action.create_channel) {
@@ -754,7 +758,29 @@ async function processBrowserFeature(action){
         }
     }
 }
-
+async function processPlaylistPagePc(action){
+    if (document.querySelector('.shuffle-button')) {
+        if (document.querySelectorAll('.shuffle-button').length > 1) {
+            //let btn = document.querySelectorAll('.shuffle-button').item(1)
+            //await userClick(action.pid, '.shuffle-button', btn)
+            if (!elementInViewport('.shuffle-button')) {
+                let btn = document.querySelectorAll('.shuffle-button').item(1)
+                await userClick(action.pid, '.shuffle-button 1', btn)
+            } else {
+                await userClick(action.pid, '.shuffle-button')
+            }
+        } else {
+            await userClick(action.pid, '.shuffle-button')
+        }
+    } else {
+        let playBtn = document.querySelector('#button > yt-icon > svg > g > path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
+        if (playBtn) {
+            await userClick(action.pid, '', playBtn)
+        } else {
+            await userClick(action.pid,'ytd-playlist-sidebar-primary-info-renderer #thumbnail.ytd-playlist-thumbnail')
+        }
+    }
+}
 async function processPlaylistPage(action){
     let playBtn = document.querySelector('#button > yt-icon > svg > g > path[d="M18.15,13.65l3.85,3.85l-3.85,3.85l-0.71-0.71L20.09,18H19c-2.84,0-5.53-1.23-7.39-3.38l0.76-0.65 C14.03,15.89,16.45,17,19,17h1.09l-2.65-2.65L18.15,13.65z M19,7h1.09l-2.65,2.65l0.71,0.71l3.85-3.85l-3.85-3.85l-0.71,0.71 L20.09,6H19c-3.58,0-6.86,1.95-8.57,5.09l-0.73,1.34C8.16,15.25,5.21,17,2,17v1c3.58,0,6.86-1.95,8.57-5.09l0.73-1.34 C12.84,8.75,15.79,7,19,7z M8.59,9.98l0.75-0.66C7.49,7.21,4.81,6,2,6v1C4.52,7,6.92,8.09,8.59,9.98z"]')
     if (playBtn) {
