@@ -127,22 +127,27 @@ async function loadSystemConfig () {
     if (systemConfig.max_total_profiles) {
         MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
     }
-    let newShowUIConfig = false
-    if (systemConfig.show_ui_config && systemConfig.show_ui_config != 'false') {
-        newShowUIConfig = true
-    }
-
-    if (IS_SHOW_UI != newShowUIConfig) {
-        if (IS_SHOW_UI != null) {
-            isSystemChecking = true
-            await handleForChangeShowUI()
-            isSystemChecking = false
+    
+    if (DEBUG) {
+        IS_SHOW_UI = true
+    } else {
+        let newShowUIConfig = false
+        if (systemConfig.show_ui_config && systemConfig.show_ui_config != 'false') {
+            newShowUIConfig = true
         }
 
-        IS_SHOW_UI = newShowUIConfig
-
-        if (IS_SHOW_UI) {
-            process.env.DISPLAY = ':0'
+        if (IS_SHOW_UI != newShowUIConfig) {
+            if (IS_SHOW_UI != null) {
+                isSystemChecking = true
+                await handleForChangeShowUI()
+                isSystemChecking = false
+            }
+    
+            IS_SHOW_UI = newShowUIConfig
+    
+            if (IS_SHOW_UI) {
+                process.env.DISPLAY = ':0'
+            }
         }
     }
 
