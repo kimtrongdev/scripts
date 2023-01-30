@@ -72,7 +72,7 @@ async function createPlaylistScript(action) {
 
             // select vn
             await userClick(action.pid, '#input input')
-            let vnOption = getElementContainsInnerText('yt-formatted-string', 'Việt Nam') || getElementContainsInnerText('yt-formatted-string', 'ไอร์แลนด์') 
+            let vnOption = getElementContainsInnerText('yt-formatted-string', 'Vietnam') || getElementContainsInnerText('yt-formatted-string', 'Việt Nam') || getElementContainsInnerText('yt-formatted-string', 'ไอร์แลนด์') 
             await userClick(action.pid, 'vnOption', vnOption)
 
             await userType(action.pid, 'input[required]', phoneRs.phone)
