@@ -26,12 +26,13 @@ async function createPlaylistScript(action) {
     if (url == 'https://www.youtube.com/') {
       if (action.channel_position == 0 || !action.channel_position) {
         await sleep(5000)
+        let checkCreateChannel0 = getElementContainsInnerText('yt-formatted-string', 'Create channel')
         let checkCreateChannel1 = getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
         let checkCreateChannel2 = getElementContainsInnerText('yt-formatted-string', 'TẠO KÊNH')
         let checkCreateChannel3 = getElementContainsInnerText('yt-formatted-string', 'চ্যানেল তৈরি করুন')
         let checkCreateChannel5 = getElementContainsInnerText('yt-button-shape', 'สร้างช่อง')
         let checkCreateChannel4 = document.querySelector('#create-channel-button tp-yt-paper-button .style-blue-text')
-        let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3 || checkCreateChannel4 || checkCreateChannel5
+        let checkCreateChannel = checkCreateChannel0 || checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3 || checkCreateChannel4 || checkCreateChannel5
         if (checkCreateChannel) {
           await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
           return
