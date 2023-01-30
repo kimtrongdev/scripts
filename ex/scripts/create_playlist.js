@@ -51,6 +51,11 @@ async function createPlaylistScript(action) {
       //await goToLocation(action.pid, 'https://studio.youtube.com/')
     }
     else if (url.indexOf('/content/playlists') > -1) {
+      while (document.querySelector('#single-step-navigation')) {
+        await userClick(action.pid, '#single-step-navigation #close-button')
+        await sleep(1000)
+      }
+      
       await userClick(action.pid, 'ytcp-playlist-row img')
     }
     else if (url.indexOf('youtube.com/verify_phone_number') > -1) {
