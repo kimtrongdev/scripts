@@ -89,8 +89,24 @@ async function userLogin(action) {
             // }
         }
 
-        
-        if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/security-checkup-welcome') > -1) {
+        if (url.indexOf('https://myaccount.google.com/u/5/language') > -1) {
+            await goToLocation(action.pid,'youtube.com/feed/history')
+            await sleep(30000)
+        }
+        else if (url.indexOf('myaccount.google.com/language') > -1) {
+            if (!getElementContainsInnerText('div', 'Preferred Language')) {
+                await userClick(action.pid, 'path[d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"]')
+                await userType(action.pid, 'label input', 'english')
+                await userClick(action.pid, 'li[aria-label="English"]')
+                await userClick(action.pid, 'li[aria-label="United States"]')
+
+                await userClick(action.pid, 'button[data-mdc-dialog-action="ok"]')
+                await sleep(3000)
+            }
+            await goToLocation(action.pid,'youtube.com/feed/history')
+            await sleep(30000)
+        }
+        else if (action.id == 'change_pass' && url.indexOf('myaccount.google.com/security-checkup-welcome') > -1) {
             await beforeLoginSuccess(action)
             return
         }
@@ -491,7 +507,8 @@ async function beforeLoginSuccess (action) {
         if (action.skip_pau_history) {
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
         } else {
-            await goToLocation(action.pid,'youtube.com/feed/history')
+            await goToLocation(action.pid, 'https://myaccount.google.com/language')
+            //await goToLocation(action.pid,'youtube.com/feed/history')
         }
     }
     await sleep(60000)
