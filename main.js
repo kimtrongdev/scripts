@@ -509,7 +509,7 @@ async function startChromeAction(action, _browser) {
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {
-        _browser = 'C:\\Users\\axvxc\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe'
+        _browser = 'C:\\Users\\Pixel\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe'
         let cmdRun = `start ${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`
       //console.log(cmdRun);
         if (_browser == 'firefox') {
