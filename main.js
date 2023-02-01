@@ -16,7 +16,7 @@ let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
-    hostIp: '159.223.85.33:9006',
+    hostIp: '103.149.28.15:8002',
     maxProfile: 1,
 }
 
@@ -233,22 +233,28 @@ async function loadSystemConfig () {
 let rx = 10
 async function resetScreen () {
     if (true) {
-        //isPauseAction = true
-        exec(`nircmd win close ititle "New Tab"`)
+        isPauseAction = true
+
+       // exec(`nircmd win close ititle "New Tab"`)
+        // let exs = ['ex']
+        // exs = exs.map(x => path.resolve(x)).join(",")
+        // exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
+        // await utils.sleep(3000)
+
+        // rx += 10
+        // if (rx > 600) {
+        //     rx = 10
+        // }
+        // let rdY = utils.randomRanger(1, 200)
+        // exec(`nircmd win setsize ititle "New Tab" ${rx}, ${rdY}, 400, 400`)
+
+        exec('Taskkill /IM brave.exe /F')
+        await utils.sleep(3000)
+
         let exs = ['ex']
         exs = exs.map(x => path.resolve(x)).join(",")
         exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
         await utils.sleep(3000)
-
-        rx += 10
-        if (rx > 600) {
-            rx = 10
-        }
-        let rdY = utils.randomRanger(1, 200)
-        exec(`nircmd win setsize ititle "New Tab" ${rx}, ${rdY}, 400, 400`)
-
-        //exec('Taskkill /IM brave.exe /F')
-        //await utils.sleep(3000)
 
         // handle remove profiles not running
         // let dirNames = fs.readdirSync(WIN_PROFILE_PATH, { withFileTypes: true })
@@ -268,13 +274,13 @@ async function resetScreen () {
         //exs = exs.map(x => path.resolve(x)).join(",")
         //exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
 
-        //await utils.sleep(4000)
-        //isPauseAction = false
+        //await utils.sleep(6000)
+        isPauseAction = false
     }
     
     setTimeout(() => {
         resetScreen()
-    }, 60000 * 30)
+    }, 60000 * 30) //
 }
 
 async function profileRunningManage() {
@@ -413,15 +419,16 @@ async function startChromeAction(action, _browser) {
     let screenHeight = 400 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
-    let userDataDir = ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
-    if (_browser.includes('brave')) {
-        userDataDir = ` --profile-directory="profile-${action.pid}"`
-        if (action.id == 'login') {
-            exec(`mkdir "./profiles/${action.pid}"`)
-        }
-    } else if (_browser == 'firefox') {
-        userDataDir = ` -P "${action.pid}"`
-    }
+    let userDataDir = ` --profile-directory="profile-${action.pid}"`
+    // if (_browser.includes('brave')) {
+    //     userDataDir = ` --profile-directory="profile-${action.pid}"`
+    //     if (action.id == 'login') {
+    //         exec(`mkdir "./profiles/${action.pid}"`)
+    //     }
+    // } else if (_browser == 'firefox') {
+    //     userDataDir = ` -P "${action.pid}"`
+    // }
+    exec(`mkdir "./profiles/${action.pid}"`)
 
     //handle browser size
     action['positionSize'] = positionSize
@@ -502,7 +509,9 @@ async function startChromeAction(action, _browser) {
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {
+        _browser = 'C:\\Users\\axvxc\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe'
         let cmdRun = `start ${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`
+      //console.log(cmdRun);
         if (_browser == 'firefox') {
             if (action.id == 'login') {
                 let createPCMD = `start firefox -CreateProfile "${action.pid} ${path.resolve("profiles", action.pid + '')}"`
@@ -1038,7 +1047,7 @@ async function running() {
     runAutoRebootVm()
     // manage profile actions
     await profileManage()
-    resetScreen()
+    //resetScreen()
 }
 
 function initDir() {
