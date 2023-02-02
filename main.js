@@ -1,3 +1,4 @@
+const pcName = 'Pixel'
 const useProxy = true
 let isRunBAT = false
 let hourReseted = null
@@ -177,17 +178,17 @@ async function loadSystemConfig () {
     })
     systemConfig.browsers = browsers
 
-    if (config.browser_map) {
-        Object.keys(config.browser_map).forEach(browserMaped => {
-            if (!systemConfig.browsers.includes(browserMaped)) {
-                config.browser_map[browserMaped].forEach(pid => {
-                    closeChrome(pid)
-                    execSync('rm -rf profiles/'+pid)
-                });
-                delete config.browser_map[browserMaped]
-            }  
-        })
-    }
+    // if (config.browser_map) {
+    //     Object.keys(config.browser_map).forEach(browserMaped => {
+    //         if (!systemConfig.browsers.includes(browserMaped)) {
+    //             config.browser_map[browserMaped].forEach(pid => {
+    //                 closeChrome(pid)
+    //                 execSync('rm -rf profiles/'+pid)
+    //             });
+    //             delete config.browser_map[browserMaped]
+    //         }  
+    //     })
+    // }
 
     if (systemConfig.stop_tool == 1) {
         execSync('pm2 stop all')
@@ -478,7 +479,7 @@ async function startChromeAction(action, _browser) {
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {
-        _browser = 'C:\\Users\\Pixel\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe'
+        _browser = `C:\\Users\\${pcName}\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe`
         let cmdRun = `start ${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`
       //console.log(cmdRun);
         if (_browser == 'firefox') {
