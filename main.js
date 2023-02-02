@@ -380,7 +380,11 @@ async function startChromeAction(action, _browser) {
         action.isRunBAT = isRunBAT
     }
 
-    let exs = ["ex", "quality"]
+    let exs = ["ex"]
+    if (process.env.OS == 'centos') {
+        exs.push('quality')
+    }
+
     let level_name = ''
     if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
