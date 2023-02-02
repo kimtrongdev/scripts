@@ -233,54 +233,23 @@ async function loadSystemConfig () {
 let rx = 10
 async function resetScreen () {
     if (true) {
-        isPauseAction = true
-
-       // exec(`nircmd win close ititle "New Tab"`)
-        // let exs = ['ex']
-        // exs = exs.map(x => path.resolve(x)).join(",")
-        // exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
-        // await utils.sleep(3000)
-
-        // rx += 10
-        // if (rx > 600) {
-        //     rx = 10
-        // }
-        // let rdY = utils.randomRanger(1, 200)
-        // exec(`nircmd win setsize ititle "New Tab" ${rx}, ${rdY}, 400, 400`)
-
-        exec('Taskkill /IM brave.exe /F')
-        await utils.sleep(3000)
-
+        exec(`nircmd win close ititle "New Tab"`)
         let exs = ['ex']
         exs = exs.map(x => path.resolve(x)).join(",")
         exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
         await utils.sleep(3000)
 
-        // handle remove profiles not running
-        // let dirNames = fs.readdirSync(WIN_PROFILE_PATH, { withFileTypes: true })
-        // .filter(dirent => (dirent.isDirectory() && dirent.name.startsWith('profile-')) )
-        // .map(dirent => dirent.name)
-        // dirNames.forEach(name => {
-        //     del.sync([WIN_PROFILE_PATH + name], { force: true })
-        // });
-
-
-        //runnings = []
-        // exec('start brave.exe --window-size="700,700" --window-position="10,10" --profile-directory="profile-test3"')
-        // await utils.sleep(4000)
-        // exec('Taskkill /IM brave.exe /F')
-        // await utils.sleep(2000)
-        //let exs = ['ex']
-        //exs = exs.map(x => path.resolve(x)).join(",")
-        //exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
-
-        //await utils.sleep(6000)
-        isPauseAction = false
+        rx += 10
+        if (rx > 600) {
+            rx = 10
+        }
+        let rdY = utils.randomRanger(1, 200)
+        exec(`nircmd win setsize ititle "New Tab" ${rx}, ${rdY}, 400, 400`)
     }
     
     setTimeout(() => {
         resetScreen()
-    }, 60000 * 30) //
+    }, 60000 * 1) //
 }
 
 async function profileRunningManage() {
@@ -1047,7 +1016,7 @@ async function running() {
     runAutoRebootVm()
     // manage profile actions
     await profileManage()
-    //resetScreen()
+    resetScreen()
 }
 
 function initDir() {
