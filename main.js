@@ -1,4 +1,5 @@
 const pcName = 'Pixel'
+const WIN_BROWSER_DEFAULT = `C:\\Users\\${pcName}\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe`
 const useProxy = true
 let isRunBAT = false
 let hourReseted = null
@@ -237,7 +238,7 @@ async function resetScreen () {
         exec(`nircmd win close ititle "New Tab"`)
         let exs = ['ex']
         exs = exs.map(x => path.resolve(x)).join(",")
-        exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
+        exec(`start ${WIN_BROWSER_DEFAULT} --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
         await utils.sleep(3000)
 
         rx += 10
@@ -479,7 +480,7 @@ async function startChromeAction(action, _browser) {
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
     if (WIN_ENV) {
-        _browser = `C:\\Users\\${pcName}\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe`
+        _browser = WIN_BROWSER_DEFAULT
         let cmdRun = `start ${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`
       //console.log(cmdRun);
         if (_browser == 'firefox') {
