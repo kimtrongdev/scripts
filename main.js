@@ -235,7 +235,7 @@ async function loadSystemConfig () {
 let rx = 10
 async function resetScreen () {
     if (true) {
-        exec(`nircmd win close ititle "New Tab"`)
+        exec(`nircmd win close ititle "Welcome to Chrome"`)
         let exs = ['ex']
         exs = exs.map(x => path.resolve(x)).join(",")
         exec(`start ${WIN_BROWSER_DEFAULT} --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
