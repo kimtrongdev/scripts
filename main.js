@@ -385,6 +385,10 @@ async function startChromeAction(action, _browser) {
         exs.push('quality')
     }
 
+    if (systemConfig.use_adblock) {
+        exs.push('extensions/adblock')
+    }
+
     let level_name = ''
     if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
