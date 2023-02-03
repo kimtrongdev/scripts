@@ -1,5 +1,4 @@
 var blocked_sites_v2 = [
-"*://*.localhost/*",
 "*://*.analytics.163.com/*",
 "*://*.mt.analytics.163.com/*",
 "*://*.crash.163.com/*",
