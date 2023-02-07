@@ -31,13 +31,13 @@ async function scriptAddVideoPlaylist(action) {
       
     }
     else if (url.indexOf('youtube.com/playlist') > -1) {
-      // try {
-      //   await sleep(4000)
-      //   action.data_reported = document.querySelectorAll('#stats yt-formatted-string').item(1).innerText
-      //   await setActionData(action)
-      // } catch (error) {
-      //   console.log(error);
-      // }
+      try {
+        await sleep(4000)
+        action.data_reported = document.querySelector('.ytd-playlist-byline-renderer').innerText
+        await setActionData(action)
+      } catch (error) {
+        console.log(error);
+      }
 
       if (document.querySelector('a[rel="nofollow"]')) {
         await userClick(action.pid, 'a[rel="nofollow"]')
