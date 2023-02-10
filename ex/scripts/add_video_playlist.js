@@ -55,9 +55,10 @@ async function scriptAddVideoPlaylist(action) {
       } catch (error) {
         console.log(error);
       }
-
-      if (document.querySelector('a[rel="nofollow"]')) {
-        await userClick(action.pid, 'a[rel="nofollow"]')
+      
+      let b = document.querySelector('a[rel="nofollow"]') || document.querySelector('#buttons .yt-spec-touch-feedback-shape__fill')
+      if (b) {
+        await userClick(action.pid, 'b', b)
         await sleep(5000)
 
         let createChannelBtn = document.querySelector('#create-channel-button')
