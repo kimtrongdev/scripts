@@ -44,7 +44,8 @@ async function scriptAddVideoPlaylist(action) {
         console.log(error);
       }
       
-      let b = document.querySelector('ytd-alert-with-button-renderer #buttons')
+      let buttons = document.querySelectorAll('ytd-alert-with-button-renderer #buttons')
+      let b = buttons.item(buttons.length - 1)
       if (b) {
         await userClick(action.pid, 'b', b)
         await sleep(5000)
