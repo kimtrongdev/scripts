@@ -958,7 +958,7 @@ async function checkLang (action) {
         return
     }
 
-    if (url.indexOf('https://www.youtube.com/') > -1) {
+    if (url == 'https://www.youtube.com/') {
         await userClick(action.pid, '#avatar-btn')
         await sleep(1000)
         let langLink = document.querySelector('#manage-account a').href.split('?')[0] + 'language'
