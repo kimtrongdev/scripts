@@ -8,6 +8,8 @@ async function createPlaylistScript(action) {
       return
     }
 
+    await checkLang(action)
+
     if (url.indexOf('https://consent.youtube.com/m') > -1) {
         try {
             let btnRejectAll = document.querySelectorAll('form').item(1)
@@ -49,6 +51,10 @@ async function createPlaylistScript(action) {
 
       await goToLocation(action.pid, 'https://www.youtube.com/verify_phone_number')
       //await goToLocation(action.pid, 'https://studio.youtube.com/')
+    }
+    else if (url.indexOf('/language') > -1) {
+      await goToLocation(action.pid, 'https://www.youtube.com/verify_phone_number')
+      await sleep(30000)
     }
     else if (url.indexOf('/content/playlists') > -1) {
       while (document.querySelector('#single-step-navigation')) {
