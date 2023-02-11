@@ -44,7 +44,7 @@ async function scriptAddVideoPlaylist(action) {
         console.log(error);
       }
       
-      let b = document.querySelector('#buttons .yt-spec-touch-feedback-shape__fill')
+      let b = getElementContainsInnerText('div', 'Continue') // document.querySelector('#buttons .yt-spec-touch-feedback-shape__fill')
       if (b) {
         await userClick(action.pid, 'b', b)
         await sleep(5000)
