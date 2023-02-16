@@ -170,6 +170,7 @@ async function processHomePage(action){
     }
 
     if (action.search || action.page) {
+        await sleep(4000)
         await goToLocation(action.pid, 'https://www.youtube.com/results?search_query=' + action.keyword)
        
         // await userTypeEnter(action.pid,'input#search',action.keyword)
