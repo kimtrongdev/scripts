@@ -10,7 +10,15 @@ async function fbLogin(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
       //await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-    } else if (url.includes('facebook.com/settings')) {
+    } 
+    else if (url.includes('2fa.live')) {
+      await userType(action.pid, '#listToken', action.fa_secret)
+      await userClick(action.pid, '#submit')
+      action.fa_code = document.querySelector('#output').value.split('|')[1]
+      await setActionData(action)
+      await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+    }
+    else if (url.includes('facebook.com/settings')) {
       if (action.changed_lang) {
         await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         return
@@ -72,7 +80,23 @@ async function fbLogin(action) {
       }
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
     } else if (url.includes('facebook.com/checkpoint')) {
-      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+      if (document.querySelector('#approvals_code')) {
+        window.open('https://2fa.live/')
+        let execeted = false
+        setInterval(async () => {
+          if (!execeted) {
+            action = await getActionData()
+            if (action.fa_code) {
+              execeted = true
+              await userTypeEnter(action.pid, '#approvals_code', action.fa_code)
+              await userClick(action.pid, '#checkpointSubmitButton')
+            }
+          }
+        }, 2000);
+        await sleep(120000)
+      } else {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+      }
     } else if (url.includes('facebook.com/login')) {
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
