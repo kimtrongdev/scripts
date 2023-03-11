@@ -81,26 +81,24 @@ async function fbLogin(action) {
       }
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
     } else if (url.includes('facebook.com/checkpoint')) {
-      if (document.querySelector('#checkpointSubmitButton')) {
+      if (document.querySelector('#approvals_code')) {
+        window.open('https://2fa.live/')
+        let execeted = false
+        setInterval(async () => {
+          if (!execeted) {
+            let rs = await getActionData()
+            action = rs.action
+            if (action.fa_code) {
+              execeted = true
+              await userTypeEnter(action.pid, '#approvals_code', action.fa_code)
+            }
+          }
+        }, 2000);
+        await sleep(120000)
+      } else if (document.querySelector('#checkpointSubmitButton')) {
         await userClick(action.pid, '#checkpointSubmitButton')
       } else {
-        if (document.querySelector('#approvals_code')) {
-          window.open('https://2fa.live/')
-          let execeted = false
-          setInterval(async () => {
-            if (!execeted) {
-              let rs = await getActionData()
-              action = rs.action
-              if (action.fa_code) {
-                execeted = true
-                await userTypeEnter(action.pid, '#approvals_code', action.fa_code)
-              }
-            }
-          }, 2000);
-          await sleep(120000)
-        } else {
-          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
-        }
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
       }
     } else if (url.includes('facebook.com/login')) {
       await userType(action.pid, 'input[name="email"]', action.email)
