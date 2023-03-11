@@ -12,7 +12,7 @@ async function fbLogin(action) {
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     } 
     else if (url.includes('2fa.live')) {
-      await userType(action.pid, '#listToken', action.fa_secret)
+      await userType(action.pid, '#listToken', action.recover_mail)
       await userClick(action.pid, '#submit')
       action.fa_code = document.querySelector('#output').value.split('|')[1]
       await setActionData(action)
