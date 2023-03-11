@@ -17,7 +17,6 @@ async function fbLogin(action) {
       await sleep(2000)
       action.fa_code = document.querySelector('#output').value.split('|')[1]
       await setActionData(action)
-      console.log('fa_code', action);
       await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
     }
     else if (url.includes('facebook.com/settings')) {
@@ -87,8 +86,8 @@ async function fbLogin(action) {
         let execeted = false
         setInterval(async () => {
           if (!execeted) {
-            action = await getActionData()
-            console.log('action.fa_code', action);
+            let rs = await getActionData()
+            action = rs.action
             if (action.fa_code) {
               execeted = true
               await userTypeEnter(action.pid, '#approvals_code', action.fa_code)
