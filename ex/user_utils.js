@@ -21,6 +21,10 @@ var newsNames = [
 
 async function runAction (action) {
     if (action.id == 'view_fb_video') {
+        if (!Array.isArray(action.videos)) {
+            action.videos = action.link.split(',')
+            await setActionData(action)
+        }
         await viewFBVideo(action)
     }
     else if (action.id == 'comment_fb_post') {
@@ -152,11 +156,12 @@ async function initActionData(action) {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
-            await goToLocation(action.pid, action.link)
+            let link = action.videos.pop()
+            await setActionData(action)
+            await goToLocation(action.pid, link)
         }
     }
-    else
-    if (action.id == 'comment_fb_post') {
+    else if (action.id == 'comment_fb_post') {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {

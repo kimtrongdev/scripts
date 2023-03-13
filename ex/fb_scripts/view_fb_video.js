@@ -24,6 +24,13 @@ async function viewFBVideo(action) {
       if (reportData) {
         action.data_reported = reportData.innerText
       }
+     
+      if (action.videos.length) {
+        let link = action.videos.pop()
+        await setActionData(action)
+        await goToLocation(action.pid, link)
+        return
+      }
 
       await reportScript(action)
     }
