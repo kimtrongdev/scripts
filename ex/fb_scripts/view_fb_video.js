@@ -15,7 +15,12 @@ async function viewFBVideo(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else if (url.includes('https://www.facebook.com/profile')) {
-      await goToLocation(action.pid, action.link)
+      if (!Array.isArray(action.videos)) {
+          action.videos = action.link.split(',')
+      }
+      let link = action.videos.pop()
+      await setActionData(action)
+      await goToLocation(action.pid, link)
     }
     else {
       await sleep(Number(action.watch_time) || 30000)
