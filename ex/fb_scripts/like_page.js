@@ -24,6 +24,10 @@ async function likePage(action) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (likeBtn) {
         await userClick(action.pid, 'likeBtn', likeBtn)
+        let reportData = getLikeDataPage()
+        if (reportData) {
+          action.data_reported = reportData
+        }
       }
 
       await sleep(7000)
@@ -33,4 +37,15 @@ async function likePage(action) {
     console.log(er);
     await reportScript(action, false)
   }
+}
+
+function getLikeDataPage () {
+  let likeData = ''
+  //let url = window.location.toString()
+
+  let likeEl = document.querySelector('div[role="main"]>div>div>div>div>div>div>div>div>div>span')
+  if (likeEl) {
+    likeData = likeEl.innerText
+  }
+  return likeData
 }
