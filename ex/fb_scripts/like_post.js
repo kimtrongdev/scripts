@@ -25,6 +25,12 @@ async function likePost(action) {
       const likeBtn = document.querySelector('div[aria-label="Like"]') || document.querySelector('div[aria-label="Thích"]')
       if (likeBtn) {
         await userClick(action.pid, 'likeBtn', likeBtn)
+
+        let likeData = document.querySelector('div[data-visualcompletion="ignore-dynamic"]>div>div>div>div>div>div>div>span>div>span>span>span')
+        if (likeData) {
+          let data_reported = likeData.innerText
+          action.data_reported = data_reported
+        }
       }
       await sleep(7000)
       await reportScript(action)

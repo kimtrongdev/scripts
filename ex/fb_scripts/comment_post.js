@@ -24,6 +24,12 @@ async function commentPost(action) {
       let textbox = document.querySelector('div[role="textbox"]')
       if (textbox && action.comment) {
         await userTypeEnter(action.pid, 'textbox', action.comment, textbox)
+
+        let likeData = document.querySelector('div>div>span>div>span[dir="auto"]')
+        if (likeData) {
+          let data_reported = likeData.innerText
+          action.data_reported = data_reported
+        }
       } else {
         console.log('NOT found text box or comment');
       }
