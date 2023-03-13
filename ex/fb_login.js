@@ -37,14 +37,15 @@ async function fbLogin(action) {
         action.changed_lang = true
         await setActionData(action)
         
-        editBtn = getElementContainsInnerText('span', ['Chỉnh sửa'])
+        editBtn = document.querySelector('div[role="button"]>div>div>div>span>span')
         if (editBtn) {
           await userClick(action.pid, 'editBtn', editBtn)
-          let selectorVN = getElementContainsInnerText('span', ['Tiếng Việt'])
+          let selectorVN = document.querySelector('div[aria-haspopup="listbox"]')
           if (selectorVN) {
             let pos = getElementPosition(selectorVN)
             await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
-            let saveBtn = document.querySelectorAll('div > div[aria-label="Lưu thay đổi"]').item(1)
+
+            let saveBtn = document.querySelectorAll('div[role="button"]>div>div>div>span').item(2)
             if (saveBtn) {
               await userClick(action.pid, 'saveBtn', saveBtn)
             }
