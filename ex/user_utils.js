@@ -39,6 +39,9 @@ async function runAction (action) {
     else if (action.id == 'create_fb_page') {
         await regFbPage(action)
     }
+    else if (action.id == 'direct_link') {
+        await directLink(action)
+    }
     else if (action.id == 'check_mail_1') {
         await checkMail1(action)
     }
@@ -152,7 +155,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'view_fb_video') {
+    if (action.id == 'direct_link') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'view_fb_video') {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
@@ -269,7 +275,8 @@ async function initActionData(action) {
         await goToLocation(action.pid,'google.com/maps')
     }
     else if (action.id == 'youtube_sub') {
-        await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
     }
     else if(action.id == 'login'){
         if (action.browser_name == 'iridium-browser') {
@@ -318,7 +325,8 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
+            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
         }
     }
 }

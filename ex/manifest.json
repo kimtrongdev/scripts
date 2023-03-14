@@ -30,6 +30,7 @@
         "./scripts/add_video_playlist.js",
         "./scripts/reg_mail.js",
         "./scripts/check_mail_1.js",
+        "./scripts/direct_link.js",
         "./fb_scripts/utilFB.js",
         "./fb_login.js",
         "./fb_scripts/reg_page.js",
