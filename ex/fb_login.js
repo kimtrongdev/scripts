@@ -34,10 +34,11 @@ async function fbLogin(action) {
 
       let editBtn = getElementContainsInnerText('span', ['Language for buttons, titles and other text from Facebook for this account on www.facebook.com'])
       if (!editBtn) {
+        console.log('change lang');
         action.changed_lang = true
         await setActionData(action)
         
-        editBtn = document.querySelector('div[role="button"]>div>div>div>span>span')
+        editBtn = getElementContainsInnerText('span', ['Editar']) || document.querySelector('div[role="button"]>div>div>div>span>span') 
         if (editBtn) {
           await userClick(action.pid, 'editBtn', editBtn)
           let selectorVN = document.querySelector('div[aria-haspopup="listbox"]')
