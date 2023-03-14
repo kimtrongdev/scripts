@@ -32,7 +32,7 @@ async function fbLogin(action) {
         return
       }
 
-      let editBtn = getElementContainsInnerText('span', ['Edit'])
+      let editBtn = getElementContainsInnerText('span', ['Language for buttons, titles and other text from Facebook for this account on www.facebook.com'])
       if (!editBtn) {
         action.changed_lang = true
         await setActionData(action)
