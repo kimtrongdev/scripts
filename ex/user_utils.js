@@ -275,7 +275,8 @@ async function initActionData(action) {
         await goToLocation(action.pid,'google.com/maps')
     }
     else if (action.id == 'youtube_sub') {
-        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id + '/videos')
+        //await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
     }
     else if(action.id == 'login'){
