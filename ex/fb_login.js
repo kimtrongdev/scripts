@@ -10,7 +10,7 @@ async function fbLogin(action) {
       if (action.id == 'change_pass') {
         action.login_fb_success = true
         await setActionData(action)
-        await goToLocation(action.pid, 'https://www.facebook.com/settings')
+        await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=security')
       } else {
         await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
       }
