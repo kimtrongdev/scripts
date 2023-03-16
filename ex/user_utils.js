@@ -58,7 +58,11 @@ async function runAction (action) {
     }
     else if (action.id == 'rename_channel' || action.id == 'recovery_mail' || action.id == 'change_pass') {
         if (action.is_fb) {
-            await changePassFb(action)
+            if (action.login_fb_success) {
+                await changePassFb(action)
+            } else {
+                await fbLogin(action)
+            }
         } else {
             await userLogin(action)
         }

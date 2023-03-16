@@ -7,7 +7,13 @@ async function fbLogin(action) {
     url = url.split('?')[0]
 
     if (url == 'https://www.facebook.com/') {
-      await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
+      if (action.id == 'change_pass') {
+        action.login_fb_success = true
+        await setActionData(action)
+        await goToLocation(action.pid, 'https://www.facebook.com/settings')
+      } else {
+        await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
+      }
       //await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     } 
