@@ -20,7 +20,7 @@ async function folowPage(action) {
       await goToLocation(action.pid, action.link)
     }
     else {
-      let likeBtn = getElementContainsInnerText('span', ['Folow', 'Theo dõi'])
+      let likeBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'])
 
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (likeBtn) {
