@@ -40,12 +40,9 @@ async function changePassFb(action) {
 
       await sleep(10000)
 
-      let changed = getElementContainsInnerText('span', ['Password changed'])
-      if (changed) {
-        action.password = newPass
-        await setActionData(action)
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'UPDATE_FB_SUCCESS_TO_' + newPass)
-      }
+      action.password = newPass
+      await setActionData(action)
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'UPDATE_FB_SUCCESS_TO_' + newPass)
     } 
   } catch (er) {
     console.log(er);
