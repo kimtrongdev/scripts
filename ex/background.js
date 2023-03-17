@@ -52,9 +52,6 @@ chrome.runtime.onMessage.addListener(
           else if(request.type == 'SET_USER_AGENT'){ // trong code
             RE_SET_USER_AGENT = request.user_agent;
           }
-          else if (request.type == 'CLOSE_ADS_TAB') {
-            closeAdsTabs()
-          }
           else if (request.type == 'GET_TOTAL_TABS') {
             getTotalTabs().then(rs => {
                 sendResponse(rs)

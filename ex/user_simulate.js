@@ -3,8 +3,7 @@ function makeName(length) {
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
    }
    return result;
 }
@@ -129,36 +128,6 @@ async function userClickRandomVideo(pid) {
     }
 }
 
-async function userClickRandomVideoMobile(pid) {
-    console.log('userClickRandomVideoMobile')
-    let watches = [...document.querySelectorAll('ytm-browse a.large-media-item-thumbnail-container[href*="watch"]:not([href*="list="])')]
-    let visibles = watches  //Array.from(watches).filter(x => x.getBoundingClientRect().x > 0 && x.getBoundingClientRect().y > 0 && x.getBoundingClientRect().y < window.innerHeight - x.getBoundingClientRect().height)
-    if(visibles.length){
-        let random = visibles[randomRanger(0,visibles.length-1)]
-        await userClick(pid,'random video: #content a#thumbnail[href*="watch"]',random)
-        // let pos = getElementPosition(random)
-        // await updateUserInput(pid,'CLICK',pos.x,pos.y,pos.scrollX,pos.scrollY,"", 'random video: ytm-browse a#thumbnail[href*="watch"]')
-    }
-    else{
-        throw 'no random video'
-    }
-}
-
-async function userClickRandomVideoMobileComplact(pid) {
-    console.log('userClickRandomVideoMobile')
-    let watches = [...document.querySelectorAll('ytm-search a.compact-media-item-image[href*="watch"]:not([href*="list="])')]
-    let visibles = watches//Array.from(watches).filter(x => x.getBoundingClientRect().x > 0 && x.getBoundingClientRect().y > 0 && x.getBoundingClientRect().y < window.innerHeight - x.getBoundingClientRect().height)
-    if(visibles.length){
-        let random = visibles[randomRanger(0,visibles.length-1)]
-        await userClick(pid,'random video: #content a#thumbnail[href*="watch"]',random)
-        // let pos = getElementPosition(random)
-        // await updateUserInput(pid,'CLICK',pos.x,pos.y,pos.scrollX,pos.scrollY,"", 'random video: #content a#thumbnail[href*="watch"]')
-    }
-    else{
-        throw 'no random video'
-    }
-}
-
 async function goToLocation(pid, url){
     console.log('goToLocation',url)
     await updateUserInput(pid,'GO_ADDRESS',0, 0 ,0, 0,  url)
@@ -167,15 +136,6 @@ async function goToLocation(pid, url){
 async function sendKey(pid, key){
     console.log('sendKey',key)
     await updateUserInput(pid,'SEND_KEY',0, 0 ,0, 0,  key)
-}
-
-async function nextVideo(pid){
-    console.log('nextVideo')
-    if (IS_MOBILE) {
-       await userClick(pid, 'ytm-playlist-controls c3-icon path[d="M5,18l10-6L5,6V18L5,18z M19,6h-2v12h2V6z"]') 
-    } else {
-       await userClick(pid, '.ytp-next-button')
-    }
 }
 
 async function switchMobile(action){
@@ -208,24 +168,7 @@ async function switchMobile(action){
         }
     }
     else{
-        // G4, S5, Pixel 2, Pixel 2 XL, 5/SE, 6/7/8, 6/7/8 Plus, X
-        //action.zoom = [0.9,0.9,0.79,0.7,1,0.86,0.78,0.71][action.pid%4]
-
-        //action.zoom = [0.78, 0.5, 0.5, 0.61, 0.7, 0.57, 0.4, 0.5, 0.38, 0.7][action.pid%4]
         action.zoom = [0.68, 0.75, 0.63, 0.45, 0.5, 0.42, 0.8, 0.88, 0.5, 0.5][action.pid%10]
-        // ipse 86
-        // xr 50
-        // ip 12 pro 50
-
-        // pixel 5 68 
-        // samsung s8 75 
-        // sam sung s20 63   
-        // ipad air 40 45 
-        // ipad mini 50  
-        // sur pro 7 38  42 
-        // sur dou 70 80  
-        // glx fold 88 --
-        // samsung A51/71 50
 
         await setActionData(action)
         if(navigator.maxTouchPoints < 1 || navigator.maxTouchPoints == 10){
@@ -248,9 +191,4 @@ async function screenshot(pid){
 async function userSelect(pid,n){
     console.log('userSelect')
     await updateUserInput(pid,'SELECT_OPTION',0, 0 ,0, 0,  n)
-}
-
-async function userSelectAvatar(pid,gender){
-    console.log('userSelectAvatar')
-    await updateUserInput(pid,'SELECT_AVATAR',0, 0 ,0, 0, gender)
 }
