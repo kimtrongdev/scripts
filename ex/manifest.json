@@ -15,30 +15,15 @@
       "js": [
         "user_utils.js",
         "user_simulate.js",
-        "user_login.js",
-        "watch_youtube.js",
-        "watch_youtube_mobile.js",
-        "sub_channel.js",
         "content.js",
-        "./scripts/map.js",
-        "./scripts/search.js",
-        "./scripts/google_news.js",
-        "./scripts/youtube_sub.js",
-        "./scripts/brave.js",
-        "./scripts/youtube_comment.js",
-        "./scripts/create_playlist.js",
-        "./scripts/add_video_playlist.js",
-        "./scripts/reg_mail.js",
-        "./scripts/check_mail_1.js",
-        "./scripts/reg_fb.js",
-        "./scripts/youtube_like.js"
+        "./scripts/admin_test.js"
       ]
     },
     {
       "matches": [
         "https://payments.google.com/*"
       ],
-      "js": ["user_utils.js","user_simulate.js","user_login.js","watch_youtube.js","watch_youtube_mobile.js","sub_channel.js","content.js"],
+      "js": ["user_utils.js","user_simulate.js","content.js"],
       "all_frames":true
     }
   ],

@@ -1,106 +1,6 @@
-var newsNames = [
-    "cnn.com",
-    "theguardian.com",
-    "news18.com",
-    "kyma.com",
-    "inquirer.com",
-    "npr.org",
-    "thehindu.com",
-    "politico.com",
-    "nbcnews.com",
-    "click2houston.com",
-    "kktv.com",
-    "wsbtv.com",
-    "al.com",
-    "fox5atlanta.com",
-    "sltrib.com",
-    "pennlive.com",
-    "kiro7.com",
-    "wsfa.com",
-]
-
 async function runAction (action) {
-    if (action.id == 'check_mail_1') {
-        await checkMail1(action)
-    }
-    else if (action.id == 'reg_account') {
-        if (action.account_type == 'facebook'){
-            await reqFacebook(action)
-        } else {
-            if (action.process_login) {
-                await userLogin(action)
-            } else {
-                await regMail(action)
-            }
-        }
-    }
-    else if (action.id == 'rename_channel' || action.id == 'recovery_mail') {
-        await userLogin(action)
-    }
-    else if (action.id == 'end_script') {
-        await reportScript(action)
-    }
-    else if (action.id == 'add_video_playlist') {
-        await scriptAddVideoPlaylist(action)
-    }
-    else if (action.id == 'create_playlist') {
-        await createPlaylistScript(action)
-    }
-    else if (action.id == 'comment_youtube') {
-        await youtubeComment(action)
-    }
-    else if (action.id == 'check_bat') {
-        await scriptCheckBat(action)
-    }
-    else if (action.id == 'google_news') {
-        await scriptGoogleNews(action)
-    }
-    else if (action.id == 'search') {
-        await scriptSearch(action)
-    }
-    else if (action.id == 'map') {
-        await scriptMap(action)
-    }
-    else if (action.id == 'youtube_sub') {
-        action.is_sub = true
-        await setActionData(action)
-        await scriptYoutubeSub(action)
-    } 
-    else if (action.id == 'like_youtube') {
-        await youtubeLike(action)
-    }
-    else if (action.id == 'login' || action.id == 'reg_user') {
-        console.log('login')
-        await userLogin(action)
-    }
-    else if (action.id == 'confirm') {
-        console.log('confirm')
-        await userConfirm(action)
-    }
-    else if (action.id == 'changepass') {
-        console.log('changepass')
-        await changePassword(action)
-    }
-    else if (action.id == 'checkpremium') {
-        console.log('checkpremium')
-        await checkPremium(action)
-    }
-    else if (action.id == 'checkcountry') {
-        console.log('checkcountry')
-        await checkCountry(action)
-    }
-    else if(action.id == 'watch' || action.id == 'watch_video') {
-        console.log('watch')
-        !action.mobile ? await userWatch(action) : await userWatchMobile(action)
-    }
-    else if(action.id == 'sub'){
-        console.log('sub')
-        await userSub(action)
-    }
-    else if(action.id == 'logout'){
-        if(window.location.toString().indexOf('https://accounts.google.com/ServiceLogin') == 0 || window.location.toString().indexOf('https://accounts.google.com/signin/v2/identifier') == 0){
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-        }
+    if (action.id == 'admin_test') {
+        await adminTest(action)
     }
 }
 
@@ -108,153 +8,13 @@ async function initActionData(action) {
     let mobileRate = action.mobile_percent 
     action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
-    if(action.mobile){
-        await setUserAgent(action.pid);
-    }
-    
-    if(action.id=='watch' || action.id == 'watch_video'){
-        setWatchParam(action)
-    }
-
-    if(action.id=='sub'){
-        setSubParam(action)
-    }
-
     console.log(action)
     await setActionData(action)
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_mail_1' || action.id == 'recovery_mail') {
-        if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
-            await handleBraveSetting(action)
-        }
-        await goToLocation(action.pid, 'accounts.google.com')
-    }
-    else if (action.id == 'reg_account') {
-        let continueLink = ''
-        if (action.process_login) {
-            continueLink = 'accounts.google.com'
-        } else if (action.account_type == 'gmail') {
-            continueLink = 'https://accounts.google.com/signup/v2/webcreateaccount?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&flowName=GlifWebSignIn&flowEntry=SignUp'
-        } else if (action.account_type == 'facebook') {
-            continueLink = 'facebook.com/reg'
-        }
-
-        if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
-            await handleBraveSetting(action, continueLink)
-        } else {
-            await goToLocation(action.pid, continueLink)
-        }
-    }
-    else if (action.id == 'rename_channel') {
-        if (Number(action.total_created_users)) {
-            action.channel_position = Number(action.total_created_users)
-        } else {
-            action.channel_position = -1
-        }
-        
-        await setActionData(action)
-        await handleBraveSetting(action)
-    }
-    else if (action.id == 'end_script') {
-        await reportScript(action)
-    }
-    else if (action.id == 'add_video_playlist') {
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-    }
-    else if (action.id == 'create_playlist') {
-        action.fisrtStart = true
-        await setActionData(action)
-        await goToLocation(action.pid,'youtube.com/')
-    }
-    else if (action.id == 'comment_youtube') {
-        action.commented_count = 0
-        action.video_ids = action.video_ids.split(',')
-        action.channel_ids = action.channel_ids.split(',')
-        await setActionData(action)
-        await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-       // await goToLocation(action.pid, 'https://www.youtube.com/')
-    }
-    else if (action.id == 'check_bat') {
-
-    }
-    else if (action.id == 'google_news') {
-        if (!action.is_searched) {
-            action.is_searched = true
-            await setActionData(action)
-            let randomPoSite = randomRanger(0, newsNames.length - 1)
-            let link = action.news_link || `https://www.${newsNames[randomPoSite]}/`
-            await goToLocation(action.pid, link)
-        }
-    }
-    else if (action.id == 'search') {
-        action.search_keywords = action.search_keywords.split(',')
-        await setActionData(action)
-        await goToLocation(action.pid, 'https://www.google.com/')
-    }
-    else if (action.id == 'map') {
-        await goToLocation(action.pid,'google.com/maps')
-    }
-    else if (action.id == 'like_youtube') {
-        action.video_ids = action.video_ids.split(',')
-        await setActionData(action)
-        await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-    }
-    else if (action.id == 'youtube_sub') {
-        await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
-    }
-    else if(action.id == 'reg_user'){
-        await goToLocation(action.pid, 'https://accounts.google.com')
-    }
-    else if(action.id == 'login'){
-        if (action.browser_name == 'iridium-browser') {
-            await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
-            await goToLocation(action.pid, `chrome://settings/cookies`)
-            await sleep(4000)
-
-            await updateUserInput(action.pid,'IRIDIUM_SETTING', 8,0,0,0,"",'IRIDIUM_SETTING')
-
-            await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-            await goToLocation(action.pid, 'accounts.google.com')
-        } else {
-            // await handleSelectExOption(action)
-            // if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
-            //     await handleBraveSetting(action)
-            // } else {
-            //     await goToLocation(action.pid,'https://accounts.google.com')
-            //     await sleep(15000)
-            // }
-
-            await goToLocation(action.pid,'https://accounts.google.com')
-            await sleep(15000)
-        }
-    }
-    else if(action.id == 'logout'){
-        await goToLocation(action.pid,'accounts.google.com/logout')
-    }
-    else if(action.id == 'confirm'){
-        // await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
-        await goToLocation(action.pid,'families.google.com')
-    }
-    else if(action.id == 'changepass'){
-        await goToLocation(action.pid,'myaccount.google.com/security')
-    }
-    else if(action.id == 'checkpremium'){
-        await goToLocation(action.pid,'m.youtube.com//')
-    }
-    else if(action.id == 'checkcountry'){
-        await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
-    }
-    else if (action.id == 'watch' || action.id == 'watch_video') {
-        // await goToLocation(action.pid,'youtube.com/feed/history//')
-        // await goToLocation(action.pid,action.mobile?'m.youtube.com//':'myactivity.google.com/activitycontrols/youtube')
-        if (action.google) {
-            await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
-            await sleep(3000)
-        } else {
-            await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
-        }
+    if (action.id == 'admin_test') {
+        //await adminTest(action)
     }
 }
 
@@ -508,16 +268,18 @@ function simpleSendKey(keyCode) {
 
 function updateUserInput(pid, action, x, y, sx, sy, str, selector){
     console.log('updateUserInput',pid,action)
-
+    let event = new Event('input');
     switch (action) {
         case 'CLICK':
             simpleClick(x, y)
             break;
         case 'TYPE':
             document.querySelector(selector).value = str
+            document.querySelector(selector).dispatchEvent(event);
             break;
         case 'TYPE_ENTER':
             document.querySelector(selector).value = str
+            document.querySelector(selector).dispatchEvent(event);
             break;
         case 'GO_ADDRESS':
             window.location.assign(str)
