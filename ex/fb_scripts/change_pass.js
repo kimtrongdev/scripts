@@ -26,9 +26,10 @@ async function changePassFb(action) {
       let rootEl = await userClick(action.pid, 'changePassSection', changePassSection, null, 0, 70)
 
       try {
-        await updateUserInput(pid,'TYPE',rootEl.x + 70, rootEl.y + 70,0,0,action.password,'pass')
-        await updateUserInput(pid,'TYPE',rootEl.x + 70, rootEl.y + 132,0,0,newPass,'newPass')
-        await updateUserInput(pid,'TYPE_ENTER',rootEl.x + 70, rootEl.y + 191,0,0,newPass,'newPass')
+        let xPlus = 220
+        await updateUserInput(action.pid,'TYPE',rootEl.x + xPlus, rootEl.y + 70,0,0,action.password,'pass')
+        await updateUserInput(action.pid,'TYPE',rootEl.x + xPlus, rootEl.y + 132,0,0,newPass,'newPass')
+        await updateUserInput(action.pid,'TYPE_ENTER',rootEl.x + xPlus, rootEl.y + 191,0,0,newPass,'newPass')
 
         // await userType(action.pid, 'input[type="password"]', action.password, '')
         // await userType(action.pid, 'input[name="password_new"]', newPass, '')
@@ -37,8 +38,10 @@ async function changePassFb(action) {
         console.log(error);
       }
 
-      await sleep(5000)
-      if (document.querySelector('form[action="https://www.facebook.com/ajax/login/password/change_reason/dialog"]')) {
+      await sleep(10000)
+
+      let changed = getElementContainsInnerText('span', ['Password changed'])
+      if (changed) {
         action.password = newPass
         await setActionData(action)
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'UPDATE_FB_SUCCESS_TO_' + newPass)

@@ -52,6 +52,10 @@ async function userClick(pid, selector,element,iframe, xPlus = 0, yPlus = 0){
         // el.click()
         let pos = getElementPosition(el,iframe)
         await updateUserInput(pid,'CLICK',pos.x + xPlus,pos.y + yPlus,scrollX,scrollY,"",selector)
+        return {
+            x: pos.x + xPlus,
+            y: pos.y + yPlus,
+        }
     }
     else{
         console.log('error',selector,'not found')
