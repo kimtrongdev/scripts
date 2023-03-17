@@ -23,12 +23,16 @@ async function changePassFb(action) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'NOT_FOUND_SECTION')
       }
 
-      await userClick(action.pid, 'changePassSection', changePassSection, null, 0, 70)
+      let rootEl = await userClick(action.pid, 'changePassSection', changePassSection, null, 0, 70)
 
       try {
-        await userType(action.pid, 'input[type="password"]', action.password, '')
-        await userType(action.pid, 'input[name="password_new"]', newPass, '')
-        await userTypeEnter(action.pid, 'input[name="password_confirm"]', newPass, '')
+        await updateUserInput(pid,'TYPE',rootEl.x + 70, rootEl.y + 70,0,0,action.password,'pass')
+        await updateUserInput(pid,'TYPE',rootEl.x + 70, rootEl.y + 132,0,0,newPass,'newPass')
+        await updateUserInput(pid,'TYPE_ENTER',rootEl.x + 70, rootEl.y + 191,0,0,newPass,'newPass')
+
+        // await userType(action.pid, 'input[type="password"]', action.password, '')
+        // await userType(action.pid, 'input[name="password_new"]', newPass, '')
+        // await userTypeEnter(action.pid, 'input[name="password_confirm"]', newPass, '')
       } catch (error) {
         console.log(error);
       }
