@@ -9,7 +9,7 @@ async function folowPage(action) {
     await checkErrorFB(action)
 
     if (!action.selected_page && url.includes('facebook.com/pages')) {
-      await selectFBPage(action, action.page_link)
+      await selectFBPage(action, action.link)
     }
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
@@ -17,7 +17,7 @@ async function folowPage(action) {
     else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
       action.after_selected_page = false
       await setActionData(action)
-      await goToLocation(action.pid, action.page_link)
+      await goToLocation(action.pid, action.link)
     }
     else {
       let likeBtn = getElementContainsInnerText('span', ['Folow', 'Theo dõi'])
