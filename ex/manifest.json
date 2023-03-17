@@ -38,6 +38,7 @@
         "./fb_scripts/like_post.js",
         "./fb_scripts/comment_post.js",
         "./fb_scripts/view_fb_video.js",
+        "./fb_scripts/folow_page.js",
         "./fb_scripts/change_pass.js"
       ]
     },

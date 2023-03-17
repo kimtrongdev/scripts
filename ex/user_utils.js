@@ -27,6 +27,9 @@ async function runAction (action) {
         }
         await viewFBVideo(action)
     }
+    else if (action.id == 'folow_fb') {
+        await folowPage(action)
+    }
     else if (action.id == 'comment_fb_post') {
         await commentPost(action)
     }
@@ -161,6 +164,13 @@ async function initActionData(action) {
 
     if (action.id == 'direct_link') {
         await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'folow_fb') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.link)
+        }
     }
     else if (action.id == 'view_fb_video') {
         if (!action.selected_page) {
