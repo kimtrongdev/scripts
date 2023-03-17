@@ -26,9 +26,9 @@ async function changePassFb(action) {
       await userClick(action.pid, 'changePassSection', changePassSection, null, 0, 70)
 
       try {
-        await userType(action.pid, 'input[type="password"]', action.password, '', ifr.contentWindow.document)
-        await userType(action.pid, 'input[name="password_new"]', newPass, '', ifr.contentWindow.document)
-        await userTypeEnter(action.pid, 'input[name="password_confirm"]', newPass, '', ifr.contentWindow.document)
+        await userType(action.pid, 'input[type="password"]', action.password, '')
+        await userType(action.pid, 'input[name="password_new"]', newPass, '')
+        await userTypeEnter(action.pid, 'input[name="password_confirm"]', newPass, '')
       } catch (error) {
         console.log(error);
       }
