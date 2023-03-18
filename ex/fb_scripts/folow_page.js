@@ -26,6 +26,7 @@ async function folowPage(action) {
 
         let menuBtn = document.querySelector('div[role="main"]>div>div>div>div>div>div>div[aria-haspopup="menu"]') || document.querySelector('div[role="main"] div[aria-label="More actions"]')
         await userClick(action.pid, 'menuBtn', menuBtn)
+        await sleep(2000)
         followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
       }
 
@@ -35,10 +36,12 @@ async function folowPage(action) {
         if (reportData) {
           action.data_reported = reportData
         }
+        await sleep(5000)
+        await reportScript(action)
+        return
       }
 
-      await sleep(7000)
-      await reportScript(action)
+      await reportScript(action, false)
     }
   } catch (er) {
     console.log(er);
