@@ -13,6 +13,7 @@
         "<all_urls>"
       ],
       "js": [
+        "utils.js",
         "user_utils.js",
         "user_simulate.js",
         "user_login.js",
@@ -46,7 +47,7 @@
       "matches": [
         "https://payments.google.com/*"
       ],
-      "js": ["user_utils.js","user_simulate.js","user_login.js","watch_youtube.js","watch_youtube_mobile.js","content.js"],
+      "js": ["utils.js", "user_utils.js","user_simulate.js","user_login.js","watch_youtube.js","watch_youtube_mobile.js","content.js"],
       "all_frames":true
     }
   ],

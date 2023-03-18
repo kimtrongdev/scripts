@@ -20,11 +20,18 @@ async function folowPage(action) {
       await goToLocation(action.pid, action.link)
     }
     else {
-      let likeBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'])
-
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      if (likeBtn) {
-        await userClick(action.pid, 'likeBtn', likeBtn)
+      let followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
+
+      if (!followBtn) {
+
+        let menuBtn = document.querySelector('div[role="main"]>div>div>div>div>div>div>div[aria-haspopup="menu"]')
+        await userClick(action.pid, 'menuBtn', menuBtn)
+        followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
+      }
+
+      if (followBtn) {
+        await userClick(action.pid, 'followBtn', followBtn)
         let reportData = getFolowDataPage()
         if (reportData) {
           action.data_reported = reportData

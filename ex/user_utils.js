@@ -814,31 +814,6 @@ async function randomFullName () {
     return rs.name
 }
 
-function getElementContainsInnerText(tagName, innerText, _document = document) {
-    if (!Array.isArray(innerText)) {
-        innerText = [innerText]
-    }
-
-    for (let text of innerText) {
-        let headings = document.evaluate(
-            `//${tagName}[contains(., '${text}')]`,
-            _document,
-            null,
-            XPathResult.ANY_TYPE,
-            null
-        );
-    
-        if (headings) {
-            const thisHeading = headings.iterateNext();
-            if (thisHeading) {
-                return thisHeading
-            }
-        }
-    }
-    
-    return null
-}
-
 async function handleUsersSelection (action) {
     action.fisrtStart = false
     await setActionData(action)
