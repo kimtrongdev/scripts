@@ -1,6 +1,5 @@
 async function folowPage(action) {
   try {
-    await sleep(5000)
     reportLive(action.pid)
 
     let url = window.location.toString()
@@ -25,7 +24,7 @@ async function folowPage(action) {
 
       if (!followBtn) {
 
-        let menuBtn = document.querySelector('div[role="main"]>div>div>div>div>div>div>div[aria-haspopup="menu"]')
+        let menuBtn = document.querySelector('div[role="main"]>div>div>div>div>div>div>div[aria-haspopup="menu"]') || document.querySelector('div[role="main"] div[aria-label="More actions"]')
         await userClick(action.pid, 'menuBtn', menuBtn)
         followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
       }
