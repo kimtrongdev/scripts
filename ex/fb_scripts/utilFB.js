@@ -32,7 +32,7 @@ async function selectFBPage(action, link = '') {
       }
   }
 
-  let channel = pages.item(action.channel_position)
+  let channel = typeSwitch ? pages[action.channel_position] : pages.item(action.channel_position)
   if (channel) {
     if (action.channel_position == pages.length) {
         reportPositionChannel(action.pid, -1)
