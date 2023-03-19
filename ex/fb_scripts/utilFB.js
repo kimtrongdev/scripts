@@ -13,7 +13,12 @@ async function selectFBPage(action, link = '') {
   action.after_selected_page = true
   await setActionData(action)
 
+  let typeSwitch = false
   let pages = document.querySelectorAll('div[aria-label="More"]')
+  if (pages.length == 0) {
+    typeSwitch = true
+    pages = getElementContainsInnerText('span', ['Switch Now'], '', 'equal', 'array')
+  }
   if (!pages.length) {
     if (link) {
       await goToLocation(action.pid, link)
@@ -35,12 +40,16 @@ async function selectFBPage(action, link = '') {
         reportPositionChannel(action.pid, action.channel_position)
     }
 
-    await userClick(action.pid, '', channel)
-    await sleep(1000)
-    const switchNowBtn = getElementContainsInnerText('span', ['Switch Now'])
-    await userClick(action.pid, 'switchNowBtn', switchNowBtn)
-    await sleep(2000)
-    await userClick(action.pid, 'div[aria-label="Switch"]')
+    if (typeSwitch) {
+      await userClick(action.pid, '', channel)
+    } else {
+      await userClick(action.pid, '', channel)
+      await sleep(1000)
+      const switchNowBtn = getElementContainsInnerText('span', ['Switch Now'])
+      await userClick(action.pid, 'switchNowBtn', switchNowBtn)
+      await sleep(2000)
+      await userClick(action.pid, 'div[aria-label="Switch"]')
+    }
   }
 }
 

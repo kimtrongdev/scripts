@@ -1,6 +1,6 @@
 
 
-function getElementContainsInnerText(tagName, innerText, _document = null, type = 'contains') {
+function getElementContainsInnerText(tagName, innerText, _document = null, type = 'contains', getType = 'fisrt') {
   function getXPath (tagName, text) {
     let xpathMap = {
       'contains': `//${tagName}[contains(., '${text}')]`,
@@ -20,7 +20,20 @@ function getElementContainsInnerText(tagName, innerText, _document = null, type 
         null, XPathResult.ANY_TYPE, null
       );
       if (headings) {
-        return headings.iterateNext();
+        let els = []
+        let rs = headings.iterateNext()
+        while (rs) {
+          els.push(rs)
+          rs = headings.iterateNext()
+        }
+
+        if (els.length) {
+          if (getType == 'fisrt') {
+            return els.shift()
+          } else {
+            return els
+          }
+        }
       }
   }
   

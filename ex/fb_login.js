@@ -43,8 +43,8 @@ async function fbLogin(action) {
         console.log('change lang');
         action.changed_lang = true
         await setActionData(action)
-        
-        editBtn = getElementContainsInnerText('span', ['Editar']) || document.querySelector('div[role="button"]>div>div>div>span>span') 
+
+        editBtn = getElementContainsInnerText('span', ['Editar', 'Edit'], '', 'equal') || document.querySelector('div[role="button"]>div>div>div>span>span') 
         if (editBtn) {
           await userClick(action.pid, 'editBtn', editBtn)
           let selectorVN = document.querySelector('div[aria-haspopup="listbox"]')
@@ -70,6 +70,9 @@ async function fbLogin(action) {
       await sleep(10000)
     } else if (url.includes('facebook.com/pages')) {
       let pages = document.querySelectorAll('div[aria-label="More"]')
+      if (pages.length == 0) {
+        pages = getElementContainsInnerText('span', ['Switch Now'], '', 'equal', 'array')
+      }
       if (action.current_total_page == pages.length) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'không thể tạo thêm page')
         return
