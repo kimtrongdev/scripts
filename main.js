@@ -1163,6 +1163,13 @@ function initExpress() {
         console.log(randomAddress);
         return res.send(randomAddress)
     })
+    
+    app.get('/report-fb-group', async (req, res) => {
+        let groupLink = req.query.group_link
+        let rs = await request_api.reportFBGroup(groupLink)
+        res.send(rs)
+        return
+    })
 
     app.get('/get-phone-code', async (req, res) => {
         let order_id = req.query.order_id
