@@ -1,6 +1,6 @@
 async function likePage(action) {
   try {
-    await sleep(5000)
+    await sleep(2000)
     reportLive(action.pid)
 
     let url = window.location.toString()
@@ -20,7 +20,7 @@ async function likePage(action) {
       await goToLocation(action.pid, action.page_link)
     }
     else {
-      let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'])
+      let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal')
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (likeBtn) {
         await userClick(action.pid, 'likeBtn', likeBtn)
