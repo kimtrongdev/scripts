@@ -64,6 +64,11 @@ async function checkErrorFB (action) {
   //   await sleep(5000)
   // }
   // else 
+  if (getElementContainsInnerText('span', ['You’re Temporarily Blocked'], '', 'equal')) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'You’re Temporarily Blocked')
+    return
+  }
+
   if (url.includes('/login.php')) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
     await sleep(5000)
