@@ -9,9 +9,6 @@ async function selectFBPage(action, link = '') {
     action.channel_position = 0
   }
   action.channel_position += 1
-  action.selected_page = true
-  action.after_selected_page = true
-  await setActionData(action)
 
   let typeSwitch = false
   let pages = document.querySelectorAll('div[aria-label="More"]')
@@ -21,8 +18,6 @@ async function selectFBPage(action, link = '') {
   }
 
   if (!pages || !pages.length) {
-    action.reseted_page = true
-    await setActionData(action)
     let profileIcon = document.querySelector('div[role="navigation"] svg[aria-label="Your profile"]')
     await userClick(action.pid, 'profileIcon', profileIcon)
     let resetBtn = document.querySelector('div[aria-label="Switch Profiles"]')
@@ -31,6 +26,10 @@ async function selectFBPage(action, link = '') {
       await sleep(8000)
     }
   }
+
+  action.selected_page = true
+  action.after_selected_page = true
+  await setActionData(action)
 
   if (!pages.length) {
     if (link) {
