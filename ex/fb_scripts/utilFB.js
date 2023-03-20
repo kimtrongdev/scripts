@@ -15,9 +15,12 @@ async function selectFBPage(action, link = '') {
   if (pages.length == 0) {
     typeSwitch = true
     pages = getElementContainsInnerText('span', ['Switch Now'], '', 'equal', 'array')
+    if (!pages) {
+      pages = []
+    }
   }
 
-  if (!pages || !pages.length) {
+  if (!pages.length) {
     let profileIcon = document.querySelector('div[role="navigation"] svg[aria-label="Your profile"]')
     await userClick(action.pid, 'profileIcon', profileIcon)
     let resetBtn = document.querySelector('div[aria-label="Switch Profiles"]')
