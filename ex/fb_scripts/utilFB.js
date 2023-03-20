@@ -5,6 +5,18 @@ async function selectFBPage(action, link = '') {
 
   await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
+  if (!action.reseted_page) {
+    action.reseted_page = true
+    await setActionData(action)
+    let profileIcon = document.querySelector('div[role="navigation"] svg[aria-label="Your profile"]')
+    await userClick(action.pid, 'profileIcon', profileIcon)
+    let resetBtn = document.querySelector('div[aria-label="Switch Profiles"]')
+    if (resetBtn) {
+      await userClick(action.pid, 'resetBtn', resetBtn)
+      await sleep(8000)
+    }
+  }
+
   if (!action.channel_position) {
     action.channel_position = 0
   }
