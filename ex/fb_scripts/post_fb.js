@@ -33,12 +33,12 @@ async function postFB(action) {
             await sleep(4000)
           }
 
-          let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
-          if (!joined) {
-            // report to backend
-            await reportGroup(action)
-            await reportScript(action, false)
-          }
+          // let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
+          // if (!joined) {
+          //   // report to backend
+          //   await reportGroup(action)
+          //   await reportScript(action, false)
+          // }
         }
         
         let createPostInput = getElementContainsInnerText('span', ['Write something...'], '', 'equal')
