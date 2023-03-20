@@ -95,6 +95,14 @@ async function checkErrorFB (action) {
   }
 }
 
+async function checkErrorAfterRunScript(action) {
+  let blockedEl = getElementContainsInnerText('span', ['Your account is restricted for'])
+  if (blockedEl) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, blockedEl.innerText)
+    return
+  }
+}
+
 async function handleRegPage (action) {
   if (getElementContainsInnerText('span', ['Go to News Feed'])) {
     await userClick(action.pid, 'image')

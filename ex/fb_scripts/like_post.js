@@ -31,8 +31,10 @@ async function likePost(action) {
           let data_reported = likeData.innerText
           action.data_reported = data_reported
         }
+
+        await sleep(7000)
+        await checkErrorAfterRunScript(action)
       }
-      await sleep(7000)
       await reportScript(action)
     }
     else {

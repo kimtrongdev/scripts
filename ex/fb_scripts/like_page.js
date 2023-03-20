@@ -28,9 +28,11 @@ async function likePage(action) {
         if (reportData) {
           action.data_reported = reportData
         }
-      }
 
-      await sleep(7000)
+        await sleep(7000)
+        await checkErrorAfterRunScript(action)
+      }
+      
       await reportScript(action)
     }
   } catch (er) {

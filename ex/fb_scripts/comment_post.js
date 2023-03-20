@@ -30,11 +30,13 @@ async function commentPost(action) {
           let data_reported = likeData.innerText
           action.data_reported = data_reported
         }
+
+        await sleep(7000)
+        await checkErrorAfterRunScript(action)
       } else {
         console.log('NOT found text box or comment');
       }
 
-      await sleep(7000)
       await reportScript(action)
     }
   } catch (er) {
