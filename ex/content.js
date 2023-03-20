@@ -12,6 +12,7 @@ var isRunBAT = false
 var widthCustom = 0
 var heightCustom = 0
 var IS_MOBILE = false
+const APP_URL = 'http://localhost:8080/#'
 async function loadPage(){
     try{
        // await sleep(4000)
