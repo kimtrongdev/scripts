@@ -1555,7 +1555,11 @@ async function handleAction (actionData) {
         }
     }
     else if (actionData.action == 'TYPE') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
+        let repeat = 3
+        if (actionData.selector == 'input_post_fb') {
+            repeat = 2
+        }
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat ${repeat} 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
     }
     else if (actionData.action == 'KEY_ENTER') {
         execSync(`xdotool key KP_Enter && sleep 1`)
