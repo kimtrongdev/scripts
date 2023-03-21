@@ -52,7 +52,7 @@ async function postFB(action) {
         let postBtn = getElementContainsInnerText('span', ['Post'], '', 'equal')
         await userClick(action.pid, 'postBtn', postBtn)
 
-        await sleep(5000)
+        await sleep(8000)
 
         if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
           // report to backend
