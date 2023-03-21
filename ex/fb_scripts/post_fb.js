@@ -44,14 +44,14 @@ async function postFB(action) {
         
         let createPostInput = getElementContainsInnerText('span', ['Write something...'], '', 'equal')
         await userClick(action.pid, 'createPostInput', createPostInput)
-        await sleep(2000)
+        await sleep(5000)
 
         let contentInput = getElementContainsInnerText('div', ['Create a public post…'], '', 'equal')
         await userType(action.pid, 'contentInput', action.content + action.link, contentInput)
         let postBtn = getElementContainsInnerText('span', ['Post'], '', 'equal')
         await userClick(action.pid, 'postBtn', postBtn)
 
-        await sleep(2000)
+        await sleep(5000)
 
         if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
           // report to backend
