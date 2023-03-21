@@ -19,6 +19,7 @@ async function postFB(action) {
       await goToLocation(action.pid, action.group_link)
     }
     else if (url.includes('facebook.com/groups')) {
+      await sleep(3000)
       let joinBtn = getElementContainsInnerText('span', ['Join Group'], '', 'equal')
       let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
 
