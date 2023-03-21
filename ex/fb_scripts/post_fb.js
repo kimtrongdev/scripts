@@ -64,6 +64,8 @@ async function postFB(action) {
         let likeBtn = getElementContainsInnerText('span', ['Like'], '', 'equal')
         await userClick(action.pid, 'likeBtn', likeBtn)
 
+        let commentInput = getElementContainsInnerText('div', ['Write a public comment…'], '', 'equal')
+        await userType(action.pid, 'commentInput', action.content, commentInput)
         await reportScript(action)
       }
       await reportScript(action, false)
