@@ -61,6 +61,12 @@ async function postFB(action) {
           await reportScript(action, false)
         }
 
+        let discussion = getElementContainsInnerText('span', ['Discussion'], '', 'equal')
+        if (discussion) {
+          await userClick(action.pid, 'discussion', discussion)
+          await sleep(1000)
+        }
+
         let likeBtn = getElementContainsInnerText('span', ['Like'], '', 'equal')
         await userClick(action.pid, 'likeBtn', likeBtn)
 
