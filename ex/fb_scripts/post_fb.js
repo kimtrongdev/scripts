@@ -66,6 +66,7 @@ async function postFB(action) {
 
         let commentInput = getElementContainsInnerText('div', ['Write a public comment…'], '', 'equal')
         await userType(action.pid, 'commentInput', action.content, commentInput)
+        await sleep(4000)
         await reportScript(action)
       }
       await reportScript(action, false)
