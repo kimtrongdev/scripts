@@ -48,6 +48,7 @@ async function postFB(action) {
         await sleep(5000)
 
         let contentInput = getElementContainsInnerText('div', ['Create a public post…'], '', 'equal')
+        await userClick(action.pid, 'contentInput', contentInput)
         await userType(action.pid, 'contentInput', action.content + action.link, contentInput)
         let postBtn = getElementContainsInnerText('span', ['Post'], '', 'equal')
         await userClick(action.pid, 'postBtn', postBtn)
