@@ -22,8 +22,9 @@ async function postFB(action) {
       await sleep(3000)
       let joinBtn = getElementContainsInnerText('span', ['Join Group'], '', 'equal')
       let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
+      let followBtn = getElementContainsInnerText('span', ['Follow Group'], '', 'equal')
 
-      if (joinBtn || joined) {
+      if (joinBtn || joined || followBtn) {
         if (joinBtn) {
           await userClick(action.pid, 'joinBtn', joinBtn)
           await sleep(8000)
