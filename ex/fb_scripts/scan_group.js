@@ -8,7 +8,7 @@ async function scanGroup(action) {
     await checkErrorFB(action)
 
     if (!action.selected_page && url.includes('facebook.com/pages')) {
-      await selectFBPage(action, action.link)
+      await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}`)
     }
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
@@ -16,7 +16,7 @@ async function scanGroup(action) {
     else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
       action.after_selected_page = false
       await setActionData(action)
-      await goToLocation(action.pid, action.link)
+      await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}`)
     }
     else if (url.includes('facebook.com/search/groups')) {
       if (!action.pos_group) {
