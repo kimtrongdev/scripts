@@ -24,7 +24,7 @@ async function scanGroup(action) {
       let currentLenth = groups.length
 
       try {
-        while (groups.length < 50) {
+        while (groups.length < 40) {
           currentLenth = groups.length
           await userScroll(action.pid, 50)
           await sleep(5000)
@@ -50,7 +50,7 @@ async function scanGroup(action) {
         });
   
         console.log('action.group_link.length', groupLinks.length);
-        await sleep(100000)
+        await sleep(5000)
         action.group_link = 'NEW_' + JSON.stringify(groupLinks)
       } catch (error) {
         console.log(error);
