@@ -40,6 +40,7 @@ async function scanGroup(action) {
       groups = [...groups]
       try {
         while (groups.length) {
+          groupLinks = []
           let pageGroup = groups.splice(0, 20)
           pageGroup.forEach(element => {
             let hrefEl = element.parentNode.parentNode.parentNode.parentNode
@@ -54,6 +55,7 @@ async function scanGroup(action) {
           action.group_link = 'NEW_' + JSON.stringify(groupLinks)
           console.log('report', pageGroup.length);
           await reportFBGroup(action)
+          await sleep(3000)
         }
       } catch (error) {
         console.log(error);
