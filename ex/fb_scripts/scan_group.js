@@ -22,7 +22,7 @@ async function scanGroup(action) {
       let groups = document.querySelectorAll('div[role="article"] g image')
       let groupLinks = []
       let currentLenth = groups.length
-      while (groups.length < 100) {
+      while (groups.length < 50) {
         currentLenth = groups.length
         await userScroll(action.pid, 50)
         await sleep(5000)
