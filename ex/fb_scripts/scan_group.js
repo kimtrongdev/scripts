@@ -21,6 +21,16 @@ async function scanGroup(action) {
     else if (url.includes('facebook.com/search/groups')) {
       let groups = document.querySelectorAll('div[role="article"] g image')
       let groupLinks = []
+      let currentLenth = groups.length
+      while (groups.length < 100) {
+        currentLenth = groups.length
+        await userScroll(action.pid, 50)
+        await sleep(5000)
+        groups = document.querySelectorAll('div[role="article"] g image')
+        if (groups.length <= currentLenth) {
+          break
+        }
+      }
 
       groups.forEach(element => {
         let hrefEl = element.parentNode.parentNode.parentNode.parentNode
