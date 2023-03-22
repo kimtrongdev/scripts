@@ -374,7 +374,7 @@ function reportAccount (action) {
             isStop = false
         }
     } else if (action.reg_ga_success || action.end_script) {
-        isStop = false
+        isStop = true
     }
 
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',

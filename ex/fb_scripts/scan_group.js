@@ -24,7 +24,7 @@ async function scanGroup(action) {
       let currentLenth = groups.length
 
       try {
-        while (groups.length < 40) {
+        while (groups.length < 100) {
           currentLenth = groups.length
           await userScroll(action.pid, 50)
           await sleep(5000)
@@ -38,26 +38,27 @@ async function scanGroup(action) {
       }
       
       try {
-        groups.forEach(element => {
-          let hrefEl = element.parentNode.parentNode.parentNode.parentNode
-          let hrefLink = hrefEl.getAttribute('href').split('?')[0]
-          let name = hrefEl.parentNode.parentNode.parentNode.querySelector('a[role="presentation"]').innerText
-          hrefLink = hrefLink.replace('href="', '')
-          groupLinks.push({
-            link: hrefLink,
-            name: name
-          })
-        });
-  
-        console.log('action.group_link.length', groupLinks.length);
-        await sleep(5000)
-        action.group_link = 'NEW_' + JSON.stringify(groupLinks)
+        while (groups.length) {
+          let pageGroup = groups.splice(0, 20)
+          pageGroup.forEach(element => {
+            let hrefEl = element.parentNode.parentNode.parentNode.parentNode
+            let hrefLink = hrefEl.getAttribute('href').split('?')[0]
+            let name = hrefEl.parentNode.parentNode.parentNode.querySelector('a[role="presentation"]').innerText
+            hrefLink = hrefLink.replace('href="', '')
+            groupLinks.push({
+              link: hrefLink,
+              name: name
+            })
+          });
+          action.group_link = 'NEW_' + JSON.stringify(groupLinks)
+          console.log('report', pageGroup.length);
+          await reportFBGroup(action)
+        }
       } catch (error) {
         console.log(error);
         await sleep(100000)
       }
 
-      await reportFBGroup(action)
       await reportScript(action)
     }
     else {
