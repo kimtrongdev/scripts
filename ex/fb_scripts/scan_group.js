@@ -49,11 +49,12 @@ async function scanGroup(action) {
           })
         });
   
-        console.log('action.group_link.length', action.group_link.length);
+        console.log('action.group_link.length', groupLinks.length);
         await sleep(100000)
         action.group_link = 'NEW_' + JSON.stringify(groupLinks)
       } catch (error) {
         console.log(error);
+        await sleep(100000)
       }
 
       await reportFBGroup(action)
