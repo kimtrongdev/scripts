@@ -8,7 +8,7 @@ async function scanGroup(action) {
     await checkErrorFB(action)
 
     if (!action.selected_page && url.includes('facebook.com/pages')) {
-      await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}`)
+      await selectFBPage(action, `https://www.facebook.com/search/groups?q=${action.keyword}`)
     }
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
