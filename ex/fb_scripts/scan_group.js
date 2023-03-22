@@ -24,7 +24,7 @@ async function scanGroup(action) {
       let currentLenth = groups.length
 
       try {
-        while (groups.length < 100) {
+        while (groups.length < 150) {
           currentLenth = groups.length
           await userScroll(action.pid, 50)
           await sleep(5000)
