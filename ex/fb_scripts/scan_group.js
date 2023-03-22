@@ -22,16 +22,22 @@ async function scanGroup(action) {
       let groups = document.querySelectorAll('div[role="article"] g image')
       let groupLinks = []
       let currentLenth = groups.length
-      while (groups.length < 50) {
-        currentLenth = groups.length
-        await userScroll(action.pid, 50)
-        await sleep(5000)
-        groups = document.querySelectorAll('div[role="article"] g image')
-        if (groups.length <= currentLenth) {
-          break
-        }
-      }
 
+      try {
+        while (groups.length < 50) {
+          currentLenth = groups.length
+          await userScroll(action.pid, 50)
+          await sleep(5000)
+          groups = document.querySelectorAll('div[role="article"] g image')
+          if (groups.length <= currentLenth) {
+            break
+          }
+        }
+      } catch (error) {
+        console.log('error', error);
+        await sleep(100000)
+      }
+      
       try {
         groups.forEach(element => {
           let hrefEl = element.parentNode.parentNode.parentNode.parentNode
