@@ -37,6 +37,7 @@ async function scanGroup(action) {
         console.log('error', error);
       }
       
+      groups = [...groups]
       try {
         while (groups.length) {
           let pageGroup = groups.splice(0, 20)
