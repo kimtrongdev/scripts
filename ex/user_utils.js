@@ -172,7 +172,7 @@ async function initActionData(action) {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
-            await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}`)
+            await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}&filters=eyJwdWJsaWNfZ3JvdXBzOjAiOiJ7XCJuYW1lXCI6XCJwdWJsaWNfZ3JvdXBzXCIsXCJhcmdzXCI6XCJcIn0ifQ%3D%3D`)
         }
     } else if (action.id == 'post_fb') {
         if (!action.selected_page) {
