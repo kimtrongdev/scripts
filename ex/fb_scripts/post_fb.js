@@ -38,7 +38,7 @@ async function postFB(action) {
           // let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
           // if (!joined) {
           //   // report to backend
-          //   await reportGroup(action)
+          //   await reportFBGroup(action)
           //   await reportScript(action, false)
           // }
         }
@@ -55,16 +55,16 @@ async function postFB(action) {
 
         await sleep(13000)
 
-        if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
-          // report to backend
-          await reportGroup(action)
-          await reportScript(action, false)
-        }
-
         let discussion = getElementContainsInnerText('span', ['Discussion'], '', 'equal')
         if (discussion) {
           await userClick(action.pid, 'discussion', discussion)
           await sleep(1000)
+        }
+
+        if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
+          // report to backend
+          await reportFBGroup(action)
+          await reportScript(action, false)
         }
 
         let likeBtn = getElementContainsInnerText('span', ['Like'], '', 'equal')
