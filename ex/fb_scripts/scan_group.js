@@ -32,7 +32,7 @@ async function scanGroup(action) {
         })
       });
 
-      action.group_link = JSON.stringify(groupLinks)
+      action.group_link = 'NEW_' + JSON.stringify(groupLinks)
 
       await reportFBGroup(action)
       await reportScript(action)
