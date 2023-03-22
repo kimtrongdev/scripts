@@ -434,7 +434,7 @@ async function reportScript(action, status = true) {
     }
 
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: { isScriptReport: true, script_code: action.id, service_id: action._id, pid: action.pid, isBreak: action.is_break, stop: isBreak, status, data_reported: action.data_reported }}, 
+        data: { isScriptReport: true, script_code: action.id, service_id: action._id, pid: action.pid, isBreak: false, stop: isBreak, status, data_reported: action.data_reported }}, 
     async function (response) {
         if (response) {
             if (action.watch_time) {
