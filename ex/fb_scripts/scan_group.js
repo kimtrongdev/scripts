@@ -21,9 +21,10 @@ async function scanGroup(action) {
     else if (url.includes('facebook.com/search/groups')) {
       let groups = document.querySelectorAll('div[role="article"] g image')
       let groupLinks = []
+
       groups.forEach(element => {
         let hrefEl = element.parentNode.parentNode.parentNode.parentNode
-        let hrefLink = hrefEl.attributes.href.split('?')[0]
+        let hrefLink = hrefEl.getAttribute('href').split('?')[0]
         let name = hrefEl.parentNode.parentNode.parentNode.querySelector('a[role="presentation"]').innerText
         hrefLink = hrefLink.replace('href="', '')
         groupLinks.push({
