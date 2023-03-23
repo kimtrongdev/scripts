@@ -59,7 +59,7 @@ async function postFB(action) {
         let discussion = getElementContainsInnerText('span', ['Discussion'], '', 'equal')
         if (discussion) {
           await userClick(action.pid, 'discussion', discussion)
-          await sleep(1000)
+          await sleep(2000)
           if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
             pendingInDiscus = true
           }
@@ -69,7 +69,7 @@ async function postFB(action) {
         let buyAndSell = getElementContainsInnerText('span', ['Buy and Sell'], '', 'equal')
         if (buyAndSell) {
           await userClick(action.pid, 'buyAndSell', buyAndSell)
-          await sleep(1000)
+          await sleep(2000)
           if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
             pendingInBuy = true
           }
