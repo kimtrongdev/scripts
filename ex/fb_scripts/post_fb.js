@@ -55,14 +55,28 @@ async function postFB(action) {
 
         await sleep(13000)
 
+        let pendingInDiscus = false
         let discussion = getElementContainsInnerText('span', ['Discussion'], '', 'equal')
         if (discussion) {
           await userClick(action.pid, 'discussion', discussion)
           await sleep(1000)
+          if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
+            pendingInDiscus = true
+          }
         }
 
-        if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
-          // report to backend
+        let pendingInBuy = false
+        let buyAndSell = getElementContainsInnerText('span', ['Buy and Sell'], '', 'equal')
+        if (buyAndSell) {
+          await userClick(action.pid, 'buyAndSell', buyAndSell)
+          await sleep(1000)
+          if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
+            pendingInBuy = true
+          }
+        }
+
+        if ( (!pendingInDiscus && !pendingInBuy) || (!buyAndSell && !discussion)) {
+          action.group_link = 'DELETE_' + action.group_link
           await reportFBGroup(action)
           await reportScript(action, false)
         }
