@@ -1166,6 +1166,7 @@ function initExpress() {
     
     app.get('/report-fb-group', async (req, res) => {
         let groupLink = req.query.group_link
+        console.log('---groupLink--', groupLink);
         let rs = await request_api.reportFBGroup(groupLink)
         res.send(rs)
         return

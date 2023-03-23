@@ -59,7 +59,7 @@ async function selectFBPage(action, link = '') {
       await userClick(action.pid, '', channel)
     } else {
       await userClick(action.pid, '', channel)
-      await sleep(1000)
+      await sleep(3000)
       const switchNowBtn = getElementContainsInnerText('span', ['Switch Now'])
       await userClick(action.pid, 'switchNowBtn', switchNowBtn)
       await sleep(2000)
