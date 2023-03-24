@@ -35,6 +35,7 @@ async function likePage(action) {
         await checkErrorAfterRunScript(action)
       }
       
+      await updateWatchedVideo(false, action.pid)
       await reportScript(action)
     }
   } catch (er) {
