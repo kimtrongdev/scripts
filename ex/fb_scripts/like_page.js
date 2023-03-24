@@ -20,43 +20,22 @@ async function likePage(action) {
       await goToLocation(action.pid, action.page_link)
     }
     else {
-      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      let exce = false
       let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal')
-      if (likeBtn) {
-        await userClick(action.pid, 'likeBtn', likeBtn)
-        exce = true
-      }
-
       let followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
-      if (followBtn) {
-        await userClick(action.pid, 'followBtn', followBtn)
-        exce = true
-      } else {
-        let menuBtn = document.querySelector('div[role="main"]>div>div>div>div>div>div>div[aria-haspopup="menu"]') || document.querySelector('div[role="main"] div[aria-label="More actions"]')
-        if (menuBtn) {
-          await userClick(action.pid, 'menuBtn', menuBtn)
-          await sleep(2000)
-          followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
-          if (followBtn) {
-            await userClick(action.pid, 'followBtn', followBtn)
-            exce = true
-          }
+      let actionBtn = likeBtn || followBtn
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+      if (likeBtn || followBtn) {
+        await userClick(action.pid, 'actionBtn', actionBtn)
+        let reportData = getLikeDataPage()
+        if (reportData) {
+          action.data_reported = reportData
         }
-      }
 
-      let reportData = getLikeDataPage()
-      if (reportData) {
-        action.data_reported = reportData
-      }
-
-      if (exce) {
         await sleep(7000)
         await checkErrorAfterRunScript(action)
-        await reportScript(action)
       }
       
-      await reportScript(action, false)
+      await reportScript(action)
     }
   } catch (er) {
     console.log(er);
