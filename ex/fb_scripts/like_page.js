@@ -20,10 +20,11 @@ async function likePage(action) {
       await goToLocation(action.pid, action.page_link)
     }
     else {
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal')
       let followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
       let actionBtn = likeBtn || followBtn
-      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+
       if (likeBtn || followBtn) {
         await userClick(action.pid, 'actionBtn', actionBtn)
         let reportData = getLikeDataPage()
@@ -49,8 +50,15 @@ function getLikeDataPage () {
   //let url = window.location.toString()
 
   let likeEl = document.querySelector('div[role="main"]>div>div>div>div>div>div>div>div>div>span')
+  if (likeEl.innerText.includes('friend')) {
+    let el = getElementContainsInnerText('span', ['Followed by', 'Theo dõi']).innerText
+    if (el) {
+      likeData = el.innerText
+    }
+  } else 
   if (likeEl) {
     likeData = likeEl.innerText
   }
+
   return likeData
 }
