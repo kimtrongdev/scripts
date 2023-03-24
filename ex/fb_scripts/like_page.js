@@ -23,7 +23,7 @@ async function likePage(action) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal')
       let followBtn = getElementContainsInnerText('span', ['Follow', 'Theo dõi'], '', 'equal')
-      let actionBtn = likeBtn || followBtn
+      let actionBtn = followBtn || likeBtn
 
       if (likeBtn || followBtn) {
         await userClick(action.pid, 'actionBtn', actionBtn)
