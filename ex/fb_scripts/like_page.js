@@ -51,7 +51,7 @@ function getLikeDataPage () {
 
   let likeEl = document.querySelector('div[role="main"]>div>div>div>div>div>div>div>div>div>span')
   if (likeEl.innerText.includes('friend')) {
-    let el = getElementContainsInnerText('span', ['Followed by', 'Theo dõi']).innerText
+    let el = getElementContainsInnerText('span', ['Followed by', 'Theo dõi'])
     if (el) {
       likeData = el.innerText
     }
