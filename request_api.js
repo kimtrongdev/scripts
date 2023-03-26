@@ -11,8 +11,8 @@ function rq (data) {
 }
 
 module.exports = {
-    reportFBGroup: async function (groupLink) {
-        return await rq({method: 'POST', uri: SUB_URL + '/api/script/report-fb-group', body: { group_link: groupLink }, json: true})
+    reportFBGroup: async function (groupLink, groupTopic) {
+        return await rq({method: 'POST', uri: SUB_URL + '/api/script/report-fb-group', body: { group_link: groupLink, fb_topic_code: groupTopic }, json: true})
     },
     reportAccount: async function (data) {
         return await rq({method: 'POST', uri: SUB_URL + '/api/account', body: data, json: true})
