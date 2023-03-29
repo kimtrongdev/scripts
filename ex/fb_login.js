@@ -70,12 +70,12 @@ async function fbLogin(action) {
       await sleep(10000)
     } else if (url.includes('facebook.com/pages')) {
       let pages = document.querySelectorAll('div[aria-label="More"]')
-      if (!Array.isArray(pages)) {
+      if (!pages) {
         pages = []
       }
       if (pages.length == 0) {
         pages = getElementContainsInnerText('span', ['Switch Now'], '', 'equal', 'array')
-        if (!Array.isArray(pages)) {
+        if (!pages) {
           pages = []
         }
       }
