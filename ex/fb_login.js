@@ -44,7 +44,7 @@ async function fbLogin(action) {
         action.changed_lang = true
         await setActionData(action)
 
-        editBtn = getElementContainsInnerText('span', ['Editar', 'Edit'], '', 'equal') || document.querySelector('div[role="button"]>div>div>div>span>span') 
+        editBtn = getElementContainsInnerText('span', ['Editar', 'Edit', 'Modifier'], '', 'equal') || document.querySelector('div[role="button"]>div>div>div>span>span') 
         if (editBtn) {
           await userClick(action.pid, 'editBtn', editBtn)
           let selectorVN = document.querySelector('div[aria-haspopup="listbox"]')
