@@ -70,8 +70,14 @@ async function fbLogin(action) {
       await sleep(10000)
     } else if (url.includes('facebook.com/pages')) {
       let pages = document.querySelectorAll('div[aria-label="More"]')
+      if (!Array.isArray(pages)) {
+        pages = []
+      }
       if (pages.length == 0) {
         pages = getElementContainsInnerText('span', ['Switch Now'], '', 'equal', 'array')
+        if (!Array.isArray(pages)) {
+          pages = []
+        }
       }
       if (action.current_total_page == pages.length) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'không thể tạo thêm page')
