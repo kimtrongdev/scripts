@@ -89,6 +89,43 @@ async function userLogin(action) {
             // }
         }
 
+        if (url.indexOf('/challenge/iap/verify') > -1) {
+            let phoneRs = await getPhoneCode(action.order_id, action.api_name)
+            console.log('getPhoneCode',phoneRs);
+            if (phoneRs.error || action.entered_code) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+            } else {
+                action.entered_code = true
+                await setActionData(action)
+                await userTypeEnter(action.pid, '#idvAnyPhonePin', phoneRs.code)
+                await sleep(30000)
+            }
+        }
+        else if (action.allow_verify && url.indexOf('/challenge/iap') > -1) {
+            let phoneRs = await getPhone()
+            console.log('getPhone',phoneRs);
+            if (phoneRs.error || action.entered_phone) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+            } else {
+                if (phoneRs.err) {
+                    phoneRs = await getPhone()
+                }
+                
+                action.order_id = phoneRs.orderID
+                action.api_name = phoneRs.api_name
+                action.entered_phone = true
+                await setActionData(action)
+
+                if (phoneRs.phone.startsWith('0')) {
+                    phoneRs.phone = phoneRs.phone.replace('0', '+84')
+                } else if (!phoneRs.phone.startsWith('+84')) {
+                    phoneRs.phone = '+84' + phoneRs.phone
+                }
+                await userTypeEnter(action.pid, '#phoneNumberId', phoneRs.phone)
+                await sleep(30000)
+            }
+        }
+        else
         if (url.indexOf('https://myaccount.google.com/u/5/language') > -1) {
             await goToLocation(action.pid,'youtube.com/feed/history')
             await sleep(30000)

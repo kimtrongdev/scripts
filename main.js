@@ -516,6 +516,10 @@ async function loginProfileChrome(profile) {
         if (systemConfig.total_page_created) {
             action.total_page_created = systemConfig.total_page_created
         }
+
+        if (systemConfig.allow_verify) {
+            action.allow_verify = true
+        }
         
         systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
