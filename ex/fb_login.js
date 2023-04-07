@@ -44,7 +44,7 @@ async function fbLogin(action) {
         action.changed_lang = true
         await setActionData(action)
 
-        editBtn = getElementContainsInnerText('span', ['Editar', 'Edit', 'Modifier'], '', 'equal') || document.querySelector('div[role="button"]>div>div>div>span>span') 
+        editBtn = getElementContainsInnerText('span', ['Editar', 'Edit', 'Modifier', 'Wysig'], '', 'equal') || document.querySelector('div[role="button"]>div>div>div>span>span') 
         if (editBtn) {
           await userClick(action.pid, 'editBtn', editBtn)
           let selectorVN = document.querySelector('div[aria-haspopup="listbox"]')
@@ -52,7 +52,7 @@ async function fbLogin(action) {
             let pos = getElementPosition(selectorVN)
             await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
             
-            let saveBtn = getElementContainsInnerText('span', ['Simpan perubahan', 'Salvar alterações'], '', 'equal') || document.querySelectorAll('div[role="button"]>div>div>div>span').item(2)
+            let saveBtn = getElementContainsInnerText('span', ['Simpan perubahan', 'Salvar alterações', 'Stoor veranderinge'], '', 'equal') || document.querySelectorAll('div[role="button"]>div>div>div>span').item(2)
             if (saveBtn) {
               await userClick(action.pid, 'saveBtn', saveBtn)
             }
