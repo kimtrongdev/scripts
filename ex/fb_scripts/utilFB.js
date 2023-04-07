@@ -41,19 +41,20 @@ async function selectFBPage(action, link = '') {
     return
   }
 
-  if (action.channel_position >= pages.length) {
-      if (pages.length) {
-          action.channel_position = 0
-      }
-  }
+  // if (action.channel_position >= pages.length) {
+  //     if (pages.length) {
+  //         action.channel_position = 0
+  //     }
+  // }
+  action.channel_position = pages.length - 1
 
   let channel = typeSwitch ? pages[action.channel_position] : pages.item(action.channel_position)
   if (channel) {
-    if (action.channel_position == pages.length) {
-        reportPositionChannel(action.pid, -1)
-    } else {
-        reportPositionChannel(action.pid, action.channel_position)
-    }
+    // if (action.channel_position == pages.length) {
+    //     reportPositionChannel(action.pid, -1)
+    // } else {
+    //     reportPositionChannel(action.pid, action.channel_position)
+    // }
 
     if (typeSwitch) {
       await userClick(action.pid, '', channel)
