@@ -51,8 +51,8 @@ async function fbLogin(action) {
           if (selectorVN) {
             let pos = getElementPosition(selectorVN)
             await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
-
-            let saveBtn = document.querySelectorAll('div[role="button"]>div>div>div>span').item(2)
+            
+            let saveBtn = getElementContainsInnerText('span', ['Simpan perubahan'], '', 'equal') || document.querySelectorAll('div[role="button"]>div>div>div>span').item(2)
             if (saveBtn) {
               await userClick(action.pid, 'saveBtn', saveBtn)
             }
