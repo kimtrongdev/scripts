@@ -49,6 +49,28 @@ function getLikeDataPage () {
   let likeData = ''
   //let url = window.location.toString()
 
+  try {
+    if (getElementContainsInnerText('span', ['people like this'])) {
+      let like = getElementContainsInnerText('span', ['people like this'])
+      let fol = getElementContainsInnerText('span', ['people follow this'])
+  
+      if (like) {
+        like = like.innerText
+        like = like.split(' ')[0]
+        like = like.replace(',', '')
+      }
+      if (fol) {
+        fol = fol.innerText
+        fol = fol.split(' ')[0]
+        fol = fol.replace(',', '')
+      }
+
+      return `${(like || 0)} likes • ${fol || 0} followers`
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
   let likeEl = document.querySelector('div[role="main"]>div>div>div>div>div>div>div>div>div>span')
   if (likeEl.innerText.includes('friend')) {
     let el = getElementContainsInnerText('span', ['Followed by', 'Theo dõi'])
