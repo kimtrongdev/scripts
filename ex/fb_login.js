@@ -41,23 +41,25 @@ async function fbLogin(action) {
       let editBtn = getElementContainsInnerText('span', ['Language for buttons, titles and other text from Facebook for this account on www.facebook.com'])
       if (!editBtn) {
         console.log('change lang');
-        action.changed_lang = true
-        await setActionData(action)
+        let formLang = document.querySelector('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"]')
+        if (formLang) {
+          const formPos = formLang.getBoundingClientRect()
+          const editBtnX = formPos.width + formPos.left -68 
+          const editBtnY = formPos.top + 70
+          await updateUserInput(action.pid,'CLICK', editBtnX, editBtnY,0,0,"", 'editBtn')
 
-        editBtn = getElementContainsInnerText('span', ['Editar', 'Edit', 'Modifier', 'Wysig', 'एडिट करें'], '', 'equal') || document.querySelector('div[role="button"]>div>div>div>span>span') 
-        if (editBtn) {
-          await userClick(action.pid, 'editBtn', editBtn)
           let selectorVN = document.querySelector('div[aria-haspopup="listbox"]')
           if (selectorVN) {
             let pos = getElementPosition(selectorVN)
             await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
-            
-            let saveBtn = document.querySelectorAll('div[role="button"]>div>div>div>span').item(2)
-            if (saveBtn) {
-              await userClick(action.pid, 'saveBtn', saveBtn)
-            }
+            const saveBtnX = formPos.width + formPos.left - 68
+            const saveBtnY = formPos.top + 205
+            await updateUserInput(action.pid,'CLICK', saveBtnX, saveBtnY,0,0,"", 'saveBtn')
           }
         }
+
+        action.changed_lang = true
+        await setActionData(action)
       }
 
       await sleep(10000)
