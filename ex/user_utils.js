@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'scan_group') {
+    if (action.id == 'scan_profile') {
+        await scanProfile(action)
+    }
+    else if (action.id == 'scan_group') {
         await scanGroup(action)
     }
     else if (action.id == 'post_fb') {
@@ -168,7 +171,13 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'scan_group') {
+    if (action.id == 'scan_profile') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.link)
+        }
+    } else if (action.id == 'scan_group') {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
@@ -195,6 +204,9 @@ async function initActionData(action) {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
+            if (!Array.isArray(action.videos)) {
+                action.videos = action.link.split(',')
+            }
             let link = action.videos.pop()
             await setActionData(action)
             await goToLocation(action.pid, link)

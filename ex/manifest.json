@@ -42,7 +42,8 @@
         "./fb_scripts/folow_page.js",
         "./fb_scripts/change_pass.js",
         "./fb_scripts/post_fb.js",
-        "./fb_scripts/scan_group.js"
+        "./fb_scripts/scan_group.js",
+        "./fb_scripts/scan_profile.js"
       ]
     },
     {
