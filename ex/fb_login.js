@@ -44,9 +44,10 @@ async function fbLogin(action) {
         let formLangs = [...document.querySelectorAll('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"]')]
         let formLang = formLangs.pop()
         if (formLang) {
+          let screenY = (window.screen.height - window.screen.availHeight) + (window.outerHeight - window.innerHeight)
           const formPos = formLang.getBoundingClientRect()
           const editBtnX = formPos.width + formPos.left -68 
-          const editBtnY = formPos.top + 70
+          const editBtnY = screenY + formPos.top + 70
           await updateUserInput(action.pid,'CLICK', editBtnX, editBtnY,0,0,"", 'editBtn')
 
           let selectorVN = document.querySelector('div[aria-haspopup="listbox"]')
@@ -54,7 +55,7 @@ async function fbLogin(action) {
             let pos = getElementPosition(selectorVN)
             await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
             const saveBtnX = formPos.width + formPos.left - 68
-            const saveBtnY = formPos.top + 205
+            const saveBtnY = screenY + formPos.top + 205
             await updateUserInput(action.pid,'CLICK', saveBtnX, saveBtnY,0,0,"", 'saveBtn')
           }
         }
