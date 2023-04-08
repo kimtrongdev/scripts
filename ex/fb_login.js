@@ -41,7 +41,8 @@ async function fbLogin(action) {
       let editBtn = getElementContainsInnerText('span', ['Language for buttons, titles and other text from Facebook for this account on www.facebook.com'])
       if (!editBtn) {
         console.log('change lang');
-        let formLang = document.querySelector('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"]')
+        let formLangs = [...document.querySelectorAll('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"]')]
+        let formLang = formLangs.pop()
         if (formLang) {
           const formPos = formLang.getBoundingClientRect()
           const editBtnX = formPos.width + formPos.left -68 
