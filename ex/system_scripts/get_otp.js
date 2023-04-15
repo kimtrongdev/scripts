@@ -17,7 +17,7 @@ async function getOtp(action) {
           'Verification code for recovery email:'
         ])
         if (codeData) {
-          codeData = codeData.innertext
+          codeData = codeData.innerText
         }
         if (codeData) {
           codeData = codeData.split(':')[1]
