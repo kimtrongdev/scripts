@@ -181,7 +181,7 @@ async function initActionData(action) {
         await goToLocation(action.pid, 'https://myaccount.google.com/recovery/email')
     }
     else if (action.id == 'get_otp') {
-        await goToLocation(action.pid, 'https://mail.google.com/')
+        await goToLocation(action.pid, 'google.com/search?q=hot')
     }
     else if (action.id == 'scan_profile') {
         if (!action.selected_page) {

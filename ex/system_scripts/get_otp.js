@@ -3,7 +3,10 @@ async function getOtp(action) {
   try {
     let url = window.location.toString()
     reportLive(action.pid)
-    if (url.indexOf('mail.google.com/mail') > -1) {
+    if (url.includes('google.com/search')) {
+      await goToLocation(action.pid, 'https://mail.google.com/')
+    }
+    else if (url.indexOf('mail.google.com/mail') > -1) {
       const timeout = 600000
       let n = Math.ceil(timeout/2000)
       for(let i = 0; i < n; i++){
