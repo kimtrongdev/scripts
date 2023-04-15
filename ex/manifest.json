@@ -32,6 +32,7 @@
         "./scripts/reg_mail.js",
         "./scripts/check_mail_1.js",
         "./scripts/direct_link.js",
+
         "./fb_scripts/utilFB.js",
         "./fb_login.js",
         "./fb_scripts/reg_page.js",
@@ -43,7 +44,10 @@
         "./fb_scripts/change_pass.js",
         "./fb_scripts/post_fb.js",
         "./fb_scripts/scan_group.js",
-        "./fb_scripts/scan_profile.js"
+        "./fb_scripts/scan_profile.js",
+
+        "./system_scripts/get_otp.js",
+        "./system_scripts/add_recovery_mail.js"
       ]
     },
     {

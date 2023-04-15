@@ -640,6 +640,9 @@ async function newRunProfile() {
 
         try {
             let action = await getScriptData(pid, true)
+            if (!action || action.not_found || !action.script_code) {
+                action.script_code = 'end_script'
+            }
             if (action && action.script_code) {
                 // handle get browser loged
                 let _browser = getBrowserOfProfile(pid)
@@ -1181,6 +1184,13 @@ function initExpress() {
         let order_id = req.query.order_id
         let api_name = req.query.api_name
         let rs = await request_api.getPhoneCode(order_id, api_name)
+        res.send(rs)
+        return
+    })
+
+    app.get('/get-mail-code', async (req, res) => {
+        let mail = req.query.mail
+        let rs = await request_api.getMailCode(mail)
         res.send(rs)
         return
     })

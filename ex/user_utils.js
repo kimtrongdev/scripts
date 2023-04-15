@@ -20,7 +20,13 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'scan_profile') {
+    if (action.id == 'add_recovery_mail') {
+        await addRecoveryMail(action)
+    }
+    else if (action.id == 'get_otp') {
+        await getOtp(action)
+    }
+    else if (action.id == 'scan_profile') {
         await scanProfile(action)
     }
     else if (action.id == 'scan_group') {
@@ -171,7 +177,13 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'scan_profile') {
+    if (action.id == 'add_recovery_mail') {
+        await goToLocation(action.pid, 'https://myaccount.google.com/recovery/email')
+    }
+    else if (action.id == 'get_otp') {
+        await goToLocation(action.pid, 'https://mail.google.com/')
+    }
+    else if (action.id == 'scan_profile') {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
@@ -410,6 +422,13 @@ function getPhone () {
 function reportFBGroup (action) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-fb-group',
         data: { group_link: action.group_link, fb_topic_code: action.fb_topic_code }}, function (response) {
+        resolve(response);
+    }))
+}
+
+function getMailCode (mail) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-mail-code',
+        data: { mail }}, function (response) {
         resolve(response);
     }))
 }
