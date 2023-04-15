@@ -9,6 +9,7 @@ async function getOtp(action) {
       for(let i = 0; i < n; i++){
         reportLive(action.pid)
         let codeData = getElementContainsInnerText('span', [
+          'Email verification code:',
           'Mã xác minh cho email khôi phục:',
           'Verification code for recovery email:'
         ])
