@@ -8,9 +8,9 @@ async function addRecoveryMail(action) {
       if (action.recovery_mail) {
         await userTypeEnter(action.pid, 'input[autocomplete="username"]', action.recovery_mail)
         await sleep(3000)
-        let code = await getMailCode(action.pid)
-        if (code) {
-          await userTypeEnter(action.pid, 'input[inputmode="numeric"]', code)
+        let codeData = await getMailCode(action.pid)
+        if (codeData && codeData.success) {
+          await userTypeEnter(action.pid, 'input[inputmode="numeric"]', codeData.code)
         } else {
           action.data_reported = 'p_not_found_code'
           await reportScript(action)
