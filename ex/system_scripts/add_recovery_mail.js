@@ -4,7 +4,21 @@ async function addRecoveryMail(action) {
     let url = window.location.toString()
     reportLive(action.pid)
 
-    if (url.indexOf('/recovery/email') > -1) {
+    if (url.includes('/challenge/kpe')) {
+      let emailInput = document.querySelector("input[name='email']")
+      if (emailInput != null) {
+          await userTypeEnter(action.pid, "input[name='email']", action.old_recovery_mail)
+      } else {
+          emailInput = document.querySelector("input[type='email']")
+          if (emailInput != null) {
+              await userTypeEnter(action.pid, "input[type='email']", action.old_recovery_mail)
+          }
+      }
+    }
+    else if (url.includes('/challenge/selection')) {
+      await userClick(action.pid, "[data-challengetype='12']")
+    }
+    else if (url.indexOf('/recovery/email') > -1) {
       if (action.recovery_mail) {
         await userTypeEnter(action.pid, 'input[autocomplete="username"]', action.recovery_mail)
         await sleep(3000)
