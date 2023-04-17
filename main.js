@@ -231,8 +231,12 @@ async function profileRunningManage() {
                 if (ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
-                    countRun++
-                    newRunProfile()
+                    if (systemConfig.only_run_login) {
+                        // something
+                    } else {
+                        countRun++
+                        newRunProfile()
+                    }
                 }
             }
         }
