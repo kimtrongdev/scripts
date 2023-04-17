@@ -24,7 +24,7 @@ async function getOtp(action) {
           if (codeData) {
             codeData = Number(codeData)
             if (codeData) {
-              action.data_reported = 'p_verify_code:' + codeData
+              action.data_reported = 'p_used_for_recovery:' + codeData
               await reportScript(action)
               return 
             }

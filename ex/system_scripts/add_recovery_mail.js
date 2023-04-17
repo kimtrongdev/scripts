@@ -18,7 +18,7 @@ async function addRecoveryMail(action) {
         }
 
         await sleep(5000)
-        action.data_reported = 'p_add_recovery_mail_success'
+        action.data_reported = 'p_verified'
         await reportScript(action)
       } else {
         action.data_reported = 'p_not_recovery_mail'

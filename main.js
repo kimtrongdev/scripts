@@ -641,6 +641,7 @@ async function newRunProfile() {
         try {
             let action = await getScriptData(pid, true)
             if (!action || action.not_found || !action.script_code) {
+                await utils.sleep(5000)
                 action.script_code = 'end_script'
             }
             if (action && action.script_code) {
