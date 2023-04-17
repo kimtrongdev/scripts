@@ -4,7 +4,31 @@ async function addRecoveryMail(action) {
     let url = window.location.toString()
     reportLive(action.pid)
 
-    if (url.includes('/challenge/kpe')) {
+    if (url.indexOf('/challenge/iap') > -1) {
+      let phoneRs = await getPhone()
+      console.log('getPhone',phoneRs);
+      if (phoneRs.error || action.entered_phone) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+      } else {
+        if (phoneRs.err) {
+          phoneRs = await getPhone()
+        }
+
+        action.order_id = phoneRs.orderID
+        action.api_name = phoneRs.api_name
+        action.entered_phone = true
+        await setActionData(action)
+
+        if (phoneRs.phone.startsWith('0')) {
+            phoneRs.phone = phoneRs.phone.replace('0', '+84')
+        } else if (!phoneRs.phone.startsWith('+84')) {
+            phoneRs.phone = '+84' + phoneRs.phone
+        }
+        await userTypeEnter(action.pid, '#phoneNumberId', phoneRs.phone)
+        await sleep(30000)
+      }
+    }
+    else if (url.includes('/challenge/kpe')) {
       let emailInput = document.querySelector("input[name='email']")
       if (emailInput != null) {
           await userTypeEnter(action.pid, "input[name='email']", action.old_recovery_mail)
