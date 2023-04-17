@@ -19,7 +19,7 @@ async function getOtp(action) {
           'Verification code for recovery email:'
         ], '', 'contains', 'array')
 
-        if (codes.length) {
+        if (codes && codes.length) {
           codes.forEach(codeel => {
             if (codeel) {
               codeel = codeel.innerText
