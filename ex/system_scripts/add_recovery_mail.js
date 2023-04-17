@@ -8,7 +8,7 @@ async function addRecoveryMail(action) {
       if (action.recovery_mail) {
         await userTypeEnter(action.pid, 'input[autocomplete="username"]', action.recovery_mail)
         await sleep(3000)
-        let codeData = await getMailCode(action.pid)
+        let codeData = await getMailCode(action.get_otp_pid)
         if (codeData && codeData.success) {
           let codes = codeData.code.split(',')
           if (codes.length) {
