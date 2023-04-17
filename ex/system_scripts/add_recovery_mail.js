@@ -10,14 +10,19 @@ async function addRecoveryMail(action) {
         await sleep(3000)
         let codeData = await getMailCode(action.pid)
         if (codeData && codeData.success) {
-          await userTypeEnter(action.pid, 'input[inputmode="numeric"]', codeData.code)
+          let codes = codeData.code.split(',')
+          if (codes.length) {
+            for await (let code of codes) {
+              await userTypeEnter(action.pid, 'input[inputmode="numeric"]', code)
+              await sleep(5000)
+            }
+          }
         } else {
           action.data_reported = 'p_not_found_code'
           await reportScript(action)
           return
         }
 
-        await sleep(5000)
         action.data_reported = 'p_verified'
         await reportScript(action)
       } else {
