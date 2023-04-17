@@ -646,9 +646,7 @@ async function newRunProfile() {
             let action = await getScriptData(pid, true)
             if (!action || action.not_found || !action.script_code) {
                 await utils.sleep(5000)
-                action.id = 'end_script'
-                action.is_stop = true
-                action.script_code = 'end_script'
+                runnings = runnings.filter(i => i.pid != pid)
             }
             if (action && action.script_code) {
                 // handle get browser loged
