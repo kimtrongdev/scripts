@@ -23,7 +23,7 @@ async function addRecoveryMail(action) {
           return
         }
 
-        action.data_reported = 'p_verified:' + action.get_otp_pid
+        action.data_reported = 'p_verified:' + action.recovery_mail
         await reportScript(action)
       } else {
         action.data_reported = 'p_not_recovery_mail'
