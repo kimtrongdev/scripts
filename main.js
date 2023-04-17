@@ -647,6 +647,7 @@ async function newRunProfile() {
             if (!action || action.not_found || !action.script_code) {
                 await utils.sleep(5000)
                 action.id = 'end_script'
+                action.is_stop = true
                 action.script_code = 'end_script'
             }
             if (action && action.script_code) {
