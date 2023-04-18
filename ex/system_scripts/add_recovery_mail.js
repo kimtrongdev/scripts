@@ -5,6 +5,10 @@ async function addRecoveryMail(action) {
     reportLive(action.pid)
 
     if (url.indexOf('/challenge/iap') > -1) {
+      action.data_reported = 'p_verify_iap'
+      await reportScript(action)
+      return
+
       let phoneRs = await getPhone()
       console.log('getPhone',phoneRs);
       if (phoneRs.error || action.entered_phone) {
