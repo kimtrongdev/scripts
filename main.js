@@ -1196,7 +1196,13 @@ function initExpress() {
     app.get('/get-mail-code', async (req, res) => {
         let mail = req.query.mail
         let rs = await request_api.getMailCode(mail)
-        console.log('get-mail-code', rs)
+        res.send(rs)
+        return
+    })
+
+    app.get('/report-mail-code', async (req, res) => {
+        let data = req.query
+        let rs = await request_api.reportMailCode(data)
         res.send(rs)
         return
     })

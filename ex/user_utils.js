@@ -433,6 +433,12 @@ function getMailCode (mail) {
     }))
 }
 
+function reportMailCode (data) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-mail-code', data }, function (response) {
+        resolve(response);
+    }))
+}
+
 function getPhoneCode (order_id, api_name) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone-code',
         data: { order_id: order_id, api_name: api_name }}, function (response) {
