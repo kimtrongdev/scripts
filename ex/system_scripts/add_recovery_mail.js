@@ -64,7 +64,7 @@ async function addRecoveryMail(action) {
                 if (document.querySelector('input[inputmode="numeric"]')) {
                   await userTypeEnter(action.pid, 'input[inputmode="numeric"]', code)
                 }
-                
+                await sleep(3000)
                 // check abc
                 let check = getElementContainsInnerText('span', [
                   'Verify your recovery email',

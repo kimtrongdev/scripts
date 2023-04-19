@@ -7,12 +7,13 @@ async function getOtp(action) {
       await goToLocation(action.pid, 'https://mail.google.com/')
     }
     else if (url.indexOf('mail.google.com/mail') > -1) {
-      await sleep(20000)
+      await sleep(5000)
       let codeReported = []
       const timeout = 600000
       let n = Math.ceil(timeout/2000)
       for(let i = 0; i < n; i++){
         reportLive(action.pid)
+        console.log('entered codes', codeReported);
         let codeData = []
         let codes = getElementContainsInnerText('span', [
           'Email verification code:',
