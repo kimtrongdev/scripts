@@ -13,7 +13,6 @@ async function getOtp(action) {
       let n = Math.ceil(timeout/2000)
       for(let i = 0; i < n; i++){
         reportLive(action.pid)
-        console.log('entered codes', codeReported);
         let codeData = []
         let codes = getElementContainsInnerText('span', [
           'Email verification code:',

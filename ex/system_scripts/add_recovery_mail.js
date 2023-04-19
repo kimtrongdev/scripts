@@ -51,6 +51,18 @@ async function addRecoveryMail(action) {
         await userTypeEnter(action.pid, 'input[autocomplete="username"]', action.recovery_mail)
         await sleep(3000)
 
+        async function checkEndScript() {
+          let check = getElementContainsInnerText('span', [
+            'Verify your recovery email',
+            'Xác minh email khôi phục của bạn'
+          ])
+          if (!check) {
+            action.data_reported = 'p_verified:' + action.recovery_mail
+            await reportScript(action)
+            return
+          }
+        }
+
         const timeout = 300000
         let n = Math.ceil(timeout/5000)
 
@@ -66,17 +78,9 @@ async function addRecoveryMail(action) {
                 }
                 await sleep(3000)
                 // check abc
-                let check = getElementContainsInnerText('span', [
-                  'Verify your recovery email',
-                  'Xác minh email khôi phục của bạn'
-                ])
-                if (!check) {
-                  action.data_reported = 'p_verified:' + action.recovery_mail
-                  await reportScript(action)
-                  return
-                }
+                await checkEndScript()
 
-                if (i == 25) {
+                if (i == 5 || i == 15 || i == 40) {
                   let sendNewCode = getElementContainsInnerText('font', ['Send a new code'])
                   if (sendNewCode) {
                     await userClick(action.pid, "sendNewCode", sendNewCode)
@@ -86,6 +90,7 @@ async function addRecoveryMail(action) {
               }
             }
           }
+          await checkEndScript()
           await sleep(5000)
         }
 
