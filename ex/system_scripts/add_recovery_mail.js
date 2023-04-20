@@ -42,6 +42,10 @@ async function addRecoveryMail(action) {
               await userTypeEnter(action.pid, "input[type='email']", action.old_recovery_mail)
           }
       }
+
+      await sleep(10000)
+      action.data_reported = 'p_invalid_recovery'
+      await reportScript(action)
     }
     else if (url.includes('/challenge/selection')) {
       await userClick(action.pid, "[data-challengetype='12']")
