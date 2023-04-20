@@ -52,7 +52,7 @@ async function addRecoveryMail(action) {
     }
     else if (url.indexOf('/recovery/email') > -1) {
       if (action.recovery_mail) {
-        await userTypeEnter(action.pid, 'input[autocomplete="username"]', action.recovery_mail)
+        await userTypeEnter(action.pid, 'input[type="email"]', action.recovery_mail)
         await sleep(3000)
 
         async function checkEndScript() {
