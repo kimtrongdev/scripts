@@ -426,6 +426,13 @@ function reportFBGroup (action) {
     }))
 }
 
+function getRecoMails (mail) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-reco-mails',
+        data: { mail }}, function (response) {
+        resolve(response);
+    }))
+}
+
 function getMailCode (mail) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-mail-code',
         data: { mail }}, function (response) {

@@ -1207,6 +1207,13 @@ function initExpress() {
         return
     })
 
+    app.get('/get-reco-mails', async (req, res) => {
+        let data = req.query
+        let rs = await request_api.getRecoMails(data)
+        res.send(rs)
+        return
+    })
+
     app.get('/login', (req, res) => {
         utils.log(req.query)
         if (req.query.status == 1) {

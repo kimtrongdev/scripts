@@ -33,24 +33,66 @@ async function addRecoveryMail(action) {
       }
     }
     else if (url.includes('/challenge/kpe')) {
-      let emailInput = document.querySelector("input[name='email']")
-      if (emailInput != null) {
-          await userTypeEnter(action.pid, "input[name='email']", action.old_recovery_mail)
-      } else {
+      async function enterMail (mail) {
+        let enterMail = mail || action.old_recovery_mail
+        let emailInput = document.querySelector("input[name='email']")
+        if (emailInput != null) {
+            await userTypeEnter(action.pid, "input[name='email']", enterMail)
+        } else {
           emailInput = document.querySelector("input[type='email']")
           if (emailInput != null) {
-              await userTypeEnter(action.pid, "input[type='email']", action.old_recovery_mail)
+              await userTypeEnter(action.pid, "input[type='email']", enterMail)
           }
+        }
+      }
+
+      await enterMail()
+      await sleep(2000)
+
+      if (getElementContainsInnerText('div', [
+        'The email you entered is incorrect. Try again'
+      ])) {
+        let wrapRecoMail = getElementContainsInnerText('div', ['Confirm the recovery email address you added to your account: '], '', 'equal')
+        if (wrapRecoMail) {
+          let recoMail = wrapRecoMail.querySelector('strong').innerText
+          if (recoMail) {
+            let startStr = ''
+            for (var i = 0; i < recoMail.length; i++) {
+              if (recoMail[i] == '•') {
+                startStr += '•'
+              }
+            }
+            recoMail = recoMail.replace(startStr, `.{${startStr.length}}`)
+            let match = `^${recoMail}$`
+            
+            let rs = await getRecoMails(match)
+            if (rs && rs.emails) {
+              for await (let mail of rs.emails) {
+                action.current_reco_mail = mail
+                await setActionData(action)
+                await enterMail(mail)
+              }
+            }
+          }
+        }
       }
 
       await sleep(10000)
-      action.data_reported = 'p_invalid_recovery'
+      action.data_reported = 'p_invalid_recovery_2'
       await reportScript(action)
     }
     else if (url.includes('/challenge/selection')) {
       await userClick(action.pid, "[data-challengetype='12']")
+      await sleep(8000)
+      action.data_reported = 'p_invalid_recovery_2'
+      await reportScript(action)
     }
     else if (url.indexOf('/recovery/email') > -1) {
+      if (action.current_reco_mail) {
+        action.data_reported = `p_success_reco_mail:${action.current_reco_mail}`
+        await reportScript(action)
+        return
+      }
       if (action.recovery_mail) {
         await userTypeEnter(action.pid, 'input[type="email"]', action.recovery_mail)
         await sleep(3000)

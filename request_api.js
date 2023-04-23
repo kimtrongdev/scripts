@@ -49,6 +49,9 @@ module.exports = {
     reportMailCode: async (data) => {
         return await rq({uri: SUB_URL + `/api/phone/report-mail-code?pid=${data.pid}&codes=${data.codes}`,json: true})
     },
+    getRecoMails: async (data) => {
+        return await rq({uri: SUB_URL + `/api/phone/get-reco-mails?mail=${data.mail}`,json: true})
+    },
     getPhoneCode: async (orderID, api_name) => {
         return await rq({uri: SUB_URL + `/api/phone/code?order_id=${orderID}&api_name=${api_name}`,json: true})
     },
