@@ -13,6 +13,18 @@ async function checkRecovery(action) {
           await reportScript(action)
           return
         }
+      } else {
+        recoMail = document.querySelector('a[href="recovery/email?continue=https%3A%2F%2Fmyaccount.google.com%2Fu%2F1%2Fsecurity%3Fhl%3Den"]')
+        if (recoMail) {
+          recoMail = recoMail.innerText.split('\n')[1]
+          if (recoMail) {
+            recoMail = recoMail.replace('Verify ', '')
+
+            action.data_reported = 'check_recovery_success_need_very:' + recoMail
+            await reportScript(action)
+            return
+          }
+        }
       }
     }
 
