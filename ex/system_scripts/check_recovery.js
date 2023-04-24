@@ -5,25 +5,20 @@ async function checkRecovery(action) {
     let url = window.location.toString()
 
     if (url.includes('myaccount.google.com/security')) {
-      let recoMail = document.querySelector('a[href="recovery/email?continue=https%3A%2F%2Fmyaccount.google.com%2Fsecurity"]')
+      let recoMail = document.querySelector('a[href="recovery/email?continue=https%3A%2F%2Fmyaccount.google.com%2Fsecurity"]') || 
+      document.querySelector('a[href="recovery/email?continue=https%3A%2F%2Fmyaccount.google.com%2Fu%2F1%2Fsecurity%3Fhl%3Den"]')
       if (recoMail) {
         recoMail = recoMail.innerText.split('\n')[1]
         if (recoMail) {
-          action.data_reported = 'check_recovery_success:' + recoMail
+          if (recoMail.includes('Verify ')) {
+            recoMail = recoMail.replace('Verify ', '')
+            action.data_reported = 'check_recovery_success_need_very:' + recoMail
+          } else {
+            action.data_reported = 'check_recovery_success:' + recoMail
+          }
+          
           await reportScript(action)
           return
-        }
-      } else {
-        recoMail = document.querySelector('a[href="recovery/email?continue=https%3A%2F%2Fmyaccount.google.com%2Fu%2F1%2Fsecurity%3Fhl%3Den"]')
-        if (recoMail) {
-          recoMail = recoMail.innerText.split('\n')[1]
-          if (recoMail) {
-            recoMail = recoMail.replace('Verify ', '')
-
-            action.data_reported = 'check_recovery_success_need_very:' + recoMail
-            await reportScript(action)
-            return
-          }
         }
       }
     }
