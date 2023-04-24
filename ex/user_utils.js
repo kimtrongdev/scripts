@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'add_recovery_mail') {
+    if (action.id == 'check_recovery') {
+        await checkRecovery(action)
+    }
+    else if (action.id == 'add_recovery_mail') {
         await addRecoveryMail(action)
     }
     else if (action.id == 'get_otp') {
@@ -177,7 +180,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'add_recovery_mail') {
+    if (action.id == 'check_recovery') {
+        await goToLocation(action.pid, 'https://myaccount.google.com/security')
+    }
+    else if (action.id == 'add_recovery_mail') {
         await goToLocation(action.pid, 'https://myaccount.google.com/recovery/email')
     }
     else if (action.id == 'get_otp') {
