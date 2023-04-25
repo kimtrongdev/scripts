@@ -36,6 +36,7 @@ async function folowPage(action) {
         if (reportData) {
           action.data_reported = reportData
         }
+        await updateWatchedVideo(false, action.pid)
         await sleep(5000)
         await reportScript(action)
         return
