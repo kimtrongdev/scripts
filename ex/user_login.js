@@ -342,15 +342,52 @@ async function userLogin(action) {
             await sleep(180000)
         }
         else if (url.indexOf("challenge/kpe") > -1) {
-            let emailInput = document.querySelector("input[name='email']")
-            if (emailInput != null) {
-                await userTypeEnter(action.pid, "input[name='email']", emailRecovery)
-            } else {
-                emailInput = document.querySelector("input[type='email']")
+            async function enterMail (mail) {
+                let enterMail = mail || emailRecovery
+                let emailInput = document.querySelector("input[name='email']")
                 if (emailInput != null) {
-                    await userTypeEnter(action.pid, "input[type='email']", emailRecovery)
+                    await userTypeEnter(action.pid, "input[name='email']", enterMail)
+                } else {
+                    emailInput = document.querySelector("input[type='email']")
+                    if (emailInput != null) {
+                        await userTypeEnter(action.pid, "input[type='email']", enterMail)
+                    }
                 }
             }
+    
+            await enterMail()
+            await sleep(2000)
+    
+            if (action.scan_check_recovery) {
+                if (getElementContainsInnerText('div', [
+                    'The email you entered is incorrect. Try again'
+                ])) {
+                    let wrapRecoMail = getElementContainsInnerText('div', ['Confirm the recovery email address you added to your account: '], '', 'equal')
+                    if (wrapRecoMail) {
+                        let recoMail = wrapRecoMail.querySelector('strong').innerText
+                        if (recoMail) {
+                        let startStr = ''
+                        for (var i = 0; i < recoMail.length; i++) {
+                            if (recoMail[i] == '•') {
+                            startStr += '•'
+                            }
+                        }
+                        recoMail = recoMail.replace(startStr, `.{${startStr.length}}`)
+                        let match = `^${recoMail}$`
+                        
+                        let rs = await getRecoMails(match)
+                        if (rs && rs.emails) {
+                            for await (let mail of rs.emails) {
+                            action.current_reco_mail = mail
+                            await setActionData(action)
+                            await enterMail(mail)
+                            }
+                        }
+                        }
+                    }
+                }
+            }
+
             await sleep(180000)
         }
         else if (url.indexOf("challenge/kpp") > -1) {
@@ -507,6 +544,9 @@ async function userLogin(action) {
 }
 
 async function beforeLoginSuccess (action) {
+    if (action.current_reco_mail) {
+        updateProfileData({ pid: action.pid, recovery_mail: action.current_reco_mail })
+    }
     console.log('beforeLoginSuccess');
     if (action.id == 'change_pass') {
         if (action.new_password) {

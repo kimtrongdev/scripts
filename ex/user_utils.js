@@ -504,6 +504,12 @@ async function reportScript(action, status = true) {
     }))
 }
 
+function updateProfileData (data) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/update-profile-data', data: data }, function (response) {
+        resolve(response);
+    }))
+}
+
 function reportPlaylistJCT (data) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-playlist-jct', data: data }, function (response) {
         resolve(response);

@@ -1169,6 +1169,13 @@ function initExpress() {
         return
     })
 
+    app.get('/update-profile-data', async (req, res) => {
+        let data = req.query
+        request_api.updateProfileData(data)
+        res.send({})
+        return
+    })
+
     app.get('/get-address-random', async (req, res) => {
         console.log(addresses.length);
         const randomAddress = addresses[Math.floor(Math.random() * addresses.length)]
