@@ -80,6 +80,12 @@ async function checkErrorFB (action) {
   //   await sleep(5000)
   // }
   // else 
+
+  if (url.includes('facebook.com/login/')) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'logout')
+    return
+  }
+
   if (getElementContainsInnerText('span', ['You’re Temporarily Blocked'], '', 'equal')) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'You’re Temporarily Blocked')
     return
