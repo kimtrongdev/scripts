@@ -551,6 +551,8 @@ async function userLogin(action) {
 async function beforeLoginSuccess (action) {
     if (action.current_reco_mail) {
         updateProfileData({ pid: action.pid, recovery_mail: action.current_reco_mail })
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'scan_reco_mail_success')
+        return
     }
     console.log('beforeLoginSuccess');
     if (action.id == 'change_pass') {
