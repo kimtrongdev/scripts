@@ -360,24 +360,33 @@ async function userLogin(action) {
                 }
             }
     
-            await enterMail()
-            await sleep(2000)
-    
             if (action.scan_check_recovery) {
+                let wrapRecoMail = getElementContainsInnerText('div', ['Confirm the recovery email address you added to your account: '], '', 'equal')
+                let recoMail = ''
+                let firstChar = ''
+                if (wrapRecoMail) {
+                    recoMail = wrapRecoMail.querySelector('strong').innerText
+                    if (recoMail) {
+                    let startStr = ''
+                    for (var i = 0; i < recoMail.length; i++) {
+                        if (recoMail[i] == '•') {
+                        startStr += '•'
+                        }
+                    }
+                    firstChar = recoMail.split(startStr)[0] || '-'
+                    recoMail = recoMail.replace(startStr, `.{${startStr.length}}`)
+                }
+
+                console.log('firstChar', firstChar);
+                if (emailRecovery.startsWith(firstChar)) {
+                    await enterMail()
+                    await sleep(5000)
+                }
+
                 if (getElementContainsInnerText('div', [
                     'The email you entered is incorrect. Try again'
                 ])) {
-                    let wrapRecoMail = getElementContainsInnerText('div', ['Confirm the recovery email address you added to your account: '], '', 'equal')
                     if (wrapRecoMail) {
-                        let recoMail = wrapRecoMail.querySelector('strong').innerText
-                        if (recoMail) {
-                        let startStr = ''
-                        for (var i = 0; i < recoMail.length; i++) {
-                            if (recoMail[i] == '•') {
-                            startStr += '•'
-                            }
-                        }
-                        recoMail = recoMail.replace(startStr, `.{${startStr.length}}`)
                         let match = `^${recoMail}$`
                         
                         let rs = await getRecoMails(match)
@@ -391,6 +400,9 @@ async function userLogin(action) {
                         }
                     }
                 }
+            } else {
+                await enterMail()
+                await sleep(2000)
             }
 
             await sleep(180000)
