@@ -330,6 +330,11 @@ async function userLogin(action) {
             }
         }
         else if (url.indexOf("accounts.google.com/signin/selectchallenge") > -1 || url.indexOf("https://accounts.google.com/signin/v2/challenge/selection") > -1 || url.indexOf("https://accounts.google.com/v3/signin/challenge/selection") > -1) {
+            let Unavailable = getElementContainsInnerText('em', ['Unavailable because of too many attempts. Please try again later'])
+            if (Unavailable) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Unavailable because of too many attempts')
+                return
+            }
             if (document.querySelector("[data-challengetype='12']") && emailRecovery && emailRecovery.length > 0) {
                 await userClick(action.pid, "[data-challengetype='12']")
             } else if (await document.querySelector("[data-challengetype='13']") && recoverPhone && recoverPhone.length > 0) {
@@ -378,9 +383,9 @@ async function userLogin(action) {
                         let rs = await getRecoMails(match)
                         if (rs && rs.emails) {
                             for await (let mail of rs.emails) {
-                            action.current_reco_mail = mail
-                            await setActionData(action)
-                            await enterMail(mail)
+                                action.current_reco_mail = mail
+                                await setActionData(action)
+                                await enterMail(mail)
                             }
                         }
                         }
