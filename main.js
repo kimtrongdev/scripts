@@ -507,6 +507,10 @@ async function loginProfileChrome(profile) {
         action.os_vm = process.env.OS
 
         // handle log browser for profile
+        if (systemConfig.scan_check_recovery) {
+            action.scan_check_recovery = true
+        }
+
         if (!config.browser_map) {
             config.browser_map = {}
         }
