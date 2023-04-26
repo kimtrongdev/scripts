@@ -432,9 +432,9 @@ function reportFBGroup (action) {
     }))
 }
 
-function getRecoMails (mail) {
+function getRecoMails (mail, pid) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-reco-mails',
-        data: { mail }}, function (response) {
+        data: { mail, pid }}, function (response) {
         resolve(response);
     }))
 }

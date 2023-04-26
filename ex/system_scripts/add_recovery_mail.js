@@ -65,7 +65,7 @@ async function addRecoveryMail(action) {
             recoMail = recoMail.replace(startStr, `.{${startStr.length}}`)
             let match = `^${recoMail}$`
             
-            let rs = await getRecoMails(match)
+            let rs = await getRecoMails(match, action.pid)
             if (rs && rs.emails) {
               for await (let mail of rs.emails) {
                 action.current_reco_mail = mail
