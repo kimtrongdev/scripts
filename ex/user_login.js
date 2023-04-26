@@ -383,21 +383,17 @@ async function userLogin(action) {
                     await sleep(5000)
                 }
 
-                if (getElementContainsInnerText('div', [
-                    'The email you entered is incorrect. Try again'
-                ])) {
-                    if (wrapRecoMail) {
-                        let match = `^${recoMail}$`
-                        
-                        let rs = await getRecoMails(match)
-                        if (rs && rs.emails) {
-                            for await (let mail of rs.emails) {
-                                action.current_reco_mail = mail
-                                await setActionData(action)
-                                await enterMail(mail)
-                            }
+                if (wrapRecoMail) {
+                    let match = `^${recoMail}$`
+                    
+                    let rs = await getRecoMails(match)
+                    if (rs && rs.emails) {
+                        for await (let mail of rs.emails) {
+                            action.current_reco_mail = mail
+                            await setActionData(action)
+                            await enterMail(mail)
                         }
-                        }
+                    }
                     }
                 }
             } else {
