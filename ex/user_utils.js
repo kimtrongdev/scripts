@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'check_recovery') {
+    if (action.id == 'fb_add_member') {
+        await fbAddMember(action)
+    }
+    else if (action.id == 'check_recovery') {
         await checkRecovery(action)
     }
     else if (action.id == 'add_recovery_mail') {
@@ -180,7 +183,14 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_recovery') {
+    if (action.id == 'fb_add_member') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.link)
+        }
+    }
+    else if (action.id == 'check_recovery') {
         await goToLocation(action.pid, 'https://myaccount.google.com/security')
     }
     else if (action.id == 'add_recovery_mail') {
