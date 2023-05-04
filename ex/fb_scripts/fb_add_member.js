@@ -19,6 +19,8 @@ async function fbAddMember(action) {
       await goToLocation(action.pid, action.link)
     }
     else {
+      await sleep(2000)
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let btn = getElementContainsInnerText('span', ['Join Group'], '', 'equal')
 
