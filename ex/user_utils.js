@@ -190,7 +190,7 @@ async function initActionData(action) {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
-            await goToLocation(action.pid, 'https://www.facebook.com/')
+            await goToLocation(action.pid, 'https://www.facebook.com//')
         }
     }
     else if (action.id == 'fb_add_member') {

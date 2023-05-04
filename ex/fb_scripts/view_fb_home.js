@@ -8,7 +8,7 @@ async function viewFbHome(action) {
     await checkErrorFB(action)
 
     if (!action.selected_page && url.includes('facebook.com/pages')) {
-      await selectFBPage(action, 'https://www.facebook.com/')
+      await selectFBPage(action, 'https://www.facebook.com//')
     }
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
@@ -16,7 +16,7 @@ async function viewFbHome(action) {
     else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
       action.after_selected_page = false
       await setActionData(action)
-      await goToLocation(action.pid, 'https://www.facebook.com/')
+      await goToLocation(action.pid, 'https://www.facebook.com//')
     }
     else {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
