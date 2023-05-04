@@ -46,6 +46,7 @@
         "./fb_scripts/scan_group.js",
         "./fb_scripts/scan_profile.js",
         "./fb_scripts/fb_add_member.js",
+        "./fb_scripts/view_fb_home.js",
 
         "./system_scripts/get_otp.js",
         "./system_scripts/add_recovery_mail.js",

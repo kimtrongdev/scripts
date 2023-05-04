@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'fb_add_member') {
+    if (action.id == 'view_fb_home') {
+        await viewFbHome(action)
+    }
+    else if (action.id == 'fb_add_member') {
         await fbAddMember(action)
     }
     else if (action.id == 'check_recovery') {
@@ -183,7 +186,14 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'fb_add_member') {
+    if (action.id == 'view_fb_home') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, 'https://www.facebook.com/')
+        }
+    }
+    else if (action.id == 'fb_add_member') {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
