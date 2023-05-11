@@ -115,7 +115,7 @@ async function loadSystemConfig () {
     }
 
     if (systemConfig.max_total_profiles) {
-        MAX_PROFILE = MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+        MAX_PROFILE = DEBUG ? 1 : MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
     }
     
     if (DEBUG) {
