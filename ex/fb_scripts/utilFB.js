@@ -111,6 +111,12 @@ async function checkErrorAfterRunScript(action) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, blockedEl.innerText)
     return
   }
+
+  let blockedEl2 = getElementContainsInnerText('span', ["process this request at this time"])
+  if (blockedEl2) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, blockedEl2.innerText)
+    return
+  }
 }
 
 async function handleRegPage (action) {
