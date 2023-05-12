@@ -370,7 +370,7 @@ async function regMail(action) {
       await userTypeEnter(action.pid, 'form input[name="recoveryEmail"]', action.verify)
       
     } else if (url.indexOf('accounts.google.com/signup/v2/webtermsofservice') > -1) {
-      await userClick(action.pid, '#view_container div[data-secondary-action-label] button')
+      await userClick(action.pid, '#view_container div[data-primary-action-label] button')
 
     } else {
       await goToLocation(action.pid, 'https://www.ads.google.com/aw/campaigns/new')
