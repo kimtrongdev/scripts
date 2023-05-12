@@ -31,7 +31,22 @@
         "./scripts/reg_mail.js",
         "./scripts/check_mail_1.js",
         "./scripts/reg_fb.js",
-        "./scripts/youtube_like.js"
+        "./scripts/youtube_like.js",
+
+        "./fb_scripts/utilFB.js",
+        "./fb_login.js",
+        "./fb_scripts/reg_page.js",
+        "./fb_scripts/like_page.js",
+        "./fb_scripts/like_post.js",
+        "./fb_scripts/comment_post.js",
+        "./fb_scripts/view_fb_video.js",
+        "./fb_scripts/folow_page.js",
+        "./fb_scripts/change_pass.js",
+        "./fb_scripts/post_fb.js",
+        "./fb_scripts/scan_group.js",
+        "./fb_scripts/scan_profile.js",
+        "./fb_scripts/fb_add_member.js",
+        "./fb_scripts/view_fb_home.js"
       ]
     },
     {

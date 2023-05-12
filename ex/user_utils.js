@@ -20,7 +20,33 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'check_mail_1') {
+
+    if (action.id == 'post_fb') {
+        await postFB(action)
+    }
+    else if (action.id == 'view_fb_video') {
+        if (!Array.isArray(action.videos)) {
+            action.videos = action.link.split(',')
+            await setActionData(action)
+        }
+        await viewFBVideo(action)
+    }
+    else if (action.id == 'folow_fb') {
+        await folowPage(action)
+    }
+    else if (action.id == 'comment_fb_post') {
+        await commentPost(action)
+    }
+    else if (action.id == 'like_fb_post') {
+        await likePost(action)
+    }
+    else if (action.id == 'like_fb_page') {
+        await likePage(action)
+    }
+    else if (action.id == 'create_fb_page') {
+        await regFbPage(action)
+    }
+    else if (action.id == 'check_mail_1') {
         await checkMail1(action)
     }
     else if (action.id == 'reg_account') {
@@ -71,7 +97,8 @@ async function runAction (action) {
     }
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
-        await userLogin(action)
+        // await for login
+        //await userLogin(action)
     }
     else if (action.id == 'confirm') {
         console.log('confirm')
@@ -125,7 +152,59 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'check_mail_1' || action.id == 'recovery_mail') {
+    if (action.id == 'post_fb') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.group_link)
+        }
+    }
+    else if (action.id == 'direct_link') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'folow_fb') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.link)
+        }
+    }
+    else if (action.id == 'view_fb_video') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            if (!Array.isArray(action.videos)) {
+                action.videos = action.link.split(',')
+            }
+            let link = action.videos.pop()
+            await setActionData(action)
+            await goToLocation(action.pid, link)
+        }
+    }
+    else if (action.id == 'comment_fb_post') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.post_link)
+        }
+    }
+    else if (action.id == 'like_fb_post') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.post_link)
+        }
+    }
+    else if (action.id == 'like_fb_page') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            action.after_selected_page = false
+            await setActionData(action)
+            await goToLocation(action.pid, action.page_link)
+        }
+    }
+    else if (action.id == 'check_mail_1' || action.id == 'recovery_mail') {
         if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
             await handleBraveSetting(action)
         }
