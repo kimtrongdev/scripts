@@ -106,15 +106,11 @@ async function checkErrorFB (action) {
 }
 
 async function checkErrorAfterRunScript(action) {
-  let blockedEl = getElementContainsInnerText('span', ['Your account is restricted for'])
+  let blockedEl = getElementContainsInnerText('span', ['Your account is restricted for']) 
+  || getElementContainsInnerText('span', ["You’re Temporarily Blocked"]) 
+  || getElementContainsInnerText('span', ["process this request at this time"])
   if (blockedEl) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, blockedEl.innerText)
-    return
-  }
-
-  let blockedEl2 = getElementContainsInnerText('span', ["process this request at this time"])
-  if (blockedEl2) {
-    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, blockedEl2.innerText)
     return
   }
 }
