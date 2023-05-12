@@ -203,7 +203,7 @@ async function userLogin(action) {
             await waitForSelector('#identifierId')
             await userTypeEnter(action.pid, '#identifierId', action.email)
             
-            await userClick(action.pid, 'div[data-secondary-action-label] button')
+            await userClick(action.pid, 'div[data-primary-action-label] button')
             await sleep(180000)
         }
         else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
@@ -243,7 +243,7 @@ async function userLogin(action) {
                 await userTypeEnter(action.pid, 'input[name="Passwd"]', action.password)
             }
 
-            await userClick(action.pid, 'div[data-secondary-action-label] button')
+            await userClick(action.pid, 'div[data-primary-action-label] button')
             await sleep(190000)
         }
         else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1) {
@@ -252,7 +252,7 @@ async function userLogin(action) {
             await setActionData(action)
             await waitForSelector("input[name='password']")
             await userTypeEnter(action.pid, "input[name='password']", action.password)
-            await userClick(action.pid, 'div[data-secondary-action-label] button')
+            await userClick(action.pid, 'div[data-primary-action-label] button')
             await sleep(190000)
         }
         else if (url.indexOf("accounts.google.com/signin/v2/sl/pwd") > -1) {
@@ -284,7 +284,7 @@ async function userLogin(action) {
                     await userTypeEnter(action.pid, "input[type='email']", emailRecovery)
                 }
             }
-            await userClick(action.pid, 'div[data-secondary-action-label] button')
+            await userClick(action.pid, 'div[data-primary-action-label] button')
             await sleep(180000)
         }
         else if (url.indexOf("challenge/kpp") > -1) {
