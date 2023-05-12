@@ -16,7 +16,7 @@ let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
-    hostIp: '159.223.85.33:9006',
+    hostIp: '103.149.28.15:999',
     maxProfile: 1,
 }
 
@@ -438,7 +438,7 @@ async function startChromeAction(action, _browser) {
         screenWidth = 1100
     } else {
         if (WIN_ENV) {
-            windowSize = ` --window-size="400,400"`
+            windowSize = ` --window-size="900,900"`
             windowPosition = ``
         } else {
             windowSize = ' --start-maximized'
@@ -639,7 +639,11 @@ async function newProfileManage() {
 
         //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         // get new profile
-        let newProfile = await request_api.getNewProfile()
+        let newProfile = {
+            profile: {
+                id: Date.now()
+            }
+        }
         utils.log('newProfile: ', newProfile)
         if (!newProfile.err && newProfile.profile) {
             RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
