@@ -20,8 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-
-    if (action.id == 'post_fb') {
+    if (action.id == 'direct_link') {
+        await directLink(action)
+    }
+    else if (action.id == 'post_fb') {
         await postFB(action)
     }
     else if (action.id == 'view_fb_video') {

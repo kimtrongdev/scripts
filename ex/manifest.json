@@ -33,6 +33,7 @@
         "./scripts/check_mail_1.js",
         "./scripts/reg_fb.js",
         "./scripts/youtube_like.js",
+        "./scripts/direct_link.js",
 
         "./fb_scripts/utilFB.js",
         "./fb_scripts/reg_page.js",
