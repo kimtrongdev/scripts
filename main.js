@@ -1042,7 +1042,7 @@ async function running() {
     runAutoRebootVm()
     // manage profile actions
     await profileManage()
-    resetScreen()
+    //resetScreen()
 }
 
 function initDir() {
