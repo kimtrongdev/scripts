@@ -226,8 +226,8 @@ async function initActionData(action) {
         action.video_ids = action.video_ids.split(',')
         action.channel_ids = action.channel_ids.split(',')
         await setActionData(action)
-        await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-       // await goToLocation(action.pid, 'https://www.youtube.com/')
+        //await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid, 'https://www.youtube.com/')
     }
     else if (action.id == 'check_bat') {
 
