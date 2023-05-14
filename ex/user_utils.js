@@ -153,51 +153,27 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'post_fb') {
-        action.selected_page = true
-        if (!action.selected_page) {
-            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-        } else {
-            await goToLocation(action.pid, action.group_link)
-        }
+        await goToLocation(action.pid, action.group_link)
     }
     else if (action.id == 'direct_link') {
         await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'folow_fb') {
-        if (!action.selected_page) {
-            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-        } else {
-            await goToLocation(action.pid, action.link)
-        }
+        await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'view_fb_video') {
-        action.selected_page = true
-        if (!action.selected_page) {
-            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-        } else {
-            if (!Array.isArray(action.videos)) {
-                action.videos = action.link.split(',')
-            }
-            let link = action.videos.pop()
-            await setActionData(action)
-            await goToLocation(action.pid, link)
+        if (!Array.isArray(action.videos)) {
+            action.videos = action.link.split(',')
         }
+        let link = action.videos.pop()
+        await setActionData(action)
+        await goToLocation(action.pid, link)
     }
     else if (action.id == 'comment_fb_post') {
-        action.selected_page = true
-        if (!action.selected_page) {
-            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-        } else {
-            await goToLocation(action.pid, action.post_link)
-        }
+        await goToLocation(action.pid, action.post_link)
     }
     else if (action.id == 'like_fb_post') {
-        action.selected_page = true
-        if (!action.selected_page) {
-            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-        } else {
-            await goToLocation(action.pid, action.post_link)
-        }
+        await goToLocation(action.pid, action.post_link)
     }
     else if (action.id == 'like_fb_page') {
         await goToLocation(action.pid, action.page_link)
