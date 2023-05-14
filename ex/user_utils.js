@@ -200,14 +200,7 @@ async function initActionData(action) {
         }
     }
     else if (action.id == 'like_fb_page') {
-        action.selected_page = true
-        if (!action.selected_page) {
-            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-        } else {
-            action.after_selected_page = false
-            await setActionData(action)
-            await goToLocation(action.pid, action.page_link)
-        }
+        await goToLocation(action.pid, action.page_link)
     }
     else if (action.id == 'check_mail_1' || action.id == 'recovery_mail') {
         if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
