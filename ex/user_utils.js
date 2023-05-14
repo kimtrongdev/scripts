@@ -153,6 +153,7 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'post_fb') {
+        action.selected_page = true
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
@@ -170,6 +171,7 @@ async function initActionData(action) {
         }
     }
     else if (action.id == 'view_fb_video') {
+        action.selected_page = true
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
@@ -182,6 +184,7 @@ async function initActionData(action) {
         }
     }
     else if (action.id == 'comment_fb_post') {
+        action.selected_page = true
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
@@ -189,6 +192,7 @@ async function initActionData(action) {
         }
     }
     else if (action.id == 'like_fb_post') {
+        action.selected_page = true
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
@@ -196,6 +200,7 @@ async function initActionData(action) {
         }
     }
     else if (action.id == 'like_fb_page') {
+        action.selected_page = true
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
