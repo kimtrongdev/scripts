@@ -98,7 +98,7 @@ async function runAction (action) {
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
         // await for login
-        //await userLogin(action)
+        await userLogin(action)
     }
     else if (action.id == 'confirm') {
         console.log('confirm')
