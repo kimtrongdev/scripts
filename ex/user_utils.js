@@ -562,31 +562,10 @@ function simpleSendKey(keyCode) {
 }
 
 function updateUserInput(pid, action, x, y, sx, sy, str, selector){
-    console.log('updateUserInput',pid,action)
-
-    switch (action) {
-        case 'CLICK':
-            simpleClick(x, y)
-            break;
-        case 'TYPE':
-            document.querySelector(selector).value = str
-            break;
-        case 'TYPE_ENTER':
-            document.querySelector(selector).value = str
-            break;
-        case 'GO_ADDRESS':
-            window.location.assign(str)
-            break;
-
-        case 'SCROLL':
-        case 'ESC':
-            break;
-        default:
-            // return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
-            //     data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
-            //     resolve(response);
-            // }))
-    }
+    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
+        data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
+        resolve(response);
+    }))
 }
 
 function elementInViewport (el) {
