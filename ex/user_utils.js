@@ -588,7 +588,7 @@ function getElementPosition(el,iframe){
          let screenY = window.screen.height - window.screen.availHeight
         let pos = el.getBoundingClientRect()
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
-        let menuBarHeight = 78//mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
+        let menuBarHeight = 72//mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
         let menuLeftWith = (window.outerWidth - window.innerWidth)
         let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide-zoom*window.innerWidth)/2:0) + widthCustom
         let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
