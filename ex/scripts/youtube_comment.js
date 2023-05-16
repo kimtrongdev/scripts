@@ -39,7 +39,7 @@ async function youtubeComment(action) {
         return
       }
 
-      await CommentYoutubeVideo(action.pid)
+      await CommentYoutubeVideo(action.pid, action.comment)
       await afterComment(action)
     } else if(url.indexOf('youtube.com/@') > -1 || url.indexOf('https://www.youtube.com/channel/') > -1 || url.indexOf('https://www.youtube.com/user/') > -1 || url.indexOf('https://www.youtube.com/c/') > -1){
       if (document.querySelector('#edit-buttons a')) {

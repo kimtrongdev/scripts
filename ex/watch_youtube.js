@@ -1127,11 +1127,6 @@ async function LikeOrDisLikeYoutubeVideo(pid, isLike) {
 async function CommentYoutubeVideo(pid, msg = '') {
     try {
         console.log('pid: ', pid, ', CommentYoutubeVideo',msg)
-        if (!msg) {
-            let commentRs = await getComment()
-            msg = commentRs && commentRs.comment
-        }
-
         if(!msg) return
         await sleep(2000)
 

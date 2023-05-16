@@ -227,6 +227,7 @@ async function initActionData(action) {
         action.commented_count = 0
         action.video_ids = action.video_ids.split(',')
         action.channel_ids = action.channel_ids.split(',')
+        action.channel_ids = action.channel_ids.filter(a => a)
         await setActionData(action)
         //await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         await goToLocation(action.pid, 'https://www.youtube.com/')
