@@ -195,6 +195,7 @@ async function loadSystemConfig () {
     }
 
     systemConfig.useRobotJS = true
+    systemConfig.is_use_proxy = false
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -416,14 +417,16 @@ async function startChromeAction(action, _browser) {
 
     // handle proxy
     let userProxy = ''
-    if (proxy && proxy[action.pid] && proxy[action.pid].server) {
-        utils.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="story-shack-cdn-v2.glitch.me,randomuser.me,random-data-api.com,localhost:2000,${devJson.hostIp}"`
-    }
-    if (proxy && proxy[action.pid] && proxy[action.pid].username) {
-        utils.log('set proxy user name', proxy[action.pid].username)
-        action.proxy_username = proxy[action.pid].username
-        action.proxy_password = proxy[action.pid].password
+    if (systemConfig.is_use_proxy) {
+        if (proxy && proxy[action.pid] && proxy[action.pid].server) {
+            utils.log('set proxy', proxy[action.pid])
+            userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="story-shack-cdn-v2.glitch.me,randomuser.me,random-data-api.com,localhost:2000,${devJson.hostIp}"`
+        }
+        if (proxy && proxy[action.pid] && proxy[action.pid].username) {
+            utils.log('set proxy user name', proxy[action.pid].username)
+            action.proxy_username = proxy[action.pid].username
+            action.proxy_password = proxy[action.pid].password
+        }
     }
 
     // handle flag data
@@ -782,7 +785,7 @@ async function getScriptData(pid, isNewProxy = false) {
     }
 
     if (action) {
-        if (useProxy && isNewProxy) {
+        if (systemConfig.is_use_proxy && useProxy && isNewProxy) {
             let isLoadNewProxy = '' 
             let totalRound = totalRoundForChangeProxy * MAX_PROFILE
             if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
@@ -816,7 +819,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
 
-        if (useProxy && (!proxy[pid] || !proxy[pid].server)) {
+        if (systemConfig.is_use_proxy && useProxy && (!proxy[pid] || !proxy[pid].server)) {
             console.log('Not found proxy')
             return
         }
