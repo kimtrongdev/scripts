@@ -21,7 +21,10 @@ async function commentPost(action) {
     }
     else {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      let textbox = document.querySelector('div[role="textbox"]')
+      let textboxs = document.querySelector('div[role="textbox"]')
+      let rdPos = randomRanger(0, Math.min(10, textboxs.length - 1))
+      let textbox = textboxs.item(rdPos)
+
       if (textbox && action.comment) {
         await userTypeEnter(action.pid, 'textbox', action.comment, textbox)
 
