@@ -11,7 +11,8 @@ async function commentPost(action) {
     await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
     if (url.includes('facebook.com/groups')) {
-      await userScroll(action.pid, randomRanger(20,30))
+      await userScroll(action.pid, randomRanger(20,50))
+      await sleep(3000)
     }
 
     let textboxs = document.querySelectorAll('div[role="textbox"]')
