@@ -98,14 +98,14 @@ async function userClickAll(pid, selector){
 
 async function userScroll(pid, n){
     console.log('userScroll',n)
-    if (n > 0) {
-        window.scrollTo(0, document.body.scrollHeight)
-    }
-    // let menuBarHeight = window.outerHeight - window.innerHeight
-    // let x = window.screenX + window.innerWidth*randomRanger(40,60)/100
-    // let y = window.screenY + menuBarHeight + window.innerHeight*randomRanger(40,60)/100
+    // if (n > 0) {
+    //     window.scrollTo(0, document.body.scrollHeight)
+    // }
+    let menuBarHeight = window.outerHeight - window.innerHeight
+    let x = window.screenX + window.innerWidth*randomRanger(40,60)/100
+    let y = window.screenY + menuBarHeight + window.innerHeight*randomRanger(40,60)/100
 
-    // await updateUserInput(pid,'SCROLL',x, y ,0, 0,  n)
+    await updateUserInput(pid,'SCROLL',x, y ,0, 0,  n)
 }
 
 async function userScrollMobile(pid, n){

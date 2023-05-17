@@ -31,7 +31,7 @@ async function youtubeComment(action) {
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
-      await userScroll(action.pid, randomRanger(10,15))
+      await userScroll(action.pid, randomRanger(5,10))
       await waitForSelector('#placeholder-area', 20000)
 
       if (!document.querySelector('#placeholder-area')) {
