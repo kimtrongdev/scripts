@@ -14,7 +14,7 @@ async function tiktokComment(action) {
     else
     if (url.includes('tiktok.com/@')) {
       let videos = document.querySelectorAll('div[data-e2e="user-post-item"]')
-      let rdPos = randomRanger(0, videos.length - 1)
+      let rdPos = randomRanger(0, Math.min(10, videos.length - 1))
       let video = videos.item(rdPos)
       await userClick(action.pid, 'video-' + rdPos, video)
     }
