@@ -20,6 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
+    if (action.id == 'tiktok_comment') {
+        await tiktokComment(action)
+    }
+    else 
     if (action.id == 'direct_link') {
         await directLink(action)
     }
@@ -145,16 +149,14 @@ async function initActionData(action) {
         setWatchParam(action)
     }
 
-    if(action.id=='sub'){
-        setSubParam(action)
-    }
-
     console.log(action)
     await setActionData(action)
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'post_fb') {
+    if (action.id == 'tiktok_comment') {
+        await goToLocation(action.pid, action.link)
+    }else if (action.id == 'post_fb') {
         await goToLocation(action.pid, action.group_link)
     }
     else if (action.id == 'direct_link') {
