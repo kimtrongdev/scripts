@@ -9,7 +9,7 @@ async function commentPost(action) {
     await checkErrorFB(action)
 
     await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-    let textboxs = document.querySelector('div[role="textbox"]')
+    let textboxs = document.querySelectorAll('div[role="textbox"]')
     let rdPos = randomRanger(0, Math.min(10, textboxs.length - 1))
     let textbox = textboxs.item(rdPos)
 
