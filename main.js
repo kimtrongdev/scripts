@@ -1635,8 +1635,20 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'SCROLL') {
         if (systemConfig.useRobotJS) {
-            let pageNumber = Number(actionData.str)
-            robot.scrollMouse(0, pageNumber);
+            if (actionData.str > 0) {
+                let pageNumber = Math.ceil(actionData.str / 5)
+                while (pageNumber > 0) {
+                    robot.keyTap('pagedown');
+                    pageNumber--
+                }
+            }
+            else {
+                let pageNumber = Math.ceil(actionData.str / -5)
+                while (pageNumber > 0) {
+                    robot.keyTap('pageup');
+                    pageNumber--
+                }
+            }
         } else {
             if (actionData.str == 6) {
                 execSync(`xdotool key Shift+Tab && sleep 1`)

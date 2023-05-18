@@ -964,7 +964,7 @@ async function processWatchChannelPage(action){
                 action.other_videos = []
             }
             //let watched_videos = action.other_videos.map(x => `:not([href*="${x}"])`).join("")
-            let videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer .ytd-rich-item-renderer a#thumbnail`)]
+            let videos = [...document.querySelectorAll(`ytd-grid-video-renderer a#thumbnail`)]
             let video
             if(videos.length){
                 video = videos[randomRanger(0, Math.min(videos.length-1, 15))]
