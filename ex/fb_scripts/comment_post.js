@@ -10,6 +10,7 @@ async function commentPost(action) {
 
     await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
+    await userScroll(action.pid, 10)
     if (url.includes('facebook.com/groups')) {
       await userScroll(action.pid, randomRanger(15, 25))
       await sleep(2000)

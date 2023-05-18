@@ -1605,7 +1605,9 @@ async function handleAction (actionData) {
         if (systemConfig.useRobotJS) {
             robot.moveMouse(Number(actionData.x), Number(actionData.y))
             robot.mouseClick('left')
+            await utils.sleep(1000)
             robot.typeString(actionData.str)
+            await utils.sleep(3000)
             robot.keyTap('enter')
         } else {
             execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
