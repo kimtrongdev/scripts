@@ -8,7 +8,10 @@ async function likePage(action) {
 
     await checkErrorFB(action)
 
-    if (!action.selected_page && url.includes('facebook.com/pages')) {
+    if (url == 'https://m.facebook.com/' || url == 'https://m.facebook.com/home.php') {
+      await goToLocation(action.pid, action.page_link)
+    }
+    else if (!action.selected_page && url.includes('facebook.com/pages')) {
       await selectFBPage(action, action.page_link)
     }
     else if (!action.selected_page) {
