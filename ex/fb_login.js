@@ -6,7 +6,7 @@ async function fbLogin(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    if (url == 'https://www.facebook.com/') {
+    if (url == 'https://www.facebook.com/' || url == 'https://m.facebook.com/') {
       if (action.id == 'change_pass') {
         action.login_fb_success = true
         await setActionData(action)
@@ -108,7 +108,11 @@ async function fbLogin(action) {
         console.log(error);
       }
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
-    } else if (url.includes('facebook.com/checkpoint')) {
+    } 
+    else if (url.includes('m.facebook.com/login/checkpoint/')) {
+      await userClick(action.pid, 'button[type="submit"]')
+    }
+    else if (url.includes('facebook.com/checkpoint')) {
       if (document.querySelector('#approvals_code')) {
         window.open('https://2fa.live/')
         let execeted = false
