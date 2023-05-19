@@ -20,7 +20,44 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'reg_account') {
+    if (action.id == 'view_fb_home') {
+        await viewFbHome(action)
+    }
+    else if (action.id == 'fb_add_member') {
+        await fbAddMember(action)
+    }
+    else if (action.id == 'scan_group') {
+        await scanGroup(action)
+    }
+    else if (action.id == 'post_fb') {
+        await postFB(action)
+    }
+    else if (action.id == 'view_fb_video') {
+        if (!Array.isArray(action.videos)) {
+            action.videos = action.link.split(',')
+            await setActionData(action)
+        }
+        await viewFBVideo(action)
+    }
+    else if (action.id == 'folow_fb') {
+        await folowPage(action)
+    }
+    else if (action.id == 'comment_fb_post') {
+        await commentPost(action)
+    }
+    else if (action.id == 'like_fb_post') {
+        await likePost(action)
+    }
+    else if (action.id == 'like_fb_page') {
+        await likePage(action)
+    }
+    else if (action.id == 'create_fb_page') {
+        await regFbPage(action)
+    }
+    else if (action.id == 'direct_link') {
+        await directLink(action)
+    }
+    else if (action.id == 'reg_account') {
         if (action.account_type == 'facebook'){
             //await reqFacebook(action)
         } else {
@@ -119,7 +156,97 @@ async function initActionData(action, isFirst = false) {
 
     //if(isFirst) await switchMobile(action)
 
-    if (action.id == 'reg_account') {
+    if (action.id == 'view_fb_home') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, 'https://www.facebook.com//')
+        }
+    }
+    else if (action.id == 'fb_add_member') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.link)
+        }
+    }
+    else if (action.id == 'check_recovery') {
+        await goToLocation(action.pid, 'https://myaccount.google.com/security')
+    }
+    else if (action.id == 'add_recovery_mail') {
+        await goToLocation(action.pid, 'https://myaccount.google.com/recovery/email')
+    }
+    else if (action.id == 'get_otp') {
+        await goToLocation(action.pid, 'google.com/search?q=hot')
+    }
+    else if (action.id == 'scan_profile') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.link)
+        }
+    } else if (action.id == 'scan_group') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}&filters=eyJwdWJsaWNfZ3JvdXBzOjAiOiJ7XCJuYW1lXCI6XCJwdWJsaWNfZ3JvdXBzXCIsXCJhcmdzXCI6XCJcIn0ifQ%3D%3D`)
+        }
+    } else if (action.id == 'post_fb') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.group_link)
+        }
+    }
+    else if (action.id == 'direct_link') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'folow_fb') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.link)
+        }
+    }
+    else if (action.id == 'view_fb_video') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            if (!Array.isArray(action.videos)) {
+                action.videos = action.link.split(',')
+            }
+            let link = action.videos.pop()
+            await setActionData(action)
+            await goToLocation(action.pid, link)
+        }
+    }
+    else if (action.id == 'comment_fb_post') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.post_link)
+        }
+    }
+    else if (action.id == 'like_fb_post') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, action.post_link)
+        }
+    }
+    else if (action.id == 'like_fb_page') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            action.after_selected_page = false
+            await setActionData(action)
+            await goToLocation(action.pid, action.page_link)
+        }
+    }
+    else if (action.id == 'create_fb_page') {
+        await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+    }
+    else if (action.id == 'reg_account') {
         let continueLink = ''
         if (action.process_login) {
             continueLink = 'accounts.google.com'
