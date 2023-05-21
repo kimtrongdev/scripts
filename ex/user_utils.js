@@ -20,11 +20,13 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'tiktok_comment') {
+    if (action.id == 'fb_feed') {
+        await fbFeed(action)
+    }
+    else if (action.id == 'tiktok_comment') {
         await tiktokComment(action)
     }
-    else 
-    if (action.id == 'direct_link') {
+    else if (action.id == 'direct_link') {
         await directLink(action)
     }
     else if (action.id == 'post_fb') {
@@ -154,9 +156,17 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'tiktok_comment') {
+    if (action.id == 'fb_feed') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, 'https://www.facebook.com//')
+        }
+    }
+    else if (action.id == 'tiktok_comment') {
         await goToLocation(action.pid, action.link)
-    }else if (action.id == 'post_fb') {
+    } 
+    else if (action.id == 'post_fb') {
         await goToLocation(action.pid, action.group_link)
     }
     else if (action.id == 'direct_link') {
