@@ -6,7 +6,7 @@ async function fbLogin(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    if (url == 'https://www.facebook.com/' || url == 'https://m.facebook.com/' || url == 'https://m.facebook.com/home.php') {
+    if (url == 'https://www.facebook.com/' || url == 'https://m.facebook.com/' || url == 'https://m.facebook.com/home.php' || url.includes('/home.php')) {
       if (action.id == 'change_pass') {
         action.login_fb_success = true
         await setActionData(action)
