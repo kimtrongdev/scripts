@@ -4,7 +4,13 @@ async function regMail(action) {
     let url = window.location.toString()
     await reportLive(action.pid)
 
-    if (url.indexOf('google.com/adsense/start') > -1) {
+    if (url.includes('accounts.google.com/signup/v2/webphoneusage')) {
+      let accept = getElementContainsInnerText('span', ['Tôi đồng ý'], '', 'equal')
+      if (accept) {
+        await userClick(action.pid, 'accept', accept)
+      }
+    }
+    else if (url.indexOf('google.com/adsense/start') > -1) {
       await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'underage')
     }
     else if (url.indexOf('accounts.google.com/ServiceLogin/signinchooser') > -1) {
