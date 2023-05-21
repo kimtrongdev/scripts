@@ -128,7 +128,10 @@ async function fbLogin(action) {
         }, 2000);
         await sleep(120000)
       } else if (document.querySelector('#checkpointSubmitButton')) {
-        await userClick(action.pid, '#checkpointSubmitButton')
+        while (document.querySelector('#checkpointSubmitButton')) {
+          await userClick(action.pid, '#checkpointSubmitButton')
+          await sleep(5000)
+        }
       } else {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
       }
