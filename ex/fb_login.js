@@ -26,6 +26,7 @@ async function fbLogin(action) {
       await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
     }
     else if (url.includes('facebook.com/settings')) {
+      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       if (!action.reloaded) {
         action.reloaded = true
         await setActionData(action)
