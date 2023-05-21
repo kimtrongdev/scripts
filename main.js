@@ -1771,7 +1771,7 @@ async function handleAction (actionData) {
             robot.keyTap('pageup')
             await utils.sleep(1000)
             for(let i = 0; i < actionData.str*1; i++){
-                robot.keyTap('Khang')
+                robot.keyTap('down')
                 await utils.sleep(500)
             }
             robot.keyTap('enter')

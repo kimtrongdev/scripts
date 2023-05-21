@@ -89,7 +89,13 @@ async function userLogin(action) {
             // }
         }
 
-        if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/confirmation') > -1) {
+        if (url.includes('accounts.google.com/signup/v2/webphoneusage')) {
+            let accept = getElementContainsInnerText('span', ['Tôi đồng ý'], '', 'equal')
+            if (accept) {
+                await userClick(action.pid, 'accept', accept)
+            }
+        }
+        else if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/confirmation') > -1) {
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'recovery_ok')
             return
         }
