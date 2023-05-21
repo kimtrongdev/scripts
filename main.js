@@ -1497,9 +1497,16 @@ async function handleAction (actionData) {
     else if (actionData.action == 'TABS') {
         let totalClick = Number(actionData.x)
         let count = 0
-        while (count < totalClick) {
-            execSync(`xdotool key Tab && sleep 1`)
-            count ++
+        if (systemConfig.useRobotJS) {
+            while (count < totalClick) {
+                robot.keyTap('tab')
+                count ++
+            }
+        } else {
+            while (count < totalClick) {
+                execSync(`xdotool key Tab && sleep 1`)
+                count ++
+            }
         }
     }
     else if (actionData.action == 'SHOW_BRAVE_ADS') {
@@ -1604,7 +1611,7 @@ async function handleAction (actionData) {
     else if (actionData.action == 'TYPE_ENTER') {
         if (systemConfig.useRobotJS) {
             robot.moveMouse(Number(actionData.x), Number(actionData.y))
-            robot.mouseClick('left')
+            robot.mouseClick('left', true)
             await utils.sleep(1000)
             robot.typeString(actionData.str)
             await utils.sleep(3000)
