@@ -1767,11 +1767,21 @@ async function handleAction (actionData) {
         execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
     }
     else if (actionData.action == 'SELECT_OPTION') {
-        execSync(`xdotool key Page_Up && sleep 1`)
-        for(let i = 0; i < actionData.str*1; i++){
-            execSync(`xdotool key Down && sleep 0.2`)
+        if (systemConfig.useRobotJS) {
+            robot.keyTap('pageup')
+            await utils.sleep(1000)
+            for(let i = 0; i < actionData.str*1; i++){
+                robot.keyTap('Khang')
+                await utils.sleep(500)
+            }
+            robot.keyTap('enter')
+        } else {
+            execSync(`xdotool key Page_Up && sleep 1`)
+            for(let i = 0; i < actionData.str*1; i++){
+                execSync(`xdotool key Down && sleep 0.2`)
+            }
+            execSync(`xdotool key KP_Enter`)
         }
-        execSync(`xdotool key KP_Enter`)
     }
     else if (actionData.action == 'SCREENSHOT') {
         utils.errorScreenshot(actionData.pid + '_input')
