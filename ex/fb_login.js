@@ -55,7 +55,7 @@ async function fbLogin(action) {
             let pos = getElementPosition(selectorVN)
             await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
             const saveBtnX = formPos.width + formPos.left - 68
-            const saveBtnY = screenY + formPos.top + 190
+            const saveBtnY = screenY + formPos.top + 195
             await updateUserInput(action.pid,'CLICK', saveBtnX, saveBtnY,0,0,"", 'saveBtn')
           }
         }
