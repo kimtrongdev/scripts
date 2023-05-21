@@ -55,7 +55,7 @@ async function fbLogin(action) {
             let pos = getElementPosition(selectorVN)
             await updateUserInput(action.pid,'TYPE_KEY_ENTER', pos.x, pos.y, 0,0,"Eng",'ESC')
             const saveBtnX = formPos.width + formPos.left - 68
-            const saveBtnY = screenY + formPos.top + 185
+            const saveBtnY = screenY + formPos.top + 190
             await updateUserInput(action.pid,'CLICK', saveBtnX, saveBtnY,0,0,"", 'saveBtn')
           }
         }
@@ -135,7 +135,7 @@ async function fbLogin(action) {
       } else {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
       }
-    } else if (url.includes('facebook.com/login')) {
+    } else if (url.includes('facebook.com/login') || url.includes('https://mbasic.facebook.com/')) {
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
 

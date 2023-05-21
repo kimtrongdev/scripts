@@ -289,7 +289,7 @@ async function initActionData(action) {
     else if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
         let continueLink = 'https://accounts.google.com'
         if (action.is_fb) {
-            continueLink = 'https://www.facebook.com/login'
+            continueLink = 'https://mbasic.facebook.com/'
         }
 
         if (action.browser_name.includes('brave')) {
