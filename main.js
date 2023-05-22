@@ -702,7 +702,13 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
-        if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
+        if (systemConfig.is_reg_account && systemConfig.new_account_type == 'tiktok') {
+            action = {
+                script_code: 'reg_account',
+                account_type: 'tiktok'
+            }
+        }
+        else if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
             action = await request_api.getProfileForRegChannel(pid)
             if (action) {
                 action.pid = utils.randomRanger(100, 400)

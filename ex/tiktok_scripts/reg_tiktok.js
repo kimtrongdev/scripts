@@ -8,6 +8,7 @@ async function regTiktok(action) {
 
     if (url.includes('tiktok.com/signup/phone-or-email/phone')) {
       let phoneRs = await getPhone()
+      console.log('phoneRs', phoneRs);
       if (phoneRs.error || action.entered_phone) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
       } else {
