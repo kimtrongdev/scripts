@@ -58,7 +58,10 @@ async function runAction (action) {
         await checkMail1(action)
     }
     else if (action.id == 'reg_account') {
-        if (action.account_type == 'facebook'){
+        if (action.account_type == 'tiktok') {
+            await regTiktok(action)
+        }
+        else if (action.account_type == 'facebook'){
             await reqFacebook(action)
         } else {
             if (action.process_login) {
@@ -206,6 +209,8 @@ async function initActionData(action) {
             continueLink = 'https://accounts.google.com/signup/v2/webcreateaccount?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&flowName=GlifWebSignIn&flowEntry=SignUp'
         } else if (action.account_type == 'facebook') {
             continueLink = 'facebook.com/reg'
+        } else if (action.account_type == 'tiktok') {
+            continueLink = 'https://www.tiktok.com/signup/phone-or-email/phone'
         }
 
         if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
