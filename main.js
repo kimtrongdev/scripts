@@ -430,7 +430,7 @@ async function startChromeAction(action, _browser) {
         action.isRunBAT = isRunBAT
     }
 
-    let exs = ["ex", "quality"]
+    let exs = ["ex"]
     if (_browser == 'firefox') {
         exs.push('firefox-proxy')
     }
