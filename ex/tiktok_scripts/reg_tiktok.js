@@ -28,7 +28,7 @@ async function regTiktok(action) {
 
           const yearPick = document.querySelectorAll('div[data-e2e="select-container"]').item(2)
           await userClick(action.pid, 'yearPick', yearPick)
-          await userSelect(action.pid,randomRanger(11, 15))
+          await userSelect(action.pid,randomRanger(21, 25))
         }
 
         await userType(action.pid, 'form input[name="mobile"]', phoneRs.phone)
