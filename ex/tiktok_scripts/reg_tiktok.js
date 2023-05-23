@@ -17,11 +17,25 @@ async function regTiktok(action) {
         action.entered_phone = true
         await setActionData(action)
 
-        await userTypeEnter(action.pid, 'form input[name="mobile"]', scan_reco_mail_success	)
+        if (document.querySelector('div[data-e2e="select-container"]')) {
+          const monthPick = document.querySelectorAll('div[data-e2e="select-container"]').item(0)
+          await userClick(action.pid, 'monthPick', monthPick)
+          await userSelect(action.pid,randomRanger(1, 11))
+
+          const datePick = document.querySelectorAll('div[data-e2e="select-container"]').item(1)
+          await userClick(action.pid, 'datePick', datePick)
+          await userSelect(action.pid,randomRanger(1, 15))
+
+          const yearPick = document.querySelectorAll('div[data-e2e="select-container"]').item(2)
+          await userClick(action.pid, 'yearPick', yearPick)
+          await userSelect(action.pid,randomRanger(1, 10))
+        }
+
+        await userTypeEnter(action.pid, 'form input[name="mobile"]', phoneRs.phone)
         await sleep(5000)
         
-        let phoneRs = await getPhoneCode(action.order_id, action.api_name)
-        console.log('getPhoneCode', phoneRs);
+        let codeRs = await getPhoneCode(action.order_id, action.api_name)
+        console.log('codeRs', codeRs);
         await sleep(55000)
         // if (phoneRs.error || action.entered_code) {
         //   await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
