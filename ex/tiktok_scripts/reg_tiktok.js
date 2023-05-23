@@ -6,7 +6,19 @@ async function regTiktok(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    if (url.includes('tiktok.com/signup/phone-or-email/phone')) {
+    if (url.includes('tiktok.com/foryou') || url == 'https://www.tiktok.com/') {
+      await reportAccount(action)
+    }
+    else if (url.includes('tiktok.com/signup/create-password')) {
+      let password = makeid(10) + `${randomRanger(1, 333)}.`
+      let username = action.phone
+      action.username = username
+      action.password = password
+      await setActionData(action)
+      await userType(action.pid, 'input[type="password"]', password)
+      await userTypeEnter(action.pid, 'input[name="new-username"]', username)
+    }
+    else if (url.includes('tiktok.com/signup/phone-or-email/phone')) {
       let phoneRs = await getPhone()
       console.log('phoneRs', phoneRs);
       if (phoneRs.error || action.entered_phone) {
@@ -14,6 +26,7 @@ async function regTiktok(action) {
       } else {
         action.order_id = phoneRs.orderID
         action.api_name = phoneRs.api_name
+        action.phone = phoneRs.phone
         action.entered_phone = true
         await setActionData(action)
 
@@ -38,15 +51,14 @@ async function regTiktok(action) {
         
         let codeRs = await getPhoneCode(action.order_id, action.api_name)
         console.log('codeRs', codeRs);
-        await sleep(55000)
-        // if (phoneRs.error || action.entered_code) {
-        //   await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
-        // } else {
-        //   action.entered_code = true
-        //   await setActionData(action)
-        //   await userTypeEnter(action.pid, 'material-input[exactmatch="phone-pin"] input', phoneRs.code)
-        //   await sleep(30000)
-        // }
+        if (codeRs.error || action.entered_code) {
+          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, codeRs.error)
+        } else {
+          action.entered_code = true
+          await setActionData(action)
+          await userTypeEnter(action.pid, '.code-input', codeRs.code)
+          await sleep(30000)
+        }
       }
     }
     else {
