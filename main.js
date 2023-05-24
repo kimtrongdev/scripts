@@ -1,4 +1,5 @@
 const useProxy = true
+const allowLogin = false
 let isRunBAT = false
 let hourReseted = null
 let isSystemChecking = false
@@ -554,7 +555,7 @@ async function loginProfileChrome(profile) {
         action.isNew = true
         action.is_show_ui = IS_SHOW_UI
         action.os_vm = process.env.OS == 'centos_vps' ? 'vps':'' 
-
+        action.allow_login = allowLogin
         // handle log browser for profile
         if (!config.browser_map) {
             config.browser_map = {}
@@ -609,6 +610,9 @@ async function newProfileManage() {
             profile: {
                 id: Date.now()
             }
+        }
+        if (allowLogin) {
+            newProfile = await request_api.getNewProfile()
         }
         utils.log('newProfile: ', newProfile)
         if (!newProfile.err && newProfile.profile) {
