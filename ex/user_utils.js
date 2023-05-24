@@ -991,3 +991,9 @@ function getRandomAddress () {
         resolve(response);
     }))
 }
+
+function loadSystemPid (action) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/load-system-pid', data: { pid: action.pid } }, function (response) {
+        resolve(response);
+    }))
+}

@@ -1178,6 +1178,20 @@ function initExpress() {
     const express = require('express')
     const app = express()
 
+    app.get('/load-system-pid', async (req, res) => {
+        const systemPid = await loadSystemPid(req.query.pid)
+        if (systemPid) {
+            let running = runnings.find(rn => rn.pid == req.query.pid)
+            if (running) {
+                running.system_pid = systemPid
+                console.log('-------------', running);
+                return res.json({})
+            }
+        }
+        return res.json({})
+        // handle error 
+    })
+
     app.get('/favicon.ico', (req, res) => {
         res.sendFile(path.resolve("favicon.ico"))
         return
@@ -1406,10 +1420,48 @@ function initExpress() {
     })
 }
 
+async function loadSystemPid (pid) {
+    return new Promise((res, rej) => {
+        exec(`tasklist /v /fo csv | findstr /i "localhost_${pid}"`, (error, stdout, stderr) => {
+            console.log('stdout------', stdout);
+            let handlePid = stdout.match(/"[\w|.]*","Console/g)
+            if (handlePid && handlePid[0]) {
+                handlePid = handlePid[0]
+                handlePid = handlePid.replace('"', '')
+                handlePid = handlePid.replace('","Console', '')
+                console.log('------- pid after handler', handlePid);
+                return res(handlePid)
+            }
+            res('')
+        })
+    })
+}
+
+function getSystemPid (pid) {
+    let running = runnings.find(running => running.pid == pid)
+    if (running) {
+        return running.system_pid
+    }
+    return 0
+}
+
 async function handleAction (actionData) {
     if (isPauseAction) {
         //res.send({ rs: 'ok' })
         return
+    }
+
+    if (WIN_ENV) {
+        let systemPidRunning = getSystemPid(actionData.pid)
+        if (systemPidRunning) {
+            try {
+                execSync(`nircmd win activate process /${systemPidRunning}`)
+            } catch (error) {
+                
+            }
+        } else {
+           // return res.json({})
+        }
     }
 
     setDisplay(actionData.pid)
