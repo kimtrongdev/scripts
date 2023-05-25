@@ -1491,18 +1491,17 @@ async function handleAction (actionData) {
         execSync(`xdotool key Shift+Tab`)
         execSync(`xdotool key Shift+Tab`)
         execSync(`xdotool key Shift+Tab`)//13
-        execSync(`xdotool key Shift+Tab`)// 14
 
         execSync(`xdotool key Up`)
         execSync(`xdotool key Up`)
         execSync(`xdotool key Up`)
 
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
+       // execSync(`xdotool key Shift+Tab`)
+       // execSync(`xdotool key Shift+Tab`)
+        //execSync(`xdotool key Shift+Tab`)
 
-        execSync(`xdotool key Down`)
-        execSync(`xdotool key Down`)
+       // execSync(`xdotool key Down`)
+        //execSync(`xdotool key Down`)
     }
     else if (actionData.action == 'IRIDIUM_SETTING') {
         execSync(`xdotool key Tab && sleep 1`)
