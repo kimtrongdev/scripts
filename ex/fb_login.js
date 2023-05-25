@@ -12,11 +12,15 @@ async function fbLogin(action) {
         await setActionData(action)
         await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=security')
       } else {
-        await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
+        await userClick(action.pid, 'nav a', document.querySelectorAll('nav a').item(3))
+        //await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
       }
       //await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-    } 
+    }
+    else if (url.includes('//')) {
+      await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
+    }
     else if (url.includes('2fa.live')) {
       await userType(action.pid, '#listToken', action.recover_mail)
       await userClick(action.pid, '#submit')
@@ -113,7 +117,12 @@ async function fbLogin(action) {
     else if (url.includes('m.facebook.com/login/checkpoint/')) {
       await userClick(action.pid, 'button[type="submit"]')
     }
-    else if (url.includes('facebook.com/checkpoint') || url.includes('mbasic.facebook.com/checkpoint') || url.includes('mbasic.facebook.com/login/checkpoint/')) {
+    else if (url.includes('mbasic.facebook.com/login/checkpoint/')) {
+      if (document.querySelector('form input[name="search"]')) {
+        await goToLocation(action.pid, 'https://www.facebook.com/')
+      }
+    }
+    else if (url.includes('facebook.com/checkpoint') || url.includes('mbasic.facebook.com/checkpoint')) {
       if (document.querySelector('#approvals_code')) {
         window.open('https://2fa.live/')
         let execeted = false
