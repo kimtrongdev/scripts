@@ -138,6 +138,8 @@ async function fbLogin(action) {
             if (action.fa_code) {
               execeted = true
               await userTypeEnter(action.pid, '#approvals_code', action.fa_code)
+              await sleep(5000)
+              await userClick(action.pid, '#checkpointSubmitButton')
             }
           }
         }, 2000);
