@@ -151,6 +151,14 @@ async function fbLogin(action) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
       }
     } else if (url.includes('facebook.com/login') || url.includes('https://mbasic.facebook.com/')) {
+      if (action.loged) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
+        return
+      } else {
+        action.loged = true
+        await setActionData(action)
+      }
+      
       await userType(action.pid, 'input[name="email"]', action.email)
       await userTypeEnter(action.pid, 'input[name="pass"]', action.password)
 
