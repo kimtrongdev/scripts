@@ -152,7 +152,7 @@ async function fbLogin(action) {
       }
     } else if (url.includes('facebook.com/login') || url.includes('https://mbasic.facebook.com/')) {
       if (action.loged) {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, erMessage || 'CANNOT LOGIN')
+        await updateActionStatus(action.pid, action.id, 'CANNOT LOGIN')
         return
       } else {
         action.loged = true
