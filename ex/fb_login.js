@@ -18,7 +18,7 @@ async function fbLogin(action) {
       //await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
       //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
     }
-    else if (url.includes('//')) {
+    else if (url.includes('facebook.com/notifications')) {
       await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
     }
     else if (url.includes('2fa.live')) {
