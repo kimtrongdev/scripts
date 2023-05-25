@@ -122,7 +122,12 @@ async function fbLogin(action) {
         await goToLocation(action.pid, 'https://www.facebook.com/')
       }
     }
-    else if (url.includes('facebook.com/checkpoint') || url.includes('mbasic.facebook.com/checkpoint')) {
+    else if (url.includes('facebook.com/checkpoint') || url.includes('mbasic.facebook.com/checkpoint') || url.includes('mbasic.facebook.com/login/checkpoint/')) {
+      if (document.querySelector('form input[name="search"]')) {
+        await goToLocation(action.pid, 'https://www.facebook.com/')
+        return
+      }
+
       if (document.querySelector('#approvals_code')) {
         window.open('https://2fa.live/')
         let execeted = false
