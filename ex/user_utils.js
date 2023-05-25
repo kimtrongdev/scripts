@@ -385,7 +385,7 @@ async function initActionData(action) {
         } else {
             let continueLink = 'https://accounts.google.com'
             if (action.is_fb) {
-                continueLink = 'https://mbasic.facebook.com/'
+                continueLink = 'https://www.facebook.com/'
             }
             await handleSelectExOption(action)
             if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
