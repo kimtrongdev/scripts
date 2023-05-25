@@ -117,11 +117,6 @@ async function fbLogin(action) {
     else if (url.includes('m.facebook.com/login/checkpoint/')) {
       await userClick(action.pid, 'button[type="submit"]')
     }
-    else if (url.includes('mbasic.facebook.com/login/checkpoint/')) {
-      if (document.querySelector('form input[name="search"]')) {
-        await goToLocation(action.pid, 'https://www.facebook.com/')
-      }
-    }
     else if (url.includes('facebook.com/checkpoint') || url.includes('mbasic.facebook.com/checkpoint') || url.includes('mbasic.facebook.com/login/checkpoint/')) {
       if (document.querySelector('form input[name="search"]')) {
         await goToLocation(action.pid, 'https://www.facebook.com/')
