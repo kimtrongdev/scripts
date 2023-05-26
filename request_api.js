@@ -12,7 +12,7 @@ function rq (data) {
 
 module.exports = {
     getRandomImage: async function () {
-        return await rq({ uri: SUB_URL + '/api/media/random-image' })
+        return await rq({ uri: SUB_URL + '/api/media/random-image', encoding: null })
     },
     reportAccount: async function (data) {
         return await rq({method: 'POST', uri: SUB_URL + '/api/account', body: data, json: true})

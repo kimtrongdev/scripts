@@ -1451,10 +1451,14 @@ function getSystemPid (pid) {
     return 0
 }
 
-async function getRandomImageBuffer() {
+async function getRandomImagePath() {
+    let fileName = Date.now() + '.jpg'
     let fimg = await request_api.getRandomImage()
-    let fimgb = Buffer.from(await fimg.arrayBuffer())
-    return fimgb
+    if (!fs.existsSync('./images')) {
+        fs.mkdirSync('images')
+    }
+    fs.writeFileSync('./images/' + fileName, fimg);
+    return path.resolve(Date.now() + '.jpg')
 }
 
 async function handleAction (actionData) {
@@ -1678,9 +1682,8 @@ async function handleAction (actionData) {
             robot.keyToggle('control', 'up')
 
             if (isPasteImage) {
-                const clipboardy = require('clipboardy');
-                let imageBuffer = await getRandomImageBuffer()
-                clipboardy.writeSync(imageBuffer)
+                let pathImage = await getRandomImagePath()
+                execSync(`nircmd.exe clipboard copyimage "${pathImage}"`)
 
                 robot.keyToggle('control', 'down')
                 robot.keyTap('v')
@@ -1711,9 +1714,8 @@ async function handleAction (actionData) {
 
             //robot.typeString(actionData.str)
             if (isPasteImage) {
-                const clipboardy = require('clipboardy');
-                let imageBuffer = await getRandomImageBuffer()
-                clipboardy.writeSync(imageBuffer)
+                let pathImage = await getRandomImagePath()
+                execSync(`nircmd.exe clipboard copyimage "${pathImage}"`)
 
                 robot.keyToggle('control', 'down')
                 robot.keyTap('v')
