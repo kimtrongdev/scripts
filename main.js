@@ -15,6 +15,8 @@ let isAfterReboot = false
 let actionsData = []
 let addresses = require('./src/adress.json').addresses
 const robot = require('robotjs')
+const fetch = require("node-fetch")
+
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -1450,6 +1452,12 @@ function getSystemPid (pid) {
     return 0
 }
 
+async function getRandomImageBuffer() {
+    let fimg = await request_api.getRandomImage()
+    let fimgb = Buffer.from(await fimg.arrayBuffer())
+    return fimgb
+}
+
 async function handleAction (actionData) {
     if (isPauseAction) {
         //res.send({ rs: 'ok' })
@@ -1478,10 +1486,16 @@ async function handleAction (actionData) {
     }
     utils.log(logStr)
 
+    let isPasteImage = false
     // copy str
     if(actionData.str){
         try {
             const clipboardy = require('clipboardy');
+
+            if (actionData.str.endsWith('+image')) {
+                isPasteImage = true
+                actionData.str = actionData.str.replace('+image', '')
+            }
             if (actionData.str == 'none') {
                 actionData.str = ''
             }
@@ -1664,6 +1678,16 @@ async function handleAction (actionData) {
             robot.keyTap('v')
             robot.keyToggle('control', 'up')
 
+            if (isPasteImage) {
+                const clipboardy = require('clipboardy');
+                let imageBuffer = await getRandomImageBuffer()
+                clipboardy.writeSync(imageBuffer)
+
+                robot.keyToggle('control', 'down')
+                robot.keyTap('v')
+                robot.keyToggle('control', 'up')
+            }
+
             //robot.typeString(actionData.str)
         } else {
             execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
@@ -1687,6 +1711,16 @@ async function handleAction (actionData) {
             robot.keyToggle('control', 'up')
 
             //robot.typeString(actionData.str)
+            if (isPasteImage) {
+                const clipboardy = require('clipboardy');
+                let imageBuffer = await getRandomImageBuffer()
+                clipboardy.writeSync(imageBuffer)
+
+                robot.keyToggle('control', 'down')
+                robot.keyTap('v')
+                robot.keyToggle('control', 'up')
+            }
+
             await utils.sleep(3000)
             robot.keyTap('enter')
         } else {
