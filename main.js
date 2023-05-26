@@ -15,7 +15,6 @@ let isAfterReboot = false
 let actionsData = []
 let addresses = require('./src/adress.json').addresses
 const robot = require('robotjs')
-const fetch = require("node-fetch")
 
 require('dotenv').config();
 let systemConfig = {}
@@ -1468,7 +1467,7 @@ async function handleAction (actionData) {
         let systemPidRunning = getSystemPid(actionData.pid)
         if (systemPidRunning) {
             try {
-                execSync(`nircmd win activate process /${systemPidRunning}`)
+               // execSync(`nircmd win activate process /${systemPidRunning}`)
             } catch (error) {
                 
             }
