@@ -20,7 +20,7 @@ async function fbAddFriend(action) {
       }
     }
     else if (url.includes('/friends')) {
-      let addBtns = document.querySelectorAll('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"] div[role="button"]')
+      let addBtns = document.querySelectorAll('div[style="border-radius:max(0px, min(8px, calc((100vw - 4px - 100%) * 9999))) / 8px"] div[role="button"]')
       let maxFriend = Math.min(Number(action.count) || 5, addBtns.length)
       for (let index = 0; index < maxFriend; index++) {
         await userClick(action.pid, 'addBtn', addBtns.item(index))
