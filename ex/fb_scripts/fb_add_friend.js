@@ -1,5 +1,6 @@
 async function fbAddFriend(action) {
   try {
+    await userScroll(action.pid, randomRanger(10,20))
     await sleep(5000)
     reportLive(action.pid)
 
@@ -10,6 +11,7 @@ async function fbAddFriend(action) {
     //https://www.facebook.com/groups/454797563505128/members
 
     await checkErrorFB(action)
+    await userScroll(action.pid, randomRanger(5))
 
     if (url.includes('facebook.com/groups')) {
       let addBtns = getElementContainsInnerText('span', ['Add friend', 'Thêm bạn bè'], '', 'equal', 'array')
