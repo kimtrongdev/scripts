@@ -20,7 +20,13 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'fb_add_friend') {
+    if (action.id == 'fb_join_group') {
+        await fbJoinGroup(action)
+    }
+    else if (action.id == 'fb_add_member') {
+        await fbAddMember(action)
+    }
+    else if (action.id == 'fb_add_friend') {
         await fbAddFriend(action)
     }
     else if (action.id == 'fb_feed') {
@@ -163,7 +169,13 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'fb_add_friend') {
+    if (action.id == 'fb_add_member') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'fb_join_group') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'fb_add_friend') {
         await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'fb_feed') {
