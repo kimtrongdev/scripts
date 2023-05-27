@@ -18,6 +18,8 @@ async function fbAddFriend(action) {
         await userClick(action.pid, 'addBtn', addBtns.item(index))
         await sleep(2000)
       }
+
+      await reportScript(action)
     }
     else if (url.includes('/friends')) {
       let addBtns = document.querySelectorAll('div[style="border-radius:max(0px, min(8px, calc((100vw - 4px - 100%) * 9999))) / 8px"] div[role="button"]')
@@ -26,6 +28,8 @@ async function fbAddFriend(action) {
         await userClick(action.pid, 'addBtn', addBtns.item(index))
         await sleep(2000)
       }
+
+      await reportScript(action)
     }
     else {
       await reportScript(action, false)
