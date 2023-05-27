@@ -1184,14 +1184,16 @@ function initExpress() {
     const app = express()
 
     app.get('/load-system-pid', async (req, res) => {
-        const systemPid = await loadSystemPid(req.query.pid)
-        if (systemPid) {
-            exec(`nircmd win setsize process /${systemPid} 0 0 900 600`)
-            let running = runnings.find(rn => rn.pid == req.query.pid)
-            if (running) {
-                running.system_pid = systemPid
-                console.log('-------------', running);
-                return res.json({})
+        if (MAX_CURRENT_ACC > 1) {
+            const systemPid = await loadSystemPid(req.query.pid)
+            if (systemPid) {
+                exec(`nircmd win setsize process /${systemPid} 0 0 900 600`)
+                let running = runnings.find(rn => rn.pid == req.query.pid)
+                if (running) {
+                    running.system_pid = systemPid
+                    console.log('-------------', running);
+                    return res.json({})
+                }
             }
         }
         return res.json({})
@@ -1467,7 +1469,7 @@ async function handleAction (actionData) {
         return
     }
 
-    if (WIN_ENV) {
+    if (WIN_ENV && MAX_CURRENT_ACC > 1) {
         let systemPidRunning = getSystemPid(actionData.pid)
         if (systemPidRunning) {
             try {
