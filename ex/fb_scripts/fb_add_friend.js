@@ -12,21 +12,21 @@ async function fbAddFriend(action) {
     await checkErrorFB(action)
 
     if (url.includes('facebook.com/groups')) {
-      let addBtns = document.querySelectorAll('div[role="list"] div[role="listitem"] div[role="button"]')
+      let addBtns = getElementContainsInnerText('span', ['Add friend'], '', 'equal', 'array')
       let maxFriend = Math.min(Number(action.count) || 5, addBtns.length)
       for (let index = 0; index < maxFriend; index++) {
         await userClick(action.pid, 'addBtn', addBtns.item(index))
-        await sleep(2000)
+        await sleep(4000)
       }
 
       await reportScript(action)
     }
     else if (url.includes('/friends')) {
-      let addBtns = document.querySelectorAll('div[style="border-radius:max(0px, min(8px, calc((100vw - 4px - 100%) * 9999))) / 8px"] div[role="button"]')
+      let addBtns = getElementContainsInnerText('span', ['Add friend'], '', 'equal', 'array')
       let maxFriend = Math.min(Number(action.count) || 5, addBtns.length)
       for (let index = 0; index < maxFriend; index++) {
         await userClick(action.pid, 'addBtn', addBtns.item(index))
-        await sleep(2000)
+        await sleep(4000)
       }
 
       await reportScript(action)
