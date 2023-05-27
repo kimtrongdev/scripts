@@ -16,7 +16,7 @@ async function fbAddFriend(action) {
     if (url.includes('facebook.com/groups')) {
       let addBtns = getElementContainsInnerText('span', ['Add friend', 'Thêm bạn bè'], '', 'equal', 'array')
       let maxFriend = Math.min(Number(action.count) || 5, addBtns.length)
-      for (let index = 1; index <= maxFriend; index++) {
+      for (let index = 0; index < maxFriend; index++) {
         await userClick(action.pid, 'addBtn', addBtns[index])
         await sleep(4000)
       }
