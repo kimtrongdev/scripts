@@ -49,6 +49,7 @@
         "./fb_scripts/fb_add_member.js",
         "./fb_scripts/view_fb_home.js",
         "./fb_scripts/fb_feed.js",
+        "./fb_scripts/fb_add_friend.js",
 
         "./tiktok_scripts/tiktok_comment.js",
         "./tiktok_scripts/reg_tiktok.js"
