@@ -1460,7 +1460,7 @@ async function getRandomImagePath() {
         fs.mkdirSync('images')
     }
     fs.writeFileSync('./images/' + fileName, fimg);
-    return path.resolve(Date.now() + '.jpg')
+    return path.resolve('./images/' + fileName)
 }
 
 async function handleAction (actionData) {
