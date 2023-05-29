@@ -25,7 +25,7 @@ async function fbAddMember(action) {
         await sleep(5000)
         const items = document.querySelectorAll('div[aria-checked="false"] i[data-visualcompletion="css-img"]')
         let count = 0
-        let max = 3
+        let max = Math.min(items.length, Number(action.total) || 4)
         for (let item of items) {
           await userClick(action.pid, 'item', item)
           await sleep(2000)
