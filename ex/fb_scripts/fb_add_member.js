@@ -17,6 +17,11 @@ async function fbAddMember(action) {
       let inviteBtn = getElementContainsInnerText('span', ['Mời'], '', 'equal')
       if (inviteBtn) {
         await userClick(action.pid, 'inviteBtn', inviteBtn)
+        await sleep(1000)
+        let confirmInvite = getElementContainsInnerText('span', ['Mời những người kết nối với bạn trên Facebook'], '', 'equal')
+        if (confirmInvite) {
+          await userClick(action.pid, 'confirmInvite', confirmInvite)
+        }
         await sleep(5000)
         const items = document.querySelectorAll('div[aria-checked="false"] i[data-visualcompletion="css-img"]')
         let count = 0
