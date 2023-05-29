@@ -79,14 +79,13 @@ async function fbCreatePost(action) {
         await reportScript(action)
       }
       await reportScript(action, false)
-    } else if (url.includes(action.link)) {
-      let postBtn = getElementContainsInnerText('span', ['Write something to Tý...'], '', 'equal')
+    } else if (url.includes('facebook.com/profile.php')) {
+      let postBtn = getElementContainsInnerText('span', ['Write something to'])
       if (postBtn) {
         await userClick(action.pid, 'postBtn', postBtn)
         await sleep(5000)
 
-        let contentInput = getElementContainsInnerText('div', ['Write something to Tý...'], '', 'equal')
-        await userType(action.pid, 'input_post_fb', action.content, contentInput)
+        await userType(action.pid, 'form[method="POST"] p', action.content)
         await sleep(5000)
         let postBtn = getElementContainsInnerText('span', ['Đăng', 'Post'], '', 'equal')
         await userClick(action.pid, 'postBtn', postBtn)
