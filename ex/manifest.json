@@ -34,6 +34,7 @@
         "./scripts/reg_fb.js",
         "./scripts/youtube_like.js",
         "./scripts/direct_link.js",
+        "./scripts/youtube_feed.js",
 
         "./fb_scripts/utilFB.js",
         "./fb_scripts/reg_page.js",
@@ -54,7 +55,8 @@
         "./fb_scripts/fb_create_post.js",
 
         "./tiktok_scripts/tiktok_comment.js",
-        "./tiktok_scripts/reg_tiktok.js"
+        "./tiktok_scripts/reg_tiktok.js",
+        "./tiktok_scripts/tiktok_feed.js"
       ]
     },
     {

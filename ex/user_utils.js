@@ -35,6 +35,12 @@ async function runAction (action) {
     else if (action.id == 'fb_feed') {
         await fbFeed(action)
     }
+    else if (action.id == 'tiktok_feed') {
+        await tiktokFeed(action)
+    }
+    else if (action.id == 'youtube_feed') {
+        await youtubeFeed(action)
+    }
     else if (action.id == 'tiktok_comment') {
         await tiktokComment(action)
     }
@@ -185,11 +191,13 @@ async function initActionData(action) {
         await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'fb_feed') {
-        if (!action.selected_page) {
-            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-        } else {
-            await goToLocation(action.pid, 'https://www.facebook.com//')
-        }
+        await goToLocation(action.pid, 'https://www.facebook.com//')
+    }
+    else if (action.id == 'tiktok_feed') {
+        await goToLocation(action.pid, 'https://www.tiktok.com//')
+    }
+    else if (action.id == 'youtube_feed') {
+        await goToLocation(action.pid, 'https://www.youtube.com//')
     }
     else if (action.id == 'tiktok_comment') {
         await goToLocation(action.pid, action.link)
