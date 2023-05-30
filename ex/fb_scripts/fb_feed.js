@@ -15,13 +15,8 @@ async function fbFeed(action) {
         await sleep(3000)
         await userScroll(action.pid, 5)
         
-      }
-
-      let likes = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal', 'array')
-      if (likes && likes.length) {
-        let likeBtn = likes[randomRanger(0, likes.length - 1)]
-        await userClick(action.pid, 'likeBtn', likeBtn)
-        await sleep(3000)
+        await handleLikeFb(action)
+        await handleCommentFb(action)
       }
 
       await reportScript(action)
@@ -32,5 +27,31 @@ async function fbFeed(action) {
   } catch (er) {
     console.log(er);
     await reportScript(action, false)
+  }
+}
+
+async function handleLikeFb (action) {
+  let isTrue = isTrue(30)
+  if (!isTrue) {
+    return
+  }
+  let likes = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal', 'array')
+  for (let like of likes) {
+    if (elementInViewportByTop(like)) {
+      await userClick(action.pid, 'like', like)
+    }
+  }
+}
+
+async function handleCommentFb (action) {
+  let isTrue = isTrue(10)
+  if (!isTrue) {
+    return
+  }
+  let items = document.querySelectorAll('div[role="textbox"]')
+  for (let item of items) {
+    if (elementInViewportByTop(item)) {
+      await userTypeEnter(action.pid, 'textbox', 'testcomment', item)
+    }
   }
 }

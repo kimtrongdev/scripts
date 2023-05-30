@@ -632,6 +632,22 @@ function elementInViewport (el) {
     return pos.x || pos.y || pos.width || pos.height
 }
 
+function elementInViewportByTop (el) {
+    if (typeof el == 'string') {
+        el = document.querySelector(el)
+    }
+
+    if (!el) return false
+
+    let pos = el.getBoundingClientRect()
+    return pos.top > 0 && pos.top < window.innerHeight
+}
+
+function isTrue(percent) {
+    let rs = randomRanger(0, 100)
+    return percent > rs
+}
+
 function getElementPosition(el,iframe){
     if(el){
          let screenX = window.screen.width - window.screen.availWidth
