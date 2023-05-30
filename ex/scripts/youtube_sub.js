@@ -234,21 +234,8 @@ async function processSearchPageSub(action) {
     return
   }
 
-  let suggestWatchSearch = await processSearchSuggest(action)
-  if (suggestWatchSearch) return
-
-  // filter by hour if first search
-  // if(action.url_type=='video' && !action.filter){
-  //     let filter = action.filter?(action.filter+1):1
-  //     action.filter = filter
-  //     await setActionData(action)
-
-  //     await userClick(action.pid, '#filter-menu a > #button')
-  //     await sleep(2000)
-  //     // this hour
-  //     await userClick(action.pid, 'a#endpoint[href*="EgIIAQ%253D%253D"]')
-  //     return
-  // }
+  // let suggestWatchSearch = await processSearchSuggest(action)
+  // if (suggestWatchSearch) return
 
   let videoSelector = 'ytd-two-column-search-results-renderer .ytd-section-list-renderer a#thumbnail[href*="' + action.playlist_url + '"]'
   // scroll result
