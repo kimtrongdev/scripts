@@ -8,7 +8,7 @@ async function fbFeed(action) {
 
     await checkErrorFB(action)
 
-    if (url == 'https://www.facebook.com/') {
+    if (url == 'https://www.facebook.com//') {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let timeScroll = Number(action.scroll_time) || 15000
       for(let i = 0; i < timeScroll / 2000; i++) {
