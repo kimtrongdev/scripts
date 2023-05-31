@@ -11,25 +11,8 @@ async function scriptYoutubeSub(action) {
 
     if (url.indexOf('/videos') > -1) {
       await processWatchChannelPageSub(action)
-    } else if (url.indexOf('youtube.com/account') > -1) {
-      let channels = document.querySelectorAll('ytd-account-item-renderer')
-      if (channels.length <= action.channel_position) {
-        await updateActionStatus(action.pid, action.id, 0, 'end playlist')
-        return
-      }
-
-      let channel = channels.item(action.channel_position)
-      if (channel) {
-        if (action.channel_position < channels.length - 2) {
-          reportPositionChannel(action.pid, action.channel_position)
-        }
-        getPlaylistData(action)
-        action.channel_position += 1
-        await setActionData(action)
-        await userClick(action.pid, '', channel)
-      } else {
-        await updateActionStatus(action.pid, action.id, 0, 'end playlist')
-      }
+    } if (url.indexOf('youtube.com/account') > -1) {
+      await handleUsersSelection(action)
       return
     }
     else if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
