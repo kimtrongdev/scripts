@@ -70,7 +70,7 @@ async function scriptYoutubeSub(action) {
 async function processHomePageSub(action) {
   await checkLogin(action)
 
-  if (action.video_name) {
+  if (action.video_name && action.sub_from_search_video) {
     if (action.playlist_url) {
       action.video_name += ' ' + action.playlist_url
     }
