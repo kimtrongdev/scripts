@@ -71,6 +71,9 @@ async function processHomePageSub(action) {
   await checkLogin(action)
 
   if (action.video_name) {
+    if (action.playlist_url) {
+      action.video_name += ' ' + action.playlist_url
+    }
     await userTypeEnter(action.pid, 'input#search', action.video_name)
     return
   }
