@@ -495,7 +495,7 @@ async function processSearchSuggest(action) {
 
 async function processWatchPageSub(action) {
   let url = window.location.toString()
-
+  await updateWatchedVideo(false, action.pid)
   if (Number(action.watch_time)) {
     await sleep(randomRanger(Number(action.watch_time), Number(action.watch_time) + 15000))
   }
