@@ -263,7 +263,7 @@ async function processWatchChannelPageSub(action) {
     if (url.indexOf('/shorts') > -1) {
       videos = [...document.querySelectorAll(`ytd-rich-grid-slim-media ytd-thumbnail a#thumbnail`)]
     } else {
-      videos = [...document.querySelector('ytd-rich-grid-media ytd-thumbnail a#thumbnail')]
+      videos = [...document.querySelectorAll('ytd-rich-grid-media ytd-thumbnail a#thumbnail')]
     }
 
     if(videos.length){
@@ -300,49 +300,20 @@ async function processWatchChannelPageSub(action) {
 
 async function clickSub (action) {
   let url = window.location.toString()
-  if (document.querySelector('#subscribe-button ytd-subscribe-button-renderer') && (url.indexOf('/watch') > -1 || url.indexOf('/shorts') > -1)) {
-    if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-      try {
-        let subBtns = [...document.querySelectorAll('#subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')]
-        let btn = subBtns.pop()
-        await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', btn)
-        await sleep(3000)
+  let subBtn = document.querySelector('#inner-header-container #subscribe-button')
 
-        if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-          await userClick(action.pid, '#meta #subscribe-button ytd-subscribe-button-renderer tp-yt-paper-button')
-          await sleep(3000)
-        }
-
-        if (!document.querySelector('tp-yt-paper-button[subscribed]') && btn) {
-          btn.click()
-          await sleep(3000)
-        }
-      } catch (error) {
-        console.log(error);
-      }
-
-      if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-        await reportScript(action, 0)
-        return
-      }
-
-      await reportScript(action)
+  if (url.indexOf('/watch') > -1 || url.indexOf('/shorts') > -1) {
+    if (url.indexOf('/shorts') > -1) {
+      subBtn = document.querySelector('ytd-reel-player-overlay-renderer #channel-container #subscribe-button')
     } else {
-      await reportScript(action, 0)
+      subBtn = document.querySelector('#owner #subscribe-button')
     }
-    
-    return
   }
-
-  if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-    let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-    await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
-    await sleep(3000)
-    await reportScript(action)
-    return
+  if (subBtn) {
+    await userClick(action.pid,'subBtn', subBtn)
+  } else {
+    await reportScript(action, 0)
   }
-  await reportScript(action, 0)
-  return
 }
 
 async function processSearchSuggest(action) {
