@@ -23,7 +23,10 @@ function getElementContainsInnerText(tagName, innerText, _document = null, type 
         let els = []
         let rs = headings.iterateNext()
         while (rs) {
-          els.push(rs)
+          let pos = rs.getBoundingClientRect()
+          if (pos.x || pos.y || pos.width || pos.height) {
+            els.push(rs)
+          }
           rs = headings.iterateNext()
         }
 
