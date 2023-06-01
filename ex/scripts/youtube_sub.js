@@ -263,7 +263,7 @@ async function processWatchChannelPageSub(action) {
     if (url.indexOf('/shorts') > -1) {
       videos = [...document.querySelectorAll(`ytd-rich-grid-slim-media ytd-thumbnail a#thumbnail`)]
     } else {
-      videos = [...document.querySelectorAll(`ytd-two-column-browse-results-renderer[page-subtype="channels"] .ytd-section-list-renderer a#thumbnail`)]
+      videos = [...document.querySelector('ytd-rich-grid-media ytd-thumbnail a#thumbnail')]
     }
 
     if(videos.length){
