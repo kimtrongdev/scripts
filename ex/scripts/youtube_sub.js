@@ -311,6 +311,7 @@ async function clickSub (action) {
   }
   if (subBtn) {
     await userClick(action.pid,'subBtn', subBtn)
+    await reportScript(action)
   } else {
     await reportScript(action, 0)
   }
