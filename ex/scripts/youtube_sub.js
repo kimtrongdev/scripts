@@ -414,7 +414,7 @@ async function processWatchPageSub(action) {
   let url = window.location.toString()
   await updateWatchedVideo(false, action.pid)
 
-  await sleep(2000)
+  await sleep(7000)
   await skipAds(true, action)
 
   let videoTime = loadVideoTime()
