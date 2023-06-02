@@ -263,8 +263,13 @@ async function processWatchChannelPageSub(action) {
     if (url.indexOf('/shorts') > -1) {
       videos = [...document.querySelectorAll(`ytd-rich-grid-slim-media ytd-thumbnail a#thumbnail`)]
     } else {
-      videos = [...document.querySelectorAll('ytd-rich-grid-media ytd-thumbnail a#thumbnail')]
+      videos = [...document.querySelectorAll('#content ytd-rich-grid-media ytd-thumbnail a#thumbnail')]
     }
+
+    videos = videos.filter(video => {
+      let pos = getElementPosition(video)
+      return pos.x > 10
+    })
 
     if(videos.length){
       video = videos[randomRanger(0, Math.min(videos.length-1, 15))]
