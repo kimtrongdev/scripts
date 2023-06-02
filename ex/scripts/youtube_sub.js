@@ -442,7 +442,7 @@ async function processWatchPageSub(action) {
     await setActionData(action)
     await userClick(action.pid, '#channel-container #channel-info #avatar')
   } else {
-    await sleep(10000)
+    //await sleep(10000)
     try {
       // like
       if (Number(action.like_percent) > Math.random() * 100) {
@@ -452,13 +452,13 @@ async function processWatchPageSub(action) {
       if (Number(action.comment_percent) > Math.random() * 100) {
         await CommentYoutubeVideo(action.pid, action.comment)
       } else {
-        await sleep(5000)
+        //await sleep(5000)
       }
     } catch (error) {
       console.log(error);
     }
 
-    await sleep(5000)
+    //await sleep(5000)
     await clickSub(action)
   }
 }
