@@ -428,7 +428,7 @@ async function processWatchPageSub(action) {
     await clickSub(action, false)
     action.subscribed = true
     await setActionData(action)
-    await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id + '/videos')
+    await userClick(action.pid, '#channel-container #channel-info #avatar')
   } else {
     await sleep(10000)
     try {
