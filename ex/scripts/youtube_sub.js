@@ -404,13 +404,25 @@ async function processSearchSuggest(action) {
   }
 }
 
+function loadVideoTime() {
+  videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
+  videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
+  return videoTime
+}
+
 async function processWatchPageSub(action) {
   let url = window.location.toString()
   await updateWatchedVideo(false, action.pid)
 
   await sleep(2000)
   await skipAds(true, action)
-  if (Number(action.watch_time)) {
+
+  let videoTime = loadVideoTime()
+  if (!videoTime) {
+    videoTime = 9999999
+  }
+
+  if (Number(action.watch_time) && videoTime > action.watch_time) {
     await sleep(Number(action.watch_time))
   }
 
