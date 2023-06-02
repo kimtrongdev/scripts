@@ -260,6 +260,7 @@ async function processWatchChannelPageSub(action) {
 
   if(url.indexOf('/videos') > -1 || url.indexOf('/shorts') > -1){
     let videos 
+    let video
     if (url.indexOf('/shorts') > -1) {
       videos = [...document.querySelectorAll(`ytd-rich-grid-slim-media ytd-thumbnail a#thumbnail`)]
     } else {
@@ -288,7 +289,13 @@ async function processWatchChannelPageSub(action) {
       await clickSub(action)
     }
 
-  } else{
+  } if (action.tab_clicked) {
+    await clickSub(action)
+  }
+  else{
+    action.tab_clicked = true
+    await setActionData(action)
+
     // click videos tab
     let videoTab = document.querySelectorAll('#tabsContent .tab-content').item(1)
     if(videoTab){
