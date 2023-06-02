@@ -255,8 +255,21 @@ async function processSearchPageSub(action) {
   }
 }
 
+async function getSubData(action) {
+  if (document.querySelector('#subscriber-count') && document.querySelector('#subscriber-count').innerText ) {
+    action.data_reported = document.querySelector('#subscriber-count').innerText
+    await setActionData(action)
+  }
+}
+
 async function processWatchChannelPageSub(action) {
   let url = window.location.toString()
+
+  if (action.subscribed) {
+    await getSubData(action)
+    await reportScript(action)
+    return
+  }
 
   if(url.indexOf('/videos') > -1 || url.indexOf('/shorts') > -1){
     let videos 
@@ -277,10 +290,7 @@ async function processWatchChannelPageSub(action) {
       await setActionData(action)
     }
 
-    if (document.querySelector('#subscriber-count') && document.querySelector('#subscriber-count').innerText ) {
-      action.data_reported = document.querySelector('#subscriber-count').innerText
-      await setActionData(action)
-    }
+    await getSubData(action)
 
     if (video && Number(action.sub_from_video_percent) > Math.random() * 100) {
       await userClick(action.pid,'video',video)
@@ -310,7 +320,7 @@ async function processWatchChannelPageSub(action) {
   }
 }
 
-async function clickSub (action) {
+async function clickSub (action, endScript = true) {
   let url = window.location.toString()
   let subBtn = document.querySelector('#inner-header-container #subscribe-button')
 
@@ -324,7 +334,9 @@ async function clickSub (action) {
   if (subBtn) {
     await userClick(action.pid,'subBtn', subBtn)
     await sleep(3000)
-    await reportScript(action)
+    if (endScript) {
+      await reportScript(action)
+    }
   } else {
     await reportScript(action, 0)
   }
@@ -413,8 +425,10 @@ async function processWatchPageSub(action) {
 
   if (url.indexOf('youtube.com/shorts') > -1) {
     await sleep(3000)
-    await clickSub(action)
-
+    await clickSub(action, false)
+    action.subscribed = true
+    await setActionData(action)
+    await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id + '/videos')
   } else {
     await sleep(10000)
     try {
