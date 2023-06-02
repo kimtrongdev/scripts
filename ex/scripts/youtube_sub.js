@@ -289,7 +289,7 @@ async function processWatchChannelPageSub(action) {
       await clickSub(action)
     }
 
-  } if (action.tab_clicked) {
+  } else if (action.tab_clicked) {
     await clickSub(action)
   }
   else{
