@@ -35,6 +35,7 @@ async function handleLikeFb (action) {
   if (!isLike) {
     return
   }
+  await sleep(randomRanger(10000, 15000))
   let likes = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal', 'array')
   for (let like of likes) {
     if (elementInViewportByTop(like)) {

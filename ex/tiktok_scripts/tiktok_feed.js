@@ -10,9 +10,7 @@ async function tiktokFeed(action) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let timeScroll = Number(action.time) || 15000
       for(let i = 0; i < timeScroll / 2000; i++) {
-        await sleep(3000)
-        await userScroll(action.pid, 5)
-        
+        await userScroll(action.pid, 15)
         await handleLikeTiktok(action)
         //await handleCommentFb(action)
       }
@@ -33,6 +31,7 @@ async function handleLikeTiktok (action) {
   if (!isRun) {
     return
   }
+  await sleep(randomRanger(10000, 15000))
   let likes = document.querySelectorAll('span[data-e2e="like-icon"]')
   for (let like of likes) {
     if (elementInViewportByTop(like)) {
