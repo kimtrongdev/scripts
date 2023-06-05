@@ -16,7 +16,7 @@ async function fbFeed(action) {
         await userScroll(action.pid, 5)
         
         await handleLikeFb(action)
-        await handleCommentFb(action)
+        //await handleCommentFb(action)
       }
 
       await reportScript(action)
@@ -31,8 +31,8 @@ async function fbFeed(action) {
 }
 
 async function handleLikeFb (action) {
-  let isTrue = isTrue(30)
-  if (!isTrue) {
+  let isLike = isTrue(30)
+  if (!isLike) {
     return
   }
   let likes = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal', 'array')
@@ -44,8 +44,8 @@ async function handleLikeFb (action) {
 }
 
 async function handleCommentFb (action) {
-  let isTrue = isTrue(10)
-  if (!isTrue) {
+  let isRun = isTrue(10)
+  if (!isRun) {
     return
   }
   let items = document.querySelectorAll('div[role="textbox"]')

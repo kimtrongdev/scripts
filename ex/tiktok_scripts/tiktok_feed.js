@@ -8,7 +8,7 @@ async function tiktokFeed(action) {
 
     if (url == 'https://www.tiktok.com/foryou' || url == 'https://www.tiktok.com/') {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      let timeScroll = Number(action.scroll_time) || 15000
+      let timeScroll = Number(action.time) || 15000
       for(let i = 0; i < timeScroll / 2000; i++) {
         await sleep(3000)
         await userScroll(action.pid, 5)
@@ -29,8 +29,8 @@ async function tiktokFeed(action) {
 }
 
 async function handleLikeTiktok (action) {
-  let isTrue = isTrue(30)
-  if (!isTrue) {
+  let isRun = isTrue(30)
+  if (!isRun) {
     return
   }
   let likes = document.querySelectorAll('span[data-e2e="like-icon"]')
