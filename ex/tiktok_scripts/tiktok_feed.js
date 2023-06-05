@@ -10,7 +10,8 @@ async function tiktokFeed(action) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let timeScroll = Number(action.time) || 15000
       for(let i = 0; i < timeScroll / 2000; i++) {
-        await userScroll(action.pid, 15)
+        await userScroll(action.pid, 10)
+        await sleep(2000)
         await handleLikeTiktok(action)
         //await handleCommentFb(action)
       }
@@ -38,6 +39,7 @@ async function handleLikeTiktok (action) {
       await userClick(action.pid, 'like', like)
       await sleep(1000)
       await updateUserInput(action.pid,'MOUSE_MOVE', 0, 0,0,0,"",'00')
+      break
     }
   }
 }
