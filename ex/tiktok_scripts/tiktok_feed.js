@@ -36,6 +36,8 @@ async function handleLikeTiktok (action) {
   for (let like of likes) {
     if (elementInViewportByTop(like)) {
       await userClick(action.pid, 'like', like)
+      await sleep(1000)
+      await updateUserInput(action.pid,'MOUSE_MOVE', 0, 0,0,0,"",'00')
     }
   }
 }

@@ -1646,6 +1646,9 @@ async function handleAction (actionData) {
     else if (actionData.action == 'GO_TO_FISRT_TAB') {
         execSync(`xdotool key Control_L+1 && sleep 1`)
     }
+    else if (actionData.action == 'MOUSE_MOVE') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y}`)
+    }
     else if (actionData.action == 'DOUBLE_CLICK') {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
     }
