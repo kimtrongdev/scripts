@@ -17,7 +17,10 @@ async function youtubeFeed(action) {
         await sleep(1000)
         action.time -= 3000
         await setActionData(action)
-        await clickVideo(action)
+        let clicked = await clickVideo(action)
+        if (clicked) {
+          return
+        }
       }
 
       await reportScript(action)
@@ -57,4 +60,5 @@ async function clickVideo (action) {
       break
     }
   }
+  return true
 }
