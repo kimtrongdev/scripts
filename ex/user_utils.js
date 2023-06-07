@@ -368,8 +368,12 @@ async function initActionData(action) {
         await goToLocation(action.pid,'google.com/maps')
     }
     else if (action.id == 'youtube_sub') {
+        if (action.selected_user) {
+            await goToLocation(action.pid, 'https://www.youtube.com//')
+        } else {
+            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        }
         //await goToLocation(action.pid, 'https://www.youtube.com//')
-        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
     }
     else if(action.id == 'login'){
@@ -974,6 +978,7 @@ async function handleUsersSelection (action) {
     }
 
     action.channel_position += 1
+    action.selected_user = true
     await setActionData(action)
 
     if (action.channel_position >= channels.length) {
