@@ -423,7 +423,11 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'google.com/search?q=' + action.video + ' ' + action.playlist_url)
             await sleep(3000)
         } else {
-            await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            if (!action.selected_user) {
+                await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+            } else {
+                await goToLocation(action.pid, 'https://www.youtube.com//')
+            }
             //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
         }
     }
