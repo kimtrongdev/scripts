@@ -288,6 +288,12 @@ async function processWatchChannelPageSub(action) {
     if(videos.length){
       video = videos[randomRanger(0, Math.min(videos.length-1, 15))]
       await setActionData(action)
+    } else {
+      let videoTab = document.querySelectorAll('#tabsContent .tab-content').item(1)
+      if(videoTab){
+          await userClick(action.pid,'#tabsContent .tab-content', videoTab)
+      }
+      return
     }
 
     await getSubData(action)
