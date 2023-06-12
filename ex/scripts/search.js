@@ -18,14 +18,14 @@ async function scriptSearch(action) {
     }
 
     if (url.indexOf('https://www.google.com/search?q') > -1) {
-      let site = getElementContainsInnerText('cite', action.site_url)
+      let site = ''
       if (site) {
         await userClick(action.pid, '', site)
       } else {
         await searchKeyword(action)
       }
     } else if (url.indexOf('https://www.google.com/') > -1) {
-      let btnRejectAll = getElementContainsInnerText('div', 'Accept all')
+      let btnRejectAll = ''
       if (btnRejectAll) {
           await userClick(action.pid, 'btnRejectAll', btnRejectAll)
           await sleep(15000)

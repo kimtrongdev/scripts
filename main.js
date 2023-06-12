@@ -10,7 +10,7 @@ let countRun = 0
 let isPauseAction = false
 let isAfterReboot = false
 let actionsData = []
-let addresses = require('./src/adress.json').addresses
+let addresses = []
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -43,7 +43,39 @@ try {
 } catch (e) { trace = {} }
 
 require('log-timestamp')
-const utils = require('./utils')
+const utils = {
+    ACTION: {
+        WATCH: 0,
+        WATCH_TO_SUB: 1,
+        SUB: 2,
+        ADD_NEW: 3
+    },
+    getRndInteger: (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+    },
+    log: (...pr) => {
+        if (DEBUG) {
+            console.log(...pr)
+        }
+    },
+    randomRanger: function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+    },
+    sleep: function(ms) {
+        return new Promise(resolve => setTimeout(function () {
+            resolve('ok')
+        }, ms));
+    },
+    shuffleArray: function (array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array
+    }
+}
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 const request_api = require('./request_api')
@@ -306,25 +338,6 @@ function getProfileIds() {
 
 async function startChromeAction(action, _browser) {
     let params = ''
-    if (systemConfig.systemParams) {
-        let ss = systemConfig.systemParams.split('##')
-        if (ss.length) {
-            let index = utils.getRndInteger(0, ss.length - 1)
-            params = ss[index]
-
-            try {
-                params = params.replace('\\n', '')
-                const ramdom1 = utils.getRndInteger(1000, 9000)
-                const ramdom2 = utils.getRndInteger(1000, 9000)
-
-                params = params.replace('123456789', `173493304458${ramdom2}${ramdom1}`)
-                console.log(params);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    }
-
     if (systemConfig.is_setting_brave) {
         action.is_setting_brave = true
     }
@@ -367,16 +380,6 @@ async function startChromeAction(action, _browser) {
 
     // handle proxy
     let userProxy = ''
-    if (proxy && proxy[action.pid] && proxy[action.pid].server) {
-        utils.log('set proxy', proxy[action.pid])
-        userProxy = ` --proxy-server="${proxy[action.pid].server}" --proxy-bypass-list="story-shack-cdn-v2.glitch.me,randomuser.me,random-data-api.com,localhost:2000,${devJson.hostIp}"`
-    }
-    if (proxy && proxy[action.pid] && proxy[action.pid].username) {
-        utils.log('set proxy user name', proxy[action.pid].username)
-        action.proxy_server = proxy[action.pid].server
-        action.proxy_username = proxy[action.pid].username
-        action.proxy_password = proxy[action.pid].password
-    }
 
     // handle flag data
     action.browser_name = _browser
@@ -385,39 +388,6 @@ async function startChromeAction(action, _browser) {
     }
 
     let exs = ["ex"]
-    if (process.env.OS == 'centos') {
-        exs.push('quality')
-    }
-
-    if (systemConfig.use_adblock) {
-        exs.push('extensions/adblock')
-    }
-
-    let level_name = ''
-    if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
-        let traceName = 'trace'
-
-        if (trace[action.pid] && systemConfig.trace_names_ex.includes(trace[action.pid])) {
-            traceName = 'trace_ex/' + trace[action.pid]
-        } else {
-            if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
-                traceName = systemConfig.trace_names_ex[Math.floor(Math.random()*systemConfig.trace_names_ex.length)]
-                
-                if (traceName.includes('level_')) {
-                    level_name = traceName
-                    traceName = 'win_10_chrome'
-                }
-
-                trace[action.pid] = traceName
-                traceName = 'trace_ex/' + traceName
-                fs.writeFileSync("trace_config.json", JSON.stringify(trace))
-            }
-        }
-        
-        exs.push(traceName)
-        action.trace_name = level_name
-        console.log('------action.trace_name', action.trace_name);
-    }
     exs = exs.map(x => path.resolve(x)).join(",")
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
@@ -980,7 +950,6 @@ async function running() {
     utils.log('ids: ', ids)
     ids.forEach(pid => startDisplay(pid))
 
-    runAutoRebootVm()
     // manage profile actions
     await profileManage()
 }
@@ -1459,62 +1428,9 @@ async function handleAction (actionData) {
             console.log('----error:', error)
         }
     }
-
-    if (actionData.action == 'SELECT_AVATAR') {
-        await utils.sleep(5000)
-        del.sync([path.resolve('avatar.jpg')], { force: true })
-        let avatar = await request_api.getAvatar(actionData.pid,path.resolve('../'),actionData.str)
-
-        if(true && avatar){
-            await utils.sleep(5000)
-            execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 2`)
-            execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
-        }
-        else{
-            execSync(`xdotool key Escape`)
-        }
-    }
-    else if (actionData.action == 'OPEN_BROWSER') {
+    
+    if (actionData.action == 'OPEN_BROWSER') {
         await startChromeAction(actionData.data, actionData.browser)
-    }
-    else if (actionData.action == 'BRAVE_SETTINGS') {
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        //execSync(`xdotool key Shift+Tab`)//13
-
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        //execSync(`xdotool key Shift+Tab`)
-
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-    }
-    else if (actionData.action == 'IRIDIUM_SETTING') {
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'CLOSE_BROWSER') {
         execSync(`xdotool key Control_L+w && sleep 1`)
@@ -1525,51 +1441,6 @@ async function handleAction (actionData) {
         while (count < totalClick) {
             execSync(`xdotool key Tab && sleep 1`)
             count ++
-        }
-    }
-    else if (actionData.action == 'SHOW_BRAVE_ADS') {
-        execSync(`xdotool key Shift+Tab && sleep 1`)
-        execSync(`xdotool key Shift+Tab && sleep 1`)
-        execSync(`xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'COPY_BAT') {
-        try {
-            execSync(`xdotool key Control_L+c && sleep 1`)
-        } catch (error) {
-            
-        }
-        
-        await utils.sleep(1000)
-
-        let currentBat = ''
-        const clipboardy = require('clipboardy');
-        currentBat = clipboardy.readSync()
-        utils.log('currentBat', currentBat)
-        currentBat = Number(currentBat)
-        
-        if (currentBat) {
-            try {
-                let braveInfo = await request_api.getBraveInfo(actionData.pid)
-                if (braveInfo) {
-                    if (braveInfo.total_bat) {
-                        if (!braveInfo.is_disabled_ads) {
-                            if (braveInfo.total_bat == currentBat) {
-                                request_api.updateProfileData({ is_disabled_ads: true, pid: actionData.pid, count_brave_rounds: 0 })
-                                request_api.getProfileProxy(actionData.pid, PLAYLIST_ACTION.WATCH, true)
-                                return res.send({ disable_ads: true })
-                            }
-                        } else {
-                            if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
-                                request_api.updateProfileData({ is_disabled_ads: false, pid: actionData.pid })
-                                return res.send({ enable_ads: true })
-                            }
-                        }
-                    }
-                }
-                request_api.updateProfileData({ total_bat: currentBat, pid: actionData.pid, '$inc': { count_brave_rounds: 1 } })
-            } catch (error) {
-                utils.log(error)
-            }
         }
     }
     else if (actionData.action == 'ESC') {
@@ -1778,30 +1649,6 @@ async function deleteProfile(pid, retry = 0) {
     }
 }
 
-function runAutoRebootVm () {
-    setInterval(async () => {
-        let myDate = new Date()
-        let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
-
-        let resetProfilesTimeInterval = Number(systemConfig.reset_profiles_time_interval)
-        if (resetProfilesTimeInterval && hour % resetProfilesTimeInterval == 0) {
-            await resetAllProfiles()
-        }
-        
-        if (Number(systemConfig.reset_system_time) > 0 && hour == Number(systemConfig.reset_system_time)){
-            try {
-                isSystemChecking = true
-                if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
-                    await resetAllProfiles()
-                }
-                execSync('sudo systemctl reboot')
-            } catch (error) {
-                isSystemChecking = false
-                console.log(error);
-            }
-        }
-    }, 3600000);
-}
 
 function closeChrome(pid) {
     try {

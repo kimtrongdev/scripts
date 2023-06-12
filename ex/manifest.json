@@ -13,52 +13,19 @@
         "<all_urls>"
       ],
       "js": [
-        "utils.js",
         "user_utils.js",
-        "user_simulate.js",
-        "user_login.js",
         "watch_youtube.js",
-        "watch_youtube_mobile.js",
         "content.js",
-        "./scripts/map.js",
         "./scripts/search.js",
-        "./scripts/google_news.js",
-        "./scripts/youtube_sub.js",
         "./scripts/brave.js",
-        "./scripts/youtube_comment.js",
-        "./scripts/youtube_like.js",
-        "./scripts/create_playlist.js",
-        "./scripts/add_video_playlist.js",
-        "./scripts/reg_mail.js",
-        "./scripts/check_mail_1.js",
-        "./scripts/direct_link.js",
-
-        "./fb_scripts/utilFB.js",
-        "./fb_login.js",
-        "./fb_scripts/reg_page.js",
-        "./fb_scripts/like_page.js",
-        "./fb_scripts/like_post.js",
-        "./fb_scripts/comment_post.js",
-        "./fb_scripts/view_fb_video.js",
-        "./fb_scripts/folow_page.js",
-        "./fb_scripts/change_pass.js",
-        "./fb_scripts/post_fb.js",
-        "./fb_scripts/scan_group.js",
-        "./fb_scripts/scan_profile.js",
-        "./fb_scripts/fb_add_member.js",
-        "./fb_scripts/view_fb_home.js",
-        "./fb_scripts/fb_feed.js",
-
-        "./system_scripts/get_otp.js",
-        "./system_scripts/add_recovery_mail.js",
-        "./system_scripts/check_recovery.js"
+        "./scripts/direct_link.js"
       ]
     },
     {
       "matches": [
         "https://payments.google.com/*"
       ],
-      "js": ["utils.js", "user_utils.js","user_simulate.js","user_login.js","watch_youtube.js","watch_youtube_mobile.js","content.js"],
+      "js": ["user_utils.js","watch_youtube.js","content.js"],
       "all_frames":true
     }
   ],
