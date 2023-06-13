@@ -137,7 +137,32 @@ async function handleForChangeShowUI() {
 }
 
 async function loadSystemConfig () {
-    let rs = await request_api.getSystemConfig();
+    let rs = {
+        ads_percent: 100,
+        max_total_profiles: '1',
+        max_total_profiles_mobile: 1,
+        playlists: 'v=lyn35tXuGv0&list=PLc21mL3vVoTtSkMQ2vecMUCFNiHx_RAzt',
+        total_channel_created: 20,
+        total_loop_find_ads: '0',
+        sub_percent: '0',
+        brave_replay_ads_rounds: 2,
+        brave_view_news_count: 1,
+        total_rounds_for_change_proxy: 5,
+        reset_system_time: '1',
+        max_current_profiles: '1',
+        browsers: [ 'brave-browser' ],
+        is_setting_brave: true,
+        new_account_type: 'gmail',
+        zone_name: 'rd',
+        fb_verify_type: 'rd',
+        auto_renew_proxy: true,
+        total_page_created: '3',
+        renew_for_suspend: true,
+        allow_verify: true,
+        trace_names_ex: [],
+        is_stop: false
+    }
+      
     if (rs && !rs.error) {
         systemConfig = rs
     }
@@ -725,7 +750,13 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
     } else {
-        action = await request_api.getNewScript(pid)
+        action = {
+            link: 'https://www.youtube.com/watch?v=c5jGtB-APko',
+            script_code: 'direct_link',
+            _id: '643d747a86f7409240fded12',
+            is_break: true,
+            success: true
+        }
     }
 
     if (action) {
@@ -1278,10 +1309,6 @@ function initExpress() {
             });
         }
         else if (req.query.isScriptReport) {
-            // if (!['watch', 'create_playlist', 'search', 'end_script'].includes(req.query.script_code)) {
-            //     await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
-            // }
-
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                // execSync(`xdotool key Control_L+w && sleep 1`)
                 // browser will closed by background extention

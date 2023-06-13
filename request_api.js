@@ -31,25 +31,11 @@ module.exports = {
     updateProfileData: async (data) => {
         return await rq({method: 'POST', uri: SUB_URL + '/api/profile/update-data', body: data, json: true})
     },
-    reportScript: async (pid, serviceId = '', status = true, data_reported = '') => {
-        return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status, data_reported }})
-    },
-    getNewScript: async (pid) => {
-        return await rq({uri: SUB_URL + '/api/script/get-new?pid='+pid, json: true})
-    },
     getNewProfile: async () => {
         return await rq({uri: SUB_URL + '/api/profile',json: true,qs: {vmId: config.vm_id}})
     },
     updateProfileStatus: async (pid, vmId, status, description) => {
         return await rq({method: 'POST', uri: SUB_URL + '/profile/update-status',body: {pid: pid, vmId: vmId, status: status, description: description}, json: true})
-    },
-    getSystemConfig: async () => {
-        try{
-            return await rq({ uri: SUB_URL + '/api/config/system?vmId=' + config.vm_id, json: true })
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
     },
     reportVM: async (data = {}) => {
         try{
