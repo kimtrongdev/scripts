@@ -22,6 +22,7 @@ var newsNames = [
 async function runAction (action) {
     if (action.id == 'direct_link') {
         try {
+            await sleep(10000)
             await reportScript(action)
         } catch (error) {
             console.log(error);
