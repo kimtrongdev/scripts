@@ -49,6 +49,7 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     if (action.id == 'login') {
+        action.is_break = 1
         await reportScript(action)
     } else
     if (action.id == 'direct_link') {

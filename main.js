@@ -1,4 +1,4 @@
-const useProxy = true
+const useProxy = false
 let isRunBAT = false
 let isSystemChecking = false
 const TIME_REPORT = 290000
@@ -541,8 +541,10 @@ async function newProfileManage() {
         //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         // get new profile
         let newProfile = {
-            id: Date.now(),
-            pid: Date.now(),
+            profile: {
+                id: Date.now(),
+                pid: Date.now(),
+            }
         }
 
         utils.log('newProfile: ', newProfile)
@@ -550,15 +552,15 @@ async function newProfileManage() {
             RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
             // copy main to clone profile
             let profile = newProfile.profile
-            if (proxy) {
-                proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
-                utils.log('pid', profile.id, 'proxy', proxy[profile.id])
-                if (!proxy[profile.id]) {
-                    utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
-                    await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
-                    return
-                }
-            }
+            // if (proxy) {
+            //     proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
+            //     utils.log('pid', profile.id, 'proxy', proxy[profile.id])
+            //     if (!proxy[profile.id]) {
+            //         utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
+            //         await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
+            //         return
+            //     }
+            // }
 
             runnings.push({ action: 'login', pid: profile.id, lastReport: Date.now() })
             ids.push(profile.id)
@@ -1276,9 +1278,9 @@ function initExpress() {
             });
         }
         else if (req.query.isScriptReport) {
-            if (!['watch', 'create_playlist', 'search', 'end_script'].includes(req.query.script_code)) {
-                await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
-            }
+            // if (!['watch', 'create_playlist', 'search', 'end_script'].includes(req.query.script_code)) {
+            //     await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
+            // }
 
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                // execSync(`xdotool key Control_L+w && sleep 1`)
