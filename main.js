@@ -78,7 +78,6 @@ const utils = {
 }
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
-const request_api = require('./request_api')
 global.workingDir = getScriptDir()
 const publicIp = require('public-ip')
 const path = require('path')
@@ -207,7 +206,6 @@ async function loadSystemConfig () {
     (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
     (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
-        await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
         if (IS_REG_USER) {
             EXPIRED_TIME = 200000
@@ -563,8 +561,6 @@ async function newProfileManage() {
             }
         })
 
-        //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
-        // get new profile
         let newProfile = {
             profile: {
                 id: Date.now(),
@@ -577,15 +573,6 @@ async function newProfileManage() {
             RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
             // copy main to clone profile
             let profile = newProfile.profile
-            // if (proxy) {
-            //     proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
-            //     utils.log('pid', profile.id, 'proxy', proxy[profile.id])
-            //     if (!proxy[profile.id]) {
-            //         utils.log('error', 'pid:', profile.id, 'get proxy:', proxy[profile.id])
-            //         await request_api.updateProfileStatus(profile.id, config.vm_id, 'NEW')
-            //         return
-            //     }
-            // }
 
             runnings.push({ action: 'login', pid: profile.id, lastReport: Date.now() })
             ids.push(profile.id)
@@ -667,137 +654,15 @@ async function newRunProfile() {
 
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
-    if (IS_REG_USER) {
-        if (systemConfig.is_change_pass) {
-            action = await request_api.getProfileForRegChannel(pid)
-            if (action) {
-                action.pid = action.id
-                pid = action.pid
-                isNewProxy = true
-            } else {
-                console.log('Not found reg user data.');
-                return
-            }
-        }
-        else if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
-            action = await request_api.getProfileForRegChannel(pid)
-            if (action) {
-                action.pid = utils.randomRanger(100, 400)
-                ids.push(action.pid)
-                ids = ids.map(String)
-                ids = [...new Set(ids)]
-                pid = action.pid
-                isNewProxy = true
-            } else {
-                console.log('Not found reg user data.');
-                return
-            }
-        }
-        else if (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') {
-            let newProfile = await request_api.getNewProfile()
-            utils.log('newProfile: ', newProfile)
-            if (!newProfile.err && newProfile.profile) {
-                // copy main to clone profile
-                let profile = newProfile.profile
-                pid = profile.id
-                action = {
-                    ...profile,
-                    mail_type: systemConfig.check_mail_1_type,
-                    script_code: 'check_mail_1'
-                }
-            } else {
-                console.log('Not found profile');
-                return
-            }
-        }
-        else if (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') {
-            let newProfile = await request_api.getNewProfile()
-            utils.log('newProfile: ', newProfile)
-            if (!newProfile.err && newProfile.profile) {
-                // copy main to clone profile
-                let profile = newProfile.profile
-                pid = profile.id
-                action = {
-                    ...profile,
-                    script_code: 'reg_account',
-                    account_type: 'gmail',
-                    process_login: true
-                }
-            } else {
-                console.log('Not found profile');
-                return
-            }
-        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
-            action = {
-                script_code: 'reg_account',
-                account_type: 'gmail'
-            }
-        } else {
-            if (ids.length < MAX_PROFILE) {
-                pid = 0
-            }
-            action = await request_api.getProfileForRegChannel(pid)
-            if (action && action.id) {
-                action.pid = action.id
-                ids.push(action.id)
-                ids = ids.map(String)
-                ids = [...new Set(ids)]
-                pid = action.id
-                isNewProxy = true
-            } else {
-                console.log('Not found reg user data.');
-                return
-            }
-        }
-    } else {
-        action = {
-            link: 'https://www.youtube.com/watch?v=c5jGtB-APko',
-            script_code: 'direct_link',
-            _id: '643d747a86f7409240fded12',
-            is_break: true,
-            success: true
-        }
+    action = {
+        link: 'https://www.youtube.com/watch?v=c5jGtB-APko',
+        script_code: 'direct_link',
+        _id: '643d747a86f7409240fded12',
+        is_break: true,
+        success: true
     }
 
     if (action) {
-        if (useProxy && isNewProxy) {
-            let isLoadNewProxy = true
-            // let totalRound = totalRoundForChangeProxy * MAX_PROFILE
-            // if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
-            //     isLoadNewProxy = true
-            //     utils.log('Load new proxy for pid')
-            // }
-
-            if (isLoadNewProxy || action.is_ver_mail_type) {
-                //let newProxy = await request_api.getProxyV4()
-                let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-                // if (newProxy.server) {
-                //     proxy[pid] = {
-                //         server: newProxy.server
-                //     }
-                //     // let proxyInfo = newProxy.server.split(':')
-                //     // if (proxyInfo.length >= 2) {
-                //     //     execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
-                //     //     execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
-                //     //     execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
-                //     //     proxy[pid] = undefined
-                //     // }
-                // } else {
-                //     proxy[pid] = proxyV6
-                // }
-
-                if (proxyV6) {
-                    proxy[pid] = proxyV6
-                }
-            } else {
-                //execSync(`sudo gsettings set org.gnome.system.proxy mode 'none'`)
-                let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-                if (proxyV6 && proxyV6.server) {
-                    proxy[pid] = proxyV6
-                }
-            }
-        }
-
         if (useProxy && (!proxy[pid] || !proxy[pid].server)) {
             console.log('Not found proxy')
             return
@@ -855,19 +720,6 @@ async function getScriptData(pid, isNewProxy = false) {
 
             if (action.id == 'watch' || action.id == 'watch_video') {
                 action.total_loop_find_ads = systemConfig.total_loop_find_ads || 0
-                // if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
-                //     action.total_times_next_video = systemConfig.total_times_next_video
-                // }
-                // if (systemConfig.watching_time_non_ads && !Number(action.watching_time_non_ads)) {
-                //     action.watching_time_non_ads = systemConfig.watching_time_non_ads
-                // }
-                // if (systemConfig.watching_time_start_ads && !Number(action.watching_time_start_ads)) {
-                //     action.watching_time_start_ads = systemConfig.watching_time_start_ads
-                // }
-                // if (systemConfig.watching_time_end_ads && !Number(action.watching_time_end_ads)) {
-                //     action.watching_time_end_ads = systemConfig.watching_time_end_ads
-                // }
-    
                 if (!action.playlist_url) {
                     action.playlist_url = action.data
                 }
@@ -923,13 +775,7 @@ async function updateVmStatus() {
         await loadSystemConfig()
         let _pids = getProfileIds()
         let pids = _pids.join(',')
-        let rs = await request_api.reportVM({
-            vm_id: config.vm_id,
-            vm_name: config.vm_name,
-            running: runnings.length,
-            pids,
-            IP
-        })
+        let rs = false
 
         if (rs && rs.removePid) {
             let removePID = Number(rs.removePid)
@@ -942,10 +788,6 @@ async function updateVmStatus() {
             }
             runnings = runnings.filter(i => i.pid != removePID)
             ids = ids.filter(i => i != removePID)
-        }
-
-        if (rs && rs.reset_all_profiles) {
-            await resetAllProfiles()
         }
     }
     catch (e) {
@@ -996,10 +838,6 @@ function initDir() {
         fs.mkdirSync(path.resolve('logscreen'));
     }
 
-    // if (!fs.existsSync(path.resolve('logs'))) {
-    //     fs.mkdirSync(path.resolve('logs'));
-    // }
-
     if (!fs.existsSync('screen')) {
         fs.mkdirSync('screen');
     }
@@ -1011,10 +849,6 @@ function initDir() {
     if (!fs.existsSync('error')) {
         fs.mkdirSync('error');
     }
-
-    // if (!fs.existsSync('backup')) {
-    //     fs.mkdirSync('backup');
-    // }
 }
 
 async function start() {
@@ -1022,11 +856,9 @@ async function start() {
         
         if (updateFlag && updateFlag.updating) {
             isAfterReboot = true
-            await request_api.reportUpgrade()
             execSync('rm -rf update_flag.json')
             await utils.sleep(180000)
         }
-        checkToUpdate()
         execActionsRunning()
         initDir()
         await initConfig()
@@ -1060,46 +892,6 @@ function makeid(length) {
 }
 
 async function initConfig() {
-   /* execSync(`export EZTUB_CPU_ARCHITECTURE="x86" \
-        EZTUB_CPU_BITNESS="64" \
-        EZTUB_DEVICE_SCALE_FACTOR="1" \
-        EZTUB_FINGERPRINT_KEY="17349330445822630091" \
-        EZTUB_HARDWARE_CONCURRENCY="2" \
-        EZTUB_MAX_TOUCH_POINTS="0" \
-        EZTUB_NAVIGATOR_PLATFORM="Win32" \
-        EZTUB_NAVIGATOR_UA_DATA_PLATFORM="Windows" \
-        EZTUB_NAVIGATOR_VENDOR="Google Inc." \
-        EZTUB_PLATFORM_VERSION="10.0" \
-        EZTUB_SCREEN_DEPTH="24" \
-        EZTUB_SCREEN_HEIGHT="864" \
-        EZTUB_SCREEN_WIDTH="1536" \
-        EZTUB_USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36" \
-        EZTUB_WEBGL_RENDERER="ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)" \
-        EZTUB_WEBGL_VENDOR="Google Inc. (NVIDIA)"`)
-*/
-    // load configuration
-    //utils.log('config: ', config)
-    // let ip = ''
-    // while(!ip || ip.length > 50){
-    //     await utils.sleep(5000)
-    //     try {
-    //         if (fs.existsSync('./ip.log')) {
-    //             ip = fs.readFileSync('./ip.log', 'utf8')
-    //             if (ip.length > 50) {
-    //                 ip = await publicIp.v4()
-    //             }
-    //         }
-    //         else {
-    //             ip = await publicIp.v4()
-    //         }
-    //     }
-    //     catch (e) {
-    //         utils.log('error', 'get ip err')
-    //     }
-    // }
-
-    // utils.log('ip: ', ip)
-    // check config
     let ip = await publicIp.v4()
     IP = ip
 
@@ -1133,21 +925,6 @@ function getScriptDir() {
     return __dirname
 }
 
-function handlePlaylistData (playlist) {
-    if (!playlist.total_times_next_video) {
-        delete playlist.total_times_next_video
-    }
-    if (!playlist.watching_time_non_ads) {
-        delete playlist.watching_time_non_ads
-    }
-    if (!playlist.watching_time_start_ads) {
-        delete playlist.watching_time_start_ads
-    }
-    if (!playlist.watching_time_end_ads) {
-        delete playlist.watching_time_end_ads
-    }
-}
-
 function initExpress() {
     const express = require('express')
     const app = express()
@@ -1163,96 +940,17 @@ function initExpress() {
         return
     })
 
-    app.get('/report-playlist-jct', async (req, res) => {
-        let rs = await request_api.reportPlaylistJCT(req.query)
-        return res.send(rs)
-    })
-
-    app.get('/get-comment', async (req, res) => {
-        let rs = await request_api.getComment()
-        return res.send(rs)
-    })
-
-    app.get('/get-phone', async (req, res) => {
-        let rs = await request_api.getPhone()
-        res.send(rs)
-        return
-    })
-
-    app.get('/update-profile-data', async (req, res) => {
-        let data = req.query
-        request_api.updateProfileData(data)
-        res.send({})
-        return
-    })
-
-    app.get('/get-address-random', async (req, res) => {
-        console.log(addresses.length);
-        const randomAddress = addresses[Math.floor(Math.random() * addresses.length)]
-        console.log(randomAddress);
-        return res.send(randomAddress)
-    })
-    
-    app.get('/report-fb-group', async (req, res) => {
-        let groupLink = req.query.group_link
-        let groupTopic = req.query.fb_topic_code
-        console.log('---groupLink--', groupLink);
-        let rs = await request_api.reportFBGroup(groupLink, groupTopic)
-        res.send(rs)
-        return
-    })
-
-    app.get('/get-phone-code', async (req, res) => {
-        let order_id = req.query.order_id
-        let api_name = req.query.api_name
-        let rs = await request_api.getPhoneCode(order_id, api_name)
-        res.send(rs)
-        return
-    })
-
-    app.get('/get-mail-code', async (req, res) => {
-        let mail = req.query.mail
-        let rs = await request_api.getMailCode(mail)
-        res.send(rs)
-        return
-    })
-
-    app.get('/report-mail-code', async (req, res) => {
-        let data = req.query
-        let rs = await request_api.reportMailCode(data)
-        res.send(rs)
-        return
-    })
-
-    app.get('/get-reco-mails', async (req, res) => {
-        console.log('get reco mail');
-        let data = req.query
-        let rs = await request_api.getRecoMails(data)
-        console.log('get reco rs', rs);
-        res.send(rs)
-        return
-    })
-
     app.get('/login', (req, res) => {
         utils.log(req.query)
         if (req.query.status == 1) {
             utils.log(req.query.pid, 'login success')
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED')
         }
         else {
             utils.log(req.query.pid, 'login error', req.query.msg)
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
         }
         removePidAddnew(req.query.pid, req.query.status)
 
         res.send({ rs: 'ok' })
-    })
-
-    app.get('/get-new-playlist', async (req, res) => {
-        let rs = await request_api.getYTVideo()
-        let playlist = rs.playlist
-        handlePlaylistData(playlist)
-        res.send(playlist)
     })
 
     app.get('/report', async (req, res) => {
@@ -1262,46 +960,7 @@ function initExpress() {
         }
         utils.log(req.query)
 
-        if (req.query.id == 'reg_account' || req.query.id == 'change_pass') {
-            let action = req.query
-            
-            if (req.query.id == 'change_pass' && req.query.status == '0') {
-                if (req.query.msg.startsWith('UPDATE_FB_SUCCESS_TO_')) {
-                    req.query.msg = req.query.msg.replace('UPDATE_FB_SUCCESS_TO_', '')
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', password: req.query.msg, description: 'update_success', proxy_server: proxy[req.query.pid].server })
-                } else {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
-                }
-                return res.json({})
-            }
-
-            if (action.username && action.password) {
-                request_api.reportAccount({
-                    username: action.username,
-                    password: action.password,
-                    verify: action.verify,
-                    type: action.type,
-                    reg_ga_success: action.reg_ga_success,
-                    proxy_server: proxy[action.pid].server
-                })
-
-                if (req.query.id == 'change_pass') {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'TRASH', description: 'update_pass_to_' + action.password })
-                }
-            }
-
-            if (action.reg_ga_success) {
-                request_api.updateProfileData({ pid: Number(action.pid), status: 'ERROR', description: 'ga' })
-            }
-
-            if (action.stop && action.stop != 'false') {
-                removePidAddnew(req.query.pid, 0)
-            }
-        }
-        else if (req.query.id == 'total_created_channel') {
-            request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })
-        }
-        else if (req.query.id == 'live_report') {
+        if (req.query.id == 'live_report') {
             runnings.forEach(running => {
                 if (running.pid == req.query.pid) {
                     running.lastReport = Date.now()
@@ -1310,8 +969,6 @@ function initExpress() {
         }
         else if (req.query.isScriptReport) {
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
-               // execSync(`xdotool key Control_L+w && sleep 1`)
-                // browser will closed by background extention
                 closeChrome(req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
@@ -1329,88 +986,26 @@ function initExpress() {
                 }
             }
         }
-        else if (req.query.id == 'channel-position') {
-            let channel = usersPosition.find(u => u.pid == req.query.pid)
-            if (channel) {
-                channel.position = req.query.position
-            } else {
-                usersPosition.push({
-                    pid: req.query.pid,
-                    position: req.query.position,
-                })
-            }
-
-            if (usersPosition) {
-                config.usersPosition = usersPosition
-                fs.writeFileSync("vm_log.json", JSON.stringify(config))
-            }
-        }
-        else if (req.query.id == 'watched'){
-            runnings.forEach(running => {
-                if (running.pid == req.query.pid) {
-                    running.lastReport = Date.now()
-                }
-            });
-            request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
-        }
         else if ((req.query.report_error_profile && req.query.report_error_profile != 'false') || req.query.id == 'login' || req.query.id == 'reg_user' || req.query.id == 'check_mail_1'|| req.query.id == 'recovery_mail') {
             if (req.query.status == 1) {
                 utils.log(req.query.pid, 'login success')
                 if (req.query.id == 'reg_user') {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR' })
                 } else {
                     let params = { pid: req.query.pid, status: 'SYNCED' }
                     if (systemConfig.is_fb) {
                         params.proxy_server = proxy[req.query.pid].server
                     }
-                    request_api.updateProfileData(params)
                 }
             }
             else {
-                utils.log(req.query.pid, 'login error', req.query.msg)
-                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
             }
             removePidAddnew(req.query.pid, req.query.status)
         }
-        else if(req.query.id == 'logout'){
-            utils.log(req.query.pid, 'logout ok')
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', 'disabled_logout')
-            ids = ids.filter(x => x != req.query.pid)
-            deleteProfile(req.query.pid)
-        }
-        else if(req.query.id == 'confirm'){
-            utils.log(req.query.pid, 'confirm',req.query.status)
-            if (req.query.status == 1) {
-                utils.log(req.query.pid, 'confirm success')
-                request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', 'CONFIRM_SUCCESS')
-            }
-            else {
-                utils.log(req.query.pid, 'confirm error', req.query.msg)
-                request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-            }
-        }
-        else if(req.query.id == 'changepass'){
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-        }
-        else if(req.query.id == 'checkpremium' || req.query.id == 'checkcountry'){
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-        }
-        else if (req.query.id == 'watch') {
-            if (req.query.stop == 'true' || req.query.stop == true) {
-                runnings = runnings.filter(i => i.pid != req.query.pid)
-            }
-        }
-        else if (req.query.id == 'sub') {
-            if (req.query.stop == 'true' || req.query.stop == true) {
-                utils.log('remove pid from subRunnings', req.query.pid)
-                subRunnings = subRunnings.filter(x => x.pid != req.query.pid)
-            }
-        }
+
         if (req.query.msg && req.query.msg == 'NOT_LOGIN') {
             utils.log('error', req.query.pid, 'NOT_LOGIN')
             deleteProfile(req.query.pid)
             ids = ids.filter(x => x != req.query.pid)
-            deleteBackup(req.query.pid)
         }
         res.send({ rs: 'ok' })
     })
@@ -1494,9 +1089,6 @@ async function handleAction (actionData) {
         await utils.sleep(5000)
         runnings = runnings.filter(i => i.pid != actionData.pid)
     }
-
-    //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
-    // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep brave-browser | head -n 1)) && sleep 1`)
     else if (actionData.action == 'CTR_CLICK') {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool keydown Control_L && xdotool click 1`)
     }
@@ -1512,47 +1104,12 @@ async function handleAction (actionData) {
         }
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat ${repeat} 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
     }
-    else if (actionData.action == 'KEY_ENTER') {
-        execSync(`xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'TYPE_ENTER') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'TYPE_KEY_ENTER') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key E && xdotool key n && xdotool key g && sleep 1 && xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'ONLY_TYPE') {
-        execSync(`xdotool key Control_L+v sleep 1`)
-    }
+    
     else if (actionData.action == 'ONLY_TYPE_ENTER') {
         execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
     }
     else if (actionData.action == 'CLICK_ENTER') {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'NEXT_VIDEO') {
-        execSync(`xdotool key Shift+n && sleep 1`)
-    }
-    else if (actionData.action == 'SCROLL') {
-        if (actionData.str == 6) {
-            execSync(`xdotool key Shift+Tab && sleep 1`)
-            execSync(`xdotool key Page_Down && sleep 1`)
-        } else {
-            if (actionData.str > 0) {
-                let pageNumber = Math.ceil(actionData.str / 5)
-                while (pageNumber > 0) {
-                    execSync(`xdotool key Page_Down && sleep 1`)
-                    pageNumber--
-                }
-            }
-            else {
-                let pageNumber = Math.ceil(actionData.str / -5)
-                while (pageNumber > 0) {
-                    execSync(`xdotool key Page_Up && sleep 1`)
-                    pageNumber--
-                }
-            }
-        }
     }
     else if (actionData.action == 'SEND_KEY') {
         execSync(`xdotool type ${actionData.str}`)
@@ -1568,67 +1125,6 @@ async function handleAction (actionData) {
         await utils.sleep(1000)
         execSync(`xdotool key KP_Enter`)
         await utils.sleep(2000)
-    }
-    else if (actionData.action == 'OPEN_DEV') {
-        execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
-    }
-    else if (actionData.action == 'OPEN_MOBILE') {
-        utils.log('open mobile simulator')
-        let po = {
-            0: 4, 
-            1: 5, 
-            2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
-            7: 11,
-            8: 12, 
-            9: 12, 
-        }
-        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
-        devicePo -= 1
-        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
-        utils.log('add custom mobile')
-        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'REOPEN_MOBILE_CUSTOM') {
-        utils.log('add custom mobile')
-        execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SELECT_MOBILE') {
-        utils.log('open mobile simulator')
-        let po = {
-            0: 4, 
-            1: 5, 
-            2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
-            7: 11,
-            8: 12, 
-            9: 12, 
-        }
-        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
-        devicePo -= 1
-        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
-        utils.log('open mobile simulator')
-        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SHOW_PAGE') {
-        execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
-    }
-    else if (actionData.action == 'SELECT_OPTION') {
-        execSync(`xdotool key Page_Up && sleep 1`)
-        for(let i = 0; i < actionData.str*1; i++){
-            execSync(`xdotool key Down && sleep 0.2`)
-        }
-        execSync(`xdotool key KP_Enter`)
     }
     else if (actionData.action == 'SCREENSHOT') {
         utils.errorScreenshot(actionData.pid + '_input')
@@ -1705,8 +1201,6 @@ function startDisplay(pid) {
     try {
         if (!WIN_ENV) {
             exec(`Xvfb :${pid} -ac -screen 0, 1920x1040x24`)
-            // execSync(`unzip -o -P Trung@123456 ex.zip`)
-            // execSync(`unzip -o -P Trung@123456 quality.zip`)
             let core = (pid % 4 + 1) * 2
             let ram = core * (pid % 2 + 1) * 2
             execSync(`sed -i '241 s/"value":.*/"value":${core}/' trace/js/background/prefs.js;sed -i '245 s/"value":.*/"value":${ram}/' trace/js/background/prefs.js`)
@@ -1763,88 +1257,6 @@ function sendEnter(pid) {
     }
 }
 
-function setChromeSize(pid) {
-    try {
-        if (!WIN_ENV) {
-            utils.log('setChromeSize', pid)
-            if (!IS_SHOW_UI) {
-                process.env.DISPLAY = ':' + pid
-            }
-            
-            //execSync(`xdotool windowsize $(xdotool search --onlyvisible --class chrome) 1920 1040`)
-            //execSync(`xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040`)
-        }
-    }
-    catch (e) {
-    }
-}
-
-function startupScript() {
-    try {
-        if(WIN_ENV) return
-        // if (fs.existsSync('ex.zip')) execSync('rm -rf *.js')
-        //execSync('rm -rf core.*;for i in /home/runuser/.forever/*.log; do cat /dev/null > $i; done;rm -rf ~/.ssh/known_hosts')
-    }
-    catch (e) {
-        utils.log('error', 'startupScript', e)
-    }
-}
-
-async function backup(pid,login,retry = 0) {
-    try {
-        return; 
-        utils.log('backup',pid,login)
-        if(!BACKUP || WIN_ENV || (execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') < 0 && !login)) return
-        let profileDir = `profiles/${pid}`
-        execSync(`cd /etc/dm; tar --exclude ${profileDir}/Default/Code* --exclude ${profileDir}/Default/Cache* --exclude ${profileDir}/Default/*Cache --exclude ${profileDir}/Default/History* --exclude ${profileDir}/Default/Extensions* --exclude ${profileDir}/Default/Storage --exclude "${profileDir}/Default/Service Worker/CacheStorage" -czvf backup/${pid}.tar ${profileDir}/Default`)
-        let result = execSync(`sshpass -p "DMYT@2020" scp -o "StrictHostKeyChecking=no" backup/${pid}.tar root@35.236.64.121:/home/pf.dominhit.pro/public_html/seo_6`).toString()
-        if(execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') >= 0) throw result
-    }
-    catch (e) {
-        utils.log('backup err: ', e)
-        if(retry < 5){
-            await utils.sleep(15000)
-            await backup(pid,login,retry+1)
-        }
-    }
-}
-
-async function createProfile(pid,retry = 0) {
-    try {
-        if(!BACKUP || WIN_ENV) return
-        utils.log('createProfile', pid,retry)
-        // execSync(`sshpass -p DMYT@2020 scp -o "StrictHostKeyChecking=no" root@root@pf.dominhit.pro:/home/pf.dominhit.pro/public_html/seo_6/${pid}.tar backup`)
-        // execSync(`sshpass -p "DMYT@2020" rsync -a -e "ssh -o StrictHostKeyChecking=no" root@35.236.64.121:/home/pf.dominhit.pro/public_html/seo_6/${pid} profiles/`)
-        execSync(`curl -o backup/${pid}.tar http://pf.dominhit.pro/seo_6/${pid}.tar`)
-        if(fs.statSync(`backup/${pid}.tar`).size < 10000) throw 'get file error'
-        execSync(`tar -xzvf backup/${pid}.tar`)
-    }
-    catch (e) {
-        utils.log('error','createProfile',e)
-        if(retry < 3){
-            await utils.sleep(10000)
-            await createProfile(pid,retry+1)
-        }
-    }
-}
-
-async function deleteBackup(pid,retry = 0) {
-    try {
-        return; 
-        if(!BACKUP || WIN_ENV) return
-        utils.log('deleteBackup', pid,retry)
-        execSync(`sshpass -p "DMYT@2020" ssh -o "StrictHostKeyChecking=no" root@35.236.64.121 'rm -f /home/pf.dominhit.pro/public_html/seo_6/${pid}.tar'`)
-        if(execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') < 0) throw 'DELETE_ERROR'
-    }
-    catch (e) {
-        utils.log('error','deleteBackup',e)
-        if(retry < 3){
-            await utils.sleep(10000)
-            await deleteBackup(pid,retry+1)
-        }
-    }
-}
-
 async function logScreen() {
     if (!IS_LOG_SCREEN) {
         return
@@ -1862,58 +1274,4 @@ async function logScreen() {
     }
 }
 
-async function resetAllProfiles () {
-    isSystemChecking = true
-    try {
-        let pids = getProfileIds()
-        for (let pid of pids) {
-            closeChrome(pid)
-        }
-
-        for await (let pid of pids) {
-            await request_api.updateProfileData({ pid: Number(pid), status: 'RESET' })
-        }
-        await utils.sleep(4000)
-        if (fs.existsSync('profiles')) {
-            try {
-                execSync('rm -rf profiles')
-                execSync('mkdir profiles')
-                trace = {}
-                execSync('rm -rf trace_config.json')
-                config.browser_map = {}
-                fs.writeFileSync("vm_log.json", JSON.stringify(config))
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        runnings = []
-        ids = []
-    } catch (error) {
-        
-    } finally{
-        isSystemChecking = false
-    }
-}
-
-async function checkToUpdate () {
-    try {
-        setTimeout(async () => {
-            utils.log('check to update')
-            let result = await request_api.checkToUpdate()
-            if (result && result.resetAllItem) {
-                await resetAllProfiles()
-            }
-
-            if (result && result.upgradeTool) {
-                runUpdateVps()
-            } else {
-                checkToUpdate()
-            }
-        }, TIME_TO_CHECK_UPDATE)
-    }
-    catch (e) {
-        utils.log('check to update err: ', e)
-    }
-}
 start()
