@@ -48,6 +48,9 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
+    if (action.id == 'login') {
+        await reportScript(action)
+    } else
     if (action.id == 'direct_link') {
         await goToLocation(action.pid, action.link)
     }
