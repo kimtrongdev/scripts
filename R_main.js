@@ -17,7 +17,7 @@ global.devJson = {
     hostIp: '',
     maxProfile: 1,
 }
-
+const robot = require('robotjs')
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = false
 global.DEBUG = true
@@ -1102,16 +1102,17 @@ async function handleAction (actionData) {
         execSync(`xdotool type ${actionData.str}`)
     }
     else if (actionData.action == 'GO_ADDRESS') {
-        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
-        if (actionData.str.length > 40) {
-            execSync(`xdotool key Control_L+v`)
-            await utils.sleep(2000)
-        } else {
-            execSync(`xdotool type "${actionData.str}"`)
-        }
-        await utils.sleep(1000)
-        execSync(`xdotool key KP_Enter`)
-        await utils.sleep(2000)
+      robot.keyTap('escape')
+      robot.keyToggle('control', 'down')
+      robot.keyTap('l')
+      robot.keyToggle('control', 'up')
+
+      robot.keyToggle('control', 'down')
+      robot.keyTap('v')
+      robot.keyToggle('control', 'up')
+
+      robot.keyTap('enter')
+      await utils.sleep(2000)
     }
     else if (actionData.action == 'SCREENSHOT') {
         utils.errorScreenshot(actionData.pid + '_input')
