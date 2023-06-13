@@ -14,18 +14,14 @@
       ],
       "js": [
         "user_utils.js",
-        "watch_youtube.js",
-        "content.js",
-        "./scripts/search.js",
-        "./scripts/brave.js",
-        "./scripts/direct_link.js"
+        "content.js"
       ]
     },
     {
       "matches": [
         "https://payments.google.com/*"
       ],
-      "js": ["user_utils.js","watch_youtube.js","content.js"],
+      "js": ["user_utils.js", "content.js"],
       "all_frames":true
     }
   ],

@@ -540,7 +540,11 @@ async function newProfileManage() {
 
         //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         // get new profile
-        let newProfile = await request_api.getNewProfile()
+        let newProfile = {
+            id: Date.now(),
+            pid: Date.now(),
+        }
+
         utils.log('newProfile: ', newProfile)
         if (!newProfile.err && newProfile.profile) {
             RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
