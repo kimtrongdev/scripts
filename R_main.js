@@ -17,7 +17,7 @@ global.devJson = {
     hostIp: '',
     maxProfile: 1,
 }
-const robot = require('robotjs')
+const robot = {}//require('robotjs')
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = false
 global.DEBUG = true
@@ -117,7 +117,11 @@ function addOpenBrowserAction (action, browser) {
 async function execActionsRunning () {
     if (actionsData.length) {
         let action = actionsData.shift()
-        await handleAction(action)
+        try {
+            await handleAction(action)
+        } catch (error) {
+            console.log(error);
+        }
     }
     await utils.sleep(1000)
     execActionsRunning()
@@ -405,6 +409,7 @@ async function startChromeAction(action, _browser) {
     
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
+    _browser = 'start brave'
     if (WIN_ENV) {        
         exec(`${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
