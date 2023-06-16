@@ -1,4 +1,4 @@
-const pcName = 'axvxc'
+const pcName = 'Pixel'
 const WIN_BROWSER_DEFAULT = `C:\\Users\\${pcName}\\Downloads\\GoogleChromePortable\\GoogleChromePortable.exe`
 const useProxy = true
 let isRunBAT = false
