@@ -391,7 +391,7 @@ async function userLogin(action) {
             }
 
             if (action.id == 'reg_user') {
-                let btnCreateChannel = document.querySelector('#contents ytd-button-renderer yt-button-shape')
+                let btnCreateChannel = document.querySelector('a[href*="/create_channel"]')
                 if (!btnCreateChannel) {
                     await sleep(7000)
                     btnCreateChannel = document.querySelector('#contents ytd-button-renderer yt-button-shape')
