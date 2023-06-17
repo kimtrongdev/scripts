@@ -1,6 +1,4 @@
 const path = require('path')
-const rq = require('request-promise');
-const cheerio = require('cheerio');
 const fs = require('fs')
 let config
 try{
@@ -390,33 +388,6 @@ module.exports = {
         return url.indexOf('&index=1') + 8 == url.length
     },
 
-    nextVideoErr: async function(page, pid){
-        try{
-            let html = await rq({uri: page.url()})
-            const $ = cheerio.load(html)
-            let controls = $('.playlist-behavior-controls a')
-            if(controls.length >= 2){
-                let next = $(controls[1]).attr('href')
-                console.log('info', 'pid: ', pid, ' next video: ', next)
-                if(!this.isLastVideo(next)){
-                    await page.goto('https://www.youtube.com' + next)
-                    await page.waitFor(5000)
-                    return true
-                }
-                else{
-                    console.log('info','pid: ', pid, ' last video of playlist: ', next)
-                    return false
-                }
-            }
-            else{
-                return false
-            }
-        }
-        catch (e) {
-            console.log('error', 'pid: ', pid, ' nextVideoErr: ', e)
-            return false
-        }
-    },
     clickPlayIfPause: async function(page) {
         let btnPlay = await page.$("button[title='Pause (k)']")
         if (btnPlay == null) {
@@ -424,47 +395,6 @@ module.exports = {
             if (containers.length > 0) {
                 await containers[0].click()
             }
-        }
-    },
-    getPlaylistInfo: async function(pid, url){
-        try{
-            if(url.indexOf('https://www.youtube.com/watch') > -1 && url.indexOf('&list=') > -1){
-                let index = '1'
-                let indexPos = url.indexOf('&index=')
-                if(indexPos > -1){
-                    index = url.substr(indexPos+'&index='.length)
-                    let otherParam = index.indexOf('&')
-                    if(otherParam > -1){
-                        index = index.substr(0,otherParam)
-                    }
-                }
-                else{
-                    return {playlist: true, index: index, last: false}
-                }
-                let html = await rq({uri: url})
-                const $ = cheerio.load(html)
-                let controls = $('.playlist-behavior-controls a')
-                if(controls.length >= 2){
-                    let next = $(controls[1]).attr('href')
-                    if(this.isLastVideo(next)){
-                        return {playlist: true, index: index, last: true}
-                    }
-                    else{
-                        return {playlist: true, index: index, last: false}
-                    }
-                }
-                else{
-                    console.log('error','playlist-behavior-controls not found: ', url)
-                    return {playlist: false}
-                }
-            }
-            else{
-                return {playlist: false}
-            }
-        }
-        catch (e) {
-            console.log('error','getPlaylistInfo: ', e)
-            throw e
         }
     },
     getPlaylistPageInfo: async function(pid, page){
