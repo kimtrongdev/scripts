@@ -401,8 +401,7 @@ async function startChromeAction(action, _browser) {
         action.isRunBAT = isRunBAT
     }
 
-    let exs = ["ex"]
-    exs = exs.map(x => path.resolve(x)).join(",")
+    let exs = path.join(__dirname, 'ex');
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
