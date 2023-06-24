@@ -13,7 +13,7 @@ let countRun = 0
 let isPauseAction = false
 let isAfterReboot = false
 let actionsData = []
-let addresses = require('./src/adress.json').addresses
+let addresses = []//require('./src/adress.json').addresses
 const robot = require('robotjs')
 
 require('dotenv').config();
@@ -48,7 +48,39 @@ try {
 } catch (e) { trace = {} }
 
 require('log-timestamp')
-const utils = require('./utils')
+const utils = {
+    ACTION: {
+        WATCH: 0,
+        WATCH_TO_SUB: 1,
+        SUB: 2,
+        ADD_NEW: 3
+    },
+    getRndInteger: (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+    },
+    log: (...pr) => {
+        if (DEBUG) {
+            console.log(...pr)
+        }
+    },
+    randomRanger: function(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+    },
+    sleep: function(ms) {
+        return new Promise(resolve => setTimeout(function () {
+            resolve('ok')
+        }, ms));
+    },
+    shuffleArray: function (array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array
+    }
+}
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 const request_api = require('./request_api')
@@ -178,23 +210,23 @@ async function loadSystemConfig () {
             }
         }
     })
-    systemConfig.browsers = browsers
+    systemConfig.browsers = ['brave']
 
-    if (config.browser_map) {
-        Object.keys(config.browser_map).forEach(browserMaped => {
-            if (!systemConfig.browsers.includes(browserMaped)) {
-                config.browser_map[browserMaped].forEach(pid => {
-                    closeChrome(pid)
-                    execSync('rm -rf profiles/'+pid)
-                });
-                delete config.browser_map[browserMaped]
-            }  
-        })
-    }
+    // if (config.browser_map) {
+    //     Object.keys(config.browser_map).forEach(browserMaped => {
+    //         if (!systemConfig.browsers.includes(browserMaped)) {
+    //             config.browser_map[browserMaped].forEach(pid => {
+    //                 closeChrome(pid)
+    //                 execSync('rm -rf profiles/'+pid)
+    //             });
+    //             delete config.browser_map[browserMaped]
+    //         }  
+    //     })
+    // }
 
-    if (systemConfig.stop_tool == 1) {
-        execSync('pm2 stop all')
-    }
+    // if (systemConfig.stop_tool == 1) {
+    //     execSync('pm2 stop all')
+    // }
 
     systemConfig.useRobotJS = true
     systemConfig.is_use_proxy = false
@@ -432,37 +464,8 @@ async function startChromeAction(action, _browser) {
         action.isRunBAT = isRunBAT
     }
 
-    let exs = ["ex"]
-    if (_browser == 'firefox') {
-        exs.push('firefox-proxy')
-    }
-
+    let exs = path.join(__dirname, 'ex')
     let level_name = ''
-    if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
-        let traceName = 'trace'
-
-        if (trace[action.pid] && systemConfig.trace_names_ex.includes(trace[action.pid])) {
-            traceName = 'trace_ex/' + trace[action.pid]
-        } else {
-            if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
-                traceName = systemConfig.trace_names_ex[Math.floor(Math.random()*systemConfig.trace_names_ex.length)]
-                
-                if (traceName.includes('level_')) {
-                    level_name = traceName
-                    traceName = 'win_10_chrome'
-                }
-
-                trace[action.pid] = traceName
-                traceName = 'trace_ex/' + traceName
-                fs.writeFileSync("trace_config.json", JSON.stringify(trace))
-            }
-        }
-        
-        exs.push(traceName)
-        action.trace_name = level_name
-        console.log('------action.trace_name', action.trace_name);
-    }
-    exs = exs.map(x => path.resolve(x)).join(",")
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
