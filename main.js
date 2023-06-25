@@ -1309,6 +1309,7 @@ function initExpress() {
 
             if (req.query.script_code == 'add_recovery_mail') {
                 closeChrome(req.query.pid)
+                ids = ids.filter(i => i != req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
                 return
             }
