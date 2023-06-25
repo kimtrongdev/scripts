@@ -1307,6 +1307,11 @@ function initExpress() {
                 await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
             }
 
+            if (req.query.script_code == 'add_recovery_mail') {
+                closeChrome(req.query.pid)
+                runnings = runnings.filter(i => i.pid != req.query.pid)
+                return
+            }
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                // execSync(`xdotool key Control_L+w && sleep 1`)
                 // browser will closed by background extention
