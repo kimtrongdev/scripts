@@ -552,6 +552,7 @@ async function userLogin(action) {
                 }
         }
         else {
+            await sleep(15000)
             if (!url.includes('challenge/iap/verify')) {
                 await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[else]' + getLoginError())
             }
