@@ -109,37 +109,32 @@ async function addRecoveryMail(action) {
           }
         }
 
-        const timeout = 300000
-        let n = Math.ceil(timeout/5000)
-
-        for(let i = 0; i < n; i++){
-          reportLive(action.pid)
-          let codeData = await getMailCode(action.get_otp_pid)
-          if (codeData && codeData.success) {
-            let codes = codeData.code.split(',')
-            if (codes.length) {
-              for await (let code of codes) {
-                if (document.querySelector('input[inputmode="numeric"]')) {
-                  await userTypeEnter(action.pid, 'input[inputmode="numeric"]', code)
-                  await sleep(5000)
-                }
-                await sleep(3000)
-                // check abc
-                await checkEndScript()
-
-                if (i == 5 || i == 15 || i == 40) {
-                  let sendNewCode = getElementContainsInnerText('font', ['Send a new code'])
-                  if (sendNewCode) {
-                    await userClick(action.pid, "sendNewCode", sendNewCode)
-                  }
-                }
+        reportLive(action.pid)
+        let codeData = await getMailCode(action.get_otp_pid)
+        if (codeData && codeData.success) {
+          let codes = codeData.code.split(',')
+          if (codes.length) {
+            for await (let code of codes) {
+              if (document.querySelector('input[inputmode="numeric"]')) {
+                await userTypeEnter(action.pid, 'input[inputmode="numeric"]', code)
                 await sleep(5000)
               }
+              await sleep(3000)
+              // check abc
+              await checkEndScript()
+
+              if (i == 5 || i == 15 || i == 40) {
+                let sendNewCode = getElementContainsInnerText('font', ['Send a new code'])
+                if (sendNewCode) {
+                  await userClick(action.pid, "sendNewCode", sendNewCode)
+                }
+              }
+              await sleep(5000)
             }
           }
-          await checkEndScript()
-          await sleep(5000)
         }
+        await checkEndScript()
+        await sleep(5000)
 
         action.data_reported = 'p_not_found_code'
         await reportScript(action)
