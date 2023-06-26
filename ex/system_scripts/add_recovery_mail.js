@@ -136,7 +136,7 @@ async function addRecoveryMail(action) {
         await checkEndScript()
         await sleep(5000)
 
-        action.data_reported = 'p_not_found_code'
+        action.data_reported = 'p_not_found_code:' + action.recovery_mail
         await reportScript(action)
         return
       } else {

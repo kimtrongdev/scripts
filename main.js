@@ -1307,7 +1307,7 @@ function initExpress() {
                 await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
             }
 
-            if (req.query.script_code == 'add_recovery_mail' && req.query.data_reported != 'p_not_found_code') {
+            if (req.query.script_code == 'add_recovery_mail' && !req.query.data_reported.includes('p_not_found_code')) {
                 closeChrome(req.query.pid)
                 deleteProfile(req.query.pid)
                 ids = ids.filter(i => i != req.query.pid)
