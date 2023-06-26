@@ -97,7 +97,11 @@ async function userLogin(action) {
             } else {
                 action.entered_code = true
                 await setActionData(action)
-                await userTypeEnter(action.pid, '#idvAnyPhonePin', phoneRs.code)
+                let code = phoneRs.code + ''
+                if (code.length == 5) {
+                    code = '0' + code
+                }
+                await userTypeEnter(action.pid, '#idvAnyPhonePin', code)
                 await sleep(30000)
             }
         }
