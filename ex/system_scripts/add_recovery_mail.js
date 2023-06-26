@@ -116,6 +116,11 @@ async function addRecoveryMail(action) {
           if (codes.length) {
             for await (let code of codes) {
               if (document.querySelector('input[inputmode="numeric"]')) {
+                code = code + ''
+                if (code.length == 5) {
+                    code = '0' + code
+                }
+
                 await userTypeEnter(action.pid, 'input[inputmode="numeric"]', code)
                 await sleep(5000)
               }
