@@ -93,7 +93,7 @@ async function userLogin(action) {
             let phoneRs = await getPhoneCode(action.order_id, action.api_name)
             console.log('getPhoneCode',phoneRs);
             if (phoneRs.error || action.entered_code) {
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhoneCode] ' + phoneRs.error)
             } else {
                 action.entered_code = true
                 await setActionData(action)
@@ -105,7 +105,7 @@ async function userLogin(action) {
             let phoneRs = await getPhone()
             console.log('getPhone',phoneRs);
             if (phoneRs.error || action.entered_phone) {
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, phoneRs.error)
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhone] ' + phoneRs.error)
             } else {
                 if (phoneRs.err) {
                     phoneRs = await getPhone()
@@ -548,11 +548,13 @@ async function userLogin(action) {
                 }
         }
         else {
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, getLoginError())
+            if (!url.includes('challenge/iap/verify')) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[else]' + getLoginError())
+            }
         }
     } catch (e) {
         console.log('error', action.pid, e)
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, e.toString())
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR,'[catch error] ' + e.toString())
     }
 }
 
