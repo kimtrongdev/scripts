@@ -1939,6 +1939,7 @@ async function removePidAddnew(pid, status) {
 async function deleteProfile(pid, retry = 0) {
     try {
         if (WIN_ENV) {
+            await utils.sleep(5000)
             del.sync([path.resolve("profiles/" + current_browser, pid + '', '**')], { force: true })
         } else {
             del.sync([path.resolve("profiles", pid + '', '**')], { force: true })

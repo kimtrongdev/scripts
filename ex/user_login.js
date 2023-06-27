@@ -19,6 +19,10 @@ async function userLogin(action) {
 
         let url = window.location.toString()
 
+        if (url.includes('edge/welcome')) {
+            return
+        }
+
         if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
             //action.
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'VERY')
