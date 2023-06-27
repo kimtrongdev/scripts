@@ -87,6 +87,9 @@ async function addRecoveryMail(action) {
       action.data_reported = 'p_invalid_recovery_2'
       await reportScript(action)
     }
+    else if (url.includes('myaccount.google.com/intro/security')) {
+      await reportScript(action)
+    }
     else if (url.indexOf('/recovery/email') > -1) {
       if (action.current_reco_mail) {
         action.data_reported = `p_success_reco_mail:${action.current_reco_mail}`
