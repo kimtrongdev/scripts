@@ -1,5 +1,6 @@
 const useProxy = true
-const allowLogin = false
+let allowLogin = false
+let current_browser
 let isRunBAT = false
 let hourReseted = null
 let isSystemChecking = false
@@ -191,26 +192,14 @@ async function loadSystemConfig () {
     // handle browsers for centos and ubuntu
     let browsers = []
     systemConfig.browsers.forEach(br => {
-        if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
-            if (br == 'brave') {
-                br = 'brave-browser'
-            }
-
-            if (br == 'microsoft-edge') {
-                br = 'microsoft-edge-stable'
-            }
-
-            if (br == 'vivaldi-stable') {
-                br = 'vivaldi'
-            }
-            browsers.push(br)
-        } else {
-            if (br != 'iridium-browser') {
-                browsers.push(br)
-            }
+        if (br == 'microsoft-edge') {
+            br = 'msedge'
         }
+
+        browsers.push(br)
     })
-    systemConfig.browsers = ['brave']
+    systemConfig.browsers = browsers
+    current_browser = systemConfig.browsers[0]
 
     // if (config.browser_map) {
     //     Object.keys(config.browser_map).forEach(browserMaped => {
@@ -230,6 +219,10 @@ async function loadSystemConfig () {
 
     systemConfig.useRobotJS = true
     systemConfig.is_use_proxy = false
+
+    if (systemConfig.allow_win_login) {
+        allowLogin = true
+    }
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -365,7 +358,7 @@ async function runUpdateVps () {
 
 function getProfileIds() {
     try {
-        let directoryPath = path.resolve("profiles")
+        let directoryPath = path.resolve("profiles/" + current_browser)
         let files = fs.readdirSync(directoryPath)
         if (files && Array.isArray(files)) {
             return files
@@ -416,15 +409,24 @@ async function startChromeAction(action, _browser) {
     let screenHeight = 400 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
-    let userDataDir = ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
-    if (_browser.includes('brave')) {
-        userDataDir = ` --profile-directory="profile-${action.pid}"`
-        if (action.id == 'login') {
-            exec(`mkdir "./profiles/${action.pid}"`)
+    let profileDir = 'profiles'
+    if (_browser) {
+        current_browser = _browser
+        profileDir = 'profiles/' + _browser
+        if (!fs.existsSync(profileDir)) {
+            fs.mkdirSync(profileDir)
         }
-    } else if (_browser == 'firefox') {
-        userDataDir = ` -P "${action.pid}"`
     }
+
+    let userDataDir = ` --user-data-dir="${path.resolve(profileDir, action.pid + '')}"`
+    // if (_browser.includes('brave')) {
+    //     userDataDir = ` --profile-directory="profile-${action.pid}"`
+    //     if (action.id == 'login') {
+    //         exec(`mkdir "./profiles/${action.pid}"`)
+    //     }
+    // } else if (_browser == 'firefox') {
+    //     userDataDir = ` -P "${action.pid}"`
+    // }
 
     //handle browser size
     action['positionSize'] = positionSize
@@ -1937,14 +1939,7 @@ async function removePidAddnew(pid, status) {
 async function deleteProfile(pid, retry = 0) {
     try {
         if (WIN_ENV) {
-            try {
-                await utils.sleep(3000)
-                del.sync([WIN_PROFILE_PATH + 'profile-' + pid], { force: true })
-            } catch (error) {
-                console.log(error);
-            }
-            
-            del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
+            del.sync([path.resolve("profiles/" + current_browser, pid + '', '**')], { force: true })
         } else {
             del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
         }
