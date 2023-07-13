@@ -82,6 +82,7 @@ const utils = {
         return array
     }
 }
+let runningPid = null
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 const request_api = require('./request_api')
@@ -223,6 +224,40 @@ async function loadSystemConfig () {
     if (systemConfig.allow_win_login) {
         allowLogin = true
     }
+
+    // handle time change profile running
+    let _profileRuning = null
+    if (Number(systemConfig.change_profile_time)) {
+        const changeTime = Number(systemConfig.change_profile_time) * 3600000
+        if (!Array.isArray(config.profileTimeLog)) {
+            config.profileTimeLog = []
+        }
+        let currentIds = getProfileIds()
+        let currentData = currentIds.filter(id => config.profileTimeLog.find(p => p.pid != id))
+        currentData = currentData.map(id => {
+            let data = {
+                pid: id,
+                last_run_time: Date.now() + changeTime
+            }
+            return data
+        })
+        currentData = [...currentData, ...config.profileTimeLog]
+
+        currentData = currentData.map(data => {
+            if (data.last_run_time < Date.now()) {
+                data.last_run_time = Date.now() + changeTime
+            }
+            return data
+        })
+
+        currentData.sort(function(a, b){return b.last_run_time - a.last_run_time})
+        config.profileTimeLog = currentData
+        if (currentData[0] != runningPid) {
+            _profileRuning = currentData[0]
+            fs.writeFileSync("vm_log.json", JSON.stringify(config))
+        }
+    }
+    runningPid = _profileRuning
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -663,7 +698,18 @@ function getBrowserOfProfile (pid) {
 
 async function newRunProfile() {
     utils.log('ids: ', ids)
-    let pid = ids.shift()
+    let pid
+    if (runningPid) {
+        let indexOfPid = ids.indexOf(runningPid)
+        if (indexOfPid > -1) {
+            pid = ids[indexOfPid]
+            ids.splice(indexOfPid, 1)
+        }
+    }
+    if (!pid) {
+        pid = ids.shift()
+    }
+
     if (pid || IS_REG_USER) {
         if (pid) {
             // handle remove undefined folder
