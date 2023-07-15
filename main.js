@@ -220,7 +220,6 @@ async function loadSystemConfig () {
     // }
 
     systemConfig.useRobotJS = true
-    systemConfig.is_use_proxy = false
 
     if (systemConfig.allow_win_login) {
         allowLogin = true
