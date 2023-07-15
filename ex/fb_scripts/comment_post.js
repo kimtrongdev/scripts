@@ -21,7 +21,11 @@ async function commentPost(action) {
     let textbox = textboxs.item(rdPos)
 
     if (textbox && action.comment) {
-      await userTypeEnter(action.pid, 'textbox', action.comment + '+image', textbox)
+      await userType(action.pid, 'textbox', action.comment, textbox)
+      if (action.comment.endsWith('+image')) {
+        await waitForSelector('img[data-src*="https://scontent"]')
+      }
+      await updateUserInput(action.pid, 'KEY_ENTER')
 
       let likeData = document.querySelector('div>div>span>div>span[dir="auto"]')
       if (likeData) {

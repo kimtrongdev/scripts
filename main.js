@@ -82,7 +82,6 @@ const utils = {
         return array
     }
 }
-let runningPid = null
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 const request_api = require('./request_api')
@@ -142,7 +141,9 @@ async function handleForChangeShowUI() {
     runnings = []
     ids = _pids
 }
-
+let runningPid = null
+let checkProfileTime
+let current_change_profile_time
 async function loadSystemConfig () {
     let rs = await request_api.getSystemConfig();
     if (rs && !rs.error) {
@@ -226,38 +227,29 @@ async function loadSystemConfig () {
     }
 
     // handle time change profile running
-    let _profileRuning = null
-    if (Number(systemConfig.change_profile_time)) {
-        const changeTime = Number(systemConfig.change_profile_time) * 3600000
-        if (!Array.isArray(config.profileTimeLog)) {
-            config.profileTimeLog = []
+    const change_profile_time = Number(systemConfig.change_profile_time)
+    if (change_profile_time && change_profile_time != current_change_profile_time) {
+        current_change_profile_time = change_profile_time
+        if (checkProfileTime) {
+            clearInterval(checkProfileTime)
         }
-        let currentIds = getProfileIds()
-        let currentData = currentIds.filter(id => config.profileTimeLog.find(p => p.pid != id))
-        currentData = currentData.map(id => {
-            let data = {
-                pid: id,
-                last_run_time: Date.now() + changeTime
+        checkProfileTime = setInterval(() => {
+            if (!Array.isArray(config.profileTimeLog)) {
+                config.profileTimeLog = []
             }
-            return data
-        })
-        currentData = [...currentData, ...config.profileTimeLog]
 
-        currentData = currentData.map(data => {
-            if (data.last_run_time < Date.now()) {
-                data.last_run_time = Date.now() + changeTime
-            }
-            return data
-        })
-
-        currentData.sort(function(a, b){return b.last_run_time - a.last_run_time})
-        config.profileTimeLog = currentData
-        if (currentData[0] != runningPid) {
-            _profileRuning = currentData[0]
+            let currentIds = getProfileIds()
+            config.profileTimeLog = config.profileTimeLog.filter(id => currentIds.includes(id))
+            let currentData = currentIds.filter(id => !config.profileTimeLog.includes(id))
+            currentData = [...currentData, ...config.profileTimeLog]
+            _profileRuning = currentData.shift()
+            currentData.push(_profileRuning)
+            runningPid = _profileRuning
+            config.profileTimeLog = currentData
             fs.writeFileSync("vm_log.json", JSON.stringify(config))
-        }
+        }, change_profile_time * 3600000)
     }
-    runningPid = _profileRuning
+
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
