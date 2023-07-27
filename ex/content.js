@@ -16,6 +16,7 @@ var isRunBAT = true
 var widthCustom = 0
 var heightCustom = 0
 var IS_MOBILE = false
+var IS_MULTIPLE_TAB = false
 async function loadPage(){
     try{
         await sleep(4000)
@@ -92,7 +93,9 @@ async function initAction(){
         closeTabs()
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
-
+        if (action.is_multiple_tab) {
+            IS_MULTIPLE_TAB = true
+        }
         // handle load system pid
         document.title = 'localhost_' + action.pid
         await sleep(5000)
@@ -142,6 +145,11 @@ function initSettingData (action) {
         if (action.os_vm != 'vps' && !action.is_show_ui || action.is_show_ui == 'false') {
             heightCustom = -30
         }
+    }
+
+    if (action.browser_name == 'msedge') {
+        heightCustom = -47
+        widthCustom = -56
     }
 
     if (action.browser_name == 'chromium-browser') {

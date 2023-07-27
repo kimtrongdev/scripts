@@ -5,17 +5,17 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 function rq (data) {
     data.headers = {
-        api_key: 'k1wtr0ng'
+        api_key: WIN_API_KEY || '64bfbdff9c041d8170c6c2e8',
     }
     return request(data)
 }
 
 module.exports = {
     getRandomImage: async function () {
-        return await rq({ uri: SUB_URL + '/api/media/random-image', encoding: null })
+        return await rq({ uri: SUB_URL + '/media/random-image', json: true })
     },
     reportAccount: async function (data) {
-        return await rq({method: 'POST', uri: SUB_URL + '/api/account', body: data, json: true})
+        return await rq({method: 'POST', uri: SUB_URL + '/account', body: data, json: true})
     },
     getRandomName: async () => {
         let rs = await rq({uri: 'https://story-shack-cdn-v2.glitch.me/generators/vietnamese-name-generator/male', json: true}).then(response => {
@@ -35,19 +35,19 @@ module.exports = {
         return rs
     },
     reportPlaylistJCT: async (data) => {
-        return await rq({ method: 'POST', uri: SUB_URL + '/api/playlist/report/playlist_jct', body: data, json: true })
+        return await rq({ method: 'POST', uri: SUB_URL + '/playlist/report/playlist_jct', body: data, json: true })
     },
     getComment: async () => {
-        return await rq({uri: SUB_URL + '/api/data/comment?type=youtube',json: true})
+        return await rq({uri: SUB_URL + '/data/comment?type=youtube',json: true})
     },
     getPhone: async () => {
-        return await rq({uri: SUB_URL + '/api/phone',json: true})
+        return await rq({uri: SUB_URL + '/phone',json: true})
     },
     getPhoneCode: async (orderID, api_name) => {
-        return await rq({uri: SUB_URL + `/api/phone/code?order_id=${orderID}&api_name=${api_name}`,json: true})
+        return await rq({uri: SUB_URL + `/phone/code?order_id=${orderID}&api_name=${api_name}`,json: true})
     },
     getProfileForRegChannel: async (pid = 0) => {
-        return await rq({uri: SUB_URL + '/api/profile/get-for-reg-channel?pid='+pid,json: true})
+        return await rq({uri: SUB_URL + '/profile/get-for-reg-channel?pid='+pid,json: true})
     },
     reportUpgrade: async () => {
         return await rq({uri: SUB_URL + '/report-upgrade?vmId=' + config.vm_id,json: true})
@@ -58,22 +58,22 @@ module.exports = {
             query = '?api_id='+data.api_id+'&isLoadNewProxy='+data.isLoadNewProxy
         }
         
-        return await rq({uri: SUB_URL + '/api/proxy/get-proxy-v4' + query, json: true})
+        return await rq({uri: SUB_URL + '/proxy/get-proxy-v4' + query, json: true})
     },
     updateProfileData: async (data) => {
-        return await rq({method: 'POST', uri: SUB_URL + '/api/profile/update-data', body: data, json: true})
+        return await rq({method: 'POST', uri: SUB_URL + '/profile/update-data', body: data, json: true})
     },
     getBraveInfo: async (pid) => {
-        return await rq({uri: SUB_URL + '/api/profile/get-brave-info?pid='+pid, json: true})
+        return await rq({uri: SUB_URL + '/profile/get-brave-info?pid='+pid, json: true})
     },
     getRandomKeyWord: async () => {
-        return await rq({uri: 'https://random-data-api.com/api/commerce/random_commerce',json: true})
+        return await rq({uri: 'https://random-data-api.com/commerce/random_commerce',json: true})
     },
     reportScript: async (pid, serviceId = '', status = true, data_reported = '') => {
-        return await rq({uri: SUB_URL + '/api/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status, data_reported }})
+        return await rq({uri: SUB_URL + '/script/report',json: true,qs: { _id: serviceId, pid: pid, status: status, data_reported }})
     },
     getNewScript: async (pid) => {
-        return await rq({uri: SUB_URL + '/api/script/get-new?pid='+pid, json: true})
+        return await rq({uri: SUB_URL + '/script/get-new?pid='+pid, json: true})
     },
     checkToUpdate: async () => {
         try {
@@ -87,7 +87,7 @@ module.exports = {
         return await rq({uri: SUB_URL + '/YTVideo',json: true,qs: { vmId: config.vm_id, pid: pid }})
     },
     getNewProfile: async () => {
-        return await rq({uri: SUB_URL + '/api/profile',json: true,qs: {vmId: config.vm_id}})
+        return await rq({uri: SUB_URL + '/profile',json: true,qs: {vmId: config.vm_id}})
     },
     updateProfileStatus: async (pid, vmId, status, description) => {
         return await rq({method: 'POST', uri: SUB_URL + '/profile/update-status',body: {pid: pid, vmId: vmId, status: status, description: description}, json: true})
@@ -106,11 +106,11 @@ module.exports = {
         return await rq({uri: apiUrl+channelId, json: true, qs: {vmId: config.vm_id}})
     },
     getProfileProxy: async (pid,action, isLoadNewProxy = '') => {
-        return await rq({uri: SUB_URL + '/api/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
+        return await rq({uri: SUB_URL + '/proxy/get-profile-proxy',json: true,qs: { pid: pid,action, isLoadNewProxy }})
     },
     getSystemConfig: async () => {
         try{
-            return await rq({ uri: SUB_URL + '/api/config/system?vmId=' + config.vm_id, json: true })
+            return await rq({ uri: SUB_URL + '/config/system?vmId=' + config.vm_id, json: true })
         } catch (e) {
             console.log(e);
             return false;
@@ -118,14 +118,14 @@ module.exports = {
     },
     reportVM: async (data = {}) => {
         try{
-            return await rq({uri: SUB_URL + '/api/vm/report',json: true,qs: data})
+            return await rq({uri: SUB_URL + '/vm/report',json: true,qs: data})
         }
         catch (e) {
         }
     },
     getNavigator: async (pid,os = 'Windows',browser = 'Chrome',seo) => {
         try{
-            let nav = await rq({uri: `https://dominhit.pro/api?action=get-fingerprint&os=${os}&browser=${browser}&id=${pid}&seo=${seo}`})
+            let nav = await rq({uri: `https://dominhit.pro?action=get-fingerprint&os=${os}&browser=${browser}&id=${pid}&seo=${seo}`})
             nav = JSON.parse(nav)
             nav = JSON.parse(nav.data.data)
             return nav
@@ -139,7 +139,7 @@ module.exports = {
             console.log(pid,'getAvatar',gender)
             let avaUrl
             if(Math.random() < 0.8){
-                let ava = await rq({uri: `https://dominhit.pro/render/api?action=get-avalist`,json: true})
+                let ava = await rq({uri: `https://dominhit.pro/render?action=get-avalist`,json: true})
                 avaUrl = ava.avatar
             }
             else{

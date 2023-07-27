@@ -1,3 +1,15 @@
+let avgs = {}
+global.WIN_API_KEY = null
+process.argv.forEach(arg => {
+    let params = arg.split('=')
+    if (params.length > 1) {
+        avgs[params[0]] = params[1]
+    }
+})
+if (avgs.win_api_key) {
+    WIN_API_KEY = avgs.win_api_key
+}
+const request = require('request-promise')
 const useProxy = true
 let allowLogin = false
 let current_browser
@@ -93,6 +105,8 @@ const fs = require('fs')
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 let MAX_PROFILE = 2
 
+const nircmdPath = path.resolve("nircmd.exe")
+
 let ids = []
 global.runnings = []
 global.usersPosition = []
@@ -144,6 +158,23 @@ async function handleForChangeShowUI() {
 let runningPid = null
 let checkProfileTime
 let current_change_profile_time
+
+function changeProfile() {
+    if (!Array.isArray(config.profileTimeLog)) {
+        config.profileTimeLog = []
+    }
+
+    let currentIds = getProfileIds()
+    config.profileTimeLog = config.profileTimeLog.filter(id => currentIds.includes(id))
+    let currentData = currentIds.filter(id => !config.profileTimeLog.includes(id))
+    currentData = [...currentData, ...config.profileTimeLog]
+    _profileRuning = currentData.shift()
+    currentData.push(_profileRuning)
+    runningPid = _profileRuning
+    config.profileTimeLog = currentData
+    fs.writeFileSync("vm_log.json", JSON.stringify(config))
+}
+
 async function loadSystemConfig () {
     let rs = await request_api.getSystemConfig();
     if (rs && !rs.error) {
@@ -227,25 +258,14 @@ async function loadSystemConfig () {
 
     // handle time change profile running
     const change_profile_time = Number(systemConfig.change_profile_time)
-    if (change_profile_time && change_profile_time != current_change_profile_time) {
+    if (MAX_CURRENT_ACC == 1 && change_profile_time && change_profile_time != current_change_profile_time) {
         current_change_profile_time = change_profile_time
         if (checkProfileTime) {
             clearInterval(checkProfileTime)
         }
+        changeProfile()
         checkProfileTime = setInterval(() => {
-            if (!Array.isArray(config.profileTimeLog)) {
-                config.profileTimeLog = []
-            }
-
-            let currentIds = getProfileIds()
-            config.profileTimeLog = config.profileTimeLog.filter(id => currentIds.includes(id))
-            let currentData = currentIds.filter(id => !config.profileTimeLog.includes(id))
-            currentData = [...currentData, ...config.profileTimeLog]
-            _profileRuning = currentData.shift()
-            currentData.push(_profileRuning)
-            runningPid = _profileRuning
-            config.profileTimeLog = currentData
-            fs.writeFileSync("vm_log.json", JSON.stringify(config))
+            changeProfile()
         }, change_profile_time * 3600000)
     }
 
@@ -256,7 +276,7 @@ let rx = 10
 async function resetScreen () {
     if (true) {
         //isPauseAction = true
-        exec(`nircmd win close ititle "New Tab"`)
+        exec(`${nircmdPath} win close ititle "New Tab"`)
         let exs = ['ex']
         exs = exs.map(x => path.resolve(x)).join(",")
         exec(`start brave.exe --window-size="400,400" --load-extension="${exs}" --profile-directory="profile-test3"`)
@@ -267,7 +287,7 @@ async function resetScreen () {
             rx = 10
         }
         let rdY = utils.randomRanger(1, 200)
-        exec(`nircmd win setsize ititle "New Tab" ${rx}, ${rdY}, 400, 400`)
+        exec(`${nircmdPath} win setsize ititle "New Tab" ${rx}, ${rdY}, 400, 400`)
 
         //exec('Taskkill /IM brave.exe /F')
         //await utils.sleep(3000)
@@ -470,6 +490,29 @@ async function startChromeAction(action, _browser) {
     } else {
         windowSize = ' --start-maximized'
         windowPosition = ''
+    }
+
+    if (MAX_CURRENT_ACC > 1) {
+        action.is_multiple_tab = true
+        let posX = 0
+        let posY = 0
+        let width = 500
+        let height = 500
+
+        let currentPos = null
+        let count = 0
+        while (currentPos == null) {
+            let foundIndex = runnings.find(rn => rn.pos == count)
+            if (!foundIndex) {
+                currentPos = count
+            }
+            count++
+        }
+        let running = runnings.find(rn => rn.pid == action.pid)
+        running.pos = currentPos
+        
+        windowSize = ` --window-size="${width},${height}"`
+        windowPosition = ` --window-position=${posX * currentPos},${posY}`
     }
 
     // handle proxy
@@ -1225,11 +1268,18 @@ function initExpress() {
     const express = require('express')
     const app = express()
 
+    app.get('/remove-profiles', async (req, res) => {
+        let pids = getProfileIds()
+        pids.forEach(pid => {
+            deleteProfile(pid)
+        })
+    })
+
     app.get('/load-system-pid', async (req, res) => {
         if (MAX_CURRENT_ACC > 1) {
             const systemPid = await loadSystemPid(req.query.pid)
             if (systemPid) {
-                exec(`nircmd win setsize process /${systemPid} 0 0 900 600`)
+                exec(`${nircmdPath} win setsize process /${systemPid} 0 0 900 600`)
                 let running = runnings.find(rn => rn.pid == req.query.pid)
                 if (running) {
                     running.system_pid = systemPid
@@ -1498,11 +1548,14 @@ function getSystemPid (pid) {
 async function getRandomImagePath() {
     let fileName = Date.now() + '.jpg'
     let fimg = await request_api.getRandomImage()
-    if (!fs.existsSync('./images')) {
-        fs.mkdirSync('images')
+    if (fimg) {
+        let fetchedImage = await request({ uri: fimg.path, encoding: null })
+        if (!fs.existsSync('./images')) {
+            fs.mkdirSync('images')
+        }
+        fs.writeFileSync('./images/' + fileName, fetchedImage);
+        return path.resolve('./images/' + fileName)
     }
-    fs.writeFileSync('./images/' + fileName, fimg);
-    return path.resolve('./images/' + fileName)
 }
 
 async function handleAction (actionData) {
@@ -1515,7 +1568,7 @@ async function handleAction (actionData) {
         let systemPidRunning = getSystemPid(actionData.pid)
         if (systemPidRunning) {
             try {
-               // execSync(`nircmd win activate process /${systemPidRunning}`)
+               // execSync(`${nircmdPath} win activate process /${systemPidRunning}`)
             } catch (error) {
                 
             }
@@ -1730,7 +1783,7 @@ async function handleAction (actionData) {
 
             if (isPasteImage) {
                 let pathImage = await getRandomImagePath()
-                execSync(`nircmd.exe clipboard copyimage "${pathImage}"`)
+                execSync(`${nircmdPath} clipboard copyimage "${pathImage}"`)
 
                 robot.keyToggle('control', 'down')
                 robot.keyTap('v')
@@ -1762,7 +1815,7 @@ async function handleAction (actionData) {
             //robot.typeString(actionData.str)
             if (isPasteImage) {
                 let pathImage = await getRandomImagePath()
-                execSync(`nircmd.exe clipboard copyimage "${pathImage}"`)
+                execSync(`${nircmdPath} clipboard copyimage "${pathImage}"`)
 
                 robot.keyToggle('control', 'down')
                 robot.keyTap('v')

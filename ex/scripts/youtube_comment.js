@@ -132,9 +132,13 @@ async function hanleChangeAvata(action) {
 }
 
 async function gotoWatch (action) {
-  if (action.channel_ids && action.channel_ids.length) {
-    let channel_id = action.channel_ids[randomRanger(0, action.channel_ids.length - 1)]
-    await goToLocation(action.pid, 'https://www.youtube.com/' + channel_id + '/videos')
+  if (action.channel_ids) {
+    let videosSuffix = action.channel_ids.includes('/videos') ? '' : '/videos'
+    if (action.channel_ids.indexOf('youtube.com') > -1) {
+      await goToLocation(action.pid, action.channel_ids + videosSuffix)
+    } else {
+      await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_ids + videosSuffix)
+    }
   } else {
     if (!action.video_ids.length) {
       await reportScript(action)

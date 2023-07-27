@@ -276,8 +276,8 @@ async function initActionData(action) {
     else if (action.id == 'comment_youtube') {
         action.commented_count = 0
         action.video_ids = action.video_ids.split(',')
-        action.channel_ids = action.channel_ids.split(',')
-        action.channel_ids = action.channel_ids.filter(a => a)
+        // action.channel_ids = action.channel_ids.split(',')
+        // action.channel_ids = action.channel_ids.filter(a => a)
         await setActionData(action)
         //await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
         await goToLocation(action.pid, 'https://www.youtube.com/')
@@ -613,10 +613,32 @@ function simpleSendKey(keyCode) {
 }
 
 function updateUserInput(pid, action, x, y, sx, sy, str, selector){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
-        data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
-        resolve(response);
-    }))
+    if (IS_MULTIPLE_TAB) {
+        switch (action) {
+            case 'CLICK':
+                simpleClick(x, y)
+                break;
+            case 'TYPE':
+                document.querySelector(selector).value = str
+                break;
+            case 'TYPE_ENTER':
+                document.querySelector(selector).value = str
+                break;
+            case 'GO_ADDRESS':
+                window.location.assign(str)
+                break;
+    
+            case 'SCROLL':
+            case 'ESC':
+                break;
+            default:
+        }
+    } else {
+        return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
+            data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
+            resolve(response);
+        }))
+    }
 }
 
 function elementInViewport (el) {
