@@ -6,7 +6,14 @@ async function tiktokComment(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    if (url.includes('/video/')) {
+    if (url.includes('tiktok.com/search')) {
+      let videos = document.querySelectorAll('div[role="tabpanel"] div[data-e2e="search_top-item"] a img')
+      if (videos) {
+        let video = videos.item(randomRanger(0, videos.length - 1))
+        await userClick(action.pid, 'video', video)
+      }
+    }
+    else if (url.includes('/video/')) {
       await userTypeEnter(action.pid, 'div[data-e2e="comment-text"]', action.comment)
       await sleep(4000)
       await reportScript(action)

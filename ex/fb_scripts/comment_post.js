@@ -8,10 +8,26 @@ async function commentPost(action) {
 
     await checkErrorFB(action)
 
+    if (url.includes('facebook.com/search/groups')) {
+      let items = document.querySelectorAll('div[role="article"] g image')
+      if (items) {
+        let item = items[randomRanger(0, items.length - 1)]
+        await userClick(action.pid, 'item', item)
+      }
+      return
+    }
+
     await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
     await userScroll(action.pid, 10)
     if (url.includes('facebook.com/groups')) {
+      let btn = getElementContainsInnerText('span', ['Join Group', 'Tham gia nhóm'], '', 'equal')
+
+      if (btn) {
+        await userClick(action.pid, 'join btn', btn)
+        await sleep(5000)
+      }
+
       await userScroll(action.pid, randomRanger(15, 25))
       await sleep(2000)
     }

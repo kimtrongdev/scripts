@@ -2,7 +2,14 @@ async function youtubeComment(action) {
   try {
     let url = window.location.toString()
     reportLive(action.pid)
-    if (url.indexOf('youtube.com/account') > -1) {
+    if (url.includes('youtube.com/results')) {
+      let videos = document.querySelectorAll('ytd-two-column-search-results-renderer .ytd-section-list-renderer a#thumbnail')
+      if (videos) {
+        let video = videos.item(randomRanger(0, videos.length - 1))
+        await userClick(action.pid, 'video', video)
+      }
+    }
+    else if (url.indexOf('youtube.com/account') > -1) {
       await handleAccountPage(action)
     }
     else if (url.indexOf('https://www.youtube.com/shorts/') > -1) {
@@ -137,7 +144,8 @@ async function gotoWatch (action) {
     if (action.channel_ids.indexOf('youtube.com') > -1) {
       await goToLocation(action.pid, action.channel_ids + videosSuffix)
     } else {
-      await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_ids + videosSuffix)
+      await userTypeEnter(action.pid, 'input#search', action.channel_ids)
+      //await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_ids + videosSuffix)
     }
   } else {
     if (!action.video_ids.length) {
