@@ -1215,8 +1215,10 @@ function initExpress() {
                 status: 'NEW',
                 description: 're_login',
             }
-            request_api.updateProfileData(updateData)
+
             removePidAddnew(pid, 0)
+            await utils.sleep(5000)
+            await request_api.updateProfileData(updateData)
         }
         return res.send({ success: true })
     })
