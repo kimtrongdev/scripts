@@ -463,6 +463,12 @@ function getPhone () {
     }))
 }
 
+function resetProfile (action) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/reset-profile-by-pid', data: { pid: action.pid } }, function (response) {
+        resolve(response);
+    }))
+}
+
 function reportFBGroup (action) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-fb-group',
         data: { group_link: action.group_link, fb_topic_code: action.fb_topic_code }}, function (response) {

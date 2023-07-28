@@ -1206,6 +1206,21 @@ function initExpress() {
         return res.send(rs)
     })
 
+    app.get('/reset-profile-by-pid', async (req, res) => {
+        const pid = req.query.pid
+        if (pid) {
+            console.log('--reset pid: ', pid)
+            let updateData = {
+                pid,
+                status: 'NEW',
+                description: 're_login',
+            }
+            request_api.updateProfileData(updateData)
+            removePidAddnew(pid, 0)
+        }
+        return res.send({ success: true })
+    })
+
     app.get('/get-comment', async (req, res) => {
         let rs = await request_api.getComment()
         return res.send(rs)

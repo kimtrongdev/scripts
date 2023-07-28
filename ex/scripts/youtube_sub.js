@@ -9,7 +9,11 @@ async function scriptYoutubeSub(action) {
       return
     }
 
-    if (url.indexOf('/videos') > -1) {
+    if (url.includes('accounts.google.com/InteractiveLogin/signinchooser')) {
+      // renew profile
+      await resetProfile(action)
+    }
+    else if (url.indexOf('/videos') > -1) {
       await processWatchChannelPageSub(action)
     } if (url.indexOf('youtube.com/account') > -1) {
       await handleUsersSelection(action)
