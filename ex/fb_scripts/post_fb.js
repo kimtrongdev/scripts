@@ -7,18 +7,7 @@ async function postFB(action) {
 
     await checkErrorFB(action)
 
-    if (!action.selected_page && url.includes('facebook.com/pages')) {
-      await selectFBPage(action, action.group_link)
-    }
-    else if (!action.selected_page) {
-      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-    }
-    else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
-      action.after_selected_page = false
-      await setActionData(action)
-      await goToLocation(action.pid, action.group_link)
-    }
-    else if (url.includes('facebook.com/groups')) {
+    if (url.includes('facebook.com/groups')) {
       await sleep(3000)
       let joinBtn = getElementContainsInnerText('span', ['Join Group'], '', 'equal')
       let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
@@ -48,7 +37,7 @@ async function postFB(action) {
         await sleep(5000)
 
         let contentInput = getElementContainsInnerText('div', ['Create a public post…'], '', 'equal')
-        await userType(action.pid, 'input_post_fb', action.content + action.link, contentInput)
+        await userType(action.pid, 'input_post_fb', action.content, contentInput)
         await sleep(5000)
         let postBtn = getElementContainsInnerText('span', ['Post'], '', 'equal')
         await userClick(action.pid, 'postBtn', postBtn)

@@ -6,6 +6,11 @@ async function tiktokComment(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
+    if (url == 'https://www.tiktok.com/') {
+      await userTypeEnter(action.pid, 'form input', action.link)
+      return 
+    }
+
     if (url.includes('tiktok.com/search')) {
       let videos = document.querySelectorAll('div[role="tabpanel"] div[data-e2e="search_top-item"] a img')
       if (videos) {

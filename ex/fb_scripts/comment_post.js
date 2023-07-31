@@ -8,6 +8,16 @@ async function commentPost(action) {
 
     await checkErrorFB(action)
 
+    if (url == 'https://www.facebook.com/') {
+      await userTypeEnter(action.pid, 'label > input', action.link)
+      return
+    }
+
+    if (url.includes('facebook.com/search/top')) {
+      let groupBtn = document.querySelector('a[href*="/search/groups"]')
+      await userClick(action.pid, 'groupBtn', groupBtn)
+      return
+    }
     if (url.includes('facebook.com/search/groups')) {
       let items = document.querySelectorAll('div[role="article"] g image')
       if (items) {

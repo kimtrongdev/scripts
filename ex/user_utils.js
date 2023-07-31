@@ -200,12 +200,13 @@ async function initActionData(action) {
         await goToLocation(action.pid, 'https://www.youtube.com//')
     }
     else if (action.id == 'tiktok_comment') {
-        if (action.link.includes('tiktok.com')) {
-            await goToLocation(action.pid, action.link)
-        } else {
-            await goToLocation(action.pid, 'https://www.tiktok.com/search?q=' + encodeURI(action.link))
-            //await userTypeEnter(action.pid, 'form[data-e2e="search-box"] input', action.link)
-        }
+        await goToLocation(action.pid, 'https://www.tiktok.com/')
+        // if (action.link.includes('tiktok.com')) {
+        //     await goToLocation(action.pid, action.link)
+        // } else {
+        //     await goToLocation(action.pid, 'https://www.tiktok.com/search?q=' + encodeURI(action.link))
+        //     //await userTypeEnter(action.pid, 'form[data-e2e="search-box"] input', action.link)
+        // }
     } 
     else if (action.id == 'post_fb') {
         await goToLocation(action.pid, action.group_link)
@@ -225,11 +226,12 @@ async function initActionData(action) {
         await goToLocation(action.pid, link)
     }
     else if (action.id == 'comment_fb_post') {
-        if (action.link.includes('facebook.com')) {
-            await goToLocation(action.pid, action.post_link)
-        } else {
-            await goToLocation(action.pid, 'https://www.facebook.com/search/groups/?q=' + encodeURI(action.link))
-        }
+        await goToLocation(action.pid, 'https://www.facebook.com/')
+        // if (action.link.includes('facebook.com')) {
+        //     await goToLocation(action.pid, action.post_link)
+        // } else {
+        //     await goToLocation(action.pid, 'https://www.facebook.com/search/groups/?q=' + encodeURI(action.link))
+        // }
     }
     else if (action.id == 'like_fb_post') {
         await goToLocation(action.pid, action.post_link)
