@@ -12,9 +12,6 @@ async function youtubeComment(action) {
     else if (url.indexOf('youtube.com/account') > -1) {
       await handleAccountPage(action)
     }
-    else if (url.indexOf('https://www.youtube.com/shorts/') > -1) {
-      await gotoWatch(action)
-    }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
       if (action.playlist_ids) {
         closeUnactiveTabs()
@@ -35,6 +32,19 @@ async function youtubeComment(action) {
       } else {
         await gotoWatch(action)
       }
+    }
+    else if (url.includes('youtube.com/shorts/')) {
+      await userClick(action.pid, '#comments-button')
+      await sleep(4000)
+
+      await userClick(action.pid, '#simple-box #simplebox-placeholder')
+      
+      await sleep(2000)
+      await userTypeEnter(action.pid, '#contenteditable-root', action.comment)
+      await sleep(2000)
+      await userClick(action.pid, '#submit-button')
+      await sleep(2000)
+      await reportScript(action)
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)

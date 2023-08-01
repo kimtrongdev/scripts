@@ -188,7 +188,8 @@ async function initActionData(action) {
         await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'fb_add_friend') {
-        await goToLocation(action.pid, action.link)
+        //await goToLocation(action.pid, action.link)
+        await goToLocation(action.pid, 'https://www.facebook.com/')
     }
     else if (action.id == 'fb_feed') {
         await goToLocation(action.pid, 'https://www.facebook.com//')
