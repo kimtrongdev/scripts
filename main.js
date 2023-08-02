@@ -1605,7 +1605,18 @@ async function handleAction (actionData) {
         }
     }
 
-    if (actionData.action == 'SELECT_AVATAR') {
+    if (actionData.action == 'PASTE_IMAGE') {
+        robot.moveMouse(Number(actionData.x), Number(actionData.y))
+        robot.mouseClick('left')
+
+        let pathImage = await getRandomImagePath()
+        execSync(`${nircmdPath} clipboard copyimage "${pathImage}"`)
+
+        robot.keyToggle('control', 'down')
+        robot.keyTap('v')
+        robot.keyToggle('control', 'up')
+    }
+    else if (actionData.action == 'SELECT_AVATAR') {
         del.sync([path.resolve('avatar.jpg')], { force: true })
         let avatar = await request_api.getAvatar(actionData.pid,path.resolve('avatar.jpg'),actionData.str)
 

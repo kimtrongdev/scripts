@@ -7,13 +7,36 @@ async function postFB(action) {
 
     await checkErrorFB(action)
 
+    if (url == 'https://www.facebook.com/') {
+      if (action.link.includes('facebook.com')) {
+        await goToLocation(action.pid, action.link)
+      } else {
+        await userTypeEnter(action.pid, 'label > input', action.link)
+      }
+      return
+    }
+
+    if (url.includes('facebook.com/search/top')) {
+      let groupBtn = document.querySelector('a[href*="/search/groups"]')
+      await userClick(action.pid, 'groupBtn', groupBtn)
+      return
+    }
+    if (url.includes('facebook.com/search/groups')) {
+      let items = document.querySelectorAll('div[role="article"] g image')
+      if (items) {
+        let item = items[randomRanger(0, items.length - 1)]
+        await userClick(action.pid, 'item', item)
+      }
+      return
+    }
+
     if (url.includes('facebook.com/groups')) {
       await sleep(3000)
-      let joinBtn = getElementContainsInnerText('span', ['Join Group'], '', 'equal')
+      let joinBtn = getElementContainsInnerText('span', ['Join Group', 'Tham gia nhóm'], '', 'equal')
       let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
       let followBtn = getElementContainsInnerText('span', ['Follow Group'], '', 'equal')
 
-      if (joinBtn || joined || followBtn) {
+      if (true || joinBtn || joined || followBtn) {
         if (joinBtn) {
           await userClick(action.pid, 'joinBtn', joinBtn)
           await sleep(8000)
@@ -32,14 +55,21 @@ async function postFB(action) {
           // }
         }
         
-        let createPostInput = getElementContainsInnerText('span', ['Write something...'], '', 'equal')
+        let createPostInput = getElementContainsInnerText('span', ['Write something...', 'Bạn viết gì đi...'], '', 'equal')
         await userClick(action.pid, 'createPostInput', createPostInput)
         await sleep(5000)
 
-        let contentInput = getElementContainsInnerText('div', ['Create a public post…'], '', 'equal')
+        let contentInput = getElementContainsInnerText('div', ['Create a public post…', 'Tạo bài viết công khai...'], '', 'equal')
         await userType(action.pid, 'input_post_fb', action.content, contentInput)
+        if (Number(action.total_image) > 0) {
+          for (let i = 1; i <= Number(action.total_image); i++) {
+            let curentInput = document.querySelector('div[aria-label="Tạo bài viết công khai..."]')
+            await userPasteImage(action.pid, 'contentInput', curentInput)
+            await sleep(2000)
+          }
+        }
         await sleep(5000)
-        let postBtn = getElementContainsInnerText('span', ['Post'], '', 'equal')
+        let postBtn = getElementContainsInnerText('span', ['Post', 'Đăng'], '', 'equal')
         await userClick(action.pid, 'postBtn', postBtn)
 
         await sleep(13000)

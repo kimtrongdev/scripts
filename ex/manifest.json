@@ -52,7 +52,6 @@
         "./fb_scripts/fb_feed.js",
         "./fb_scripts/fb_add_friend.js",
         "./fb_scripts/fb_join_group.js",
-        "./fb_scripts/fb_create_post.js",
 
         "./tiktok_scripts/tiktok_comment.js",
         "./tiktok_scripts/reg_tiktok.js",

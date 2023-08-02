@@ -178,10 +178,7 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'fb_create_post') {
-        await goToLocation(action.pid, action.link)
-    }
-    else if (action.id == 'fb_add_member') {
+    if (action.id == 'fb_add_member') {
         await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'fb_join_group') {
@@ -210,7 +207,8 @@ async function initActionData(action) {
         // }
     } 
     else if (action.id == 'post_fb') {
-        await goToLocation(action.pid, action.group_link)
+        await goToLocation(action.pid, 'https://www.facebook.com/')
+        //await goToLocation(action.pid, action.group_link)
     }
     else if (action.id == 'direct_link') {
         await goToLocation(action.pid, action.link)

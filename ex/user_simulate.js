@@ -9,6 +9,14 @@ function makeName(length) {
    return result;
 }
 
+async function userPasteImage(pid,selector,element,iframe){
+    console.log('userPasteImage',selector)
+    let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
+    el.scrollIntoViewIfNeeded()
+    let pos = getElementPosition(el,iframe)
+    await updateUserInput(pid,'PASTE_IMAGE',pos.x,pos.y,scrollX,scrollY,'',selector)
+}
+
 async function userType(pid,selector,str,element,iframe){
     console.log('userType',selector,str)
     let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
