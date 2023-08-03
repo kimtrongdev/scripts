@@ -20,7 +20,7 @@ async function tiktokComment(action) {
     }
     else if (url.includes('/video/')) {
       await userTypeEnter(action.pid, 'div[data-e2e="comment-text"]', action.comment)
-      await sleep(4000)
+      await sleep(8000)
       await reportScript(action)
     }
     else

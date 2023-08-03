@@ -1,5 +1,6 @@
 async function postFB(action) {
   try {
+    await sleep(4000)
     reportLive(action.pid)
 
     let url = window.location.toString()
@@ -22,6 +23,62 @@ async function postFB(action) {
       return
     }
     if (url.includes('facebook.com/search/groups')) {
+      await userScroll(action.pid, randomRanger(20,30))
+      if (Number(action.min_total_member) || Number(action.min_total_post_a_day)) {
+        try {
+          let publicItems = getElementContainsInnerText('span', ['Công khai ·', 'Public ·'], '', 'contains', 'array')
+          let items = []
+          publicItems.forEach(publicItem => {
+            let textItem = publicItem.innerText // 'Công khai · 3,5K thành viên · 4 bài viết/ngày'
+            if (textItem) {
+              textItem = textItem.split('·') //  ['Công khai ', ' 3,5K thành viên ', ' 4 bài viết/ngày']
+              if (textItem.length) {
+                let matched = true
+                if (Number(action.min_total_member)) {
+                  matched = false
+                  let totalMemberData = (textItem[1] || '').trim() // '3,5K thành viên'
+                  if (totalMemberData) {
+                    totalMemberData = totalMemberData.split(' ')[0] // 3,5K
+                    if (totalMemberData) {
+                      totalMemberData = totalMemberData.replace(',', '.')
+                      totalMemberData = totalMemberData.replace('k', '000')
+                      if (Number(totalMemberData) && Number(totalMemberData) >= Number(action.min_total_member)) {
+                        matched = true
+                      }
+                    }
+                  }
+                }
+
+                if (Number(action.min_total_post_a_day) && matched) {
+                  matched = false
+                  let totalPostData = (textItem[2] || '').trim() // '4 bài viết/ngày'
+                  if (totalPostData && (totalPostData.includes('/ngày') || totalPostData.includes('a day'))) {
+                    totalPostData = totalPostData.replace('bài viết/ngày', '')
+                    totalPostData = totalPostData.replace('+ posts a day', '')
+                    totalPostData = totalPostData.replace('posts a day', '')
+                    if (Number(totalPostData) && Number(totalPostData) >= Number(action.min_total_post_a_day)) {
+                      matched = true
+                    }
+                  }
+                }
+                
+                if (matched) {
+                  items.push(publicItem)
+                }
+              }
+            }
+          })
+
+          if (items.length) {
+            let item = items[randomRanger(0, items.length - 1)]
+            let pos = item.getBoundingClientRect()
+            await userClick(action.pid, 'item', item, null, -(pos.width*0.6 + 45))
+            return
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
       let items = document.querySelectorAll('div[role="article"] g image')
       if (items) {
         let item = items[randomRanger(0, items.length - 1)]
@@ -47,6 +104,21 @@ async function postFB(action) {
             await sleep(4000)
           }
 
+          if (document.querySelector('div[role="dialog"]')) {
+            for (let textareaEl of [...document.querySelectorAll('div[role="dialog"] textarea')]) {
+              await userType(action.pid, 'textareaEl', 'Ok ad', textareaEl)
+            }
+
+            for (let radioEl of [...document.querySelectorAll('div[role="dialog"] input[type="radio"]')]) {
+              await userClick(action.pid, 'radioEl', radioEl)
+            }
+
+            let sendBtn = document.querySelector('div[role="dialog"] div[aria-label="Gửi"]') || document.querySelector('div[role="dialog"] div[aria-label="Submit"]')
+            if (sendBtn) {
+              await userClick(action.pid, 'sendBtn', sendBtn)
+            }
+          }
+
           // let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
           // if (!joined) {
           //   // report to backend
@@ -61,9 +133,10 @@ async function postFB(action) {
 
         let contentInput = getElementContainsInnerText('div', ['Create a public post…', 'Tạo bài viết công khai...'], '', 'equal')
         await userType(action.pid, 'input_post_fb', action.content, contentInput)
+        await sleep(3000)
         if (Number(action.total_image) > 0) {
           for (let i = 1; i <= Number(action.total_image); i++) {
-            let curentInput = document.querySelector('div[aria-label="Tạo bài viết công khai..."]')
+            let curentInput = document.querySelector('div[aria-label="Tạo bài viết công khai..."]') || document.querySelector('div[aria-label="Create a public post…"]')
             await userPasteImage(action.pid, 'contentInput', curentInput)
             await sleep(2000)
           }

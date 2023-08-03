@@ -51,7 +51,7 @@ async function userOnlyTypeEnter(pid,selector,str,element,iframe){
     }
 }
 
-async function userClick(pid, selector,element,iframe, xPlus = 0){
+async function userClick(pid, selector,element,iframe, xPlus = 0, yPlus = 0){
     console.log('userClick',selector)
     let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
     if(el){
@@ -59,7 +59,7 @@ async function userClick(pid, selector,element,iframe, xPlus = 0){
         // await userScrollTo(pid,selector,element)
         // el.click()
         let pos = getElementPosition(el,iframe)
-        await updateUserInput(pid,'CLICK',pos.x + xPlus,pos.y,scrollX,scrollY,"",selector)
+        await updateUserInput(pid,'CLICK',pos.x + xPlus,pos.y + yPlus,scrollX,scrollY,"",selector)
     }
     else{
         console.log('error',selector,'not found')

@@ -43,7 +43,7 @@ async function youtubeComment(action) {
       await userTypeEnter(action.pid, '#contenteditable-root', action.comment)
       await sleep(2000)
       await userClick(action.pid, '#submit-button')
-      await sleep(2000)
+      await sleep(8000)
       await reportScript(action)
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
