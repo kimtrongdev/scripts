@@ -9,6 +9,11 @@ async function scriptYoutubeSub(action) {
       return
     }
 
+    if (url.includes('accounts.google.com/v3/signin/identifier')) {
+      await updateActionStatus(action.pid, 'login', LOGIN_STATUS.ERROR, 'accounts.google.com/v3/signin/identifier')
+      return
+    }
+    
     if (url.includes('accounts.google.com/InteractiveLogin/signinchooser')) {
       // renew profile
       await resetProfile(action)
