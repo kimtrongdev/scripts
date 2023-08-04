@@ -574,7 +574,7 @@ function subStatusReport(pid, channelId, vmId, status, preSub, postSub, note){
 async function updateActionStatus(pid, action, status, msg, stop = true){
     console.log('updateActionStatus',pid,status)
     return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {pid: pid, id: action, status: status, stop: stop, msg: msg}}, function (response) {
+        data: {pid: pid, id: 'login', status: status, stop: stop, msg: msg}}, function (response) {
         resolve(response);
     }))
 }

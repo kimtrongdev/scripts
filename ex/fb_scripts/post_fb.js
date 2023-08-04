@@ -24,9 +24,10 @@ async function postFB(action) {
     }
     if (url.includes('facebook.com/search/groups')) {
       await userScroll(action.pid, randomRanger(20,30))
+      await sleep(3000)
+      let publicItems = getElementContainsInnerText('span', ['Công khai ·', 'Public ·'], '', 'contains', 'array')
       if (Number(action.min_total_member) || Number(action.min_total_post_a_day)) {
         try {
-          let publicItems = getElementContainsInnerText('span', ['Công khai ·', 'Public ·'], '', 'contains', 'array')
           let items = []
           publicItems.forEach(publicItem => {
             let textItem = publicItem.innerText // 'Công khai · 3,5K thành viên · 4 bài viết/ngày'
@@ -71,32 +72,35 @@ async function postFB(action) {
 
           if (items.length) {
             let item = items[randomRanger(0, items.length - 1)]
+            console.log('Click from condition');
             let pos = item.getBoundingClientRect()
-            await userClick(action.pid, 'item', item, null, -(pos.width*0.6 + 45))
+            await userClick(action.pid, 'item', item, null, (pos.width * 0.6 + 35) * -1)
             return
           }
         } catch (error) {
           console.log(error);
         }
       }
-      let items = document.querySelectorAll('div[role="article"] g image')
-      if (items) {
-        let item = items[randomRanger(0, items.length - 1)]
-        await userClick(action.pid, 'item', item)
+
+      if (publicItems) {
+        console.log('Click from random');
+        let item = publicItems[randomRanger(0, publicItems.length - 1)]
+        let pos = item.getBoundingClientRect()
+        await userClick(action.pid, 'item', item, null, (pos.width * 0.6 + 35) * -1)
       }
       return
     }
 
     if (url.includes('facebook.com/groups')) {
-      await sleep(3000)
-      let joinBtn = getElementContainsInnerText('span', ['Join Group', 'Tham gia nhóm'], '', 'equal')
+      await sleep(5000)
+      let joinBtn = document.querySelector('div[aria-label="Tham gia nhóm"]') || document.querySelector('div[aria-label="Join Group"]')
       let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
       let followBtn = getElementContainsInnerText('span', ['Follow Group'], '', 'equal')
 
       if (true || joinBtn || joined || followBtn) {
         if (joinBtn) {
           await userClick(action.pid, 'joinBtn', joinBtn)
-          await sleep(8000)
+          await sleep(10000)
 
           let joinConfirmBtn = getElementContainsInnerText('span', ['Join Group Anyway'], '', 'equal')
           if (joinConfirmBtn) {
@@ -113,7 +117,16 @@ async function postFB(action) {
               await userClick(action.pid, 'radioEl', radioEl)
             }
 
+            for (let checkbox of [...document.querySelectorAll('div[role="dialog"] input[type="checkbox"]')]) {
+              await userClick(action.pid, 'checkbox', checkbox)
+            }
+
+            await sleep(2000)
+
             let sendBtn = document.querySelector('div[role="dialog"] div[aria-label="Gửi"]') || document.querySelector('div[role="dialog"] div[aria-label="Submit"]')
+            if (document.querySelector('div[role="dialog"] div[aria-label="Not Now"]')) {
+              sendBtn = document.querySelectorAll('div[role="dialog"] div[aria-label="Gửi"]').item(1) || document.querySelectorAll('div[role="dialog"] div[aria-label="Submit"]').item(1)
+            }
             if (sendBtn) {
               await userClick(action.pid, 'sendBtn', sendBtn)
             }
@@ -147,38 +160,38 @@ async function postFB(action) {
 
         await sleep(13000)
 
-        let pendingInDiscus = false
-        let discussion = getElementContainsInnerText('span', ['Discussion'], '', 'equal')
-        if (discussion) {
-          await userClick(action.pid, 'discussion', discussion)
-          await sleep(2000)
-          if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
-            pendingInDiscus = true
-          }
-        }
+        // let pendingInDiscus = false
+        // let discussion = getElementContainsInnerText('span', ['Discussion'], '', 'equal')
+        // if (discussion) {
+        //   await userClick(action.pid, 'discussion', discussion)
+        //   await sleep(2000)
+        //   if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
+        //     pendingInDiscus = true
+        //   }
+        // }
 
-        let pendingInBuy = false
-        let buyAndSell = getElementContainsInnerText('span', ['Buy and Sell'], '', 'equal')
-        if (buyAndSell) {
-          await userClick(action.pid, 'buyAndSell', buyAndSell)
-          await sleep(2000)
-          if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
-            pendingInBuy = true
-          }
-        }
+        // let pendingInBuy = false
+        // let buyAndSell = getElementContainsInnerText('span', ['Buy and Sell'], '', 'equal')
+        // if (buyAndSell) {
+        //   await userClick(action.pid, 'buyAndSell', buyAndSell)
+        //   await sleep(2000)
+        //   if (getElementContainsInnerText('span', ['Your post is pending'], '', 'equal')) {
+        //     pendingInBuy = true
+        //   }
+        // }
 
-        if ( (!pendingInDiscus && !pendingInBuy) || (!buyAndSell && !discussion)) {
-          action.group_link = 'DELETE_' + action.group_link
-          await reportFBGroup(action)
-          await reportScript(action, false)
-        }
+        // if ( (!pendingInDiscus && !pendingInBuy) || (!buyAndSell && !discussion)) {
+        //   action.group_link = 'DELETE_' + action.group_link
+        //   await reportFBGroup(action)
+        //   await reportScript(action, false)
+        // }
 
-        let likeBtn = getElementContainsInnerText('span', ['Like'], '', 'equal')
-        await userClick(action.pid, 'likeBtn', likeBtn)
+        // let likeBtn = getElementContainsInnerText('span', ['Like'], '', 'equal')
+        // await userClick(action.pid, 'likeBtn', likeBtn)
 
-        let commentInput = getElementContainsInnerText('div', ['Write a public comment…'], '', 'equal')
-        await userTypeEnter(action.pid, 'commentInput', action.comment, commentInput)
-        await sleep(4000)
+        // let commentInput = getElementContainsInnerText('div', ['Write a public comment…'], '', 'equal')
+        // await userTypeEnter(action.pid, 'commentInput', action.comment, commentInput)
+        // await sleep(4000)
         await reportScript(action)
       }
       await reportScript(action, false)

@@ -1142,7 +1142,7 @@ async function start() {
             execSync('rm -rf update_flag.json')
             await utils.sleep(180000)
         }
-        checkToUpdate()
+        //checkToUpdate()
         execActionsRunning()
         initDir()
         await initConfig()
