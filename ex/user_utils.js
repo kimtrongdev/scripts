@@ -20,7 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
-    if (action.id == 'fb_create_post') {
+    if (action.id == 'tiktok_login') {
+        await tiktokLogin(action)
+    }
+    else if (action.id == 'fb_create_post') {
         await fbCreatePost(action)
     }
     else if (action.id == 'fb_join_group') {
@@ -178,7 +181,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'fb_add_member') {
+    if (action.id == 'tiktok_login') {
+        await goToLocation(action.pid, 'https://www.tiktok.com/login/phone-or-email/email')
+    }
+    else if (action.id == 'fb_add_member') {
         await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'fb_join_group') {
