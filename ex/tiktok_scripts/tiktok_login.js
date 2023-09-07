@@ -1,4 +1,4 @@
-async function userLogin(action) {
+async function tiktokLogin(action) {
   try {
     await sleep(3000)
     reportLive(action.pid)

@@ -36,6 +36,7 @@
         "./scripts/direct_link.js",
         "./scripts/youtube_feed.js",
 
+        "./fb_scripts/fb_login.js",
         "./fb_scripts/utilFB.js",
         "./fb_scripts/reg_page.js",
         "./fb_scripts/like_page.js",

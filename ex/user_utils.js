@@ -130,7 +130,14 @@ async function runAction (action) {
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
         if (action.allow_login) {
-            await userLogin(action)
+            if (action.is_tiktok) {
+                await tiktokLogin(action)
+            }
+            else if (action.is_fb) {
+                await fbLogin(action)
+            } else {
+                await userLogin(action)
+            }
         }
     }
     else if (action.id == 'confirm') {
@@ -348,7 +355,14 @@ async function initActionData(action) {
             //     await sleep(15000)
             // }
 
-            await goToLocation(action.pid,'https://accounts.google.com')
+            if (action.is_tiktok) {
+                await goToLocation(action.pid,'https://www.tiktok.com/login/phone-or-email/email')
+            }
+            else if (action.is_fb) {
+                await goToLocation(action.pid,'https://www.facebook.com/login')
+            } else {
+                await goToLocation(action.pid,'https://accounts.google.com')
+            }
             await sleep(15000)
         }
     }
