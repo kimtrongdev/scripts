@@ -9,6 +9,14 @@ async function youtubeComment(action) {
       await gotoWatch(action)
     }
     else if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
+      if (action.video_name) {
+        if (action.channel_title) {
+          action.video_name += ' ' + action.channel_title
+        }
+        await userTypeEnter(action.pid, 'input#search', action.video_name)
+        return
+      }
+
       if (action.playlist_ids) {
         closeUnactiveTabs()
       
@@ -28,6 +36,9 @@ async function youtubeComment(action) {
       } else {
         await gotoWatch(action)
       }
+    }
+    else if (url.indexOf('https://www.youtube.com/results') > -1) {
+      await processSearchPageSub(action)
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
