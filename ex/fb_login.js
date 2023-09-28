@@ -61,9 +61,11 @@ async function fbLogin(action) {
             }
             await sleep(10000)
             await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
+            await sleep(20000)
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
           }
         }
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Sai ngon ngu')
       }
     }
     else if (url == 'https://www.facebook.com/' || url == 'https://m.facebook.com/' || url == 'https://m.facebook.com/home.php' || url.includes('/home.php')) {
