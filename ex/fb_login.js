@@ -55,6 +55,11 @@ async function fbLogin(action) {
               await userClick(action.pid, 'div[aria-label="Next"]')
             }
 
+            await sleep(3000)
+            if (document.querySelector('div[aria-label="Next"]')) {
+              await userClick(action.pid, 'div[aria-label="Next"]')
+            }
+            await sleep(10000)
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
           }
         }
