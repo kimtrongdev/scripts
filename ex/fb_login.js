@@ -60,7 +60,8 @@ async function fbLogin(action) {
               await userClick(action.pid, 'div[aria-label="Next"]')
             }
             await sleep(10000)
-            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+            await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
+            //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
           }
         }
       }
