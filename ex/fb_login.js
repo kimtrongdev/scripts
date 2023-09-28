@@ -6,7 +6,61 @@ async function fbLogin(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    if (url == 'https://www.facebook.com/' || url == 'https://m.facebook.com/' || url == 'https://m.facebook.com/home.php' || url.includes('/home.php')) {
+    if (url.includes('https://www.facebook.com/checkpoint/828281030927956')) {
+      let verifyBtn = document.querySelector('div[role="main"] div[role="button"]')
+      if (verifyBtn) {
+        await userClick(action.pid, "verifyBtn", verifyBtn)
+        await sleep(3000)
+        await userClick(action.pid, 'div[aria-label="Next"]')
+        await sleep(5000)
+        await userClick(action.pid, 'div[role="list"] div[role="button"]')
+        await sleep(5000)
+        await userClick(action.pid, 'div[aria-label="Get code"]')
+
+        let codeData = await getMailCode('fb_' + action.pid)
+
+        if (codeData && codeData.success) {
+          let codes = codeData.code.split(',')
+          if (codes.length) {
+            for await (let code of codes) {
+              if (document.querySelector('input[type="text"]')) {
+                code = code.trim() + ''
+                if (code.length == 5) {
+                  code = '0' + code
+                }
+
+                await userTypeEnter(action.pid, 'input[type="text"]', code)
+                await sleep(5000)
+                if (document.querySelector('div[aria-label="OK"]')) {
+                  await userClick(action.pid, 'div[aria-label="OK"]')
+                }
+
+                if (document.querySelector('div[aria-label="Next"]')) {
+                  await userClick(action.pid, 'div[aria-label="Next"]')
+                  break
+                }
+              }
+              await sleep(3000)
+            }
+
+            if (document.querySelector('div[aria-label="Next"]')) {
+              await userClick(action.pid, 'div[aria-label="Next"]')
+            }
+            await sleep(3000)
+            if (document.querySelector('div[aria-label="Next"]')) {
+              await userClick(action.pid, 'div[aria-label="Next"]')
+            }
+            await sleep(3000)
+            if (document.querySelector('div[aria-label="Next"]')) {
+              await userClick(action.pid, 'div[aria-label="Next"]')
+            }
+
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+          }
+        }
+      }
+    }
+    else if (url == 'https://www.facebook.com/' || url == 'https://m.facebook.com/' || url == 'https://m.facebook.com/home.php' || url.includes('/home.php')) {
       if (action.id == 'change_pass') {
         action.login_fb_success = true
         await setActionData(action)
