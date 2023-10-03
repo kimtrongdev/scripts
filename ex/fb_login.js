@@ -7,16 +7,24 @@ async function fbLogin(action) {
     url = url.split('?')[0]
 
     if (url.includes('https://www.facebook.com/checkpoint/828281030927956')) {
+      async function clickNext(action) {
+        let nextBtn = document.querySelector('div[aria-label="Next"]') || document.querySelector('div[aria-label="आगे बढ़ें"]')
+        if (nextBtn) {
+          await userClick(action.pid, 'nextBtn', nextBtn)
+        }
+        return nextBtn
+      }
+
       let verifyBtn = document.querySelector('div[role="main"] div[role="button"]')
       if (verifyBtn) {
         await userClick(action.pid, "verifyBtn", verifyBtn)
         await sleep(3000)
-        await userClick(action.pid, 'div[aria-label="Next"]')
+        await clickNext(action)
         await sleep(5000)
         await userClick(action.pid, 'div[role="list"] div[role="button"]')
         await sleep(5000)
-        await userClick(action.pid, 'div[aria-label="Get code"]')
-
+        let getCodeBtn = document.querySelector('div[aria-label="Get code"]') || document.querySelector('div[aria-label="कोड पाएँ"]')
+        await userClick(action.pid, 'div[aria-label="Get code"]', getCodeBtn)
         let codeData = await getMailCode('fb_' + action.pid)
 
         if (codeData && codeData.success) {
@@ -35,30 +43,21 @@ async function fbLogin(action) {
                   await userClick(action.pid, 'div[aria-label="OK"]')
                 }
 
-                if (document.querySelector('div[aria-label="Next"]')) {
-                  await userClick(action.pid, 'div[aria-label="Next"]')
+                if (await clickNext(action)) {
                   break
                 }
               }
               await sleep(3000)
             }
 
-            if (document.querySelector('div[aria-label="Next"]')) {
-              await userClick(action.pid, 'div[aria-label="Next"]')
-            }
+            await clickNext(action)
             await sleep(3000)
-            if (document.querySelector('div[aria-label="Next"]')) {
-              await userClick(action.pid, 'div[aria-label="Next"]')
-            }
+            await clickNext(action)
             await sleep(3000)
-            if (document.querySelector('div[aria-label="Next"]')) {
-              await userClick(action.pid, 'div[aria-label="Next"]')
-            }
+            await clickNext(action)
 
             await sleep(3000)
-            if (document.querySelector('div[aria-label="Next"]')) {
-              await userClick(action.pid, 'div[aria-label="Next"]')
-            }
+            await clickNext(action)
             await sleep(10000)
             await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
             await sleep(20000)
