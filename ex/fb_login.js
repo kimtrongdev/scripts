@@ -17,6 +17,7 @@ async function fbLogin(action) {
 
       let verifyBtn = document.querySelector('div[role="main"] div[role="button"]')
       if (verifyBtn) {
+        let textDebug = verifyBtn.innerText
         await userClick(action.pid, "verifyBtn", verifyBtn)
         await sleep(3000)
         await clickNext(action)
@@ -27,10 +28,11 @@ async function fbLogin(action) {
                           document.querySelector('div[aria-label="कोड पाएँ"]') || 
                           document.querySelector('div[aria-label="Nhận mã"]')
         if (!getCodeBtn) {
-          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Sai ngon ngu')
+          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Sai ngon ngu - ' + textDebug)
           return
         }
         await userClick(action.pid, 'getCodeBtn', getCodeBtn)
+        await sleep(10000)
         let codeData = await getMailCode('fb_' + action.pid)
 
         if (codeData && codeData.success) {
@@ -70,7 +72,7 @@ async function fbLogin(action) {
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
           }
         }
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Sai ngon ngu')
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Sai ngon ngu - ' + textDebug)
       }
     }
     else if (url == 'https://www.facebook.com/' || url == 'https://m.facebook.com/' || url == 'https://m.facebook.com/home.php' || url.includes('/home.php')) {
