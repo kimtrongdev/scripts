@@ -8,7 +8,7 @@ async function fbLogin(action) {
 
     if (url.includes('https://www.facebook.com/checkpoint/828281030927956')) {
       async function clickNext(action) {
-        let nextBtn = document.querySelector('div[aria-label="Next"]') || document.querySelector('div[aria-label="आगे बढ़ें"]')
+        let nextBtn = document.querySelector('div[aria-label="Next"]') || document.querySelector('div[aria-label="आगे बढ़ें"]') || document.querySelector('div[aria-label="Tiếp"]') 
         if (nextBtn) {
           await userClick(action.pid, 'nextBtn', nextBtn)
         }
@@ -23,8 +23,14 @@ async function fbLogin(action) {
         await sleep(5000)
         await userClick(action.pid, 'div[role="list"] div[role="button"]')
         await sleep(5000)
-        let getCodeBtn = document.querySelector('div[aria-label="Get code"]') || document.querySelector('div[aria-label="कोड पाएँ"]')
-        await userClick(action.pid, 'div[aria-label="Get code"]', getCodeBtn)
+        let getCodeBtn =  document.querySelector('div[aria-label="Get code"]') || 
+                          document.querySelector('div[aria-label="कोड पाएँ"]') || 
+                          document.querySelector('div[aria-label="Nhận mã"]')
+        if (!getCodeBtn) {
+          await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Sai ngon ngu')
+          return
+        }
+        await userClick(action.pid, 'getCodeBtn', getCodeBtn)
         let codeData = await getMailCode('fb_' + action.pid)
 
         if (codeData && codeData.success) {
