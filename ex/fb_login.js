@@ -156,7 +156,7 @@ async function fbLogin(action) {
       }
 
       if (pages.length == 0 && !document.querySelector('div[role="main"] span')) {
-        let profileIcon = document.querySelector('div[role="main"] span')
+        let profileIcon = document.querySelector('div[role="navigation"] svg[aria-label="Your profile"]')
         if (profileIcon) {
           await userClick(action.pid, '#profileIcon', profileIcon)
           let seeAllProfileBtn = document.querySelectorAll('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"] div[role="button"]').item(1)
