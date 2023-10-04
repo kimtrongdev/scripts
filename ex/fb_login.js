@@ -154,6 +154,21 @@ async function fbLogin(action) {
       if (!pages) {
         pages = []
       }
+
+      if (pages.length == 0 && !document.querySelector('div[role="main"] span')) {
+        let profileIcon = document.querySelector('div[role="main"] span')
+        if (profileIcon) {
+          await userClick(action.pid, '#profileIcon', profileIcon)
+          let seeAllProfileBtn = document.querySelectorAll('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"] div[role="button"]').item(1)
+          if (seeAllProfileBtn) {
+            await userClick(action.pid, '#seeAllProfileBtn', seeAllProfileBtn)
+            await sleep(4000)
+
+            pages = document.querySelectorAll('div[role="dialog"] div[role="list"] div[style="padding-left: 8px; padding-right: 8px;"] image')
+          }
+        }
+      }
+
       if (pages.length == 0) {
         pages = getElementContainsInnerText('span', ['Switch Now'], '', 'equal', 'array')
         if (!pages) {
