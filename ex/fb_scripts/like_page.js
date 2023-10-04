@@ -22,6 +22,11 @@ async function likePage(action) {
       await setActionData(action)
       await goToLocation(action.pid, action.page_link)
     }
+    else if (action.after_selected_page && url.includes('facebook.com/pages')) {
+      action.after_selected_page = false
+      await setActionData(action)
+      await goToLocation(action.pid, action.page_link)
+    }
     else {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let likeBtn = getElementContainsInnerText('span', ['Like', 'Thích'], '', 'equal')
