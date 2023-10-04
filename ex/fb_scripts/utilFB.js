@@ -21,7 +21,7 @@ async function selectFBPage(action, link = '') {
       let seeAllProfileBtn = document.querySelectorAll('div[style="border-radius: max(0px, min(8px, ((100vw - 4px) - 100%) * 9999)) / 8px;"] div[role="button"]').item(1)
       if (seeAllProfileBtn) {
         await userClick(action.pid, '#seeAllProfileBtn', seeAllProfileBtn)
-        await sleep(4000)
+        await sleep(5000)
 
         pages = document.querySelectorAll('div[role="dialog"] div[role="list"] div[style="padding-left: 8px; padding-right: 8px;"] image')
       }
@@ -39,10 +39,12 @@ async function selectFBPage(action, link = '') {
   if (!pages.length) {
     let profileIcon = document.querySelector('div[role="navigation"] svg[aria-label="Your profile"]')
     await userClick(action.pid, 'profileIcon', profileIcon)
+    await sleep(3000)
     let resetBtn = document.querySelector('div[aria-label="Switch Profiles"]')
     if (resetBtn) {
       await userClick(action.pid, 'resetBtn', resetBtn)
-      await sleep(8000)
+      await sleep(10000)
+      return
     }
   }
 
