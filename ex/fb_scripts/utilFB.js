@@ -14,6 +14,7 @@ async function selectFBPage(action, link = '') {
   let pages = document.querySelectorAll('div[aria-label="More"]')
 
   if (pages.length == 0 && !document.querySelector('div[role="main"] span')) {
+    typeSwitch = true
     let profileIcon = document.querySelector('div[role="navigation"] svg[aria-label="Your profile"]')
     if (profileIcon) {
       await userClick(action.pid, '#profileIcon', profileIcon)
