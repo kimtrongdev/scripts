@@ -20,6 +20,8 @@ async function youtubeLike(action) {
     }
     else if (url.indexOf('https://www.youtube.com/results') > -1) {
       await processSearchPageSub(action)
+      await sleep(10000)
+      await reportScript(action, false)
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
