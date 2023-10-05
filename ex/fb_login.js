@@ -7,6 +7,11 @@ async function fbLogin(action) {
     url = url.split('?')[0]
 
     if (url.includes('https://www.facebook.com/checkpoint/828281030927956')) {
+      if (action.checked_for_verify) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'khong the verify')
+        return 
+      }
+      
       async function clickNext(action) {
         let nextBtn = document.querySelector('div[aria-label="Next"]') || document.querySelector('div[aria-label="आगे बढ़ें"]') || document.querySelector('div[aria-label="Tiếp"]') 
         if (nextBtn) {
@@ -67,6 +72,8 @@ async function fbLogin(action) {
             await sleep(3000)
             await clickNext(action)
             await sleep(10000)
+            action.checked_for_verify = true
+            await setActionData(action)
             await goToLocation(action.pid, 'https://www.facebook.com/settings?tab=language')
             await sleep(20000)
             //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
