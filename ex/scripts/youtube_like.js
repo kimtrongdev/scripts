@@ -21,6 +21,10 @@ async function youtubeLike(action) {
     else if (url.indexOf('https://www.youtube.com/results') > -1) {
       await processSearchPageSub(action)
       await sleep(10000)
+      if (action.channel_id) {
+        await goToLocation(action.pid, 'https://www.youtube.com/channel/' + action.channel_id + '/videos')
+        return
+      }
       await reportScript(action, false)
     }
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
@@ -34,7 +38,9 @@ async function youtubeLike(action) {
       if (document.querySelector('#edit-buttons a')) {
         await userClick(action.pid, '#edit-buttons a')
       } else {
-        await processWatchChannelPage(action)
+        await processWatchChannelPage(action, action.video_ids)
+        await sleep(10000)
+        await reportScript(action, false)
       }
     } else {
       //await reportScript(action, false)

@@ -914,7 +914,7 @@ async function processSearchPage(action){
     }
 }
 
-async function processWatchChannelPage(action){
+async function processWatchChannelPage(action, videoID = ''){
     let url = window.location.toString()
     if(url.indexOf('/videos') > -1){
         if(action.page){
@@ -935,6 +935,13 @@ async function processWatchChannelPage(action){
             }
         }
         else{
+            if (videoID) {
+                let video = document.querySelector('#contents ytd-rich-grid-row ytd-rich-item-renderer a#thumbnail[href*="'+videoID+'"]')
+                if (video) {
+                    await userClick(action.pid,'video',video)
+                }
+                return
+            }
             // watch other video for suggest or browser feature
             if (!Array.isArray(action.other_videos)) {
                 action.other_videos = []
