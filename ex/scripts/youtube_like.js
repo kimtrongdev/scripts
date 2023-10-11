@@ -21,7 +21,7 @@ async function youtubeLike(action) {
     else if (url.indexOf('https://www.youtube.com/results') > -1) {
       action.channel_id_of_video = action.channel_id
       action.channel_id = null
-      await processSearchPageSub(action)
+      await processSearchPageSub(action, true)
       await sleep(10000)
       if (action.channel_id_of_video) {
         await goToLocation(action.pid, 'https://www.youtube.com/channel/' + action.channel_id_of_video + '/videos')
@@ -41,7 +41,7 @@ async function youtubeLike(action) {
         await userClick(action.pid, '#edit-buttons a')
       } else {
         await processWatchChannelPage(action, action.video_ids)
-        await sleep(10000)
+        await sleep(15000)
         await gotoLike(action)
         await sleep(10000)
         await reportScript(action, false)

@@ -219,7 +219,7 @@ async function processPlaylistPageSub(action) {
   }
 }
 
-async function processSearchPageSub(action) {
+async function processSearchPageSub(action, preventGoToChannel = false) {
   let url = window.location.toString()
 
   if (action.preview == "search") {
@@ -255,7 +255,7 @@ async function processSearchPageSub(action) {
     let channel = getElementContainsInnerText('a', action.channel_title, '', 'contains')
     if (channel) {
       await userClick(action.pid, 'channel', channel)
-    } else {
+    } else if (!preventGoToChannel) {
       if (action.channel_id) {
         await goToLocation(action.pid, 'https://www.youtube.com/' + action.channel_id + '/videos')
         return
