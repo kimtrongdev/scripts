@@ -32,7 +32,7 @@ async function youtubeLike(action) {
     else if(url.indexOf('https://www.youtube.com/watch') > -1){
       reportLive(action.pid)
       await sleep(10000)
-
+      await updateWatchedVideo(false, action.pid)
       await LikeOrDisLikeYoutubeVideo(action.pid, true)
       await sleep(3000)
       await reportScript(action)
@@ -41,6 +41,8 @@ async function youtubeLike(action) {
         await userClick(action.pid, '#edit-buttons a')
       } else {
         await processWatchChannelPage(action, action.video_ids)
+        await sleep(10000)
+        await gotoLike(action)
         await sleep(10000)
         await reportScript(action, false)
       }
@@ -53,13 +55,7 @@ async function youtubeLike(action) {
 }
 
 async function gotoLike (action) {
-  if (!action.video_ids.length) {
-    await reportScript(action)
-  } else {
-    let videoId = action.video_ids[randomRanger(0, action.video_ids.length - 1)]
-    await setActionData(action)
-    await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + videoId)
-  }
+  await goToLocation(action.pid, 'https://www.youtube.com/watch?v=' + action.video_ids)
 }
 
 async function handleAccountPageLike (action) {
