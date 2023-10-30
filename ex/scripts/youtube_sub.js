@@ -1,6 +1,6 @@
 async function scriptYoutubeSub(action) {
   try {
-    console.log('start watch')
+    console.log('start sub')
 
     let url = window.location.toString()
 
@@ -275,6 +275,7 @@ async function processWatchChannelPageSub(action) {
   let url = window.location.toString()
 
   if (action.subscribed) {
+    console.log('subscribed')
     await getSubData(action)
     await reportScript(action)
     return
@@ -300,7 +301,12 @@ async function processWatchChannelPageSub(action) {
     } else {
       let videoTab = document.querySelectorAll('#tabsContent .tab-content').item(1)
       if(videoTab){
-          await userClick(action.pid,'#tabsContent .tab-content', videoTab)
+        await userClick(action.pid,'#tabsContent .tab-content', videoTab)
+        await sleep(4000)
+      } else {
+        await clickSub(action)
+        await sleep(3000)
+        await reportScript(action)
       }
       return
     }
@@ -316,6 +322,8 @@ async function processWatchChannelPageSub(action) {
 
   } else if (action.tab_clicked) {
     await clickSub(action)
+    await sleep(3000)
+    await reportScript(action)
   }
   else{
     action.tab_clicked = true
@@ -331,6 +339,8 @@ async function processWatchChannelPageSub(action) {
     }
     else{
       await clickSub(action)
+      await sleep(3000)
+      await reportScript(action)
     }
   }
 }
@@ -353,7 +363,14 @@ async function clickSub (action, endScript = true) {
       await reportScript(action)
     }
   } else {
-    await reportScript(action, 0)
+    if (document.querySelector('#subscribe-button-shape')) {
+      await userClick(action.pid,'#subscribe-button-shape')
+      await sleep(3000)
+      await reportScript(action)
+    } else {
+      console.log('not found sub btn')
+      await reportScript(action, 0)
+    }
   }
 }
 
@@ -456,6 +473,8 @@ async function processWatchPageSub(action) {
     action.subscribed = true
     await setActionData(action)
     await userClick(action.pid, '#channel-container #channel-info #avatar')
+    await sleep(5000)
+    await reportScript(action, 0)
   } else {
     //await sleep(10000)
     try {
