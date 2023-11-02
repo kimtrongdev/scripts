@@ -1138,8 +1138,7 @@ async function initConfig() {
 
     // utils.log('ip: ', ip)
     // check config
-    let ip = await publicIp.v4()
-    IP = ip
+    //let ip = await publicIp.v4()
 
     if (process.env.VM_NAME && process.env.VM_NAME != '_VM_NAME') {
         config.vm_name = process.env.VM_NAME
@@ -1150,6 +1149,8 @@ async function initConfig() {
     if (!config.vm_id) {
         config.vm_id = makeid(9)
     }
+
+    IP = config.vm_name
 
     if (!config.browser_map) {
         config.browser_map = {}
