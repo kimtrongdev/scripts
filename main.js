@@ -1518,6 +1518,7 @@ async function handleAction (actionData) {
 
     // copy str
     if(actionData.str){
+        console.log(actionData.str)
         try {
             const clipboardy = require('clipboardy');
             if (actionData.str == 'none') {
