@@ -8,7 +8,7 @@ async function createPlaylistScript(action) {
       return
     }
 
-    await checkLang(action)
+    //await checkLang(action)
 
     if (url.indexOf('https://consent.youtube.com/m') > -1) {
         try {
