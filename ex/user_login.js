@@ -146,7 +146,8 @@ async function userLogin(action) {
                 await userClick(action.pid, 'li[lang="en"]')
                 await userClick(action.pid, 'li[aria-label="United States"]')
 
-                await userClick(action.pid, 'button[data-mdc-dialog-action="ok"]')
+                let ok = document.querySelectorAll('div[data-is-touch-wrapper="true"] button[data-mdc-dialog-action]').item(2)
+                await userClick(action.pid, 'ok', ok)
                 await sleep(3000)
             }
             await goToLocation(action.pid,'youtube.com/feed/history')
