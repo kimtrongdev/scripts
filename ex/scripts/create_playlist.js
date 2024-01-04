@@ -64,6 +64,9 @@ async function createPlaylistScript(action) {
       
       await userClick(action.pid, 'ytcp-playlist-row img')
     }
+    else if (url.indexOf('studio.youtube.com/playlist/') > -1) {
+      await userClick(action.pid, 'ytcp-overlay-with-link')
+    }
     else if (url.indexOf('youtube.com/verify_phone_number') > -1) {
       if (document.querySelector('input')) {
         //enter phone number
