@@ -57,6 +57,7 @@ async function createPlaylistScript(action) {
       await sleep(30000)
     }
     else if (url.indexOf('/content/playlists') > -1) {
+      sleep(4000)
       while (document.querySelector('#single-step-navigation')) {
         await userClick(action.pid, '#single-step-navigation #close-button')
         await sleep(1000)
@@ -65,7 +66,7 @@ async function createPlaylistScript(action) {
       const linkDt = document.querySelector('h3[id="playlist-title"]')
       if (linkDt) {
         let href = linkDt.href
-        console.log('href', href)
+        console.log('href', href, linkDt)
         if (href) {
           href = href.split('/')
           href.pop()
