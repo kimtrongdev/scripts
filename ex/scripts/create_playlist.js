@@ -65,10 +65,12 @@ async function createPlaylistScript(action) {
       const linkDt = document.querySelector('h3[id="playlist-title"]')
       if (linkDt) {
         let href = linkDt.href
+        console.log('href', href)
         if (href) {
           href = href.split('/')
           href.pop()
           href = href.pop()
+          console.log('href', href)
           await goToLocation(action.pid, `https://www.youtube.com/playlist?list=${href}/`)
         }
       } else {
