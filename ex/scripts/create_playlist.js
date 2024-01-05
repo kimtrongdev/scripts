@@ -343,6 +343,7 @@ async function handlePlaylistSearch (action) {
     }
 
     let item = videos.item(count)
+    console.log('item', item)
     if (item) {
       await userClick(action.pid, '', item)
       await sleep(1000)
@@ -354,6 +355,7 @@ async function handlePlaylistSearch (action) {
     count++
   }
 
+  await sleep(50000)
   // go to suggest channel
   if (action.suggest_channel) {
     await goToLocation(action.pid, `https://www.youtube.com/${action.suggest_channel}/videos`)
