@@ -63,7 +63,7 @@ async function createPlaylistScript(action) {
         await sleep(1000)
       }
       
-      const linkDt = document.querySelector('h3[id="playlist-title"]')
+      const linkDt = document.querySelector('h3[id="playlist-title"] a')
       if (linkDt) {
         let href = linkDt.href
         console.log('href', href, linkDt)
