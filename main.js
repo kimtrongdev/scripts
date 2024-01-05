@@ -190,6 +190,9 @@ async function loadSystemConfig () {
         }
     }
 
+    if (DEBUG) {
+        EXPIRED_TIME = 400000
+    }
     // handle browsers for centos and ubuntu
     let browsers = []
     systemConfig.browsers.forEach(br => {

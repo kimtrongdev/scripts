@@ -335,12 +335,15 @@ async function handlePlaylistSearch (action) {
   let videos = document.querySelectorAll('#contents .ytd-video-renderer path[d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"]')
   let total = Math.min(videos.length, Number(action.total_added_from_search) || 10)
   let count = 0
+  console.log('videos',videos)
+  console.log('total', total)
   while (count < total) {
     if (count % 5 == 0) {
       reportLive(action.pid)
     }
 
     let item = videos.item(count)
+    console.log('item', item)
     if (item) {
       await userClick(action.pid, '', item)
       await sleep(1000)
@@ -352,6 +355,7 @@ async function handlePlaylistSearch (action) {
     count++
   }
 
+  await sleep(50000)
   // go to suggest channel
   if (action.suggest_channel) {
     await goToLocation(action.pid, `https://www.youtube.com/${action.suggest_channel}/videos`)
