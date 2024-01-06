@@ -176,7 +176,8 @@ async function scriptAddVideoPlaylist(action) {
 }
 
 async function handleSearchAddVideo (action) {
-  let videos = document.querySelectorAll('ytd-video-renderer #menu ytd-menu-renderer path[d="M12,16.5c0.83,0,1.5,0.67,1.5,1.5s-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5S11.17,16.5,12,16.5z M10.5,12 c0,0.83,0.67,1.5,1.5,1.5s1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5S10.5,11.17,10.5,12z M10.5,6c0,0.83,0.67,1.5,1.5,1.5 s1.5-0.67,1.5-1.5S12.83,4.5,12,4.5S10.5,5.17,10.5,6z"]')
+  await sleep(5000)
+  let videos = document.querySelectorAll('#contents .ytd-video-renderer path[d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"]')
   let total = Math.min(videos.length, Number(action.total_added_from_search) || 10)
   let count = 0
   while (count < total) {
@@ -188,9 +189,9 @@ async function handleSearchAddVideo (action) {
     if (item) {
       await userClick(action.pid, '', item)
       await sleep(1000)
-      await userClick(action.pid, 'ytd-menu-service-item-renderer path[d="M22,13h-4v4h-2v-4h-4v-2h4V7h2v4h4V13z M14,7H2v1h12V7z M2,12h8v-1H2V12z M2,16h8v-1H2V16z"]')
+      await userClick(action.pid, 'ytd-menu-service-item-renderer path[d="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z"]')
       await sleep(3000)
-      await userClick(action.pid, '#checkbox-container path[d="M9,1C4.58,1,1,4.58,1,9s3.58,8,8,8s8-3.58,8-8S13.42,1,9,1z M16,9c0,1.31-0.37,2.54-1,3.59V11h-2c-0.55,0-1-0.45-1-1   c0-1.1-0.9-2-2-2H8.73C8.9,7.71,9,7.36,9,7V5h1c1.1,0,2-0.9,2-2V2.69C14.36,3.81,16,6.21,16,9z M2.02,9.45L7,12.77V13   c0,1.1,0.9,2,2,2v1C5.29,16,2.26,13.1,2.02,9.45z M10,15.92V14H9c-0.55,0-1-0.45-1-1v-0.77L2.04,8.26C2.41,4.75,5.39,2,9,2   c0.7,0,1.37,0.11,2,0.29V3c0,0.55-0.45,1-1,1H8v3c0,0.55-0.45,1-1,1H5.5v1H10c0.55,0,1,0.45,1,1c0,1.1,0.9,2,2,2h1v1.89   C12.95,14.96,11.56,15.7,10,15.92z"]')
+      await userClick(action.pid, '#checkbox-container path[d="M9 1C4.58 1 1 4.58 1 9s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm7 8c0 1.31-.37 2.54-1 3.59V11h-2c-.55 0-1-.45-1-1 0-1.1-.9-2-2-2H8.73c.17-.29.27-.64.27-1V5h1c1.1 0 2-.9 2-2v-.31c2.36 1.12 4 3.52 4 6.31zm-13.98.45L7 12.77V13c0 1.1.9 2 2 2v1c-3.71 0-6.74-2.9-6.98-6.55zM10 15.92V14H9c-.55 0-1-.45-1-1v-.77L2.04 8.26C2.41 4.75 5.39 2 9 2c.7 0 1.37.11 2 .29V3c0 .55-.45 1-1 1H8v3c0 .55-.45 1-1 1H5.5v1H10c.55 0 1 .45 1 1 0 1.1.9 2 2 2h1v1.89c-1.05 1.07-2.44 1.81-4 2.03z"]')
       await userClick(action.pid, 'yt-icon[icon="close"]')
     }
     count++
@@ -198,9 +199,6 @@ async function handleSearchAddVideo (action) {
 
   // go to suggest channel
   if (action.suggest_channel) {
-    if (!action.suggest_channel.startsWith('channel/')) {
-      action.suggest_channel = 'channel/' + action.suggest_channel
-    }
     await goToLocation(action.pid, `https://www.youtube.com/${action.suggest_channel}/videos`)
   } else {
     reportScript(action)
