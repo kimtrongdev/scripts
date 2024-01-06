@@ -3,7 +3,7 @@ async function scriptAddVideoPlaylist(action) {
     reportLive(action.pid)
     let url = window.location.toString()
 
-    await checkLang(action)
+    //await checkLang(action)
 
     if (url.indexOf('https://consent.youtube.com/m') > -1) {
         try {
