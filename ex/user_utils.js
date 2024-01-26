@@ -380,6 +380,7 @@ async function initActionData(action) {
         //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
     }
     else if(action.id == 'login'){
+        await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
         if (action.browser_name == 'iridium-browser') {
             await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
             await goToLocation(action.pid, `chrome://settings/cookies`)
