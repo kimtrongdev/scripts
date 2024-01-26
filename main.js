@@ -5,6 +5,7 @@ const TIME_REPORT = 290000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
 let EXPIRED_TIME = 200000
+const request = require('request-promise')
 const request2 = require('request').defaults({ encoding: null });
 let totalRoundForChangeProxy = 5
 let countRun = 0
