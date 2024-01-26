@@ -414,6 +414,10 @@ async function startChromeAction(action, _browser) {
         action.proxy_password = proxy[action.pid].password
     }
 
+    if (!useProxy) {
+        userProxy = ''
+    }
+
     // handle flag data
     action.browser_name = _browser
     if (isRunBAT) {
