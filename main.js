@@ -5,6 +5,7 @@ const TIME_REPORT = 290000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
 let EXPIRED_TIME = 200000
+const request2 = require('request').defaults({ encoding: null });
 let totalRoundForChangeProxy = 5
 let countRun = 0
 let isPauseAction = false
@@ -1200,7 +1201,6 @@ function handlePlaylistData (playlist) {
     }
 }
 
-const request2 = require('request').defaults({ encoding: null });
 let TIKTOK_CAPCHA_API_KEY = 'tjRhRFTmV2MIcFyM6lkD8ChPkgmx3IGyx4FybO3Kovivs5V7vUhdTw5nGDxyM7VxsiMvRbZiY81s8Knj'
 async function createJob(capchaData) {
     try {
