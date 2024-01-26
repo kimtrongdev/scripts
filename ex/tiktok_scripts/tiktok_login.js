@@ -48,8 +48,8 @@ async function tiktokLogin(action) {
 
         let dragPos = 0
         try {
-          if (rs?.result?.result) {
-            dragPos = Number(rs?.result?.result)
+          if (rs.result.result) {
+            dragPos = Number(rs.result.result)
           }
         } catch (error) {
           console.log(error);

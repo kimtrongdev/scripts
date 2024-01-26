@@ -1209,7 +1209,7 @@ async function createJob(capchaData) {
                 body: requestData,
             }, async (err, response, data) => {
                 console.log('--', data)
-                if (data?.job_id) {
+                if (data.job_id) {
                     return resolve({
                         success: true,
                         job_id: data.job_id
