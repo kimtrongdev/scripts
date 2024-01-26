@@ -556,6 +556,9 @@ async function loginProfileChrome(profile) {
         if (systemConfig.is_fb) {
             action.is_fb = true
         }
+        if (systemConfig.is_tiktok) {
+            action.is_tiktok = true
+        }
 
         if (systemConfig.total_page_created) {
             action.total_page_created = systemConfig.total_page_created
@@ -859,6 +862,9 @@ async function getScriptData(pid, isNewProxy = false) {
         }
         if (systemConfig.is_fb) {
             action.is_fb = true
+        }
+        if (systemConfig.is_tiktok) {
+            action.is_tiktok = true
         }
         // init action data
         if(action.mobile_percent === undefined || action.mobile_percent === null){
