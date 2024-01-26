@@ -131,7 +131,10 @@ async function runAction (action) {
     } 
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
-        if (action.is_fb) {
+        if (action.is_tiktok) {
+            await tiktokLogin(action)
+        }
+        else if (action.is_fb) {
             await fbLogin(action)
         } else {
             await userLogin(action)
@@ -390,7 +393,10 @@ async function initActionData(action) {
             let continueLink = 'https://accounts.google.com'
             if (action.is_fb) {
                 continueLink = 'https://www.facebook.com/'
+            } else if (action.is_tiktok) {
+                continueLink = 'https://www.tiktok.com/login/phone-or-email/email'
             }
+
             await handleSelectExOption(action)
             if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
                 await handleBraveSetting(action, continueLink)
@@ -431,6 +437,12 @@ async function initActionData(action) {
             //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'https://www.youtube.com//')
         }
     }
+}
+
+async function handleCapchaTiktok(data) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/handle-capcha-tiktok', data}, function (response) {
+        resolve(response);
+    }))
 }
 
 function reportAccount (action) {

@@ -1190,9 +1190,113 @@ function handlePlaylistData (playlist) {
     }
 }
 
+let TIKTOK_CAPCHA_API_KEY = 'tjRhRFTmV2MIcFyM6lkD8ChPkgmx3IGyx4FybO3Kovivs5V7vUhdTw5nGDxyM7VxsiMvRbZiY81s8Knj'
+async function createJob(capchaData) {
+    try {
+        const url = 'https://omocaptcha.com/api/createJob'
+        const requestData = {
+            api_token: TIKTOK_CAPCHA_API_KEY,
+            data: capchaData,
+        }
+
+        return new Promise((resolve, reject) => {
+            request['post']({
+                url,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                json: true,
+                body: requestData,
+            }, async (err, response, data) => {
+                console.log('--', data)
+                if (data?.job_id) {
+                    return resolve({
+                        success: true,
+                        job_id: data.job_id
+                    })
+                }
+                return reject({ success: false, data, err })
+            })
+        })
+    } catch (err) {
+        console.log('Error while getRequest', err)
+    }
+}
+
+async function getJobResult(job_id) {
+    try {
+      const url = 'https://omocaptcha.com/api/getJobResult'
+      const requestData = {
+        api_token: TIKTOK_CAPCHA_API_KEY,
+        job_id
+      }
+      return new Promise((resolve, reject) => {
+        request['post']({
+          url,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          json: true,
+          body: requestData,
+        }, async (err, response, data) => {
+            return resolve(data)
+        })
+      })
+    } catch (err) {
+      console.log('Error while getResult', err)
+    }
+}
+
+const getBase64FromUrl = async (url) => {
+    return new Promise((resolve) => {
+        request2.get(url, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                resolve(body.toString('base64'))
+            }
+        })
+    })
+}
+
+async function handleCapchaTiktok (data) {
+    let job
+    if (data.type == 'cicle') {
+        let innerImage = ''
+        let outerImage = ''
+        await Promise.all([
+            getBase64FromUrl(data.innerImageURL),
+            getBase64FromUrl(data.outerImageURL)
+        ]).then(rs => {
+            innerImage = rs[0]
+            outerImage = rs[1]
+        })
+
+        // send data to api
+        job = await createJob( { type_job_id: 23, image_base64: innerImage + '|' + outerImage })
+    } else if (data.type == 'square') {
+        // shot screen
+        let capchaImgName = 'tiktokCapcha' + Date.now()
+        execSync(`${nircmdPath} savescreenshot ${path.resolve("logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
+        let imageBase64 = fs.readFileSync(`${path.resolve("logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
+        job = await createJob( { type_job_id: 21, image_base64: imageBase64, width_view: data.image_width })
+    }
+    let result = { status: 'waiting' }
+    while (result.status == 'waiting' || result.status == 'running') {
+        result = await getJobResult(job.job_id)
+        await utils.sleep(3000)
+    }
+    console.log('final res', result)
+    return result
+}
+
 function initExpress() {
     const express = require('express')
     const app = express()
+
+    app.get('/handle-capcha-tiktok', async (req, res) => {
+        let data = req.query
+        let result = await handleCapchaTiktok(data)
+        return res.json({ success: true, result })
+    })
 
     app.get('/favicon.ico', (req, res) => {
         res.sendFile(path.resolve("favicon.ico"))

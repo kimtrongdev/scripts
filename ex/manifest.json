@@ -49,6 +49,12 @@
         "./fb_scripts/view_fb_home.js",
         "./fb_scripts/fb_feed.js",
 
+        "./tiktok_scripts/reg_tiktok.js",
+        "./tiktok_scripts/tiktok_comment.js",
+        "./tiktok_scripts/tiktok_feed.js",
+        "./tiktok_scripts/tiktok_login.js",
+        "./tiktok_scripts/tiktok_update_info.js",
+
         "./system_scripts/get_otp.js",
         "./system_scripts/add_recovery_mail.js",
         "./system_scripts/check_recovery.js"
