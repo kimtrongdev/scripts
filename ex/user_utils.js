@@ -20,6 +20,10 @@ var newsNames = [
 ]
 
 async function runAction (action) {
+    if (!action.client_config_allow_change_fb_page) {
+        action.selected_page = true
+    }
+
     if (action.id == 'fb_feed') {
         await fbFeed(action)
     }

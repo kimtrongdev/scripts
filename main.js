@@ -569,6 +569,12 @@ async function loginProfileChrome(profile) {
         if (systemConfig.is_tiktok) {
             action.is_tiktok = true
         }
+        
+        Object.keys(systemConfig).forEach(key => {
+            if ((key + '').startsWith('client_config_')) {
+                action[key] = systemConfig[key]
+            }
+        });
 
         if (systemConfig.total_page_created) {
             action.total_page_created = systemConfig.total_page_created
@@ -876,6 +882,11 @@ async function getScriptData(pid, isNewProxy = false) {
         if (systemConfig.is_tiktok) {
             action.is_tiktok = true
         }
+        Object.keys(systemConfig).forEach(key => {
+            if ((key + '').startsWith('client_config_')) {
+                action[key] = systemConfig[key]
+            }
+        });
         // init action data
         if(action.mobile_percent === undefined || action.mobile_percent === null){
             if (systemConfig.total_rounds_for_change_proxy) {
