@@ -179,6 +179,9 @@ async function initActionData(action) {
     let mobileRate = action.mobile_percent 
     action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
+    if (!action.client_config_allow_change_fb_page) {
+        action.selected_page = true
+    }
     if(action.mobile){
         await setUserAgent(action.pid);
     }
