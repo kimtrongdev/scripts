@@ -238,6 +238,10 @@ async function loadSystemConfig () {
     if (DEBUG) {
         systemConfig.is_stop = false
     }
+
+    if (systemConfig.not_allow_use_proxy) {
+        useProxy = false
+    }
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
 
@@ -621,7 +625,7 @@ async function newProfileManage() {
             RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
             // copy main to clone profile
             let profile = newProfile.profile
-            if (proxy) {
+            if (proxy && useProxy) {
                 proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
                 utils.log('pid', profile.id, 'proxy', proxy[profile.id])
                 if (!proxy[profile.id]) {
