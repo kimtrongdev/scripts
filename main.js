@@ -1,4 +1,4 @@
-const useProxy = true
+let useProxy = true
 let isRunBAT = false
 let isSystemChecking = false
 const TIME_REPORT = 290000
