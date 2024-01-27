@@ -1649,7 +1649,32 @@ async function handleAction (actionData) {
         }
     }
 
-    if (actionData.action == 'SELECT_AVATAR') {
+    if (actionData.action == 'DRAG') {
+        let xTarget = Number(actionData.x) + Number(actionData.sx)
+        let yTarget = Number(actionData.sy)
+
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y}`)
+        execSync(`xdotool mousedown 1`)
+        execSync(`xdotool mousemove ${xTarget / 2} ${yTarget}`)
+        await utils.sleep(2000)
+        execSync(`xdotool mousemove ${xTarget + 10} ${yTarget}`)
+        execSync(`xdotool mousemove ${xTarget + 5} ${yTarget}`)
+        execSync(`xdotool mousemove ${xTarget + -5} ${yTarget}`)
+        execSync(`xdotool mousemove ${xTarget + 2} ${yTarget}`)
+        
+        execSync(`xdotool mouseup 1`)
+        
+        // robot.moveMouse(Number(actionData.x), Number(actionData.y))
+        // robot.mouseToggle('down')
+        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx)/2, Number(actionData.sy))
+        // await utils.sleep(2000)
+        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 10, Number(actionData.sy))
+        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 5, Number(actionData.sy))
+        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + -5, Number(actionData.sy))
+        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 2, Number(actionData.sy))
+        // robot.mouseToggle('up')
+    }
+    else if (actionData.action == 'SELECT_AVATAR') {
         await utils.sleep(5000)
         del.sync([path.resolve('avatar.jpg')], { force: true })
         let avatar = await request_api.getAvatar(actionData.pid,path.resolve('../'),actionData.str)

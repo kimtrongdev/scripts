@@ -509,6 +509,14 @@ function reportMailCode (data) {
     }))
 }
 
+async function userDragRecapcha(pid,selector,element,toX, iframe){
+    console.log('userPasteImage',selector)
+    let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
+    el.scrollIntoViewIfNeeded()
+    let pos = getElementPosition(el,iframe)
+    await updateUserInput(pid,'DRAG',pos.x,pos.y,toX,pos.y,'',selector)
+}
+
 function getPhoneCode (order_id, api_name) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone-code',
         data: { order_id: order_id, api_name: api_name }}, function (response) {
