@@ -50,7 +50,17 @@ async function postFB(action) {
         let contentInput = getElementContainsInnerText('div', ['Create a public post…'], '', 'equal')
         await userType(action.pid, 'input_post_fb', action.content + (action.marketing_link || ''), contentInput)
         await sleep(5000)
-        let postBtn = getElementContainsInnerText('span', ['Post'], '', 'equal')
+        
+        if (Number(action.total_image) > 0) {
+          for (let i = 1; i <= Number(action.total_image); i++) {
+            let curentInput = document.querySelector('div[aria-label="Tạo bài viết công khai..."]') || document.querySelector('div[aria-label="Create a public post…"]')
+            await userPasteImage(action.pid, 'contentInput', curentInput)
+            await sleep(2000)
+          }
+        }
+        await sleep(5000)
+
+        let postBtn = getElementContainsInnerText('span', ['Post', 'Đăng'], '', 'equal')
         await userClick(action.pid, 'postBtn', postBtn)
 
         await sleep(13000)

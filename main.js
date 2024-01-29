@@ -1635,6 +1635,22 @@ function initExpress() {
     })
 }
 
+async function getRandomImagePath(returnFile = false) {
+    let fileName = Date.now() + '.jpg'
+    let fimg = await request_api.getRandomImage()
+    if (fimg) {
+        let fetchedImage = await request({ uri: fimg.path, encoding: null })
+        if (returnFile) {
+            return fetchedImage
+        }
+        if (!fs.existsSync('./images')) {
+            fs.mkdirSync('images')
+        }
+        fs.writeFileSync('./images/' + fileName, fetchedImage);
+        return path.resolve('./images/' + fileName)
+    }
+}
+
 async function handleAction (actionData) {
     if (isPauseAction) {
         res.send({ rs: 'ok' })
@@ -1664,7 +1680,15 @@ async function handleAction (actionData) {
         }
     }
 
-    if (actionData.action == 'DRAG') {
+    if (actionData.action == 'PASTE_IMAGE') {
+        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool click 1`)
+
+        let fileImage = await getRandomImagePath(true)
+        clipboardy.writeSync(fileImage)
+
+        execSync(`xdotool key Control_L+v`)
+    }
+    else if (actionData.action == 'DRAG') {
         let xTarget = Number(actionData.x) + Number(actionData.sx)
         let yTarget = Number(actionData.sy)
 
