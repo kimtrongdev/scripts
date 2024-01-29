@@ -1683,9 +1683,9 @@ async function handleAction (actionData) {
     if (actionData.action == 'PASTE_IMAGE') {
         execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool click 1`)
 
-        let fileImage = await getRandomImagePath(true)
-        clipboardy.writeSync(fileImage)
+        let filePath = await getRandomImagePath()
 
+        execSync(`xclip -selection clipboard -t image/png -i ${filePath}`)
         execSync(`xdotool key Control_L+v`)
     }
     else if (actionData.action == 'DRAG') {
