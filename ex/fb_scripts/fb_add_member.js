@@ -21,7 +21,7 @@ async function fbAddMember(action) {
     else {
       await sleep(2000)
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      let btn = getElementContainsInnerText('span', ['Join group'], '', 'equal')
+      let btn = getElementContainsInnerText('span', ['Join Group', 'Join group'], '', 'equal')
 
       if (btn) {
         await userClick(action.pid, 'join btn', btn)
