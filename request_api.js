@@ -12,7 +12,7 @@ function rq (data) {
 
 module.exports = {
     getRandomImage: async function () {
-        return await rq({ uri: SUB_URL + '/media/random-image', encoding: null })
+        return await rq({ uri: SUB_URL + '/api/media/random-image', encoding: null })
     },
     reportFBGroup: async function (groupLink, groupTopic) {
         return await rq({method: 'POST', uri: SUB_URL + '/api/script/report-fb-group', body: { group_link: groupLink, fb_topic_code: groupTopic }, json: true})
