@@ -155,3 +155,53 @@ async function handleRegPage (action) {
   await userClick(action.pid, 'createPageBtn', createPageBtn)
   await sleep(15000)
 }
+
+async function fbUpdateInfo(action) {
+  try {
+    reportLive(action.pid)
+    let url = window.location.toString()
+
+    if (url == 'https://www.facebook.com/') {
+      await goToLocation(action.pid, 'https://www.facebook.com/profile.php')
+    }
+    else if (url.includes('facebook.com/profile.php')) {
+      let editBtn = getElementContainsInnerText('span', ['Chỉnh sửa trang cá nhân'], '', 'equal')
+      if (editBtn) {
+        await userClick(action.pid, 'editBtn', editBtn)
+        await sleep(4000)
+        const editStoryBtn = document.querySelector('div[aria-label="Chỉnh sửa tiểu sử"] > span > span')
+        if (editStoryBtn) {
+          await userClick(action.pid, 'editStoryBtn', editStoryBtn)
+          await sleep(2000)
+          let storyInput = document.querySelector('textarea[aria-label="Nhập phần tiểu sử"]')
+          if (storyInput) {
+            await userType(action.pid, 'storyInput', action.info_description, storyInput)
+            await sleep(2000)
+            const saveStoryBtn = document.querySelector('div[aria-label="Lưu"]')
+            if (saveStoryBtn) {
+              await userClick(action.pid, 'saveStoryBtn', saveStoryBtn)
+            }
+          }
+        }
+
+        let editAvatarBtn = document.querySelector('div[aria-label="Thêm ảnh đại diện"] > span > span')
+        if (editAvatarBtn) {
+          await userClick(action.pid, 'editAvatarBtn', editAvatarBtn)
+          await sleep(4000)
+          await userClick(action.pid, 'div[aria-label="Tải ảnh lên"]')
+          await userSelectAvatar(action.pid, '')
+          await sleep(10000)
+          let saveBtn = document.querySelector('div[aria-label="Chọn ảnh đại diện"] div[aria-label="Lưu"]')
+          await userClick(action.pid, 'saveBtn', saveBtn)
+          await sleep(10000)
+        }
+      }
+
+      await sleep(10000)
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+    }
+  }
+  catch (e) {
+    await reportScript(action, 0)
+  }
+}

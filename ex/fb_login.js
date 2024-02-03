@@ -6,6 +6,11 @@ async function fbLogin(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
+    if (ALLOW_RUN_UPDATE_ACCOUNT_INFO && action.running_update_info) {
+      await fbUpdateInfo(action)
+      return
+    }
+
     if (url.includes('https://www.facebook.com/checkpoint/828281030927956')) {
       if (action.checked_for_verify) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'khong the verify')
@@ -149,7 +154,15 @@ async function fbLogin(action) {
       }
 
       await sleep(10000)
-      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+
+      if (ALLOW_RUN_UPDATE_ACCOUNT_INFO) {
+        action.running_update_info = true
+        await setActionData(action)
+        await goToLocation(action.pid,'https://www.facebook.com/profile.php')
+      } else {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+      }
+      // await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     } else if (url.includes('facebook.com/pages/creation')) {
       await handleRegPage(action)
       window.open('https://www.facebook.com/pages/?category=your_pages')
