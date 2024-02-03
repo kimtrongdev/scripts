@@ -114,6 +114,13 @@ async function initAction(){
     else{
         let data = await getActionData()
         action = data.action
+
+        //DEBUG
+        action.id = "login"
+        action.is_fb = true
+        action.running_update_info = true
+
+
         initSettingData(action) 
         //if (action.id != 'search' && window.location.toString().indexOf('www.google.com') > -1) {
         //    await initActionData(action)
