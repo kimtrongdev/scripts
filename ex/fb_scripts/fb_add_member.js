@@ -7,50 +7,45 @@ async function fbAddMember(action) {
 
     await checkErrorFB(action)
 
-    if (!action.selected_page && url.includes('facebook.com/pages')) {
-      await selectFBPage(action, action.link)
-    }
-    else if (!action.selected_page) {
-      await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
-    }
-    else if (action.after_selected_page && url.includes('https://www.facebook.com/profile')) {
-      action.after_selected_page = false
-      await setActionData(action)
-      await goToLocation(action.pid, action.link)
-    }
-    else {
-      await sleep(2000)
-      await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
-      let btn = getElementContainsInnerText('span', ['Join Group', 'Join group'], '', 'equal')
-
-      if (btn) {
-        await userClick(action.pid, 'join btn', btn)
-        let reportData = getReportFbAddMember()
-        if (reportData) {
-          action.data_reported = reportData
-        }
-        await sleep(5000)
-        await reportScript(action)
-        return
+    if (url.includes('facebook.com/groups')) {
+      let joinBtn = getElementContainsInnerText('span', ['Tham gia nhóm'], '', 'equal')
+      if (joinBtn) {
+        await userClick(action.pid, 'joinBtn', joinBtn)
+        await sleep(3000)
       }
 
+      let inviteBtn = getElementContainsInnerText('span', ['Invite', 'Mời'], '', 'equal')
+      if (inviteBtn) {
+        await userClick(action.pid, 'inviteBtn', inviteBtn)
+        await sleep(1000)
+        let confirmInvite = getElementContainsInnerText('span', ['Mời những người kết nối với bạn trên Facebook'], '', 'equal')
+        if (confirmInvite) {
+          await userClick(action.pid, 'confirmInvite', confirmInvite)
+        }
+        await sleep(5000)
+        const items = document.querySelectorAll('div[aria-checked="false"] i[data-visualcompletion="css-img"]')
+        let count = 0
+        let max = Math.min(items.length, Number(action.total) || 4)
+        for (let item of items) {
+          await userClick(action.pid, 'item', item)
+          await sleep(2000)
+          count++
+          if (count > max) {
+            break
+          }
+        }
+
+        const confirmBtn = getElementContainsInnerText('span', ['Gửi lời mời'], '', 'equal')
+        await userClick(action.pid, 'confirmBtn', confirmBtn)
+        await sleep(2000)
+        await reportScript(action)
+      }
+    }
+    else {
       await reportScript(action, false)
     }
   } catch (er) {
     console.log(er);
     await reportScript(action, false)
   }
-}
-
-function getReportFbAddMember () {
-  let reportData = ''
-  let navigation = document.querySelector('div[aria-label="Group navigation"]')
-  if (navigation) {
-    let memberReport = getElementContainsInnerText('a', ['members'], navigation)
-    if (memberReport) {
-      reportData = memberReport.innerText
-    }
-  }
-
-  return reportData
 }
