@@ -165,36 +165,41 @@ async function fbUpdateInfo(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/profile.php')
     }
     else if (url.includes('facebook.com/profile.php')) {
-      let editBtn = getElementContainsInnerText('span', ['Chỉnh sửa trang cá nhân'], '', 'equal')
-      if (editBtn) {
-        await userClick(action.pid, 'editBtn', editBtn)
-        await sleep(4000)
-        const editStoryBtn = document.querySelector('div[aria-label="Chỉnh sửa tiểu sử"] > span > span')
-        if (editStoryBtn) {
-          await userClick(action.pid, 'editStoryBtn', editStoryBtn)
-          await sleep(2000)
-          let storyInput = document.querySelector('textarea[aria-label="Nhập phần tiểu sử"]')
-          if (storyInput) {
-            await userType(action.pid, 'storyInput', action.info_description, storyInput)
+      try {
+        let editBtn = getElementContainsInnerText('span', ['Edit profile', 'Chỉnh sửa trang cá nhân'], '', 'equal')
+        if (editBtn) {
+          await userClick(action.pid, 'editBtn', editBtn)
+          await sleep(4000)
+          const editStoryBtn = document.querySelector('div[aria-label="Add Bio"] > span > span') || document.querySelector('div[aria-label="Chỉnh sửa tiểu sử"] > span > span')
+          if (editStoryBtn) {
+            await userClick(action.pid, 'editStoryBtn', editStoryBtn)
             await sleep(2000)
-            const saveStoryBtn = document.querySelector('div[aria-label="Lưu"]')
-            if (saveStoryBtn) {
-              await userClick(action.pid, 'saveStoryBtn', saveStoryBtn)
+            let storyInput = document.querySelector('textarea[aria-label="Describe who you are"]') || document.querySelector('textarea[aria-label="Nhập phần tiểu sử"]')
+            if (storyInput) {
+              await userType(action.pid, 'storyInput', action.info_description, storyInput)
+              await sleep(2000)
+              const saveStoryBtn = document.querySelector('div[aria-label="Save"]') || document.querySelector('div[aria-label="Lưu"]')
+              if (saveStoryBtn) {
+                await userClick(action.pid, 'saveStoryBtn', saveStoryBtn)
+              }
             }
           }
-        }
 
-        let editAvatarBtn = document.querySelector('div[aria-label="Thêm ảnh đại diện"] > span > span')
-        if (editAvatarBtn) {
-          await userClick(action.pid, 'editAvatarBtn', editAvatarBtn)
-          await sleep(4000)
-          await userClick(action.pid, 'div[aria-label="Tải ảnh lên"]')
-          await userSelectAvatar(action.pid, '')
-          await sleep(10000)
-          let saveBtn = document.querySelector('div[aria-label="Chọn ảnh đại diện"] div[aria-label="Lưu"]')
-          await userClick(action.pid, 'saveBtn', saveBtn)
-          await sleep(10000)
+          let editAvatarBtn = document.querySelector('div[aria-label="Add profile picture"] > span > span') || document.querySelector('div[aria-label="Thêm ảnh đại diện"] > span > span')
+          if (editAvatarBtn) {
+            await userClick(action.pid, 'editAvatarBtn', editAvatarBtn)
+            await sleep(4000)
+            let uploadPhotoBtn = document.querySelector('div[aria-label="Upload Photo"]') || document.querySelector('div[aria-label="Tải ảnh lên"]')
+            await userClick(action.pid, 'uploadPhotoBtn', uploadPhotoBtn)
+            await userSelectAvatar(action.pid, '')
+            await sleep(10000)
+            let saveBtn = document.querySelector('div[aria-label="Choose profile picture"] div[aria-label="Save"]') || document.querySelector('div[aria-label="Chọn ảnh đại diện"] div[aria-label="Lưu"]')
+            await userClick(action.pid, 'saveBtn', saveBtn)
+            await sleep(10000)
+          }
         }
+      } catch (error) {
+        console.log(error)
       }
 
       await sleep(10000)
