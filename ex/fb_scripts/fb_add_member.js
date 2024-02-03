@@ -8,7 +8,7 @@ async function fbAddMember(action) {
     await checkErrorFB(action)
 
     if (url.includes('facebook.com/groups')) {
-      let joinBtn = getElementContainsInnerText('span', ['Tham gia nhóm'], '', 'equal')
+      let joinBtn = getElementContainsInnerText('span', ['Tham gia nhóm', 'Join Group'], '', 'equal')
       if (joinBtn) {
         await userClick(action.pid, 'joinBtn', joinBtn)
         await sleep(3000)
@@ -35,7 +35,7 @@ async function fbAddMember(action) {
           }
         }
 
-        const confirmBtn = getElementContainsInnerText('span', ['Gửi lời mời'], '', 'equal')
+        const confirmBtn = getElementContainsInnerText('span', ['Send Invitations', 'Gửi lời mời'], '', 'equal')
         await userClick(action.pid, 'confirmBtn', confirmBtn)
         await sleep(2000)
         await reportScript(action)
