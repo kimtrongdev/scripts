@@ -176,7 +176,7 @@ async function fbUpdateInfo(action) {
         if (avataItem) {
           await userClick(action.pid, 'avataItem', avataItem)
           await sleep(1000)
-          let uploadNewPhotoBtn = getElementContainsInnerText('span', ['Upload new photo'], '', 'equal')
+          let uploadNewPhotoBtn = getElementContainsInnerText('div', ['Upload new photo'], '', 'equal')
           await userClick(action.pid, 'uploadNewPhotoBtn', uploadNewPhotoBtn)
           await userSelectAvatar(action.pid, '')
           await sleep(10000)
