@@ -164,6 +164,32 @@ async function fbUpdateInfo(action) {
     if (url == 'https://www.facebook.com/') {
       await goToLocation(action.pid, 'https://www.facebook.com/profile.php')
     }
+    else if (url.includes('accountscenter.facebook.com/profiles')) {
+      let profiles = document.querySelectorAll('a[href^="/profiles"]')
+      if (profiles) {
+        let profile = profiles.pop()
+        await userClick(action.pid, 'profile', profile)
+        await sleep(4000)
+        let nameItem = document.querySelector('a[href*="/name/"]')
+        if (nameItem) {
+          await userClick(action.pid, 'nameItem', nameItem)
+          await userType(action.pid,'input[id=":rn:"]', action.first_name)
+          await userType(action.pid,'input[id=":rt:"]', action.last_name)
+
+          let reviewBtn = getElementContainsInnerText('span', ['Review changes', 'Xem lại thay đổi'], '', 'equal')
+          await userClick(action.pid, 'reviewBtn', reviewBtn)
+          await sleep(2000)
+          let doneBtn = getElementContainsInnerText('span', ['Done', 'Xong'], '', 'equal')
+          await userClick(action.pid, 'doneBtn', doneBtn)
+          await sleep(2000)
+          let continueBtn = getElementContainsInnerText('span', ['Continue', 'Tiếp tục'], '', 'equal')
+          if (continueBtn) {
+            await userClick(action.pid, 'continueBtn', continueBtn)
+            
+          }
+        }
+      }
+    }
     else if (url.includes('facebook.com/profile.php')) {
       try {
         let editBtn = getElementContainsInnerText('span', ['Edit profile', 'Chỉnh sửa trang cá nhân'], '', 'equal')
@@ -198,6 +224,8 @@ async function fbUpdateInfo(action) {
             await sleep(10000)
           }
         }
+
+        await goToLocation(action.pid, 'https://accountscenter.facebook.com/profiles')
       } catch (error) {
         console.log(error)
       }
