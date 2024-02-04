@@ -165,6 +165,7 @@ async function fbUpdateInfo(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/profile.php')
     }
     else if (url.includes('accountscenter.facebook.com/profiles')) {
+      await sleep(900000)
       let profiles = document.querySelectorAll('a[href^="/profiles"]')
       if (profiles) {
         let profile = profiles.pop()
@@ -185,7 +186,7 @@ async function fbUpdateInfo(action) {
           let continueBtn = getElementContainsInnerText('span', ['Continue', 'Tiếp tục'], '', 'equal')
           if (continueBtn) {
             await userClick(action.pid, 'continueBtn', continueBtn)
-            
+
           }
         }
       }
