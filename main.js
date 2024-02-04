@@ -1718,7 +1718,7 @@ async function handleAction (actionData) {
         //del.sync([path.resolve('avatar.jpg')], { force: true })
         //let avatar = await request_api.getAvatar(actionData.pid,path.resolve('../'),actionData.str)
 
-        if(true && avatar){
+        if(true){
             await utils.sleep(5000)
             execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 2`)
             execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
