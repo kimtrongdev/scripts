@@ -1715,8 +1715,8 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'SELECT_AVATAR') {
         await utils.sleep(5000)
-        del.sync([path.resolve('avatar.jpg')], { force: true })
-        let avatar = await request_api.getAvatar(actionData.pid,path.resolve('../'),actionData.str)
+        //del.sync([path.resolve('avatar.jpg')], { force: true })
+        //let avatar = await request_api.getAvatar(actionData.pid,path.resolve('../'),actionData.str)
 
         if(true && avatar){
             await utils.sleep(5000)

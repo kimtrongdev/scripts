@@ -165,28 +165,40 @@ async function fbUpdateInfo(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/profile.php')
     }
     else if (url.includes('accountscenter.facebook.com/profiles')) {
-      await sleep(900000)
-      let profiles = document.querySelectorAll('a[href^="/profiles"]')
+      let profiles = [...document.querySelectorAll('a[href^="/profiles"]')]
       if (profiles) {
         let profile = profiles.pop()
         await userClick(action.pid, 'profile', profile)
         await sleep(4000)
-        let nameItem = document.querySelector('a[href*="/name/"]')
-        if (nameItem) {
-          await userClick(action.pid, 'nameItem', nameItem)
-          await userType(action.pid,'input[id=":rn:"]', action.first_name)
-          await userType(action.pid,'input[id=":rt:"]', action.last_name)
 
-          let reviewBtn = getElementContainsInnerText('span', ['Review changes', 'Xem lại thay đổi'], '', 'equal')
-          await userClick(action.pid, 'reviewBtn', reviewBtn)
-          await sleep(2000)
-          let doneBtn = getElementContainsInnerText('span', ['Done', 'Xong'], '', 'equal')
-          await userClick(action.pid, 'doneBtn', doneBtn)
-          await sleep(2000)
-          let continueBtn = getElementContainsInnerText('span', ['Continue', 'Tiếp tục'], '', 'equal')
-          if (continueBtn) {
-            await userClick(action.pid, 'continueBtn', continueBtn)
+        // update image
+        let avataItem = document.querySelector('a[href*="/photo/manage/"]')
+        if (avataItem) {
+          await userClick(action.pid, 'avataItem', avataItem)
+          await sleep(1000)
+          let uploadNewPhotoBtn = getElementContainsInnerText('span', ['Upload new photo'], '', 'equal')
+          await userClick(action.pid, 'uploadNewPhotoBtn', uploadNewPhotoBtn)
+          await userSelectAvatar(action.pid, '')
+          await sleep(10000)
+        }
 
+        // update name
+        if (action.first_name || action.last_name) {
+          let nameItem = document.querySelector('a[href*="/name/"]')
+          if (nameItem) {
+            await userClick(action.pid, 'nameItem', nameItem)
+            await sleep(1000)
+            let firstNameInput = document.querySelectorAll('input').item(0)
+            await userType(action.pid,'firstNameInput', action.first_name, firstNameInput)
+            let lastNameInput = document.querySelectorAll('input').item(2)
+            await userType(action.pid,'lastNameInput', action.last_name, lastNameInput)
+
+            let reviewBtn = getElementContainsInnerText('span', ['Review Change', 'Xem lại thay đổi'], '', 'equal')
+            await userClick(action.pid, 'reviewBtn', reviewBtn)
+            await sleep(2000)
+            let doneBtn = getElementContainsInnerText('span', ['Done', 'Xong'], '', 'equal')
+            await userClick(action.pid, 'doneBtn', doneBtn)
+            await sleep(4000)
           }
         }
       }
