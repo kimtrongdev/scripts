@@ -188,7 +188,7 @@ async function fbUpdateInfo(action) {
               await userType(action.pid,'lastNameInput', action.client_config_fb_last_name, lastNameInput)
             }
 
-            let reviewBtn = getElementContainsInnerText('span', ['Review Change', 'Xem lại thay đổi'], '', 'equal')
+            let reviewBtn = getElementContainsInnerText('span', ['Review change', 'Review Change', 'Xem lại thay đổi'], '', 'equal')
             await userClick(action.pid, 'reviewBtn', reviewBtn)
             await sleep(2000)
             let doneBtn = getElementContainsInnerText('span', ['Done', 'Xong'], '', 'equal')
