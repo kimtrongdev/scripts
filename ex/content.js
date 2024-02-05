@@ -17,6 +17,7 @@ var widthCustom = 0
 var heightCustom = 0
 var IS_MOBILE = false
 var ALLOW_RUN_UPDATE_ACCOUNT_INFO = true
+var IS_PREVENT_CHANGE_URL = false
 async function loadPage(){
     try{
         await sleep(4000)
@@ -67,6 +68,9 @@ window.addEventListener('load', _ => {
 
 let oldURL = "";
 function checkURLchange(currentURL){
+    if (IS_PREVENT_CHANGE_URL) {
+        return
+    }
     if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange > 3000 && !(oldURL.includes('google.com/maps') && currentURL.includes('google.com/maps/@'))){
         console.log('oldURL:',oldURL,'currentURL:',currentURL,lastChange,Date.now())
         console.log('url changed:',currentURL)

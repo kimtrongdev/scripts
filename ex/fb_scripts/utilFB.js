@@ -165,6 +165,7 @@ async function fbUpdateInfo(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/profile.php')
     }
     else if (url.includes('accountscenter.facebook.com/profiles')) {
+      IS_PREVENT_CHANGE_URL = true
       let profiles = [...document.querySelectorAll('a[href^="/profiles"]')]
       if (profiles) {
         let profile = profiles.pop()
@@ -207,6 +208,7 @@ async function fbUpdateInfo(action) {
           }
         }
       }
+      IS_PREVENT_CHANGE_URL = false
     }
     else if (url.includes('facebook.com/profile.php')) {
       try {
