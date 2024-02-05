@@ -8,6 +8,7 @@ let EXPIRED_TIME = 200000
 const request = require('request-promise')
 const request2 = require('request').defaults({ encoding: null });
 let totalRoundForChangeProxy = 5
+const robot = require('robotjs')
 let countRun = 0
 let isPauseAction = false
 let isAfterReboot = false
@@ -1714,10 +1715,12 @@ async function handleAction (actionData) {
         // robot.mouseToggle('up')
     }
     else if (actionData.action == 'SELECT_AVATAR') {
-        await utils.sleep(5000)
-        
-        execSync(`xdotool key KP_Enter`)
-        await utils.sleep(5000)
+        await utils.sleep(7000)
+        robot.moveMouse(500, 500)
+        robot.mouseClick('left')
+
+        //execSync(`xdotool key KP_Enter`)
+        await utils.sleep(2000)
         execSync(`xdotool type "${path.resolve('avatar.jpg')}" && sleep 1 && xdotool key KP_Enter`)
 
         //del.sync([path.resolve('avatar.jpg')], { force: true })
