@@ -173,15 +173,15 @@ async function fbUpdateInfo(action) {
         await sleep(4000)
 
         // update image
-        let avataItem = document.querySelector('a[href*="/photo/manage/"]')
-        if (avataItem) {
-          await userClick(action.pid, 'avataItem', avataItem)
-          await sleep(1000)
-          let uploadNewPhotoBtn = getElementContainsInnerText('div', ['Upload new photo'], '', 'equal')
-          await userClick(action.pid, 'uploadNewPhotoBtn', uploadNewPhotoBtn)
-          await userSelectAvatar(action.pid, '')
-          await sleep(10000)
-        }
+        // let avataItem = document.querySelector('a[href*="/photo/manage/"]')
+        // if (avataItem) {
+        //   await userClick(action.pid, 'avataItem', avataItem)
+        //   await sleep(1000)
+        //   let uploadNewPhotoBtn = getElementContainsInnerText('div', ['Upload new photo'], '', 'equal')
+        //   await userClick(action.pid, 'uploadNewPhotoBtn', uploadNewPhotoBtn)
+        //   await userSelectAvatar(action.pid, '')
+        //   await sleep(10000)
+        // }
 
         // update name
         if (action.client_config_fb_fisrt_name || action.client_config_fb_last_name) {
