@@ -6,7 +6,7 @@ async function fbLogin(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    if (ALLOW_RUN_UPDATE_ACCOUNT_INFO && action.running_update_info) {
+    if (ALLOW_RUN_UPDATE_ACCOUNT_INFO && action.running_update_info && action.client_config_allow_change_fb_info) {
       await fbUpdateInfo(action)
       return
     }
@@ -155,7 +155,7 @@ async function fbLogin(action) {
 
       await sleep(10000)
 
-      if (ALLOW_RUN_UPDATE_ACCOUNT_INFO) {
+      if (ALLOW_RUN_UPDATE_ACCOUNT_INFO && action.client_config_allow_change_fb_info) {
         action.running_update_info = true
         await setActionData(action)
         await goToLocation(action.pid,'https://www.facebook.com/profile.php')

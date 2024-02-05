@@ -183,15 +183,20 @@ async function fbUpdateInfo(action) {
         }
 
         // update name
-        if (action.first_name || action.last_name) {
+        if (action.client_config_fb_fisrt_name || action.client_config_fb_last_name) {
           let nameItem = document.querySelector('a[href*="/name/"]')
           if (nameItem) {
             await userClick(action.pid, 'nameItem', nameItem)
             await sleep(1000)
-            let firstNameInput = document.querySelectorAll('input').item(0)
-            await userType(action.pid,'firstNameInput', action.first_name, firstNameInput)
-            let lastNameInput = document.querySelectorAll('input').item(2)
-            await userType(action.pid,'lastNameInput', action.last_name, lastNameInput)
+            if (action.client_config_fb_fisrt_name) {
+              let firstNameInput = document.querySelectorAll('input').item(0)
+              await userType(action.pid,'firstNameInput', action.client_config_fb_fisrt_name, firstNameInput)
+            }
+            
+            if (action.client_config_fb_last_name) {
+              let lastNameInput = document.querySelectorAll('input').item(2)
+              await userType(action.pid,'lastNameInput', action.client_config_fb_last_name, lastNameInput)
+            }
 
             let reviewBtn = getElementContainsInnerText('span', ['Review Change', 'Xem lại thay đổi'], '', 'equal')
             await userClick(action.pid, 'reviewBtn', reviewBtn)
