@@ -211,7 +211,7 @@ async function fbUpdateInfo(action) {
           if (editStoryBtn) {
             await userClick(action.pid, 'editStoryBtn', editStoryBtn)
             await sleep(4000)
-            let storyInput = document.querySelector('textarea[aria-label="Describe who you are"]') || document.querySelector('textarea[aria-label="Nhập phần tiểu sử"]')
+            let storyInput = document.querySelector('textarea[aria-label="Enter bio text"]') || document.querySelector('textarea[aria-label="Nhập phần tiểu sử"]')
             if (storyInput) {
               await userType(action.pid, 'storyInput', action.info_description, storyInput)
               await sleep(2000)
