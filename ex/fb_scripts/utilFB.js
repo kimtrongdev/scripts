@@ -235,7 +235,7 @@ async function fbUpdateInfo(action) {
           if (editAvatarBtn) {
             await userClick(action.pid, 'editAvatarBtn', editAvatarBtn)
             await sleep(4000)
-            let uploadPhotoBtn = document.querySelector('div[aria-label="Upload Photo"]') || document.querySelector('div[aria-label="Tải ảnh lên"]')
+            let uploadPhotoBtn = document.querySelector('div[aria-label="Upload photo"]') || document.querySelector('div[aria-label="Upload Photo"]') || document.querySelector('div[aria-label="Tải ảnh lên"]')
             await userClick(action.pid, 'uploadPhotoBtn', uploadPhotoBtn)
             await userSelectAvatar(action.pid, '')
             await sleep(10000)
