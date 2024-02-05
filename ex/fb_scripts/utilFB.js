@@ -207,6 +207,8 @@ async function fbUpdateInfo(action) {
           await sleep(4000)
           const editStoryBtn =  document.querySelector('div[aria-label="Add bio"] > span > span') || 
                                 document.querySelector('div[aria-label="Add Bio"] > span > span') || 
+                                document.querySelector('div[aria-label="Edit bio"] > span > span') || 
+                                document.querySelector('div[aria-label="Edit Bio"] > span > span') || 
                                 document.querySelector('div[aria-label="Chỉnh sửa tiểu sử"] > span > span')
           if (editStoryBtn) {
             await userClick(action.pid, 'editStoryBtn', editStoryBtn)
