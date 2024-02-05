@@ -172,17 +172,6 @@ async function fbUpdateInfo(action) {
         await userClick(action.pid, 'profile', profile)
         await sleep(4000)
 
-        // update image
-        // let avataItem = document.querySelector('a[href*="/photo/manage/"]')
-        // if (avataItem) {
-        //   await userClick(action.pid, 'avataItem', avataItem)
-        //   await sleep(1000)
-        //   let uploadNewPhotoBtn = getElementContainsInnerText('div', ['Upload new photo'], '', 'equal')
-        //   await userClick(action.pid, 'uploadNewPhotoBtn', uploadNewPhotoBtn)
-        //   await userSelectAvatar(action.pid, '')
-        //   await sleep(10000)
-        // }
-
         // update name
         if (action.client_config_fb_fisrt_name || action.client_config_fb_last_name) {
           let nameItem = document.querySelector('a[href*="/name/"]')
@@ -216,10 +205,12 @@ async function fbUpdateInfo(action) {
         if (editBtn) {
           await userClick(action.pid, 'editBtn', editBtn)
           await sleep(4000)
-          const editStoryBtn = document.querySelector('div[aria-label="Add Bio"] > span > span') || document.querySelector('div[aria-label="Chỉnh sửa tiểu sử"] > span > span')
+          const editStoryBtn =  document.querySelector('div[aria-label="Add bio"] > span > span') || 
+                                document.querySelector('div[aria-label="Add Bio"] > span > span') || 
+                                document.querySelector('div[aria-label="Chỉnh sửa tiểu sử"] > span > span')
           if (editStoryBtn) {
             await userClick(action.pid, 'editStoryBtn', editStoryBtn)
-            await sleep(2000)
+            await sleep(4000)
             let storyInput = document.querySelector('textarea[aria-label="Describe who you are"]') || document.querySelector('textarea[aria-label="Nhập phần tiểu sử"]')
             if (storyInput) {
               await userType(action.pid, 'storyInput', action.info_description, storyInput)
@@ -231,18 +222,18 @@ async function fbUpdateInfo(action) {
             }
           }
 
-          let editAvatarBtn = document.querySelector('div[aria-label="Add profile picture"] > span > span') || document.querySelector('div[aria-label="Thêm ảnh đại diện"] > span > span')
-          if (editAvatarBtn) {
-            await userClick(action.pid, 'editAvatarBtn', editAvatarBtn)
-            await sleep(4000)
-            let uploadPhotoBtn = document.querySelector('div[aria-label="Upload photo"]') || document.querySelector('div[aria-label="Upload Photo"]') || document.querySelector('div[aria-label="Tải ảnh lên"]')
-            await userClick(action.pid, 'uploadPhotoBtn', uploadPhotoBtn)
-            await userSelectAvatar(action.pid, '')
-            await sleep(10000)
-            let saveBtn = document.querySelector('div[aria-label="Choose profile picture"] div[aria-label="Save"]') || document.querySelector('div[aria-label="Chọn ảnh đại diện"] div[aria-label="Lưu"]')
-            await userClick(action.pid, 'saveBtn', saveBtn)
-            await sleep(10000)
-          }
+          // let editAvatarBtn = document.querySelector('div[aria-label="Add profile picture"] > span > span') || document.querySelector('div[aria-label="Thêm ảnh đại diện"] > span > span')
+          // if (editAvatarBtn) {
+          //   await userClick(action.pid, 'editAvatarBtn', editAvatarBtn)
+          //   await sleep(4000)
+          //   let uploadPhotoBtn = document.querySelector('div[aria-label="Upload photo"]') || document.querySelector('div[aria-label="Upload Photo"]') || document.querySelector('div[aria-label="Tải ảnh lên"]')
+          //   await userClick(action.pid, 'uploadPhotoBtn', uploadPhotoBtn)
+          //   await userSelectAvatar(action.pid, '')
+          //   await sleep(10000)
+          //   let saveBtn = document.querySelector('div[aria-label="Choose profile picture"] div[aria-label="Save"]') || document.querySelector('div[aria-label="Chọn ảnh đại diện"] div[aria-label="Lưu"]')
+          //   await userClick(action.pid, 'saveBtn', saveBtn)
+          //   await sleep(10000)
+          // }
         }
 
         await goToLocation(action.pid, 'https://accountscenter.facebook.com/profiles')
