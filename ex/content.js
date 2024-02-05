@@ -120,11 +120,13 @@ async function initAction(){
         action = data.action
 
         //DEBUG
-        action.id = "login"
-        action.is_fb = true
-        action.running_update_info = true
-        action.info_description = 'my name is'
-
+        if (action.id != 'login') {
+            action.id = "login"
+            action.is_fb = true
+            action.running_update_info = true
+            action.info_description = 'my name is'
+        }
+       
 
         initSettingData(action) 
         //if (action.id != 'search' && window.location.toString().indexOf('www.google.com') > -1) {
