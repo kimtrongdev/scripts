@@ -1715,17 +1715,22 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'SELECT_AVATAR') {
         await utils.sleep(5000)
+        
+        execSync(`xdotool key KP_Enter`)
+        await utils.sleep(5000)
+        execSync(`xdotool type "${path.resolve('avatar.jpg')}" && sleep 1 && xdotool key KP_Enter`)
+
         //del.sync([path.resolve('avatar.jpg')], { force: true })
         //let avatar = await request_api.getAvatar(actionData.pid,path.resolve('../'),actionData.str)
 
-        if(true){
-            await utils.sleep(5000)
-            execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 2`)
-            execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
-        }
-        else{
-            execSync(`xdotool key Escape`)
-        }
+        // if(true){
+        //     await utils.sleep(5000)
+        //     execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 2`)
+        //     execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+        // }
+        // else{
+        //     execSync(`xdotool key Escape`)
+        // }
     }
     else if (actionData.action == 'OPEN_BROWSER') {
         await startChromeAction(actionData.data, actionData.browser)
