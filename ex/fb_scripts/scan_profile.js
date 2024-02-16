@@ -34,6 +34,7 @@ async function scanProfile(action) {
           groups = [...groups]
           let currentPos = groups.length - reportedCount
           if (currentPos > 50) {
+            reportLive(action.pid)
             groupLinks = []
             let pageGroup = groups.splice(reportedCount, 50)
             reportedCount = reportedCount + 50
@@ -63,35 +64,7 @@ async function scanProfile(action) {
         console.log('error', error);
       }
 
-      // groups = [...groups]
-      // try {
-      //   while (groups.length) {
-      //     groupLinks = []
-      //     let pageGroup = groups.splice(0, 100)
-      //     pageGroup.forEach(element => {
-      //       let pID = element.href
-      //       if (pID) {
-      //         pID = pID.split("user/").pop()
-      //         if (pID) {
-      //           pID = pID.replace('/', '')
-      //           if (pID) {
-      //             groupLinks.push(pID)
-      //           }
-      //         }
-      //       }
-      //     })
-      //     if (groupLinks.length) {
-      //       action.group_link = 'PID_' + groupLinks.join(',')
-      //       await reportFBGroup(action)
-      //     }
-      //     await sleep(3000)
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      //   await sleep(100000)
-      // }
-
-      //await reportScript(action)
+      await reportScript(action)
     }
     else {
       await reportScript(action, false)
