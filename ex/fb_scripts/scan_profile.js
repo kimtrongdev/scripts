@@ -23,13 +23,37 @@ async function scanProfile(action) {
       let groups = document.querySelectorAll(groupQR)
       let groupLinks = []
       let currentLenth = groups.length
-
+      let reportedCount = 0
       try {
         while (groups.length < 1000) {
           currentLenth = groups.length
           await userScroll(action.pid, 50)
           await sleep(5000)
           groups = document.querySelectorAll(groupQR)
+
+          groups = [...groups]
+          let currentPos = groups.length - reportedCount
+          if (currentPos > 50) {
+            groupLinks = []
+            let pageGroup = groups.splice(currentPos, 50)
+            pageGroup.forEach(element => {
+              let pID = element.href
+              if (pID) {
+                pID = pID.split("user/").pop()
+                if (pID) {
+                  pID = pID.replace('/', '')
+                  if (pID) {
+                    groupLinks.push(pID)
+                  }
+                }
+              }
+            })
+            if (groupLinks.length) {
+              action.group_link = 'PID_' + groupLinks.join(',')
+              await reportFBGroup(action)
+            }
+          }
+
           if (groups.length <= currentLenth) {
             break
           }
@@ -38,33 +62,33 @@ async function scanProfile(action) {
         console.log('error', error);
       }
 
-      groups = [...groups]
-      try {
-        while (groups.length) {
-          groupLinks = []
-          let pageGroup = groups.splice(0, 100)
-          pageGroup.forEach(element => {
-            let pID = element.href
-            if (pID) {
-              pID = pID.split("user/").pop()
-              if (pID) {
-                pID = pID.replace('/', '')
-                if (pID) {
-                  groupLinks.push(pID)
-                }
-              }
-            }
-          })
-          if (groupLinks.length) {
-            action.group_link = 'PID_' + groupLinks.join(',')
-            await reportFBGroup(action)
-          }
-          await sleep(3000)
-        }
-      } catch (error) {
-        console.log(error);
-        await sleep(100000)
-      }
+      // groups = [...groups]
+      // try {
+      //   while (groups.length) {
+      //     groupLinks = []
+      //     let pageGroup = groups.splice(0, 100)
+      //     pageGroup.forEach(element => {
+      //       let pID = element.href
+      //       if (pID) {
+      //         pID = pID.split("user/").pop()
+      //         if (pID) {
+      //           pID = pID.replace('/', '')
+      //           if (pID) {
+      //             groupLinks.push(pID)
+      //           }
+      //         }
+      //       }
+      //     })
+      //     if (groupLinks.length) {
+      //       action.group_link = 'PID_' + groupLinks.join(',')
+      //       await reportFBGroup(action)
+      //     }
+      //     await sleep(3000)
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      //   await sleep(100000)
+      // }
 
       //await reportScript(action)
     }
