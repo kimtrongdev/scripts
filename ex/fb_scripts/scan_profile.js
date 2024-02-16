@@ -46,10 +46,20 @@ async function scanProfile(action) {
           let pageGroup = groups.splice(0, 100)
           pageGroup.forEach(element => {
             let pID = element.href
-            groupLinks.push(pID)
+            if (pID) {
+              pID = pID.split("user/").pop()
+              if (pID) {
+                pID = pID.replace('/', '')
+                if (pID) {
+                  groupLinks.push(pID)
+                }
+              }
+            }
           })
-          action.group_link = 'PID_' + groupLinks.join(',')
-          await reportFBGroup(action)
+          if (groupLinks.length) {
+            action.group_link = 'PID_' + groupLinks.join(',')
+            await reportFBGroup(action)
+          }
           await sleep(3000)
         }
       } catch (error) {
