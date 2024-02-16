@@ -233,7 +233,12 @@ async function initActionData(action) {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
-            await goToLocation(action.pid, action.link)
+            let linkGroup = action.group_link
+            if (!linkGroup.includes('members')) {
+                linkGroup += '/members'
+                linkGroup = linkGroup.replace('//members', '/members')
+            }
+            await goToLocation(action.pid, linkGroup)
         }
     } else if (action.id == 'scan_group') {
         if (!action.selected_page) {
