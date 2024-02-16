@@ -24,7 +24,6 @@ async function scanProfile(action) {
       let groupLinks = []
       let currentLenth = groups.length
 
-      let 
       try {
         while (groups.length < 1000) {
           currentLenth = groups.length
@@ -67,7 +66,7 @@ async function scanProfile(action) {
         await sleep(100000)
       }
 
-      await reportScript(action)
+      //await reportScript(action)
     }
     else {
       await reportScript(action, false)
