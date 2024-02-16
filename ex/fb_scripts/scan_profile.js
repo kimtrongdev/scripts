@@ -35,7 +35,8 @@ async function scanProfile(action) {
           let currentPos = groups.length - reportedCount
           if (currentPos > 50) {
             groupLinks = []
-            let pageGroup = groups.splice(currentPos, 50)
+            let pageGroup = groups.splice(reportedCount, 50)
+            reportedCount = reportedCount + 50
             pageGroup.forEach(element => {
               let pID = element.href
               if (pID) {
