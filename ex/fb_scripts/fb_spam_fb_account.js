@@ -14,11 +14,8 @@ async function spamFbAccount(action) {
     else if (!action.selected_page) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
-    else if (url.includes('https://www.facebook.com/profile.php')) {
-      await handle(action)
-    }
     else {
-      await sleep(5000)
+      await handle(action)
       await reportScript(action)
     }
   } catch (er) {
@@ -51,6 +48,4 @@ async function handle(action) {
   } else {
     console.log('NOT found text box or comment');
   }
-
-  await reportScript(action)
 }
