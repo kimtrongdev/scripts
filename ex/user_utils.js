@@ -24,7 +24,10 @@ async function runAction (action) {
         action.selected_page = true
     }
 
-    if (action.id == 'fb_feed') {
+    if (action.id == 'spam_fb_account') {
+        await spamFbAccount(action)
+    }
+    else if (action.id == 'fb_feed') {
         await fbFeed(action)
     }
     else if (action.id == 'view_fb_home') {
@@ -199,7 +202,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'fb_feed') {
+    if (action.id == 'spam_fb_account') {
+        await goToLocation(action.pid, 'https://www.facebook.com/profile.php?id=' + action.fb_id)
+    }
+    else if (action.id == 'fb_feed') {
         if (!action.selected_page) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
