@@ -23,6 +23,9 @@ async function commentPost(action) {
       await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
       let textbox = document.querySelector('div[role="textbox"]')
       if (textbox && action.comment) {
+        await userClick(action.pid, 'textbox', textbox)
+
+        textbox = document.querySelector('div[role="textbox"]')
         await userTypeEnter(action.pid, 'textbox', action.comment, textbox)
 
         let likeData = document.querySelector('div>div>span>div>span[dir="auto"]')
