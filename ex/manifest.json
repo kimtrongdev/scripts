@@ -49,6 +49,7 @@
         "./fb_scripts/view_fb_home.js",
         "./fb_scripts/fb_feed.js",
         "./fb_scripts/fb_spam_fb_account.js",
+        "./fb_scripts/fb_create_story.js",
 
         "./tiktok_scripts/reg_tiktok.js",
         "./tiktok_scripts/tiktok_comment.js",

@@ -24,7 +24,10 @@ async function runAction (action) {
         action.selected_page = true
     }
 
-    if (action.id == 'spam_fb_account') {
+    if (action.id == 'fb_create_story') {
+        await fbCreateStory(action)
+    }
+    else if (action.id == 'spam_fb_account') {
         await spamFbAccount(action)
     }
     else if (action.id == 'fb_feed') {
@@ -202,6 +205,10 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
+    if (action.id == 'fb_create_story') {
+        await goToLocation(action.pid, 'https://www.facebook.com/profile.php/')
+    }
+    else
     if (action.id == 'spam_fb_account') {
         await goToLocation(action.pid, 'https://www.facebook.com/profile.php?id=' + action.fb_id)
     }
@@ -767,7 +774,7 @@ function getElementPosition(el,iframe){
         let screenY = window.screen.height - window.screen.availHeight
         let pos = el.getBoundingClientRect()
         let iframePost = iframe?iframe.getBoundingClientRect():undefined
-        let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
+        let menuBarHeight = (mobileMenuBarHeight || (window.outerHeight - window.innerHeight)) + 3
         let menuLeftWith = (window.outerWidth - window.innerWidth)
         let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide-zoom*window.innerWidth)/2:0) + widthCustom
         let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
