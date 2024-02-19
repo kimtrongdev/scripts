@@ -91,6 +91,11 @@ async function checkErrorFB (action) {
   let url = window.location.toString()
   url = url.split('?')[0]
 
+  if (document.querySelector('div[aria-label="Accessible login button"]')) {
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'logout')
+    return
+  }
+
   // let notFoundContent = getElementContainsInnerText('body', ["Sorry, this content isn't available right now"])
 
   // if (notFoundContent) {
