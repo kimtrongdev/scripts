@@ -24,7 +24,7 @@ async function commentPost(action) {
       let textbox = document.querySelector('div[role="textbox"]')
       if (textbox && action.comment) {
         await userClick(action.pid, 'textbox', textbox)
-
+        await sleep(2000)
         textbox = document.querySelector('div[role="textbox"]')
         await userTypeEnter(action.pid, 'textbox', action.comment, textbox)
 
