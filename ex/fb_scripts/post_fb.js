@@ -21,27 +21,38 @@ async function postFB(action) {
     else if (url.includes('facebook.com/groups')) {
       await sleep(3000)
       let joinBtn = getElementContainsInnerText('span', ['Join Group'], '', 'equal')
-      let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
-      let followBtn = getElementContainsInnerText('span', ['Follow Group'], '', 'equal')
+      // let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
+      // let followBtn = getElementContainsInnerText('span', ['Follow Group'], '', 'equal')
 
-      if (joinBtn || joined || followBtn) {
-        if (joinBtn) {
-          await userClick(action.pid, 'joinBtn', joinBtn)
-          await sleep(8000)
+      if (joinBtn) {
+        await userClick(action.pid, 'joinBtn', joinBtn)
+        await sleep(8000)
 
-          let joinConfirmBtn = getElementContainsInnerText('span', ['Join Group Anyway'], '', 'equal')
-          if (joinConfirmBtn) {
-            await userClick(action.pid, 'joinConfirmBtn', joinConfirmBtn)
-            await sleep(4000)
-          }
-
-          // let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
-          // if (!joined) {
-          //   // report to backend
-          //   await reportFBGroup(action)
-          //   await reportScript(action, false)
-          // }
+        let joinConfirmBtn = getElementContainsInnerText('span', ['Join Group Anyway'], '', 'equal')
+        if (joinConfirmBtn) {
+          await userClick(action.pid, 'joinConfirmBtn', joinConfirmBtn)
+          await sleep(4000)
         }
+      }
+
+      if (true) {
+        // if (joinBtn) {
+        //   await userClick(action.pid, 'joinBtn', joinBtn)
+        //   await sleep(8000)
+
+        //   let joinConfirmBtn = getElementContainsInnerText('span', ['Join Group Anyway'], '', 'equal')
+        //   if (joinConfirmBtn) {
+        //     await userClick(action.pid, 'joinConfirmBtn', joinConfirmBtn)
+        //     await sleep(4000)
+        //   }
+
+        //   // let joined = getElementContainsInnerText('span', ['Joined'], '', 'equal')
+        //   // if (!joined) {
+        //   //   // report to backend
+        //   //   await reportFBGroup(action)
+        //   //   await reportScript(action, false)
+        //   // }
+        // }
         
         let createPostInput = getElementContainsInnerText('span', ['Write something...'], '', 'equal')
         await userClick(action.pid, 'createPostInput', createPostInput)
