@@ -155,7 +155,7 @@ async function fbLogin(action) {
 
       await sleep(10000)
 
-      if (ALLOW_RUN_UPDATE_ACCOUNT_INFO) {
+      if (action.client_config_allow_change_fb_info && ALLOW_RUN_UPDATE_ACCOUNT_INFO) {
         action.running_update_info = true
         await setActionData(action)
         await goToLocation(action.pid,'https://www.facebook.com/profile.php')
