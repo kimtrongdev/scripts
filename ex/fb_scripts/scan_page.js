@@ -26,6 +26,7 @@ async function scanPage(action) {
 
       let reportedCount = 0
       try {
+        let retry = 0
         while (groups.length < 1000) {
           currentLenth = groups.length
           await userScroll(action.pid, 50)
@@ -56,50 +57,15 @@ async function scanPage(action) {
           }
 
           if (groups.length <= currentLenth) {
-            break
+            if (retry <= 3) {
+              retry++
+            } else {
+              break
+            }
           }
         }
       } catch (error) {
         console.log('error', error);
-      }
-
-      try {
-        while (groups.length < 150) {
-          currentLenth = groups.length
-          await userScroll(action.pid, 50)
-          await sleep(5000)
-          groups = document.querySelectorAll('div[role="article"] g image')
-          if (groups.length <= currentLenth) {
-            break
-          }
-        }
-      } catch (error) {
-        console.log('error', error);
-      }
-      
-      groups = [...groups]
-      try {
-        while (groups.length) {
-          groupLinks = []
-          let pageGroup = groups.splice(0, 20)
-          pageGroup.forEach(element => {
-            let hrefEl = element.parentNode.parentNode.parentNode.parentNode
-            let hrefLink = hrefEl.getAttribute('href').split('?')[0]
-            let name = hrefEl.parentNode.parentNode.parentNode.querySelector('a[role="presentation"]').innerText
-            hrefLink = hrefLink.replace('href="', '')
-            groupLinks.push({
-              link: hrefLink,
-              name: name
-            })
-          });
-          action.group_link = 'NEW_' + JSON.stringify(groupLinks)
-          console.log('report', pageGroup.length);
-          await reportFBGroup(action)
-          await sleep(3000)
-        }
-      } catch (error) {
-        console.log(error);
-        await sleep(100000)
       }
 
       await reportScript(action)
