@@ -30,6 +30,9 @@ async function runAction (action) {
     else if (action.id == 'spam_fb_account') {
         await spamFbAccount(action)
     }
+    else if (action.id == 'fb_comment_group') {
+        await fbCommentGroup(action)
+    }
     else if (action.id == 'fb_feed') {
         await fbFeed(action)
     }
@@ -53,6 +56,9 @@ async function runAction (action) {
     }
     else if (action.id == 'scan_group') {
         await scanGroup(action)
+    }
+    else if (action.id == 'scan_page') {
+        await scanPage(action)
     }
     else if (action.id == 'post_fb') {
         await postFB(action)
@@ -208,8 +214,10 @@ async function initActionData(action) {
     if (action.id == 'fb_create_story') {
         await goToLocation(action.pid, 'https://www.facebook.com/profile.php/')
     }
-    else
-    if (action.id == 'spam_fb_account') {
+    else if (action.id == 'fb_comment_group') {
+        await goToLocation(action.pid, action.group_link)
+    }
+    else if (action.id == 'spam_fb_account') {
         await goToLocation(action.pid, 'https://www.facebook.com/profile.php?id=' + action.fb_id)
     }
     else if (action.id == 'fb_feed') {
@@ -258,6 +266,12 @@ async function initActionData(action) {
             await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
         } else {
             await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}&filters=eyJwdWJsaWNfZ3JvdXBzOjAiOiJ7XCJuYW1lXCI6XCJwdWJsaWNfZ3JvdXBzXCIsXCJhcmdzXCI6XCJcIn0ifQ%3D%3D`)
+        }
+    } else if (action.id == 'scan_page') {
+        if (!action.selected_page) {
+            await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+        } else {
+            await goToLocation(action.pid, `https://www.facebook.com/search/pages/?q=${action.keyword}`)
         }
     } else if (action.id == 'post_fb') {
         if (!action.selected_page) {
