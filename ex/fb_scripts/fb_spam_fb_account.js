@@ -6,6 +6,7 @@ async function spamFbAccount(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
+    console.log('-dd1')
     await checkErrorFB(action)
 
     if (!action.selected_page && url.includes('facebook.com/pages')) {
