@@ -15,7 +15,7 @@ async function fbCreateStory(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else {
-      await handle(action)
+      await handleCreateStory(action)
       await reportScript(action)
     }
   } catch (er) {
@@ -24,7 +24,7 @@ async function fbCreateStory(action) {
   }
 }
 
-async function handle(action) {
+async function handleCreateStory(action) {
   await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
   let createPostInput = getElementContainsInnerText('span', ['Write something...', 'Bạn đang nghĩ gì?'], '', 'equal')
