@@ -18,10 +18,50 @@ async function scanPage(action) {
       await setActionData(action)
       await goToLocation(action.pid, `https://www.facebook.com/search/groups?q=${action.keyword}&filters=eyJwdWJsaWNfZ3JvdXBzOjAiOiJ7XCJuYW1lXCI6XCJwdWJsaWNfZ3JvdXBzXCIsXCJhcmdzXCI6XCJcIn0ifQ%3D%3D`)
     }
-    else if (url.includes('facebook.com/search/groups')) {
-      let groups = document.querySelectorAll('div[role="article"] g image')
+    else if (url.includes('facebook.com/search/pages')) {
+      let groupQR = 'div[role="article"] g image'
+      let groups = document.querySelectorAll(groupQR)
       let groupLinks = []
       let currentLenth = groups.length
+
+      let reportedCount = 0
+      try {
+        while (groups.length < 1000) {
+          currentLenth = groups.length
+          await userScroll(action.pid, 50)
+          await sleep(5000)
+          groups = document.querySelectorAll(groupQR)
+
+          groups = [...groups]
+          let currentPos = groups.length - reportedCount
+          if (currentPos > 50) {
+            reportLive(action.pid)
+            groupLinks = []
+            let pageGroup = groups.splice(reportedCount, 50)
+            reportedCount = reportedCount + 50
+            pageGroup.forEach(element => {
+              let hrefEl = element.parentNode.parentNode.parentNode.parentNode
+              let hrefLink = hrefEl.getAttribute('href').split('?')[0]
+              let name = hrefEl.parentNode.parentNode.parentNode.querySelector('a[role="presentation"]').innerText
+              hrefLink = hrefLink.replace('href="', '')
+              groupLinks.push({
+                link: hrefLink,
+                name: name
+              })
+            })
+            if (groupLinks.length) {
+              action.group_link = 'PAGE_' +  JSON.stringify(groupLinks)
+              reportFBGroup(action)
+            }
+          }
+
+          if (groups.length <= currentLenth) {
+            break
+          }
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
 
       try {
         while (groups.length < 150) {
