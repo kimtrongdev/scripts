@@ -6,7 +6,6 @@ async function spamFbAccount(action) {
     let url = window.location.toString()
     url = url.split('?')[0]
 
-    console.log('-dd1')
     await checkErrorFB(action)
 
     if (!action.selected_page && url.includes('facebook.com/pages')) {
@@ -16,7 +15,7 @@ async function spamFbAccount(action) {
       await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
     }
     else {
-      await handle(action)
+      await handleSpamFb(action)
       await reportScript(action)
     }
   } catch (er) {
@@ -25,10 +24,8 @@ async function spamFbAccount(action) {
   }
 }
 
-async function handle(action) {
-  console.log('sd-á-dsa-dá-đá')
-  await sleep(15000)
-  //await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+async function handleSpamFb(action) {
+  await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
   let addFriend = document.querySelector('div[aria-label="Thêm bạn bè"]') || document.querySelector('div[aria-label="Add friend"]')
 
