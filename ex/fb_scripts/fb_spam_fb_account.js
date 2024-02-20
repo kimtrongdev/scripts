@@ -25,6 +25,8 @@ async function spamFbAccount(action) {
 }
 
 async function handle(action) {
+  console.log('sd-á-dsa-dá-đá')
+  await sleep(15000)
   //await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
   let addFriend = document.querySelector('div[aria-label="Thêm bạn bè"]') || document.querySelector('div[aria-label="Add friend"]')
