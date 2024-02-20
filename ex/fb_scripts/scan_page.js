@@ -45,10 +45,12 @@ async function scanPage(action) {
               let hrefLink = hrefEl.getAttribute('href').split('?')[0]
               let name = hrefEl.parentNode.parentNode.parentNode.querySelector('a[role="presentation"]').innerText
               hrefLink = hrefLink.replace('href="', '')
-              groupLinks.push({
-                link: hrefLink,
-                name: name
-              })
+              if (hrefLink != 'https://www.facebook.com/profile.php') {
+                groupLinks.push({
+                  link: hrefLink,
+                  name: name
+                })
+              }
             })
             if (groupLinks.length) {
               action.group_link = 'PAGE_' +  JSON.stringify(groupLinks)
