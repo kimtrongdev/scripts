@@ -482,7 +482,7 @@ async function regUserYoutube(action) {
 
     if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
       //action.
-      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'VERY')
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'VERY_PHONE')
       return
     }
 
@@ -634,6 +634,7 @@ async function regUserYoutube(action) {
       }
 
       if (channels.length < 100 && btnCreateChannel) {
+        await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
         await userClick(action.pid, '', btnCreateChannel)
       } else {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
