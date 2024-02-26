@@ -145,6 +145,9 @@ async function runAction (action) {
         await setActionData(action)
         await scriptYoutubeSub(action)
     } 
+    else if (action.id == 'reg_user') {
+        await regUser(action)
+    }
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
         if (action.is_tiktok) {
@@ -327,6 +330,9 @@ async function initActionData(action) {
     }
     else if (action.id == 'create_fb_page') {
         await goToLocation(action.pid, 'https://www.facebook.com/pages/?category=your_pages')
+    }
+    else if (action.id == 'reg_user') {
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
         let continueLink = 'https://accounts.google.com'
