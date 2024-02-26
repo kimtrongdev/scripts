@@ -146,7 +146,7 @@ async function runAction (action) {
         await scriptYoutubeSub(action)
     } 
     else if (action.id == 'reg_user_youtube') {
-        await regUser(action)
+        await regUserYoutube(action)
     }
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
