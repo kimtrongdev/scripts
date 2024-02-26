@@ -32,7 +32,7 @@
         "./scripts/reg_mail.js",
         "./scripts/check_mail_1.js",
         "./scripts/direct_link.js",
-        "./scripts/reg_user.js",
+        "./scripts/reg_user_youtube.js",
 
         "./fb_scripts/utilFB.js",
         "./fb_login.js",
