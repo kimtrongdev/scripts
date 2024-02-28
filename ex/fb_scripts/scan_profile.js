@@ -71,6 +71,7 @@ async function scanProfile(action) {
         return
       }
 
+      await checkErrorAfterRunScript(action)
       await reportScript(action)
     }
     else {
