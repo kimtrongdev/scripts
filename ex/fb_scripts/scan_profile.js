@@ -25,6 +25,7 @@ async function scanProfile(action) {
       let currentLenth = groups.length
       let reportedCount = 0
       try {
+        let retry = 0
         while (groups.length < 1000) {
           currentLenth = groups.length
           await userScroll(action.pid, 50)
@@ -57,11 +58,17 @@ async function scanProfile(action) {
           }
 
           if (groups.length <= currentLenth) {
-            break
+            if (retry <= 3) {
+              retry++
+            } else {
+              break
+            }
           }
         }
       } catch (error) {
         console.log('error', error);
+        await reportScript(action, false)
+        return
       }
 
       await reportScript(action)
