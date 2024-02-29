@@ -57,13 +57,13 @@ async function scanProfile(action) {
             }
           }
 
-          if (groups.length <= currentLenth) {
-            if (retry <= 3) {
-              retry++
-            } else {
-              break
-            }
-          }
+          // if (groups.length <= currentLenth) {
+          //   if (retry <= 3) {
+          //     retry++
+          //   } else {
+          //     break
+          //   }
+          // }
         }
       } catch (error) {
         console.log('error', error);
