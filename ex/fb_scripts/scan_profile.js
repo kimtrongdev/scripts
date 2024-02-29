@@ -57,6 +57,9 @@ async function scanProfile(action) {
             }
           }
 
+          if (document.querySelector('.signup_box_content')) {
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'logout')
+          }
           // if (groups.length <= currentLenth) {
           //   if (retry <= 3) {
           //     retry++
