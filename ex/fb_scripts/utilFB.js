@@ -133,6 +133,7 @@ async function checkErrorAfterRunScript(action) {
   || getElementContainsInnerText('span', ["You’re Temporarily Blocked"]) 
   || getElementContainsInnerText('span', ["process this request at this time"])
   || document.querySelector('input[type="email"]')
+  || document.querySelector('.signup_box_content')
   if (blockedEl) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, blockedEl.innerText)
     return
