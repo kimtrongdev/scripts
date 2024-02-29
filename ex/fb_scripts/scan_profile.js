@@ -26,7 +26,7 @@ async function scanProfile(action) {
       let reportedCount = 0
       try {
         let retry = 0
-        while (groups.length < 1000) {
+        while (groups.length < 3000) {
           currentLenth = groups.length
           await userScroll(action.pid, 50)
           await sleep(5000)
