@@ -226,7 +226,7 @@ async function initActionData(action) {
         setSubParam(action)
     }
 
-    console.log(action)
+    console.log(229, action)
     await setActionData(action)
 
     if(action.mobile) await switchMobile(action)
@@ -456,7 +456,7 @@ async function initActionData(action) {
     else if(action.id == 'login'){
         console.log(222222222222222, action);
         await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-        if (action.is_x) {
+        if (true) {
             await goToLocation(action.pid, 'https://twitter.com/i/flow/login')
         }
         else if (action.browser_name == 'iridium-browser') {
