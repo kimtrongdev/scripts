@@ -1,4 +1,5 @@
 async function loginX(action) {
+  console.log(2222222222222, action);
   try {
     let url = window.location.toString()
     reportLive(action.pid)
