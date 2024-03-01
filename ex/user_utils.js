@@ -455,7 +455,7 @@ async function initActionData(action) {
     }
     else if(action.id == 'login'){
         console.log(222222222222222, action);
-        await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+        // await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
 
         if (true) {
             await goToLocation(action.pid, 'https://twitter.com/i/flow/login')

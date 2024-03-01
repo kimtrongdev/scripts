@@ -5,7 +5,7 @@ async function loginX(action) {
     if (url.indexOf('https://twitter.com/i/flow/login') > -1) {
       await userTypeEnter(action.pid, 'input[name="text"]', action.email)
       await sleep(2000)
-      const useName = action?.useName || "@CQuees71178"
+      const useName = action?.user_name || "@CQuees71178"
       await userTypeEnter(action.pid, 'input[name="text"]', useName)
       await sleep(2000)
       await userTypeEnter(action.pid, 'input[autocomplete="current-password"]', action?.password)
