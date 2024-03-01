@@ -61,7 +61,12 @@
 
         "./system_scripts/get_otp.js",
         "./system_scripts/add_recovery_mail.js",
-        "./system_scripts/check_recovery.js"
+        "./system_scripts/check_recovery.js",
+
+        "./x_scripts/login_x.js",
+        "./x_scripts/like_x.js",
+        "./x_scripts/follow_x.js",
+        "./x_scripts/comment_x.js"
       ]
     },
     {

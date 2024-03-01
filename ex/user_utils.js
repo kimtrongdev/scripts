@@ -148,10 +148,24 @@ async function runAction (action) {
     else if (action.id == 'reg_user_youtube') {
         await regUserYoutube(action)
     }
+    // X
+    else if (action.id == 'flow_twitter' || action.id == 'follow_x') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
+        await goToLocation(action.pid, action.link)
+    }
+    // X
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
         if (action.is_tiktok) {
             await tiktokLogin(action)
+        }
+        if (action.is_x) {
+            await loginX(action)
         }
         else if (action.is_fb) {
             await fbLogin(action)
@@ -188,6 +202,7 @@ async function runAction (action) {
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
         }
     }
+ 
 }
 
 async function initActionData(action) {
@@ -423,6 +438,15 @@ async function initActionData(action) {
         }
         //await goToLocation(action.pid, 'https://www.youtube.com//')
         //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
+    }
+    else if (action.id == 'flow_twitter' || action.id == 'follow_x') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
+        await goToLocation(action.pid, action.link)
     }
     else if(action.id == 'login'){
         await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
