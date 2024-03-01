@@ -453,6 +453,7 @@ async function initActionData(action) {
         await goToLocation(action.pid, action.link)
     }
     else if(action.id == 'login'){
+        console.log(222222222222222, action);
         await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
         if (action.browser_name == 'iridium-browser') {
             await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
