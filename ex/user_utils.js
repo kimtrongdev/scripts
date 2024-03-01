@@ -475,6 +475,7 @@ async function initActionData(action) {
             }
 
             await handleSelectExOption(action)
+            console.log(478, continueLink, action);
             if (['brave', 'brave-browser', 'brave-browser-stable'].includes(action.browser_name)) {
                 await handleBraveSetting(action, continueLink)
             } else {
