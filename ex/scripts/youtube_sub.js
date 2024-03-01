@@ -14,6 +14,15 @@ async function scriptYoutubeSub(action) {
       return
     }
     
+
+    if (url.includes('support.google.com/accounts/answer/40039') ||
+      url.includes('accounts.google.com/v3/signin/productaccess/landing') ||
+      url.includes('accounts.google.com/v3/signin/identifier')
+    ) {
+      await reportScript(action, 'ERROR_TYPE_1')
+      return
+    }
+
     if (url.includes('accounts.google.com/InteractiveLogin/signinchooser')) {
       // renew profile
       await resetProfile(action)

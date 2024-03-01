@@ -1,3 +1,4 @@
+let ERROR_TYPE_1_MAP = {}
 let useProxy = true
 let isRunBAT = false
 let isSystemChecking = false
@@ -1499,6 +1500,21 @@ function initExpress() {
             });
         }
         else if (req.query.isScriptReport) {
+            if (req.query.status == 'ERROR_TYPE_1') {
+                req.query.isBreak = true
+                let pid = req.query.pid
+                if (!ERROR_TYPE_1_MAP[pid]) {
+                    ERROR_TYPE_1_MAP[pid] = 1
+                }
+
+                ERROR_TYPE_1_MAP[pid]++
+                if (ERROR_TYPE_1_MAP[pid] > 3) {
+                    delete ERROR_TYPE_1_MAP[pid]
+                    removePidAddnew(pid, 0)
+                }
+                return
+            }
+
             if (!['watch', 'create_playlist', 'search', 'end_script'].includes(req.query.script_code)) {
                 await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
             }
