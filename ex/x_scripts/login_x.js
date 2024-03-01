@@ -22,9 +22,8 @@ async function loginX(action) {
       // await reportScript(action, false)
     }
   } catch (error) {
-    console.log(error);
+    console.log(25252525, error);
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'lôi gi do')
-
     await reportScript(action)
   }
 }
