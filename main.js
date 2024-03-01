@@ -816,6 +816,7 @@ async function getScriptData(pid, isNewProxy = false) {
         }
     } else {
         action = await request_api.getNewScript(pid)
+        console.log(819, action);
     }
 
     if (action) {
