@@ -162,7 +162,7 @@ async function runAction (action) {
     // X
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
-        if (action.client_config_is_x) {
+        if (true) {
             await loginX(action)
         }
         if (action.is_tiktok) {
@@ -456,7 +456,8 @@ async function initActionData(action) {
     else if(action.id == 'login'){
         console.log(222222222222222, action);
         await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-        if (action.client_config_is_x) {
+
+        if (true) {
             await goToLocation(action.pid, 'https://twitter.com/i/flow/login')
         }
         else if (action.browser_name == 'iridium-browser') {
