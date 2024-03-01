@@ -14,6 +14,7 @@ async function loginX(action) {
       await sleep(3000)
      
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+      await sleep(3000)
    
     } 
    

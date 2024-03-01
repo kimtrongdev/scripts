@@ -1431,7 +1431,7 @@ function initExpress() {
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED')
         }
         else {
-            utils.log(req.query.pid, 'login error', req.query.msg)
+            utils.log(1434, req.query.pid, 'login error', req.query.msg)
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
         }
         removePidAddnew(req.query.pid, req.query.status)
@@ -1569,7 +1569,7 @@ function initExpress() {
                 }
             }
             else {
-                utils.log(req.query.pid, 'login error', req.query.msg)
+                utils.log(1572, req.query.pid, 'login error', req.query.msg)
                 request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
             }
             removePidAddnew(req.query.pid, req.query.status)
