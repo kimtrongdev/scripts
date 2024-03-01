@@ -463,6 +463,9 @@ async function initActionData(action) {
             let continueLink = 'https://accounts.google.com'
             if (action.is_fb) {
                 continueLink = 'https://www.facebook.com/'
+            }
+            else if (action.is_x) {
+                continueLink = 'https://twitter.com/i/flow/login'
             } else if (action.is_tiktok) {
                 continueLink = 'https://www.tiktok.com/login/phone-or-email/email'
             }
