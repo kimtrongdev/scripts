@@ -20,6 +20,7 @@ var newsNames = [
 ]
 
 async function runAction (action) {
+    console.log(23, action);
     if (!action.client_config_allow_change_fb_page) {
         action.selected_page = true
     }
@@ -455,8 +456,10 @@ async function initActionData(action) {
     else if(action.id == 'login'){
         console.log(222222222222222, action);
         await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
-        if (false) {
-            // if (action.browser_name == 'iridium-browser') {
+        if (action.is_x) {
+            await goToLocation(action.pid, 'https://twitter.com/i/flow/login')
+        }
+        else if (action.browser_name == 'iridium-browser') {
             await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
             await goToLocation(action.pid, `chrome://settings/cookies`)
             await sleep(4000)
@@ -466,7 +469,7 @@ async function initActionData(action) {
             await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
             await goToLocation(action.pid, 'accounts.google.com')
         } else {
-            let continueLink = 'https://twitter.com/i/flow/login'
+            let continueLink = 'https://accounts.google.com'
             if (action.is_fb) {
                 continueLink = 'https://www.facebook.com/'
             }

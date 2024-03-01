@@ -14,8 +14,7 @@ async function loginX(action) {
 
 
 
-      // login bị lỗi, sai passs ....
-      //await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'lôi gi do')
+   
     } 
     if (url.indexOf("https://twitter.com/home")) {
       // login thành công
@@ -39,6 +38,8 @@ async function loginX(action) {
     //   }
     // }
     else {
+         // login bị lỗi, sai passs ....
+      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'lôi gi do')
       await reportScript(action, false)
     }
   } catch (error) {
