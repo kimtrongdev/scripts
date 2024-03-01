@@ -209,6 +209,7 @@ async function initActionData(action) {
     let mobileRate = action.mobile_percent 
     action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
+    console.log(212, action);
     if (!action.client_config_allow_change_fb_page) {
         action.selected_page = true
     }
@@ -350,6 +351,7 @@ async function initActionData(action) {
         await goToLocation(action.pid, 'https://www.youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (['check_mail_1', 'recovery_mail', 'change_pass', 'reg_user'].includes(action.id)) {
+
         let continueLink = 'https://accounts.google.com'
         if (action.is_fb) {
             continueLink = 'https://mbasic.facebook.com/'
@@ -358,6 +360,8 @@ async function initActionData(action) {
         if (action.browser_name.includes('brave')) {
             await handleBraveSetting(action, continueLink)
         }
+        console.log("continueLink", continueLink);
+
         await goToLocation(action.pid, continueLink)
     }
     else if (action.id == 'reg_account') {
