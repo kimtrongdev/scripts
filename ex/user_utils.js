@@ -151,13 +151,13 @@ async function runAction (action) {
     }
     // X
     else if (action.id == 'flow_twitter' || action.id == 'follow_x') {
-        await goToLocation(action.pid, action.link)
+        await followX(action)
     }
     else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
-        await goToLocation(action.pid, action.link)
+        await likeX(action)
     }
     else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
-        await goToLocation(action.pid, action.link)
+        await commentX(action)
     }
     // X
     else if (action.id == 'login' || action.id == 'reg_user') {
