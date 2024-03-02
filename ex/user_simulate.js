@@ -48,14 +48,14 @@ async function userClick(pid, selector,element,iframe, xPlus = 0, yPlus = 0){
     let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
     if(el){
         el.scrollIntoViewIfNeeded()
-        // await userScrollTo(pid,selector,element)
-        // el.click()
-        let pos = getElementPosition(el,iframe)
-        await updateUserInput(pid,'CLICK',pos.x + xPlus,pos.y + yPlus,scrollX,scrollY,"",selector)
-        return {
-            x: pos.x + xPlus,
-            y: pos.y + yPlus,
-        }
+        await userScrollTo(pid,selector,element)
+        el.click()
+        // let pos = getElementPosition(el,iframe)
+        // await updateUserInput(pid,'CLICK',pos.x + xPlus,pos.y + yPlus,scrollX,scrollY,"",selector)
+        // return {
+        //     x: pos.x + xPlus,
+        //     y: pos.y + yPlus,
+        // }
     }
     else{
         console.log('error',selector,'not found')
