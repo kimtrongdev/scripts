@@ -238,8 +238,8 @@ async function initActionData(action) {
         await goToLocation(action.pid, action.link)
     }
     else if (action.id == 'like_x_post') {
-        console.log(241 + "like_x_post", action.link);
-        await goToLocation(action.pid, action.link)
+        console.log(241 + "like_x_post", action.post_link);
+        await goToLocation(action.pid, action.post_link)
     }
     else if (action.id == 'x_comment') {
         await goToLocation(action.pid, action.link)
