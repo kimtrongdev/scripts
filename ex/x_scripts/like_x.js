@@ -11,9 +11,9 @@ async function likeX(action) {
     }
     console.log("followBtn", likeBtn);
     await sleep(5000);
-    // await reportScript(action);
+    await reportScript(action);
   } catch (error) {
     console.log("likeX errr", error);
-    // await reportScript(action, false);
+    await reportScript(action, false);
   }
 }
