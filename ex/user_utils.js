@@ -234,13 +234,14 @@ async function initActionData(action) {
     if(action.mobile) await switchMobile(action)
 
     // X
-    if (action.id == 'flow_twitter' || action.id == 'follow_x') {
+    if (action.id == 'follow_x') {
         await goToLocation(action.pid, action.link)
     }
-    else if (action.id == 'like_x_post' || action.id == 'like_x') {
+    else if (action.id == 'like_x_post') {
+        console.log(241 + "like_x_post", action.link);
         await goToLocation(action.pid, action.link)
     }
-    else if (action.id == 'x_comment' || action.id == 'comment_twitter' || action.id == 'comment_x' ) {
+    else if (action.id == 'x_comment') {
         await goToLocation(action.pid, action.link)
     }
     // X
