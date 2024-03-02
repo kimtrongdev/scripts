@@ -1,9 +1,9 @@
 async function commentX(action) {
   try {
+    await sleep(3000)
     let url = window.location.toString();
     reportLive(action.pid);
     console.log("commentTwitter action : ", action);
-
     if (url.indexOf(action.link) > -1) {
       await sleep(5000);
       const spanElement = document

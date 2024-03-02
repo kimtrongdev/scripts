@@ -1,10 +1,10 @@
 async function followX(action) {
     try {
+      await sleep(3000)
       let url = window.location.toString()
       reportLive(action.pid)
-
+      console.log("followX followX followX", action);
       if (url.indexOf(action.link) > -1) {
-        await sleep(3000)
         let followBtn = document.querySelector(`div[aria-label="Follow ${action.user_name}"]`)
         if (followBtn) {
           await userClick(action.pid, 'followBtn', followBtn)
