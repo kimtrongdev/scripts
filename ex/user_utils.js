@@ -161,8 +161,7 @@ async function runAction (action) {
         await regUserYoutube(action)
     }
     else if (action.id == 'login' || action.id == 'reg_user') {
-        console.log('login')
-        if (true) {
+        if (action.client_config_is_x) {
             await loginX(action)
         } 
         else if (action.is_tiktok) {
@@ -457,7 +456,7 @@ async function initActionData(action) {
         console.log(222222222222222, action);
         // await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
 
-        if (true) {
+        if (action.client_config_is_x) {
             await goToLocation(action.pid, 'https://twitter.com/i/flow/login')
         }
         else if (action.browser_name == 'iridium-browser') {
