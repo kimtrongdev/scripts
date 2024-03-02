@@ -13,6 +13,7 @@ async function loginX(action) {
     }
     if(url.indexOf('https://twitter.com/home')){
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+      return
     }
   } catch (error) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'lôi gi do')
