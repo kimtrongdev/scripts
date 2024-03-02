@@ -8,19 +8,14 @@ async function followX(action) {
         let followBtn = document.querySelector(`div[aria-label="Follow ${action.user_name}"]`)
         if (followBtn) {
           await userClick(action.pid, 'followBtn', followBtn)
-        } else {
-          await reportScript(action, false)
         }
-
-        await reportScript(action)
-      } else {
-        await reportScript(action, false)
       }
-
+      await reportScript(action)
+      
     } catch (error) {
       console.log(33, error);
       await sleep(5000)
-      await reportScript(action)
+      await reportScript(action, false)
     }
   }
   

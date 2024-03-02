@@ -15,32 +15,21 @@ async function commentX(action) {
       if (spanElement) {
         await userClick(action.pid, "spanElement", spanElement);
         await sleep(5000);
-        console.log(16);
         await userType(action.pid, '', action.comment_content, spanElement)
-
-       
-
         await sleep(3000);
-
         const btnReply = document.querySelector(
           'div[data-testid="tweetButtonInline"]'
         );
         if (btnReply) {
           await userClick(action.pid, "btnReply", btnReply);
         } 
-      } else {
-        await reportScript(action, false)
-      }
-
+      } 
       await sleep(3000);
-
       console.log("spanElement", spanElement);
       await reportScript(action)
-    } else {
-      await reportScript(action, false);
     }
   } catch (error) {
     console.log(error);
-    // await reportScript(action);
+    await reportScript(action, false);
   }
 }

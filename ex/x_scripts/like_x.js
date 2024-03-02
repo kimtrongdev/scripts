@@ -9,17 +9,11 @@ async function likeX(action) {
         let likeBtn = document.querySelector(`div[data-testid="like"]`)
         if (likeBtn) {
           await userClick(action.pid, 'likeBtn', likeBtn)
-        } else {
-          await reportScript(action, false)
-        }
-
-        await reportScript(action)
+        } 
       } 
-      else {
-        await reportScript(action, false)
-      }
+      await reportScript(action)
     } catch (error) {
-      console.log(error);
+      console.log("likeX", error);
       await reportScript(action)
     }
   }

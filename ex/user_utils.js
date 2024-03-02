@@ -25,6 +25,17 @@ async function runAction (action) {
         action.selected_page = true
     }
 
+     // X
+     else if (action.id == 'flow_twitter' || action.id == 'follow_x') {
+        await followX(action)
+    }
+    else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
+        await likeX(action)
+    }
+    else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
+        await commentX(action)
+    }
+    // X
     if (action.id == 'fb_create_story') {
         await fbCreateStory(action)
     }
@@ -149,23 +160,12 @@ async function runAction (action) {
     else if (action.id == 'reg_user_youtube') {
         await regUserYoutube(action)
     }
-    // X
-    else if (action.id == 'flow_twitter' || action.id == 'follow_x') {
-        await followX(action)
-    }
-    else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
-        await likeX(action)
-    }
-    else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
-        await commentX(action)
-    }
-    // X
     else if (action.id == 'login' || action.id == 'reg_user') {
         console.log('login')
         if (true) {
             await loginX(action)
-        }
-        if (action.is_tiktok) {
+        } 
+        else if (action.is_tiktok) {
             await tiktokLogin(action)
         }
         else if (action.is_fb) {
@@ -231,7 +231,18 @@ async function initActionData(action) {
 
     if(action.mobile) await switchMobile(action)
 
-    if (action.id == 'fb_create_story') {
+    // X
+    if (action.id == 'flow_twitter' || action.id == 'follow_x') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
+        await goToLocation(action.pid, action.link)
+    }
+    else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
+        await goToLocation(action.pid, action.link)
+    }
+    // X
+    else if (action.id == 'fb_create_story') {
         await goToLocation(action.pid, 'https://www.facebook.com/profile.php/')
     }
     else if (action.id == 'fb_comment_group') {
@@ -361,8 +372,6 @@ async function initActionData(action) {
         if (action.browser_name.includes('brave')) {
             await handleBraveSetting(action, continueLink)
         }
-        console.log("continueLink", continueLink);
-
         await goToLocation(action.pid, continueLink)
     }
     else if (action.id == 'reg_account') {
@@ -443,15 +452,6 @@ async function initActionData(action) {
         }
         //await goToLocation(action.pid, 'https://www.youtube.com//')
         //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
-    }
-    else if (action.id == 'flow_twitter' || action.id == 'follow_x') {
-        await goToLocation(action.pid, action.link)
-    }
-    else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
-        await goToLocation(action.pid, action.link)
-    }
-    else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
-        await goToLocation(action.pid, action.link)
     }
     else if(action.id == 'login'){
         console.log(222222222222222, action);
