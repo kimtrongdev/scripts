@@ -26,7 +26,8 @@ async function runAction (action) {
     }
 
      // X
-     else if (action.id == 'flow_twitter' || action.id == 'follow_x') {
+    if (action.id == 'follow_x') {
+        console.log(30, 'Following x');
         await followX(action)
     }
     else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
