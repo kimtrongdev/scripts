@@ -5,7 +5,7 @@ async function followX(action) {
 
       if (url.indexOf(action.link) > -1) {
         await sleep(3000)
-        let followBtn = document.querySelector(`div[aria-label="Follow @VisionaryVoid"]`)
+        let followBtn = document.querySelector(`div[aria-label="Follow ${action.user_name}"]`)
         if (followBtn) {
           await userClick(action.pid, 'followBtn', followBtn)
         } else {
