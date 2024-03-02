@@ -237,10 +237,10 @@ async function initActionData(action) {
     if (action.id == 'flow_twitter' || action.id == 'follow_x') {
         await goToLocation(action.pid, action.link)
     }
-    else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
+    else if (action.id == 'like_x_post' || action.id == 'like_x') {
         await goToLocation(action.pid, action.link)
     }
-    else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
+    else if (action.id == 'x_comment' || action.id == 'comment_twitter' || action.id == 'comment_x' ) {
         await goToLocation(action.pid, action.link)
     }
     // X
