@@ -9,9 +9,9 @@ async function loginX(action) {
       await userTypeEnter(action.pid, 'input[name="text"]', useName)
       await sleep(3000)
       await userTypeEnter(action.pid, 'input[autocomplete="current-password"]', action?.password)
-      await sleep(3000)
     }
     if(url.indexOf('https://twitter.com/home')){
+      await sleep(5000)
       await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
       return
     }
