@@ -12,21 +12,18 @@ async function loginX(action) {
       await sleep(3000)
       await userTypeEnter(action.pid, 'input[autocomplete="current-password"]', action?.password)
       await sleep(3000)
-     
-      await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-      await sleep(3000)
-   
     } 
+    await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
    
-    else {
+    // else {
          // login bị lỗi, sai passs ....
       // await reportScript(action, false)
-    }
+    // }
   } catch (error) {
     console.log(25252525, error);
     await sleep(3000)
 
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'lôi gi do')
-    await reportScript(action)
+    // await reportScript(action)
   }
 }
