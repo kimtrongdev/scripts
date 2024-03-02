@@ -9,7 +9,8 @@ async function likeX(action) {
     if (likeBtn) {
       await userClick(action.pid, "likeBtn", likeBtn);
     }
-
+    console.log("followBtn", likeBtn);
+    await sleep(5000);
     // await reportScript(action);
   } catch (error) {
     console.log("likeX errr", error);
