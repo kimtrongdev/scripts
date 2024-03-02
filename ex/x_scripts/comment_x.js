@@ -9,7 +9,6 @@ async function commentX(action) {
         'div[class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr"]'
       )
       .querySelector("span");
-    console.log("spanElement", spanElement);
 
     if (spanElement) {
       await userClick(action.pid, "spanElement", spanElement);
@@ -25,6 +24,8 @@ async function commentX(action) {
       }
     }
     await sleep(3000);
+    console.log("spanElement", spanElement, btnReply);
+
     // await reportScript(action)
   } catch (error) {
     console.log("commentX errr", error);
