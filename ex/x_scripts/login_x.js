@@ -15,7 +15,6 @@ async function loginX(action) {
     } 
    
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
-    await reportScript(action)
 
   } catch (error) {
     await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'lôi gi do')
