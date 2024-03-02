@@ -14,8 +14,8 @@ async function commentX(action) {
     if (spanElement) {
       await userClick(action.pid, "spanElement", spanElement);
       await sleep(5000);
-      console.log("action.comment_content", action.comment_content);
-      await userType(action.pid, "", action.comment_content, spanElement);
+      console.log("action.comment", action.comment);
+      await userType(action.pid, "", action.comment, spanElement);
       await sleep(3000);
       const btnReply = document.querySelector(
         'div[data-testid="tweetButtonInline"]'
