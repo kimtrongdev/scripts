@@ -1,6 +1,6 @@
 async function loginX(action) {
-  console.log(22222225555555, action);
-  await sleep(3000)
+  console.log(22222225555555 + "loginX", action);
+  await sleep(5000)
   try {
     let url = window.location.toString()
     reportLive(action.pid)
