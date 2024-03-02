@@ -239,6 +239,9 @@ async function initActionData(action) {
     }
     else if (action.id == 'like_x_post') {
         console.log(241 + "like_x_post", action.post_link);
+        
+        await goToLocation(action.pid, "https://twitter.com/home")
+        await sleep(3000)
         await goToLocation(action.pid, action.post_link)
     }
     else if (action.id == 'x_comment') {
