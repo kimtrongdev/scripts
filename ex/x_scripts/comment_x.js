@@ -26,10 +26,10 @@ async function commentX(action) {
       } 
       await sleep(3000);
       console.log("spanElement", spanElement);
-      await reportScript(action)
+      // await reportScript(action)
     }
   } catch (error) {
-    console.log(error);
-    await reportScript(action, false);
+    console.log("commentX errr", error);
+    // await reportScript(action, false);
   }
 }
