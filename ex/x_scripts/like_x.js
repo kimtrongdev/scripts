@@ -10,9 +10,9 @@ async function likeX(action) {
       await userClick(action.pid, "likeBtn", likeBtn);
     }
 
-    await reportScript(action);
+    // await reportScript(action);
   } catch (error) {
-    console.log("likeX", error);
-    await reportScript(action, false);
+    console.log("likeX errr", error);
+    // await reportScript(action, false);
   }
 }
