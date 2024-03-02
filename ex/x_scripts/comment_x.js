@@ -11,8 +11,8 @@ async function commentX(action) {
       .querySelector("span");
 
     if (spanElement) {
-      await userClick(action.pid, "spanElement", spanElement);
-      await sleep(5000);
+      // await userClick(action.pid, "spanElement", spanElement);
+      // await sleep(5000);
       console.log("action.comment", action.comment);
       await userType(action.pid, "", action.comment, spanElement);
       await sleep(3000);
