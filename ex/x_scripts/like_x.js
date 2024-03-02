@@ -5,7 +5,7 @@ async function likeX(action) {
       reportLive(action.pid)
       console.log("likeX action : ", action)
 
-      if (url.indexOf(action.link) > -1) {
+      if (url.indexOf(action.post_link) > -1) {
         let likeBtn = document.querySelector(`div[data-testid="like"]`)
         if (likeBtn) {
           await userClick(action.pid, 'likeBtn', likeBtn)
