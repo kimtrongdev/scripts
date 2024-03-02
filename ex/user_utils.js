@@ -31,9 +31,11 @@ async function runAction (action) {
         await followX(action)
     }
     else if (action.id == 'like_twitter' || action.id == 'like_x' || action.id == 'like_x_post') {
+        console.log(34, 'like x', action.id);
         await likeX(action)
     }
     else if (action.id == 'comment_twitter' || action.id == 'comment_x' || action.id == 'x_comment') {
+        console.log(34, 'x comment', action.id);
         await commentX(action)
     }
     // X
