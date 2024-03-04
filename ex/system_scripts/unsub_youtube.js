@@ -58,6 +58,7 @@ async function unsubYoutube(action) {
       await sleep(180000)
     }
     else if (url.includes('https://myaccount.google.com/brandaccounts')) {
+      await sleep(4000)
       // scan user ids
       let users = document.querySelectorAll('article li a[href*="brandaccounts"]')
       let userIDs = []
@@ -73,16 +74,21 @@ async function unsubYoutube(action) {
       await nextUser(action)
     }
     else if (url.includes('page=youtube_subscriptions')) {
-      while (document.querySelector('#single-step-navigation')) {
-        await userClick(action.pid, '#single-step-navigation #close-button')
-        await sleep(1000)
-      }
-
       while (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length > 1) {
+        let dismissBtn = getElementContainsInnerText('span', ['Dismiss'], '', 'equal')
+        if (dismissBtn) {
+          await userClick(action.pid,'dismissBtn', dismissBtn)
+        }
+
         let unsubBtn = document.querySelector('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button')
         if (unsubBtn) {
           await userClick(action.pid,'unsubBtn', unsubBtn)
           await sleep(3000)
+          
+          let confirmDeleteBtn = getElementContainsInnerText('span', ['Delete'], '', 'equal')
+          if (confirmDeleteBtn) {
+            await userClick(action.pid, 'confirmDeleteBtn', confirmDeleteBtn)
+          }
         }
         reportLive(action.pid)
       }
