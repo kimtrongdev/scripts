@@ -107,7 +107,19 @@ async function scriptAddVideoPlaylist(action) {
           return
       }
 
-      let channel = channels.item(randomRanger(0, channels.length - 1))
+      let filteredChannels = [];
+      // Lặp qua danh sách các phần tử đã chọn
+      channels.forEach(element => {
+      // Kiểm tra xem phần tử có tồn tại children[3] không
+        const children = element.children[0].children[3]
+        if (children && children.hasAttribute('hidden')) {
+            // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
+            // Thêm phần tử vào danh sách đã lọc
+             filteredChannels.push(element);
+        }
+    });
+
+      let channel = filteredChannels[randomRanger(0, filteredChannels.length - 1)]
       if (channel) {
           await userClick(action.pid, '', channel)
       } else {
