@@ -184,6 +184,8 @@ async function scriptAddVideoPlaylist(action) {
     }
   }
   catch (e) {
+    console.log(33333333333333, e);
+    await sleep(20000)
     await reportScript(action, 0)
   }
 }
