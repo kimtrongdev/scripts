@@ -114,7 +114,6 @@ async function scriptAddVideoPlaylist(action) {
         const children = element.children[0].children[3]
         if (children && children.hasAttribute('hidden')) {
             // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
-            // Thêm phần tử vào danh sách đã lọc
              filteredChannels.push(element);
         }
     });

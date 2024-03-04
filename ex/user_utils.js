@@ -1083,6 +1083,7 @@ async function handleUsersSelection (action) {
         }
     }
     let channel = filteredChannels[(action.channel_position)].children[0];
+    await sleep(5000)
     if (channel) {
         if (action.channel_position == filteredChannels.length) {
             reportPositionChannel(action.pid, -1)
