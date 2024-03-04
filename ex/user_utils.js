@@ -1083,6 +1083,13 @@ async function handleUsersSelection (action) {
         }
     }
     let channel = filteredChannels[Number(action.channel_position)];
+    try {
+    console.log(4444444444444444, channel, filteredChannels.item(action.channel_position));
+        
+    } catch (error) {
+    console.log(55555555555555555555, error);
+        
+    }
     if (channel) {
         if (action.channel_position == filteredChannels.length) {
             reportPositionChannel(action.pid, -1)
