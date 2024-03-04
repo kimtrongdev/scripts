@@ -1091,7 +1091,7 @@ async function handleUsersSelection (action) {
     }
 
 
-        let channel = filteredChannels[action.channel_position]
+        let channel = filteredChannels.item(action.channel_position);
 
         console.log("channel 3333", channel);
         await sleep(10000)
