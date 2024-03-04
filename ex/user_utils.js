@@ -1080,11 +1080,11 @@ async function handleUsersSelection (action) {
              filteredChannels.push(element);
         }
     });
-    console.log("channel.length 111", channel.length);
+    console.log("channel.length 111", channels.length);
 
     channels = filteredChannels
 
-    console.log("channel.length 3333", channel.length);
+    console.log("channel.length 3333", channels.length);
 
     await sleep(15000)
     if (action.channel_position >= channels.length) {
@@ -1094,6 +1094,9 @@ async function handleUsersSelection (action) {
     }
 
     let channel = channels.item(action.channel_position)
+
+    console.log("channel 3333", channel);
+
     if (channel) {
         if (action.channel_position == channels.length) {
             reportPositionChannel(action.pid, -1)
