@@ -1015,7 +1015,7 @@ async function randomFullName () {
 }
 
 async function handleUsersSelection (action) {
-
+    try {
     console.log("handleUsersSelection1");
     await sleep(4000)
 
@@ -1086,15 +1086,17 @@ async function handleUsersSelection (action) {
 
     console.log("channel.length 3333", channels.length, action.channel_position);
 
+    await sleep(5000)
     if (action.channel_position >= channels.length) {
         if (channels.length) {
             action.channel_position = 0
         }
     }
 
-    let channel = channels[(action.channel_position)]
 
-    console.log("channel 3333", channel);
+        let channel = channels[action.channel_position]
+
+        console.log("channel 3333", channel);
         await sleep(10000)
     
         if (channel) {
@@ -1112,7 +1114,9 @@ async function handleUsersSelection (action) {
             isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
         }
         
-   
+    } catch (error) {
+        console.log(8888888888888888888, error);
+    }
   
 }
 
