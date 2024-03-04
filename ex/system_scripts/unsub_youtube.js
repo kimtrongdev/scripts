@@ -89,6 +89,12 @@ async function unsubYoutube(action) {
           if (confirmDeleteBtn) {
             await userClick(action.pid, 'confirmDeleteBtn', confirmDeleteBtn)
           }
+
+          await sleep(1000)
+          let gotItBtn = getElementContainsInnerText('span', ['Got it'], '', 'equal')
+          if (gotItBtn) {
+            await userClick(action.pid, 'gotItBtn', gotItBtn)
+          }
         }
         reportLive(action.pid)
       }
