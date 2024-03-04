@@ -1080,36 +1080,27 @@ async function handleUsersSelection (action) {
              filteredChannels.push(element);
         }
     });
-    console.log("channel.length 111", channels.length, filteredChannels.length);
 
-
-    await sleep(5000)
     if (action.channel_position >= filteredChannels.length) {
         if (filteredChannels.length) {
             action.channel_position = 0
         }
     }
-
-
-        let channel = filteredChannels.item(action.channel_position);
-
-        console.log("channel 3333", channel);
-        await sleep(10000)
-    
-        if (channel) {
-            if (action.channel_position == filteredChannels.length) {
-                reportPositionChannel(action.pid, -1)
-            } else {
-                reportPositionChannel(action.pid, action.channel_position)
-            }
-    
-            //if (action.id == 'watch') {
-                getPlaylistData(action)
-            //}
-            await userClick(action.pid, '', channel)
+    let channel = filteredChannels.item(action.channel_position);
+    if (channel) {
+        if (action.channel_position == filteredChannels.length) {
+            reportPositionChannel(action.pid, -1)
         } else {
-            isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+            reportPositionChannel(action.pid, action.channel_position)
         }
+
+        //if (action.id == 'watch') {
+        getPlaylistData(action)
+            //}
+        await userClick(action.pid, '', channel)
+    } else {
+        isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+    }
         
     } catch (error) {
         console.log(8888888888888888888, error);
