@@ -1017,7 +1017,7 @@ async function randomFullName () {
 async function handleUsersSelection (action) {
     action.fisrtStart = false
     await setActionData(action)
-    await sleep(4000)
+    await sleep(25000)
     let channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
     if (action.loadFirstUser) {
         action.loadFirstUser = false
@@ -1083,13 +1083,6 @@ async function handleUsersSelection (action) {
         }
     }
     let channel = filteredChannels[(action.channel_position)].children[0];
-    try {
-    console.log(4444444444444444, channel, filteredChannels.item(action.channel_position));
-        
-    } catch (error) {
-    console.log(55555555555555555555, error);
-        
-    }
     if (channel) {
         if (action.channel_position == filteredChannels.length) {
             reportPositionChannel(action.pid, -1)
