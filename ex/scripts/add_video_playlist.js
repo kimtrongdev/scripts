@@ -119,7 +119,7 @@ async function scriptAddVideoPlaylist(action) {
         }
     });
 
-      let channel = filteredChannels[randomRanger(0, filteredChannels.length - 1)]
+      let channel = filteredChannels.item(randomRanger(0, filteredChannels.length - 1))
       if (channel) {
           await userClick(action.pid, '', channel)
       } else {
