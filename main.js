@@ -184,7 +184,7 @@ async function loadSystemConfig () {
     (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') ||
     (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') ||
     (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
-    (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false')
+    (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false') ||
     (systemConfig.unsub_youtube && systemConfig.unsub_youtube != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
