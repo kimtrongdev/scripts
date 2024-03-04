@@ -198,27 +198,30 @@ async function loadSystemConfig () {
         EXPIRED_TIME = 400000
     }
     // handle browsers for centos and ubuntu
-    let browsers = []
-    (systemConfig.browsers || []).forEach(br => {
-        if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
-            if (br == 'brave') {
-                br = 'brave-browser'
-            }
+    let browsers = ['brave']
 
-            if (br == 'microsoft-edge') {
-                br = 'microsoft-edge-stable'
-            }
-
-            if (br == 'vivaldi-stable') {
-                br = 'vivaldi'
-            }
-            browsers.push(br)
-        } else {
-            if (br != 'iridium-browser') {
+    if (Array.isArray(systemConfig.browsers)) {
+        systemConfig.browsers.forEach(br => {
+            if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
+                if (br == 'brave') {
+                    br = 'brave-browser'
+                }
+    
+                if (br == 'microsoft-edge') {
+                    br = 'microsoft-edge-stable'
+                }
+    
+                if (br == 'vivaldi-stable') {
+                    br = 'vivaldi'
+                }
                 browsers.push(br)
+            } else {
+                if (br != 'iridium-browser') {
+                    browsers.push(br)
+                }
             }
-        }
-    })
+        })
+    }
     systemConfig.browsers = browsers
 
     if (config.browser_map) {
