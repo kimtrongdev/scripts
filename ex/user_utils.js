@@ -1086,7 +1086,7 @@ async function handleUsersSelection (action) {
 
     console.log("channel.length 3333", channels.length);
 
-    await sleep(15000)
+    await sleep(5000)
     if (action.channel_position >= channels.length) {
         if (channels.length) {
             action.channel_position = 0
@@ -1096,6 +1096,7 @@ async function handleUsersSelection (action) {
     let channel = channels.item(action.channel_position)
 
     console.log("channel 3333", channel);
+    await sleep(5000)
 
     if (channel) {
         if (action.channel_position == channels.length) {
