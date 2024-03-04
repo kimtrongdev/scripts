@@ -42,6 +42,9 @@ async function runAction (action) {
     else if (action.id == 'fb_add_member') {
         await fbAddMember(action)
     }
+    else if (action.id == 'unsub_youtube') {
+        await unsubYoutube(action)
+    }
     else if (action.id == 'check_recovery') {
         await checkRecovery(action)
     }
@@ -243,6 +246,9 @@ async function initActionData(action) {
         } else {
             await goToLocation(action.pid, action.link)
         }
+    }
+    else if (action.id == 'unsub_youtube') {
+        await goToLocation(action.pid, 'https://myaccount.google.com/brandaccounts?hl=en')
     }
     else if (action.id == 'check_recovery') {
         await goToLocation(action.pid, 'https://myaccount.google.com/security')
