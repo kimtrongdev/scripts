@@ -1015,10 +1015,6 @@ async function randomFullName () {
 }
 
 async function handleUsersSelection (action) {
-    try {
-    console.log("handleUsersSelection1");
-    await sleep(4000)
-
     action.fisrtStart = false
     await setActionData(action)
     await sleep(4000)
@@ -1100,10 +1096,7 @@ async function handleUsersSelection (action) {
     } else {
         isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
     }
-        
-    } catch (error) {
-        console.log(8888888888888888888, error);
-    }
+
   
 }
 
