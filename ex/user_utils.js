@@ -1028,8 +1028,8 @@ async function handleUsersSelection (action) {
     }
 
     if (!channels.length) {
-        await sleep(25000)
         channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
+        await sleep(20000)
     }
 
     if (document.querySelector('#primary-content')) {

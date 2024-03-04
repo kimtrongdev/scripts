@@ -94,7 +94,7 @@ async function scriptAddVideoPlaylist(action) {
               let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
               if (fisUser) {
                   await userClick(action.pid, 'fisUser', fisUser)
-                  await sleep(60000)
+                  await sleep(25000)
               }
           }
       }
@@ -103,7 +103,7 @@ async function scriptAddVideoPlaylist(action) {
           action.loadFirstUser = true
           await setActionData(action)
           await goToLocation(action.pid, 'youtube.com/account')
-          await sleep(60000)
+          await sleep(25000)
           return
       }
 
