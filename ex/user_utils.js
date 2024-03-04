@@ -1018,7 +1018,7 @@ async function handleUsersSelection (action) {
     action.fisrtStart = false
     await setActionData(action)
     await sleep(4000)
-    let channels = document.querySelectorAll('ytd-account-item-renderer')
+    let channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
     if (action.loadFirstUser) {
         action.loadFirstUser = false
         await setActionData(action)
@@ -1029,7 +1029,7 @@ async function handleUsersSelection (action) {
 
     if (!channels.length) {
         await sleep(25000)
-        channels = document.querySelectorAll('ytd-account-item-renderer')
+        channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
     }
 
     if (document.querySelector('#primary-content')) {
@@ -1064,6 +1064,20 @@ async function handleUsersSelection (action) {
     action.channel_position += 1
     action.selected_user = true
     await setActionData(action)
+
+    const filteredChannels = [];
+      // Lặp qua danh sách các phần tử đã chọn
+      channels.forEach(element => {
+      // Kiểm tra xem phần tử có tồn tại children[3] không
+        const children = element.children[0].children[3]
+        if (children && children.hasAttribute('hidden')) {
+            // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
+            // Thêm phần tử vào danh sách đã lọc
+             filteredChannels.push(element);
+        }
+    });
+
+    channels = filteredChannels
 
     if (action.channel_position >= channels.length) {
         if (channels.length) {
