@@ -1086,14 +1086,13 @@ async function handleUsersSelection (action) {
             action.channel_position = 0
         }
     }
-    let channel = filteredChannels.item(action.channel_position);
+    let channel = filteredChannels[Number(action.channel_position)];
     if (channel) {
         if (action.channel_position == filteredChannels.length) {
             reportPositionChannel(action.pid, -1)
         } else {
             reportPositionChannel(action.pid, action.channel_position)
         }
-
         //if (action.id == 'watch') {
         getPlaylistData(action)
             //}
