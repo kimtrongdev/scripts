@@ -1015,6 +1015,10 @@ async function randomFullName () {
 }
 
 async function handleUsersSelection (action) {
+
+    console.log("handleUsersSelection1");
+    await sleep(4000)
+
     action.fisrtStart = false
     await setActionData(action)
     await sleep(4000)
@@ -1076,9 +1080,13 @@ async function handleUsersSelection (action) {
              filteredChannels.push(element);
         }
     });
+    console.log("channel.length 111", channel.length);
 
     channels = filteredChannels
 
+    console.log("channel.length 3333", channel.length);
+
+    await sleep(15000)
     if (action.channel_position >= channels.length) {
         if (channels.length) {
             action.channel_position = 0
