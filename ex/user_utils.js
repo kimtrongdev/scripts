@@ -1093,25 +1093,31 @@ async function handleUsersSelection (action) {
         }
     }
 
-    let channel = channels.item(action.channel_position)
+    try {
+        let channel = channels.item(action.channel_position)
 
-    console.log("channel 3333", channel);
-    await sleep(10000)
-
-    if (channel) {
-        if (action.channel_position == channels.length) {
-            reportPositionChannel(action.pid, -1)
+        console.log("channel 3333", channel);
+        await sleep(10000)
+    
+        if (channel) {
+            if (action.channel_position == channels.length) {
+                reportPositionChannel(action.pid, -1)
+            } else {
+                reportPositionChannel(action.pid, action.channel_position)
+            }
+    
+            //if (action.id == 'watch') {
+                getPlaylistData(action)
+            //}
+            await userClick(action.pid, '', channel)
         } else {
-            reportPositionChannel(action.pid, action.channel_position)
+            isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
         }
-
-        //if (action.id == 'watch') {
-            getPlaylistData(action)
-        //}
-        await userClick(action.pid, '', channel)
-    } else {
-        isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+        
+    } catch (error) {
+        console.log(8888888888888888888, error);
     }
+  
 }
 
 async function handleSelectExOption (action) {
