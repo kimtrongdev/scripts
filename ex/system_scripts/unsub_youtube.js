@@ -31,10 +31,8 @@ async function unsubYoutube(action) {
           await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'Unavailable because of too many attempts')
           return
       }
-      if (document.querySelector("[data-challengetype='12']") && emailRecovery && emailRecovery.length > 0) {
+      if (document.querySelector("[data-challengetype='12']")) {
           await userClick(action.pid, "[data-challengetype='12']")
-      } else if (await document.querySelector("[data-challengetype='13']") && recoverPhone && recoverPhone.length > 0) {
-          await userClick(action.pid, "[data-challengetype='13']")
       } else {
           await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'unknown challengetype')
           return
@@ -44,7 +42,7 @@ async function unsubYoutube(action) {
     }
     else if (url.indexOf("challenge/kpe") > -1) {
       async function enterMail (mail) {
-          let enterMail = mail || emailRecovery
+          let enterMail = mail
           let emailInput = document.querySelector("input[name='email']")
           if (emailInput != null) {
               await userTypeEnter(action.pid, "input[name='email']", enterMail)
@@ -56,7 +54,7 @@ async function unsubYoutube(action) {
           }
       }
 
-      await enterMail()
+      await enterMail(action.recover_mail)
       await sleep(180000)
     }
     else if (url.includes('https://myaccount.google.com/brandaccounts')) {
