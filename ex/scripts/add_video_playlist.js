@@ -119,17 +119,13 @@ async function scriptAddVideoPlaylist(action) {
       });
 
       let channel = filteredElements.item(randomRanger(0, filteredElements.length - 1))
+      console.log(124124124124, filteredElements.length, channel);
+      await sleep(20000)
       if (channel) {
           await userClick(action.pid, '', channel)
       } else {
-        console.log(124124124124, filteredElements.length, channel);
-        await sleep(20000)
         await reportScript(action, 0)
       }
-
-      console.log(124124124124, filteredElements.length, channel);
-      await sleep(20000)
-
       return
     }
     else if (url.indexOf('/playlists') > -1) {
