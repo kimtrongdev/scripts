@@ -1082,7 +1082,7 @@ async function handleUsersSelection (action) {
             action.channel_position = 0
         }
     }
-    let channel = filteredChannels.item(action.channel_position);
+    let channel = filteredChannels[(action.channel_position)].children[0];
     try {
     console.log(4444444444444444, channel, filteredChannels.item(action.channel_position));
         
