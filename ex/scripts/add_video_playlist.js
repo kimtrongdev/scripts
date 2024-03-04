@@ -64,7 +64,7 @@ async function scriptAddVideoPlaylist(action) {
     }
     else if (url.indexOf('youtube.com/account') > -1) {
       await sleep(4000)
-      let channels = document.querySelectorAll('ytd-account-item-renderer')
+      let channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
       if (action.loadFirstUser) {
           action.loadFirstUser = false
           await setActionData(action)
@@ -75,7 +75,7 @@ async function scriptAddVideoPlaylist(action) {
 
       if (!channels.length) {
           await sleep(25000)
-          channels = document.querySelectorAll('ytd-account-item-renderer')
+          channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
       }
 
       if (document.querySelector('#primary-content')) {
@@ -106,8 +106,21 @@ async function scriptAddVideoPlaylist(action) {
           await sleep(60000)
           return
       }
+      const filteredElements = [];
+      // Lặp qua danh sách các phần tử đã chọn
+      channels.forEach(element => {
+      // Kiểm tra xem phần tử có tồn tại children[3] không
+        const children = element.children[0].children[3]
+        if (children) {
+            // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
+            if (children.hasAttribute('hidden')) {
+            // Thêm phần tử vào danh sách đã lọc
+             filteredElements.push(element);
+            }
+        }
+      });
 
-      let channel = channels.item(randomRanger(0, channels.length - 1))
+      let channel = filteredElements.item(randomRanger(0, filteredElements.length - 1))
       if (channel) {
           await userClick(action.pid, '', channel)
       } else {
