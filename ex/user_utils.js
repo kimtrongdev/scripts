@@ -1017,24 +1017,24 @@ async function randomFullName () {
 async function handleUsersSelection (action) {
     action.fisrtStart = false
     await setActionData(action)
-    await sleep(25000)
+    await sleep(4000)
     let channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
     if (action.loadFirstUser) {
         action.loadFirstUser = false
         await setActionData(action)
         await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-        await sleep(60000)
+        await sleep(4000)
         return
     }
 
     if (!channels.length) {
         channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
-        await sleep(20000)
+        await sleep(4000)
     }
 
     if (document.querySelector('#primary-content')) {
         await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-        await sleep(60000)
+        await sleep(4000)
     }
 
     // handle not found channels
@@ -1048,7 +1048,7 @@ async function handleUsersSelection (action) {
             let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
             if (fisUser) {
                 await userClick(action.pid, 'fisUser', fisUser)
-                await sleep(60000)
+                await sleep(4000)
             }
         }
     }
@@ -1057,7 +1057,7 @@ async function handleUsersSelection (action) {
         action.loadFirstUser = true
         await setActionData(action)
         await goToLocation(action.pid, 'youtube.com/account')
-        await sleep(60000)
+        await sleep(4000)
         return
     }
 
