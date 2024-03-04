@@ -4,7 +4,10 @@ async function unsubYoutube(action) {
     let url = window.location.toString()
     reportLive(action.pid)
 
-    if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/v3/signin/identifier') > -1) {
+    if (url.includes('localhost:2000')) {
+      await sleep(180000)
+    }
+    else if (url.indexOf('https://accounts.google.com/signin/v2/identifier') > -1 || url.indexOf('https://accounts.google.com/v3/signin/identifier') > -1) {
       console.log('enter email')
       await waitForSelector('#identifierId')
       await userTypeEnter(action.pid, '#identifierId', action.email)
