@@ -77,6 +77,7 @@ async function unsubYoutube(action) {
       await nextUser(action)
     }
     else if (url.includes('page=youtube_subscriptions')) {
+      let fisrt = true
       while (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length > 1) {
         let dismissBtn = getElementContainsInnerText('span', ['Dismiss'], '', 'equal')
         if (dismissBtn) {
@@ -86,14 +87,19 @@ async function unsubYoutube(action) {
         let unsubBtn = document.querySelector('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button')
         if (unsubBtn) {
           await userClick(action.pid,'unsubBtn', unsubBtn)
-          await sleep(3000)
-          
+          if (fisrt) {
+            fisrt = false
+            await sleep(3000)
+          } else {
+            await sleep(1000)
+          }
+
           let confirmDeleteBtn = getElementContainsInnerText('span', ['Delete'], '', 'equal')
           if (confirmDeleteBtn) {
             await userClick(action.pid, 'confirmDeleteBtn', confirmDeleteBtn)
           }
 
-          await sleep(1000)
+          await sleep(500)
           let gotItBtn = getElementContainsInnerText('span', ['Got it'], '', 'equal')
           if (gotItBtn) {
             await userClick(action.pid, 'gotItBtn', gotItBtn)
