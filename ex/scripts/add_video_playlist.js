@@ -121,6 +121,8 @@ async function scriptAddVideoPlaylist(action) {
       let channel = filteredElements.item(randomRanger(0, filteredElements.length - 1))
       if (channel) {
           await userClick(action.pid, '', channel)
+          console.log(124124124124, channel);
+          await sleep(10000)
       } else {
         await reportScript(action, 0)
       }
