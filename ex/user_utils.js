@@ -248,6 +248,8 @@ async function initActionData(action) {
         }
     }
     else if (action.id == 'unsub_youtube') {
+        closeTabs()
+        await sleep(3000)
         await goToLocation(action.pid, 'https://myaccount.google.com/brandaccounts?hl=en')
     }
     else if (action.id == 'check_recovery') {
