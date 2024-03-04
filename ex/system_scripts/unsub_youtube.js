@@ -73,6 +73,11 @@ async function unsubYoutube(action) {
       await nextUser(action)
     }
     else if (url.includes('page=youtube_subscriptions')) {
+      while (document.querySelector('#single-step-navigation')) {
+        await userClick(action.pid, '#single-step-navigation #close-button')
+        await sleep(1000)
+      }
+
       while (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length > 1) {
         let unsubBtn = document.querySelector('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button')
         if (unsubBtn) {
