@@ -14,6 +14,12 @@ async function unsubYoutube(action) {
       await sleep(180000)
     }
     else if (url.indexOf('accounts.google.com/v3/signin/challenge/pwd') > -1) {
+      if (action.logged_in) {
+        await nextUser(action)
+        return
+      }
+      console.log('enter password')
+      action.logged_in = true
       console.log('enter password')
       action.relogin = true
       await setActionData(action)
