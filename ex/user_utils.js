@@ -1063,10 +1063,10 @@ async function handleUsersSelection (action) {
 
     action.channel_position += 1
     action.selected_user = true
+    await setActionData(action)
 
     let filteredChannels = [];
       // Lặp qua danh sách các phần tử đã chọn
-    let index = 0
     channels.forEach(element => {
         // Kiểm tra xem phần tử có tồn tại children[3] không
         const children = element.children[0].children[3]
@@ -1074,22 +1074,15 @@ async function handleUsersSelection (action) {
             // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
             // Thêm phần tử vào danh sách đã lọc
             filteredChannels.push(element);
-        } else {
-            if (index == action.channel_position) {
-                action.channel_position += 1
-            }
         }
-        index++
     });
-
-    await setActionData(action)
 
     if (action.channel_position >= filteredChannels.length) {
         if (filteredChannels.length) {
             action.channel_position = 0
         }
     }
-    let channel = filteredChannels[(action.channel_position)].children[0].children[0];
+    let channel = filteredChannels[(action.channel_position)]
     await sleep(5000)
     if (channel) {
         if (action.channel_position == filteredChannels.length) {
