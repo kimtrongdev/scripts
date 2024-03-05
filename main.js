@@ -198,9 +198,8 @@ async function loadSystemConfig () {
         EXPIRED_TIME = 400000
     }
     // handle browsers for centos and ubuntu
-    let browsers = ['brave-browser']
-
-    if (Array.isArray(systemConfig.browsers)) {
+    let browsers = []
+    if (systemConfig.browsers) {
         systemConfig.browsers.forEach(br => {
             if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
                 if (br == 'brave') {
@@ -221,6 +220,8 @@ async function loadSystemConfig () {
                 }
             }
         })
+    } else {
+        browsers = ['brave-browser']
     }
     systemConfig.browsers = browsers
 

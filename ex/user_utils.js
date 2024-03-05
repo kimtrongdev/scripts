@@ -1026,18 +1026,18 @@ async function handleUsersSelection (action) {
     action.fisrtStart = false
     await setActionData(action)
     await sleep(4000)
-    let channels = document.querySelectorAll('ytd-account-item-renderer')
+    let channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
     if (action.loadFirstUser) {
         action.loadFirstUser = false
         await setActionData(action)
         await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-        await sleep(60000)
+        await sleep(4000)
         return
     }
 
     if (!channels.length) {
-        await sleep(25000)
-        channels = document.querySelectorAll('ytd-account-item-renderer')
+        channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
+        await sleep(4000)
     }
 
     if (document.querySelector('#primary-content')) {
@@ -1073,15 +1073,27 @@ async function handleUsersSelection (action) {
     action.selected_user = true
     await setActionData(action)
 
-    if (action.channel_position >= channels.length) {
-        if (channels.length) {
+    let filteredChannels = [];
+      // Lặp qua danh sách các phần tử đã chọn
+    channels.forEach(element => {
+        // Kiểm tra xem phần tử có tồn tại children[3] không
+        const children = element.children[0].children[3]
+        if (children && children.hasAttribute('hidden')) {
+            // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
+            // Thêm phần tử vào danh sách đã lọc
+            filteredChannels.push(element);
+        }
+    });
+
+    if (action.channel_position >= filteredChannels.length) {
+        if (filteredChannels.length) {
             action.channel_position = 0
         }
     }
-
-    let channel = channels.item(action.channel_position)
+    let channel = filteredChannels[(action.channel_position)]
+    await sleep(5000)
     if (channel) {
-        if (action.channel_position == channels.length) {
+        if (action.channel_position == filteredChannels.length) {
             reportPositionChannel(action.pid, -1)
         } else {
             reportPositionChannel(action.pid, action.channel_position)
