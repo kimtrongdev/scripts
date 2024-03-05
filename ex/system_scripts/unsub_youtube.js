@@ -85,6 +85,8 @@ async function unsubYoutube(action) {
       });
 
       action.user_ids = userIDs
+      action.origin_user_count = userIDs.length
+      await updateProfileData({ pid: action.pid, description: `start unsub ${action.user_ids.length}/${action.origin_user_count}` })
       await nextUser(action)
     }
     else if (url.includes('page=youtube_subscriptions')) {
@@ -138,7 +140,9 @@ async function unsubYoutube(action) {
         count++
         reportLive(action.pid)
       }
-      
+
+      // report to server
+      await updateProfileData({ pid: action.pid, description: `unsub ${action.user_ids.length}/${action.origin_user_count}` })
       await nextUser(action)
     }
     else {
