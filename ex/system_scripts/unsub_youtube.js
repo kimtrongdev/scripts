@@ -83,7 +83,13 @@ async function unsubYoutube(action) {
     }
     else if (url.includes('page=youtube_subscriptions')) {
       let fisrt = true
+      let count = 0
       while (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length > 1) {
+        if (count > 50) {
+          action.user_ids.unshift(action.current_user_id)
+          await nextUser(action)
+          await sleep(15000)
+        }
         let dismissBtn = getElementContainsInnerText('span', ['Dismiss'], '', 'equal')
         if (dismissBtn) {
           await userClick(action.pid,'dismissBtn', dismissBtn)
@@ -96,7 +102,7 @@ async function unsubYoutube(action) {
             fisrt = false
             await sleep(3000)
           } else {
-            await sleep(1000)
+            await sleep(500)
           }
 
           let confirmDeleteBtn = getElementContainsInnerText('span', ['Delete'], '', 'equal')
@@ -123,6 +129,7 @@ async function unsubYoutube(action) {
         if (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length < 1) {
           await sleep(4000)
         }
+        count++
         reportLive(action.pid)
       }
       
@@ -139,6 +146,7 @@ async function unsubYoutube(action) {
 async function nextUser(action) {
   let userID = action.user_ids.pop()
   if (userID) {
+    action.current_user_id = userID
     await setActionData(action)
     await goToLocation(action.pid, `https://myactivity.google.com/b/${userID}/page?utm_source=my-activity&hl=en&page=youtube_subscriptions`)
   } else {
