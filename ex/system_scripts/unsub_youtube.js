@@ -22,7 +22,12 @@ async function unsubYoutube(action) {
       await sleep(190000)
     }
     else if (url.indexOf("accounts.google.com/signin/v2/challenge/pwd") > -1) {
+      if (action.logged_in) {
+        await nextUser(action)
+        return
+      }
       console.log('enter password')
+      action.logged_in = true
       await setActionData(action)
       await waitForSelector("input[name='password']")
       await userTypeEnter(action.pid, "input[name='password']", action.password)
@@ -104,6 +109,19 @@ async function unsubYoutube(action) {
           if (gotItBtn) {
             await userClick(action.pid, 'gotItBtn', gotItBtn)
           }
+
+          // Try again in a few minutes
+          let closeBtn = getElementContainsInnerText('span', ['Close'], '', 'equal')
+          if (closeBtn) {
+            await userClick(action.pid, 'closeBtn', closeBtn)
+          }
+        }
+
+        if (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length < 1) {
+          await sleep(4000)
+        }
+        if (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length < 1) {
+          await sleep(4000)
         }
         reportLive(action.pid)
       }
