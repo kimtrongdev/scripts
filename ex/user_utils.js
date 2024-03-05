@@ -1034,7 +1034,7 @@ async function handleUsersSelection (action) {
 
     if (document.querySelector('#primary-content')) {
         await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-        await sleep(4000)
+        await sleep(60000)
     }
 
     // handle not found channels
@@ -1048,7 +1048,7 @@ async function handleUsersSelection (action) {
             let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
             if (fisUser) {
                 await userClick(action.pid, 'fisUser', fisUser)
-                await sleep(4000)
+                await sleep(60000)
             }
         }
     }
@@ -1057,25 +1057,32 @@ async function handleUsersSelection (action) {
         action.loadFirstUser = true
         await setActionData(action)
         await goToLocation(action.pid, 'youtube.com/account')
-        await sleep(4000)
+        await sleep(60000)
         return
     }
 
     action.channel_position += 1
     action.selected_user = true
-    await setActionData(action)
 
     let filteredChannels = [];
       // Lặp qua danh sách các phần tử đã chọn
-      channels.forEach(element => {
-      // Kiểm tra xem phần tử có tồn tại children[3] không
+    let index = 0
+    channels.forEach(element => {
+        // Kiểm tra xem phần tử có tồn tại children[3] không
         const children = element.children[0].children[3]
         if (children && children.hasAttribute('hidden')) {
             // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
             // Thêm phần tử vào danh sách đã lọc
-             filteredChannels.push(element);
+            filteredChannels.push(element);
+        } else {
+            if (index == action.channel_position) {
+                action.channel_position += 1
+            }
         }
+        index++
     });
+
+    await setActionData(action)
 
     if (action.channel_position >= filteredChannels.length) {
         if (filteredChannels.length) {
@@ -1090,15 +1097,14 @@ async function handleUsersSelection (action) {
         } else {
             reportPositionChannel(action.pid, action.channel_position)
         }
+
         //if (action.id == 'watch') {
-        getPlaylistData(action)
-            //}
+            getPlaylistData(action)
+        //}
         await userClick(action.pid, '', channel)
     } else {
         isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
     }
-
-  
 }
 
 async function handleSelectExOption (action) {
