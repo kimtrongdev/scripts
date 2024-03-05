@@ -85,7 +85,7 @@ async function unsubYoutube(action) {
       let fisrt = true
       let count = 0
       while (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length > 1) {
-        if (count > 50) {
+        if (count > 100) {
           action.user_ids.unshift(action.current_user_id)
           await nextUser(action)
           await sleep(15000)
@@ -123,10 +123,10 @@ async function unsubYoutube(action) {
           }
         }
 
-        if (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length < 1) {
+        if (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length <= 1) {
           await sleep(4000)
         }
-        if (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length < 1) {
+        if (document.querySelectorAll('c-wiz[data-activity-collection-name="Your YouTube channel subscriptions"] button').length <= 1) {
           await sleep(4000)
         }
         count++
