@@ -48,18 +48,22 @@ async function userLogin(action) {
         if(url.indexOf('localhost') > 0 || url.indexOf('https://accounts.google.com/signin/v2/identifier') == 0) await sleep(10000)
         let emailRecovery = action.recover_mail
         let recoverPhone = action.recover_phone
+        if (url.includes('youtube.com/channel/') && action.check_create_channel) {
+            await beforeLoginSuccess(action)
+            return
+        }
         if (url == 'https://www.youtube.com/') {
             await sleep(5000)
 
-            let avatar = document.querySelector('#avatar-btn')
-            if (avatar) {
-                await sleep(3000)
-                let createChannelLink = document.querySelector('a[href^="/create_channel?"]')
-                if (createChannelLink) {
-                    await userClick(action.pid, 'createChannelLink', createChannelLink)
-                    await sleep(5000)
-                }
-            }
+            let avatar = document.querySelector('#avatar-btn') || document.querySelector('#img')
+            // if (avatar) {
+            //     await sleep(3000)
+            //     let createChannelLink = document.querySelector('a[href^="/create_channel?"]')
+            //     if (createChannelLink) {
+            //         await userClick(action.pid, 'createChannelLink', createChannelLink)
+            //         await sleep(5000)
+            //     }
+            // }
     
             let checkCreateChannel = getElementContainsInnerText('span', ['Create channel', 'CREATE CHANNEL', 'TẠO KÊNH', 'চ্যানেল তৈরি করুন'], '', 'equal')
             if (checkCreateChannel) {
