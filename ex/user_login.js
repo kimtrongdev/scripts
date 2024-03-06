@@ -51,19 +51,24 @@ async function userLogin(action) {
         if (url == 'https://www.youtube.com/') {
             await sleep(5000)
 
-            let checkCreateChannel1 = await getElementContainsInnerText('yt-formatted-string', 'CREATE CHANNEL')
-            let checkCreateChannel2 = await getElementContainsInnerText('yt-formatted-string', 'TẠO KÊNH')
-            let checkCreateChannel3 = await getElementContainsInnerText('yt-formatted-string', 'চ্যানেল তৈরি করুন')
+            let avatar = document.querySelector('#avatar-btn')
+            if (avatar) {
+                await sleep(3000)
+                let createChannelLink = document.querySelector('a[href^="/create_channel?"]')
+                if (createChannelLink) {
+                    await userClick(action.pid, 'createChannelLink', createChannelLink)
+                    await sleep(5000)
+                }
+            }
     
-            let checkCreateChannel = checkCreateChannel1 || checkCreateChannel2 || checkCreateChannel3
+            let checkCreateChannel = getElementContainsInnerText('span', ['Create channel', 'CREATE CHANNEL', 'TẠO KÊNH', 'চ্যানেল তৈরি করুন'], '', 'equal')
             if (checkCreateChannel) {
                 await userClick(action.pid, 'checkCreateChannel', checkCreateChannel)
                 await sleep(60000)
             }
 
-            let avatar = document.querySelector('#avatar-btn')
             if (avatar) {
-                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
+                await beforeLoginSuccess(action)
                 return
             }
 
@@ -565,6 +570,13 @@ async function userLogin(action) {
 }
 
 async function beforeLoginSuccess (action) {
+    if (!action.check_create_channel) {
+        action.check_create_channel = true
+        await setActionData(action)
+        await goToLocation(action.pid, 'https://www.youtube.com/')
+        return
+    }
+
     if (action.current_reco_mail) {
         await updateProfileData({ pid: action.pid, recovery_mail: action.current_reco_mail })
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'scan_reco_mail_success')
