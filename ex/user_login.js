@@ -577,7 +577,7 @@ async function beforeLoginSuccess (action) {
     if (!action.check_create_channel) {
         action.check_create_channel = true
         await setActionData(action)
-        await goToLocation(action.pid, 'https://www.youtube.com/')
+        await goToLocation(action.pid, 'https://www.youtube.com/create_channel')
         return
     }
 
