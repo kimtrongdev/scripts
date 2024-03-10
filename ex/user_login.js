@@ -1260,9 +1260,6 @@ async function checkRestricted (action) {
         return
     }
 
-    if (action.client_config_run_check_2fa) {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
-    }
     //---- ver 2fa
 }
 
