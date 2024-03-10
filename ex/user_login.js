@@ -19,7 +19,10 @@ async function userLogin(action) {
 
         let url = window.location.toString()
 
-        await checkRestricted(action)
+        let rs = await checkRestricted(action)
+        if (!rs) {
+            return
+        }
 
         if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
             //action.
@@ -1265,6 +1268,7 @@ async function checkRestricted (action) {
         return
     }
 
+    return true
     //---- ver 2fa
 }
 
