@@ -1241,7 +1241,9 @@ async function checkRestricted (action) {
     }
     else if (url.includes('signin/challenge/ipp/collect')) {
         // get phone
-        let phone = await _getPhoneNumber(action, action.re_phone)
+        let rePhone = action.re_phone
+        rePhone = rePhone.replace('+84', '0')
+        let phone = await _getPhoneNumber(action, rePhone)
         await userTypeEnter(action.pid, '#phoneNumberId', phone)
         return
     }
