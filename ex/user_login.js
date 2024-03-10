@@ -1175,20 +1175,25 @@ async function checkRestricted (action) {
 
     if (url.includes('signin/productaccess/landing')) {
         await userClick(action.pid, 'div[data-primary-action-label="Take steps"] button')
+        return
     }
     else if (url.includes('signin/challenge/selection')) {
         if (document.querySelector("[data-challengetype='51']")) {
             await userClick(action.pid, "[data-challengetype='51']")
+            return
         } 
         else if (document.querySelector("[data-challengetype='17']")) {
             await userClick(action.pid, "[data-challengetype='17']")
+            return
         }
         else if (document.querySelector("[data-challengetype='9']")) {
             await userClick(action.pid, "[data-challengetype='9']")
+            return
         }
     }
     else if (url.includes('signin/challenge/recaptcha')) {
         // TODO
+        return
     }
 
     // ver 2fa
@@ -1224,7 +1229,7 @@ async function checkRestricted (action) {
         let turnOnBtn = getElementContainsInnerText('span', ['Turn on'], '', 'equal')
         await userClick(action.pid, 'turnOnBtn', turnOnBtn)
 
-        //await updateProfileData({ pid: action.pid, recover_phone: phoneRs.phone })
+        await updateProfileData({ pid: action.pid, recover_phone: phone })
         await sleep(30000)
         return
     }
