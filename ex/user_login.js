@@ -1255,9 +1255,23 @@ async function checkRestricted (action) {
         await userTypeEnter(action.pid, '[type="tel"]', code)
         return
     }
+    else if (url.includes('/challenge/ipp')) {
+        let rePhone = action.re_phone
+        rePhone = rePhone.replace('+84', '0')
+        action.entered_phone = false
+        await setActionData(action)
+        let phone = await _getPhoneNumber(action, rePhone)
+        await userTypeEnter(action.pid, '#phoneNumberId', phone)
+
+        // enter code
+        const code = await _getPhoneCode(action)
+        await userTypeEnter(action.pid, '[type="tel"]', code)
+        return
+    }
     else if (url.includes('/passkeyenrollment')) {
         let notNowBtn = getElementContainsInnerText('span', ['Not now'], '', 'equal')
         await userClick(action.pid, 'notNowBtn', notNowBtn)
+        return
     }
     else if (url.includes('https://mail.google.com/mail') && action.verify_2fa) {
         await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
