@@ -1196,6 +1196,9 @@ async function checkRestricted (action) {
     }
     else if (url.includes('signin/challenge/recaptcha')) {
         // TODO
+        await userClick(action.pid, '.recaptcha-checkbox')
+        let nextBtn = getElementContainsInnerText('span', ['Next'], '', 'equal')
+        await userClick(action.pid, 'nextBtn', nextBtn)
         return
     }
 
