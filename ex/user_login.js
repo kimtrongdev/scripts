@@ -1243,6 +1243,8 @@ async function checkRestricted (action) {
         // get phone
         let rePhone = action.re_phone
         rePhone = rePhone.replace('+84', '0')
+        action.entered_phone = false
+        await setActionData(action)
         let phone = await _getPhoneNumber(action, rePhone)
         await userTypeEnter(action.pid, '#phoneNumberId', phone)
         return
@@ -1279,11 +1281,12 @@ async function checkRestricted (action) {
 
 
 async function _getPhoneCode(action) {
+    let url = window.location.toString()
     // enter code
     let phoneRs = await getPhoneCode(action.order_id, action.api_name)
     console.log('getPhoneCode',phoneRs);
     if (phoneRs.error || action.entered_code) {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhoneCode] ' + phoneRs.error)
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhoneCode] ' + phoneRs.error + url)
     } else {
         action.entered_code = true
         await setActionData(action)
@@ -1300,7 +1303,7 @@ async function _getPhoneNumber(action, rePhone) {
     // get phone
     let phoneRs = await getPhone(rePhone)
     if (phoneRs.error || action.entered_phone) {
-        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhone] ' + phoneRs.error)
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhone] ' + phoneRs.error + url)
     } else {
         if (phoneRs.err) {
             phoneRs = await getPhone()
