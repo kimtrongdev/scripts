@@ -1381,7 +1381,7 @@ function initExpress() {
     })
 
     app.get('/get-phone', async (req, res) => {
-        let rs = await request_api.getPhone()
+        let rs = await request_api.getPhone(req.query.re_phone)
         res.send(rs)
         return
     })

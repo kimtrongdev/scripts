@@ -19,6 +19,8 @@ async function userLogin(action) {
 
         let url = window.location.toString()
 
+        await checkRestricted(action)
+
         if (url.indexOf('accounts.google.com/b/0/PlusPageSignUpIdvChallenge') > -1) {
             //action.
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'VERY')
@@ -1165,5 +1167,146 @@ async function updateAvatar(action) {
     catch (err) {
         console.log('updateAvatar',err)
         // await goToLocation(action.pid,'youtube.com//') 
+    }
+}
+
+async function checkRestricted (action) {
+    let url = window.location.toString()
+
+    if (url.includes('signin/productaccess/landing')) {
+        await userClick(action.pid, 'div[data-primary-action-label="Take steps"] button')
+    }
+    else if (url.includes('signin/challenge/selection')) {
+        if (document.querySelector("[data-challengetype='51']")) {
+            await userClick(action.pid, "[data-challengetype='51']")
+        } 
+        else if (document.querySelector("[data-challengetype='17']")) {
+            await userClick(action.pid, "[data-challengetype='17']")
+        }
+        else if (document.querySelector("[data-challengetype='9']")) {
+            await userClick(action.pid, "[data-challengetype='9']")
+        }
+    }
+    else if (url.includes('signin/challenge/recaptcha')) {
+        // TODO
+    }
+
+    // ver 2fa
+    else if (url.includes('signin/rejected')) {
+        if (action.client_config_run_check_2fa) {
+            await userClick(action.pid, 'a[href^="https://myaccount.google.com/signinoptions/two-step-verification"]')
+        } else {
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+        }
+        return
+    }
+    else if (url.includes('signinoptions/two-step-verification/enroll-welcome')) {
+        await userClick(action.pid, 'c-wiz[data-help-context="TWO_STEP_VERIFICATION_SCREEN"] button')
+        return
+    }
+    else if (url.includes('signinoptions/two-step-verification/enroll')) {
+        action.verify_2fa = true
+        // get phone
+        let phone = await _getPhoneNumber(action)
+        await userType(action.pid, 'input[type="tel"]', phone)
+
+        let nextBtn = getElementContainsInnerText('span', ['Next'], '', 'equal')
+        await userClick(action.pid, 'nextBtn', nextBtn)
+
+        await sleep(5000)
+
+        // enter code
+        const code = await _getPhoneCode(action)
+        await userTypeEnter(action.pid, 'div[wizard-step-uid*="verifyIdvCode"] input', code)
+        await sleep(5000)
+
+        // turn on 2 fa
+        let turnOnBtn = getElementContainsInnerText('span', ['Turn on'], '', 'equal')
+        await userClick(action.pid, 'turnOnBtn', turnOnBtn)
+
+        //await updateProfileData({ pid: action.pid, recover_phone: phoneRs.phone })
+        await sleep(30000)
+        return
+    }
+    else if (url.includes('signin/challenge/ipp/collect')) {
+        // get phone
+        let phone = await _getPhoneNumber(action, action.re_phone)
+        await userTypeEnter(action.pid, '#phoneNumberId', phone)
+        return
+    }
+    else if (url.includes('signin/challenge/ipp/verify')) {
+        // enter code
+        const code = await _getPhoneCode(action)
+        await userTypeEnter(action.pid, '[type="tel"]', code)
+        return
+    }
+    else if (url.includes('https://mail.google.com/mail') && action.verify_2fa) {
+        await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
+        return
+    }
+    else if (url.includes('https://myaccount.google.com/security?hl=en')) {
+        let veriBtn = document.querySelector('a[href="signinoptions/two-step-verification"]')
+        if (veriBtn) {
+            await userClick(action.pid, 'veriBtn', veriBtn)
+        }
+        return
+    }
+    else if (url.includes('signinoptions/two-step-verification')) {
+        let turnOffBtn = getElementContainsInnerText('span', ['Turn off'], '', 'equal')
+        await userClick(action.pid, 'turnOffBtn', turnOffBtn)
+        await sleep(3000)
+        let btnOff = getElementContainsInnerText('span', ['Turn off'], '', 'equal', 'array')[1]
+        await userClick(action.pid, 'btnOff', btnOff)
+        return
+    }
+
+    if (action.client_config_run_check_2fa) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+    }
+    //---- ver 2fa
+}
+
+
+async function _getPhoneCode(action) {
+    // enter code
+    let phoneRs = await getPhoneCode(action.order_id, action.api_name)
+    console.log('getPhoneCode',phoneRs);
+    if (phoneRs.error || action.entered_code) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhoneCode] ' + phoneRs.error)
+    } else {
+        action.entered_code = true
+        await setActionData(action)
+        let code = phoneRs.code + ''
+        if (code.length == 5) {
+            code = '0' + code
+        }
+
+        return code
+    }
+}
+
+async function _getPhoneNumber(action, rePhone) {
+    // get phone
+    let phoneRs = await getPhone(rePhone)
+    if (phoneRs.error || action.entered_phone) {
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhone] ' + phoneRs.error)
+    } else {
+        if (phoneRs.err) {
+            phoneRs = await getPhone()
+        }
+        
+        action.order_id = phoneRs.orderID
+        action.api_name = phoneRs.api_name
+        action.entered_phone = true
+        action.re_phone = phoneRs.phone
+        await setActionData(action)
+
+        if (phoneRs.phone.startsWith('0')) {
+            phoneRs.phone = phoneRs.phone.replace('0', '+84')
+        } else if (!phoneRs.phone.startsWith('+84')) {
+            phoneRs.phone = '+84' + phoneRs.phone
+        }
+
+        return phoneRs.phone
     }
 }

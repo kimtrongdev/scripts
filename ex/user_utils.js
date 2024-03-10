@@ -523,8 +523,12 @@ function getComment () {
     }))
 }
 
-function getPhone () {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone', data: {} }, function (response) {
+function getPhone (rePhone) {
+    let data = {}
+    if (rePhone) {
+        data.re_phone = rePhone
+    }
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone', data }, function (response) {
         resolve(response);
     }))
 }
