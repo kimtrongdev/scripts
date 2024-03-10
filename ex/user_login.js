@@ -1255,6 +1255,10 @@ async function checkRestricted (action) {
         await userTypeEnter(action.pid, '[type="tel"]', code)
         return
     }
+    else if (url.includes('/passkeyenrollment')) {
+        let notNowBtn = getElementContainsInnerText('span', ['Not now'], '', 'equal')
+        await userClick(action.pid, 'notNowBtn', notNowBtn)
+    }
     else if (url.includes('https://mail.google.com/mail') && action.verify_2fa) {
         await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
         return
@@ -1300,9 +1304,10 @@ async function _getPhoneCode(action) {
 }
 
 async function _getPhoneNumber(action, rePhone) {
+    let url = window.location.toString()
     // get phone
     let phoneRs = await getPhone(rePhone)
-    if (phoneRs.error || action.entered_phone) {
+    if (phoneRs.error) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhone] ' + phoneRs.error + url)
     } else {
         if (phoneRs.err) {
