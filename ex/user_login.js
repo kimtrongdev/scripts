@@ -1176,7 +1176,13 @@ async function updateAvatar(action) {
 async function checkRestricted (action) {
     let url = window.location.toString()
 
-    if (url.includes('signin/productaccess/landing')) {
+    if (url.includes('signin/unknownerror')) {
+        let nextBtn = getElementContainsInnerText('span', ['Next'], '', 'equal')
+        await userClick(action.pid, 'nextBtn', nextBtn)
+        await sleep(4000)
+        return
+    }
+    else if (url.includes('signin/productaccess/landing')) {
         await userClick(action.pid, 'div[data-primary-action-label="Take steps"] button')
         return
     }
