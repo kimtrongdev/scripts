@@ -1315,7 +1315,7 @@ async function checkRestricted (action) {
         await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
         return
     }
-    else if (url.includes('https://myaccount.google.com/security?hl=en')) {
+    else if (url.includes('https://myaccount.google.com/security')) {
         let veriBtn = document.querySelector('a[href="signinoptions/two-step-verification"]')
         if (veriBtn) {
             await userClick(action.pid, 'veriBtn', veriBtn)
@@ -1328,6 +1328,7 @@ async function checkRestricted (action) {
     }
     else if (url.includes('signinoptions/two-step-verification')) {
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+        await sleep(2000)
         let turnOffBtn = getElementContainsInnerText('span', ['Turn off'], '', 'equal')
         await userClick(action.pid, 'turnOffBtn', turnOffBtn)
         await sleep(3000)
