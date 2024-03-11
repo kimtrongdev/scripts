@@ -1176,7 +1176,13 @@ async function updateAvatar(action) {
 async function checkRestricted (action) {
     let url = window.location.toString()
 
-    if (url.includes('signin/unknownerror')) {
+    if (action.client_config_run_check_2fa && action.verify_2fa && url.includes('youtube.com/channel/')) {
+        action.verify_2fa = false
+        await setActionData(action)
+        await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
+        return
+    }
+    else if (url.includes('signin/unknownerror')) {
         let nextBtn = getElementContainsInnerText('span', ['Next'], '', 'equal')
         await userClick(action.pid, 'nextBtn', nextBtn)
         await sleep(4000)
