@@ -1219,11 +1219,22 @@ async function checkRestricted (action) {
     else if (url.includes('challenge/iap/verify')) {
          // enter code
          const code = await _getPhoneCode(action)
-         await userTypeEnter(action.pid, 'div[wizard-step-uid*="verifyIdvCode"] input', code)
+         await userTypeEnter(action.pid, '#idvAnyPhonePin', code)
          await sleep(5000)
          return
     }
-    else if (url.includes('signinoptions/two-step-verification/enroll') || url.includes('challenge/iap')) {
+    else if (url.includes('challenge/iap')) {
+        // get phone
+        let phone = await _getPhoneNumber(action)
+        await userType(action.pid, 'input[type="tel"]', phone)
+
+        let nextBtn = getElementContainsInnerText('span', ['Next'], '', 'equal')
+        await userClick(action.pid, 'nextBtn', nextBtn)
+
+        await sleep(5000)
+        return
+    }
+    else if (url.includes('signinoptions/two-step-verification/enroll')) {
         action.verify_2fa = true
         // get phone
         let phone = await _getPhoneNumber(action)
