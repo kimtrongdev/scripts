@@ -1330,7 +1330,7 @@ async function _getPhoneCode(action) {
     // enter code
     let phoneRs = await getPhoneCode(action.order_id, action.api_name)
     console.log('getPhoneCode',phoneRs);
-    if (phoneRs.error || action.entered_code) {
+    if (phoneRs.error) {
         await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '[getPhoneCode] ' + phoneRs.error + url)
     } else {
         action.entered_code = true
