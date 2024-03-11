@@ -1200,6 +1200,8 @@ async function checkRestricted (action) {
         await sleep(4000)
         let nextBtn = getElementContainsInnerText('span', ['Next'], '', 'equal')
         await userClick(action.pid, 'nextBtn', nextBtn)
+        await sleep(4000)
+        await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
         return
     }
 
