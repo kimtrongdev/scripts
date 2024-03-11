@@ -1308,6 +1308,10 @@ async function checkRestricted (action) {
         let veriBtn = document.querySelector('a[href="signinoptions/two-step-verification"]')
         if (veriBtn) {
             await userClick(action.pid, 'veriBtn', veriBtn)
+        } else {
+            if (action.client_config_run_check_2fa) {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, '2FA_DONE')
+            }
         }
         return
     }
