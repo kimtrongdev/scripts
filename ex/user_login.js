@@ -1328,6 +1328,7 @@ async function checkRestricted (action) {
     }
     else if (url.includes('signinoptions/two-step-verification')) {
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+        await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
         await sleep(2000)
         let turnOffBtn = getElementContainsInnerText('span', ['Turn off'], '', 'equal')
         await userClick(action.pid, 'turnOffBtn', turnOffBtn)
