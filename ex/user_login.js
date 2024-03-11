@@ -1331,7 +1331,7 @@ async function checkRestricted (action) {
         let turnOffBtn = getElementContainsInnerText('span', ['Turn off'], '', 'equal')
         await userClick(action.pid, 'turnOffBtn', turnOffBtn)
         await sleep(3000)
-        let btnOff = getElementContainsInnerText('span', ['Turn off'], '', 'equal', 'array')[1]
+        let btnOff = getElementContainsInnerText('span', ['Turn off'], '', 'equal', 'array').pop()
         await userClick(action.pid, 'btnOff', btnOff)
         return
     }
