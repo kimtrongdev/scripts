@@ -1216,6 +1216,13 @@ async function checkRestricted (action) {
         await userClick(action.pid, 'c-wiz[data-help-context="TWO_STEP_VERIFICATION_SCREEN"] button')
         return
     }
+    else if (url.includes('challenge/iap/verify')) {
+         // enter code
+         const code = await _getPhoneCode(action)
+         await userTypeEnter(action.pid, 'div[wizard-step-uid*="verifyIdvCode"] input', code)
+         await sleep(5000)
+         return
+    }
     else if (url.includes('signinoptions/two-step-verification/enroll') || url.includes('challenge/iap')) {
         action.verify_2fa = true
         // get phone
