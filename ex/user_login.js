@@ -1227,13 +1227,17 @@ async function checkRestricted (action) {
         return
     }
     else if (url.includes('signinoptions/two-step-verification/enroll-welcome')) {
-        await userClick(action.pid, 'c-wiz[data-help-context="TWO_STEP_VERIFICATION_SCREEN"] button')
-        await sleep(3000)
-        let confirmOKBtn = getElementContainsInnerText('span', ['OK'], '', 'equal')
-        if (confirmOKBtn) {
-            await userClick(action.pid, 'confirmOKBtn', confirmOKBtn)
+        if (!action.client_config_run_check_2fa) {
+            await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, url)
+        } else {
+            await userClick(action.pid, 'c-wiz[data-help-context="TWO_STEP_VERIFICATION_SCREEN"] button')
+            await sleep(3000)
+            let confirmOKBtn = getElementContainsInnerText('span', ['OK'], '', 'equal')
+            if (confirmOKBtn) {
+                await userClick(action.pid, 'confirmOKBtn', confirmOKBtn)
+            }
+            return
         }
-        return
     }
     else if (url.includes('challenge/iap/verify')) {
          // enter code
