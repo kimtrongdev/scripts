@@ -445,6 +445,10 @@ async function startChromeAction(action, _browser) {
         exs.push('extensions/adblock')
     }
 
+    if (systemConfig.client_config_use_recaptcha_for_login && action.id == 'login') {
+        exs.push('AutocaptchaProExtension')
+    }
+
     let level_name = ''
     if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
