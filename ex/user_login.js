@@ -1176,11 +1176,17 @@ async function updateAvatar(action) {
 async function checkRestricted (action) {
     let url = window.location.toString()
 
-    if (action.client_config_run_check_2fa && action.verify_2fa && url.includes('youtube.com/channel/')) {
-        action.verify_2fa = false
-        await setActionData(action)
-        await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
-        return
+    if (url.includes('youtube.com/channel/')) {
+        if (action.client_config_run_check_2fa) {
+            if (action.verify_2fa) {
+                action.verify_2fa = false
+                await setActionData(action)
+                await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
+                return
+            } else {
+                await updateActionStatus(action.pid, action.id, LOGIN_STATUS.ERROR, 'VERIFY_DONE')
+            }
+        }
     }
     else if (url.includes('signin/unknownerror')) {
         let nextBtn = getElementContainsInnerText('span', ['Next'], '', 'equal')
