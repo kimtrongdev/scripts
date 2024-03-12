@@ -9,10 +9,6 @@ async function userLogin(action) {
             return
         }
 
-        action.email = 'wiliwanboonyarit@gmail.com'
-        action.password = 'X7TpoD7P45'
-        action.recover_mail = 'cintralarteyr@hotmail.com'
-
         await sleep(5000)
         reportLive(action.pid)
 
