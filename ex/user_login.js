@@ -177,6 +177,12 @@ async function userLogin(action) {
             await userTypeEnter(action.pid, 'input[name="confirmation_password"]', action.new_password)
             await setActionData(action)
             await updateProfileData({ pid: action.pid, temp_new_pass: action.new_password })
+
+            await sleep(10000)
+            let confirmBtn = document.querySelector('[data-mdc-dialog-action="ok"]')
+            if (confirmBtn) {
+                await userClick(action.pid, 'confirmBtn', confirmBtn)
+            }
             return
         }
         else if (action.id == 'change_pass' && url.indexOf('/speedbump/changepassword') > -1) {
@@ -185,6 +191,12 @@ async function userLogin(action) {
             await userTypeEnter(action.pid, 'input[name="ConfirmPasswd"]', action.new_password)
             await setActionData(action)
             await updateProfileData({ pid: action.pid, temp_new_pass: action.new_password })
+
+            await sleep(10000)
+            let confirmBtn = document.querySelector('[data-mdc-dialog-action="ok"]')
+            if (confirmBtn) {
+                await userClick(action.pid, 'confirmBtn', confirmBtn)
+            }
             return
         }
         else if (action.id == 'recovery_mail' && url.indexOf('/disabled/appeal/confirmation') > -1) {
