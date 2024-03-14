@@ -1213,7 +1213,6 @@ async function checkRestricted (action) {
         }
     }
     else if (url.includes('signin/challenge/recaptcha')) {
-        // TODO
         await sleep(7000)
         await userClick(action.pid, 'iframe')
         await sleep(2000)
@@ -1326,7 +1325,7 @@ async function checkRestricted (action) {
         await goToLocation(action.pid, 'https://myaccount.google.com/security?hl=en')
         return
     }
-    else if (url.includes('https://myaccount.google.com/security')) {
+    else if (url.includes('https://myaccount.google.com/security') && action.id !== 'change_pass') {
         let veriBtn = document.querySelector('a[href="signinoptions/two-step-verification"]')
         if (veriBtn) {
             await userClick(action.pid, 'veriBtn', veriBtn)
