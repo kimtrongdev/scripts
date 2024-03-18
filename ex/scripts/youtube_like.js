@@ -161,9 +161,9 @@ async function processSearchPageLike(action, preventGoToChannel = false) {
   }
 }
 
-async function getSubData(action) {
-  if (document.querySelector('#subscriber-count') && document.querySelector('#subscriber-count').innerText ) {
-    action.data_reported = document.querySelector('#subscriber-count').innerText
+async function getLikeData(action) {
+  if (document.querySelector('[title="I like this"]')) {
+    action.data_reported = document.querySelector('[title="I like this"]').getAttribute('aria-label')
     await setActionData(action)
   }
 }
@@ -173,7 +173,7 @@ async function processWatchChannelPageLike(action) {
 
   if (action.subscribed) {
     console.log('subscribed')
-    await getSubData(action)
+    await getLikeData(action)
     await reportScript(action)
     return
   }
@@ -208,7 +208,7 @@ async function processWatchChannelPageLike(action) {
       return
     }
 
-    await getSubData(action)
+    await getLikeData(action)
 
     if (video && Number(action.sub_from_video_percent) > Math.random() * 100) {
       await userClick(action.pid,'video',video)
