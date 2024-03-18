@@ -448,7 +448,7 @@ async function processSearchSuggest(action) {
 function loadVideoTime() {
   videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
   videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
-  return videoTime
+  return videoTime * 1000
 }
 
 async function processWatchPageSub(action) {
