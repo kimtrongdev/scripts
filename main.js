@@ -1,3 +1,4 @@
+let ERROR_TYPE_1_MAP = {}
 let useProxy = true
 let isRunBAT = false
 let isSystemChecking = false
@@ -183,7 +184,8 @@ async function loadSystemConfig () {
     (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') ||
     (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') ||
     (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
-    (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false')
+    (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false') ||
+    (systemConfig.unsub_youtube && systemConfig.unsub_youtube != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
@@ -197,26 +199,30 @@ async function loadSystemConfig () {
     }
     // handle browsers for centos and ubuntu
     let browsers = []
-    systemConfig.browsers.forEach(br => {
-        if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
-            if (br == 'brave') {
-                br = 'brave-browser'
-            }
-
-            if (br == 'microsoft-edge') {
-                br = 'microsoft-edge-stable'
-            }
-
-            if (br == 'vivaldi-stable') {
-                br = 'vivaldi'
-            }
-            browsers.push(br)
-        } else {
-            if (br != 'iridium-browser') {
+    if (systemConfig.browsers) {
+        systemConfig.browsers.forEach(br => {
+            if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
+                if (br == 'brave') {
+                    br = 'brave-browser'
+                }
+    
+                if (br == 'microsoft-edge') {
+                    br = 'microsoft-edge-stable'
+                }
+    
+                if (br == 'vivaldi-stable') {
+                    br = 'vivaldi'
+                }
                 browsers.push(br)
+            } else {
+                if (br != 'iridium-browser') {
+                    browsers.push(br)
+                }
             }
-        }
-    })
+        })
+    } else {
+        browsers = ['brave-browser']
+    }
     systemConfig.browsers = browsers
 
     if (config.browser_map) {
@@ -437,6 +443,10 @@ async function startChromeAction(action, _browser) {
 
     if (systemConfig.use_adblock) {
         exs.push('extensions/adblock')
+    }
+
+    if (systemConfig.client_config_use_recaptcha_for_login && action.id == 'login') {
+        exs.push('AutocaptchaProExtension')
     }
 
     let level_name = ''
@@ -733,7 +743,18 @@ async function newRunProfile() {
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
-        if (systemConfig.is_change_pass) {
+        if (systemConfig.unsub_youtube) {
+            action = await request_api.getProfileForRegChannel()
+            if (action) {
+                action.pid = action.id
+                pid = action.pid
+                isNewProxy = true
+            } else {
+                console.log('Not found user data.');
+                return
+            }
+        }
+        else if (systemConfig.is_change_pass) {
             action = await request_api.getProfileForRegChannel(pid)
             if (action) {
                 action.pid = action.id
@@ -912,7 +933,7 @@ async function getScriptData(pid, isNewProxy = false) {
     
             action.total_channel_created = Number(systemConfig.total_channel_created)
     
-            if (['youtube_sub', 'watch', 'watch_video', 'comment_youtube', 'like_fb_page', 'like_fb_post'].includes(action.id)) {
+            if (['youtube_sub', 'watch', 'watch_video', 'comment_youtube', 'like_fb_page', 'like_fb_post', 'like_youtube'].includes(action.id)) {
                 let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
                 if (oldUserPosition) {
                     action.channel_position = Number(oldUserPosition.position)
@@ -1365,7 +1386,7 @@ function initExpress() {
     })
 
     app.get('/get-phone', async (req, res) => {
-        let rs = await request_api.getPhone()
+        let rs = await request_api.getPhone(req.query.re_phone)
         res.send(rs)
         return
     })
@@ -1500,6 +1521,21 @@ function initExpress() {
             });
         }
         else if (req.query.isScriptReport) {
+            if (req.query.status == 'ERROR_TYPE_1') {
+                req.query.isBreak = true
+                let pid = req.query.pid
+                if (!ERROR_TYPE_1_MAP[pid]) {
+                    ERROR_TYPE_1_MAP[pid] = 1
+                }
+
+                ERROR_TYPE_1_MAP[pid]++
+                if (ERROR_TYPE_1_MAP[pid] > 3) {
+                    delete ERROR_TYPE_1_MAP[pid]
+                    removePidAddnew(pid, 0)
+                }
+                return
+            }
+
             if (!['watch', 'create_playlist', 'search', 'end_script'].includes(req.query.script_code)) {
                 await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
             }

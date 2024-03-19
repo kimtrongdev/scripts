@@ -43,8 +43,8 @@ module.exports = {
     getComment: async () => {
         return await rq({uri: SUB_URL + '/api/data/comment?type=youtube',json: true})
     },
-    getPhone: async () => {
-        return await rq({uri: SUB_URL + '/api/phone',json: true})
+    getPhone: async (re_phone) => {
+        return await rq({uri: SUB_URL + `/api/phone?re_phone=${re_phone}`,json: true})
     },
     getMailCode: async (mail) => {
         return await rq({uri: SUB_URL + `/api/phone/mail-code?mail=${mail}`,json: true})

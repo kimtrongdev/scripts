@@ -14,6 +14,15 @@ async function scriptYoutubeSub(action) {
       return
     }
     
+
+    if (url.includes('support.google.com/accounts/answer/40039') ||
+      url.includes('accounts.google.com/v3/signin/productaccess/landing') ||
+      url.includes('accounts.google.com/v3/signin/identifier')
+    ) {
+      await reportScript(action, 'ERROR_TYPE_1')
+      return
+    }
+
     if (url.includes('accounts.google.com/InteractiveLogin/signinchooser')) {
       // renew profile
       await resetProfile(action)
@@ -439,7 +448,7 @@ async function processSearchSuggest(action) {
 function loadVideoTime() {
   videoTime = document.querySelector('.ytp-time-duration').textContent.split(':')
   videoTime = videoTime.length==2?videoTime[0]*60+videoTime[1]*1:videoTime[0]*60*60+videoTime[1]*60+videoTime[2]*1
-  return videoTime
+  return videoTime * 1000
 }
 
 async function processWatchPageSub(action) {

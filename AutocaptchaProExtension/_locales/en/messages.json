@@ -1,0 +1,154 @@
+{
+    "extName": {
+        "message": "Autocaptcha.pro — công cụ giải quyết captcha tự động",
+        "description": "Tên của ứng dụng, hiển thị trên cửa hàng web."
+    },
+    "extDesc": {
+        "message": "Dịch vụ trực tuyến giải quyết captcha tự động",
+        "description": "Mô tả về ứng dụng, hiển thị trên cửa hàng web."
+    },
+    "extShortName": {
+        "message": "Autocaptcha.pro",
+        "description": ""
+    },
+    "on": {
+        "message": "Bật",
+        "description": ""
+    },
+    "off": {
+        "message": "Tắt",
+        "description": ""
+    },
+    "support": {
+        "message": "Hỗ trợ",
+        "description": ""
+    },
+    "apiKeyPlaceholder": {
+        "message": "Nhập khóa API",
+        "description": ""
+    },
+    "getKey": {
+        "message": "Nhận khóa",
+        "description": ""
+    },
+    "balance": {
+        "message": "Số dư",
+        "description": ""
+    },
+    "topUp": {
+        "message": "Nạp tiền",
+        "description": ""
+    },
+    "wrongKey": {
+        "message": "Khóa không đúng",
+        "description": ""
+    },
+    "emptyKey": {
+        "message": "Khóa trống",
+        "description": ""
+    },
+    "automaticCaptchaSolving": {
+        "message": "Giải quyết captcha tự động",
+        "description": ""
+    },
+    "settings": {
+        "message": "Cài đặt",
+        "description": ""
+    },
+    "repeatSolveAttempts": {
+        "message": "Lặp giải captcha trong trường hợp lỗi, số lần thử",
+        "description": ""
+    },
+    "proxy": {
+        "message": "Proxy",
+        "description": ""
+    },
+    "proxyType": {
+        "message": "Loại Proxy",
+        "description": ""
+    },
+    "port": {
+        "message": "Cổng",
+        "description": ""
+    },
+    "login": {
+        "message": "Tên đăng nhập",
+        "description": ""
+    },
+    "password": {
+        "message": "Mật khẩu",
+        "description": ""
+    },
+    "blacklistControl": {
+        "message": "Quản lý danh sách đen",
+        "description": ""
+    },
+    "blacklistDescription": {
+        "message": "Tắt giải captcha trên các trang web đã thêm vào danh sách đen",
+        "description": ""
+    },
+    "add": {
+        "message": "Thêm",
+        "description": ""
+    },
+    "manualRecognition": {
+        "message": "Nhận dạng thủ công",
+        "description": ""
+    },
+    "textCaptcha": {
+        "message": "Captcha văn bản",
+        "description": ""
+    },
+    "textCaptchaHelpLink": {
+        "message": "",
+        "description": ""
+    },
+    "markImageAsCaptcha": {
+        "message": "Đánh dấu hình ảnh là captcha",
+        "description": ""
+    },
+    "selectInputForCaptchaResult": {
+        "message": "Chọn một trường để hiển thị kết quả captcha",
+        "description": ""
+    },
+    "help": {
+        "message": "Trợ giúp",
+        "description": ""
+    },
+    "rcInfoText": {
+        "message": "Chỉ cần nhấp",
+        "description": ""
+    },
+    "close_button": {
+        "message": "Đóng",
+        "description": ""
+    },
+    "delayStartCount": {
+        "message": "Thời gian trễ giữa các lần bấm để bắt đầu giải captcha",
+        "description": ""
+    },
+    "textCaptchaSaveOnSite": {
+        "message": "Lưu vị trí captcha đã chọn cho các trang web",
+        "description": ""
+    },
+    "delayAfterLoadPage": {
+        "message": "Thời gian trễ trước khi bắt đầu giải captcha đã lưu",
+        "description": ""
+    },
+    "autoClick": {
+        "message": "Tự động bấm",
+        "description": ""
+    },
+    "autoSolve": {
+        "message": "Tự động giải",
+        "description": ""
+    },
+    "globalVariableSetting": {
+        "message": "Biến toàn cầu",
+        "description": ""
+    },
+    "manualRecognitionDescription": {
+        "message": "Tính năng này cho phép bắt đầu giải captcha bằng cách sử dụng phương pháp \"Token\" không tự động mà bằng cách nhấp vào nút \"Giải\".",
+        "description": ""
+    }
+}

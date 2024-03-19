@@ -69,7 +69,7 @@ async function scriptAddVideoPlaylist(action) {
           action.loadFirstUser = false
           await setActionData(action)
           await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-          await sleep(60000)
+          await sleep(10000)
           return
       }
 
@@ -80,7 +80,7 @@ async function scriptAddVideoPlaylist(action) {
 
       if (document.querySelector('#primary-content')) {
           await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-          await sleep(60000)
+          await sleep(10000)
       }
 
       // handle not found channels
@@ -94,7 +94,7 @@ async function scriptAddVideoPlaylist(action) {
               let fisUser = document.querySelectorAll('ytd-account-item-section-renderer ytd-account-item-renderer #contentIcon img').item(1)
               if (fisUser) {
                   await userClick(action.pid, 'fisUser', fisUser)
-                  await sleep(60000)
+                  await sleep(10000)
               }
           }
       }
@@ -103,11 +103,22 @@ async function scriptAddVideoPlaylist(action) {
           action.loadFirstUser = true
           await setActionData(action)
           await goToLocation(action.pid, 'youtube.com/account')
-          await sleep(60000)
+          await sleep(10000)
           return
       }
 
-      let channel = channels.item(randomRanger(0, channels.length - 1))
+      let filteredChannels = [];
+      // Lặp qua danh sách các phần tử đã chọn
+      channels.forEach(element => {
+      // Kiểm tra xem phần tử có tồn tại children[3] không
+        const children = element.children[0].children[3]
+        if (children && children.hasAttribute('hidden')) {
+            // Kiểm tra xem children[3] có thuộc tính hidden không (lọc ra những kênh bị khóa)
+             filteredChannels.push(element);
+        }
+    });
+
+      let channel = filteredChannels[randomRanger(0, filteredChannels.length - 1)].children[0].children[0]
       if (channel) {
           await userClick(action.pid, '', channel)
       } else {
