@@ -1,5 +1,3 @@
-const { log } = require("../utils")
-
 const SKIP_ADS_PERCENT = 0.55   //0.7  //0.85
 const LIKE_PERCENT = 0.01
 const COMMENT_PERCENT = 0.0015
@@ -9,7 +7,7 @@ const CHANNEL_VIDEO_WATCH = 0
 
 async function userWatch(action){
     try{
-        console.log('start watch')
+        console.log('start watch userWatch')
 
         let url = window.location.toString()
         // if (action.delete_history) {
@@ -147,7 +145,7 @@ async function userWatch(action){
 
 async function processHomePage(action){
 
-    log("processHomePage", action)
+    console.log('Processing Home Page Action', action);
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
     if ((action.channel_position == -1 || action.fisrtStart) && !isNonUser) {
