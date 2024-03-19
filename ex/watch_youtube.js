@@ -146,6 +146,19 @@ async function userWatch(action){
 async function processHomePage(action){
 
     console.log('Processing Home Page Action', action);
+
+
+    const choices = [
+        action.playlist_url,
+        action.keyword,
+        action.keyword + " " + action.playlist_url,
+        action.channel_title + " " + action.action.keyword
+        // Thêm các lựa chọn khác vào đây
+    ];
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    const keyWordSearch = choices[randomIndex];
+
+
     await checkLogin(action)
     // if(!(await deleteHistory(action))) return
     if ((action.channel_position == -1 || action.fisrtStart) && !isNonUser) {
@@ -170,11 +183,12 @@ async function processHomePage(action){
     }
 
     if (action.search || action.page) {
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+    
+        await userTypeEnter(action.pid,'input#search',keyWordSearch)
         await sleep(20000)
         let url = window.location.toString()
         if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-            await userTypeEnter(action.pid,'input#search',action.keyword)
+            await userTypeEnter(action.pid,'input#search',keyWordSearch)
         }
         return
     }
@@ -199,11 +213,11 @@ async function processHomePage(action){
                 await userClickRandomVideo(action.pid)
             }
             else if(action.preview == "search"){
-                await userTypeEnter(action.pid,'input#search',action.keyword)
+                await userTypeEnter(action.pid,'input#search',keyWordSearch)
                 await sleep(20000)
                 let url = window.location.toString()
                 if (url == 'https://www.youtube.com/' || url == 'https://www.youtube.com/feed/trending' || url == 'https://m.youtube.com/') {
-                    await userTypeEnter(action.pid,'input#search',action.keyword)
+                    await userTypeEnter(action.pid,'input#search',keyWordSearch)
                 }
             }
         }
@@ -224,7 +238,7 @@ async function processHomePage(action){
         await userClickRandomVideo(action.pid)
     }
     else if(action.preview == "search"){
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+        await userTypeEnter(action.pid,'input#search',keyWordSearch)
     }
     else if(action.home){
         await processBrowserFeature(action)
@@ -233,7 +247,7 @@ async function processHomePage(action){
         await userTypeEnter(action.pid,'input#search',action.suggest_videos)
     } 
     else{
-        await userTypeEnter(action.pid,'input#search',action.keyword)
+        await userTypeEnter(action.pid,'input#search',keyWordSearch)
     }
 
     await sleep(3000)
