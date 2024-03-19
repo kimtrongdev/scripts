@@ -151,8 +151,9 @@ async function processHomePage(action){
     const choices = [
         action.playlist_url,
         action.keyword,
-        action.keyword + " " + action.playlist_url,
-        action.channel_title + " " + action.keyword
+        action.playlist_url + " " + action.channel_title,
+        action.channel_title + " " + action.keyword,
+        action.keyword + " " + action.channel_title,
         // Thêm các lựa chọn khác vào đây
     ];
     const randomIndex = Math.floor(Math.random() * choices.length);
