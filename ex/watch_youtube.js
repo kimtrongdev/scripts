@@ -152,7 +152,7 @@ async function processHomePage(action){
         action.playlist_url,
         action.keyword,
         action.keyword + " " + action.playlist_url,
-        action.channel_title + " " + action.action.keyword
+        action.channel_title + " " + action.keyword
         // Thêm các lựa chọn khác vào đây
     ];
     const randomIndex = Math.floor(Math.random() * choices.length);
