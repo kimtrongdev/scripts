@@ -1076,6 +1076,7 @@ async function handleUsersSelection (action) {
     action.fisrtStart = false
     await setActionData(action)
     await sleep(4000)
+    console.log("handleUsersSelection", action);
     let channels = document.querySelectorAll('ytd-account-item-renderer[class="style-scope ytd-channel-switcher-page-renderer"]')
     if (action.loadFirstUser) {
         action.loadFirstUser = false
