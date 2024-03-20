@@ -424,6 +424,7 @@ async function preWatchingVideo(action){
 async function watchingVideo(action){
     action.data_reported = document.querySelector('.view-count').innerText
     await setActionData(action)
+    console.log("watchingVideo", action)
     
     let url = window.location.toString()
     let interval = 10000
