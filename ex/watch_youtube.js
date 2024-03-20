@@ -1,3 +1,5 @@
+const utils = require("../utils")
+
 const SKIP_ADS_PERCENT = 0.55   //0.7  //0.85
 const LIKE_PERCENT = 0.01
 const COMMENT_PERCENT = 0.0015
@@ -425,6 +427,9 @@ async function watchingVideo(action){
     action.data_reported = document.querySelector('.view-count').innerText
     await setActionData(action)
     console.log("watchingVideo", action)
+
+    await utils.sleep(120000)
+    
     
     let url = window.location.toString()
     let interval = 10000
