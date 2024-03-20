@@ -426,7 +426,7 @@ async function preWatchingVideo(action){
 async function watchingVideo(action){
     action.data_reported = document.querySelector('.view-count').innerText
     await setActionData(action)
-    console.log("watchingVideo", action)
+    console.log("watchingVideo is_like, coment", action.is_like, action.is_comment)
 
     
     
