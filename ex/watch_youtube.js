@@ -263,6 +263,7 @@ async function preWatchingVideo(action){
             if(action.url_type=='playlist' && videoTime > 3600){
                 videoTime = 3600
             }
+            videoTime = videoTime * 1000
         }
         loadVideoTime()
         let countGetVideoTime = 0
