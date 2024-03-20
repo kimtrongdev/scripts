@@ -428,7 +428,6 @@ async function watchingVideo(action){
     await setActionData(action)
     console.log("watchingVideo", action)
 
-    await utils.sleep(120000)
     
     
     let url = window.location.toString()
