@@ -461,6 +461,7 @@ async function watchingVideo(action){
 
         await clickPlayIfPause(action.pid)
 
+        console.log("after clickPlayIfPause" ,action.like_time + interval, action.like_time, i, action.is_like );
         if(i%60000==0) {
             reportLive(action.pid)
             if(Math.random() < 0.3){
