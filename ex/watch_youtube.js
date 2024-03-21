@@ -481,12 +481,15 @@ async function watchingVideo(action){
         }
 
         if (action.is_like && i > action.like_time && i <= action.like_time + interval) {
+            console.log("action.is_like");
             await LikeOrDisLikeYoutubeVideo(action.pid, true)
             action.is_like = false
             await setActionData(action)
         }
 
         if (action.is_comment && i > action.comment_time && i <= action.comment_time + interval) {
+            console.log("action.is_comment");
+
             await CommentYoutubeVideo(action.pid, action.comment)
             action.is_comment = false
             await setActionData(action)
@@ -1059,6 +1062,8 @@ async function processSearchSuggest(action){
 }
 
 async function processWatchPage(action){
+
+    console.log("processWatchPage", action);
     await preWatchingVideo(action)
     let finishVideo = await watchingVideo(action)
     await afterWatchingVideo(action,finishVideo)
