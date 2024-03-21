@@ -469,9 +469,9 @@ async function watchingVideo(action){
         }
 
         if (action.is_sub && i > action.sub_time && i <= action.sub_time + interval) {
-            if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-                let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-                await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
+            if (!document.querySelector('#notification-preference-toggle-button')) {
+                let subBtn = document.querySelector('#subscribe-button-shape')
+                await userClick(action.pid,'#subscribe-button-shape', subBtn)
                 action.is_sub = false
                 await setActionData(action)
             }
