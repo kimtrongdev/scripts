@@ -479,9 +479,9 @@ async function watchingVideo(action){
 
         if (action.is_like && i > action.like_time && i <= action.like_time + interval) {
             console.log("is_likeis_likeis_likeis_likeis_like");
-            // await LikeOrDisLikeYoutubeVideo(action.pid, true)
-            // action.is_like = false
-            // await setActionData(action)
+            await LikeOrDisLikeYoutubeVideo(action.pid, true)
+            action.is_like = false
+            await setActionData(action)
         }
         
 
