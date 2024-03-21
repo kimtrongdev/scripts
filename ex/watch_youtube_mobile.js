@@ -1,6 +1,6 @@
 async function userWatchMobile(action){
     try{
-        console.log('start watch')
+        console.log('start watch userWatchMobile')
         await sleep(2000)
         let url = window.location.toString()
 
