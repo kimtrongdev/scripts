@@ -5,7 +5,7 @@ const VIEW_SUB_PERCENT_DM = 0.002
 
 async function userWatchDM(action){
     try{
-        console.log('start watch')
+        console.log('start watch userWatchDM')
 
         let url = window.location.toString()
 
