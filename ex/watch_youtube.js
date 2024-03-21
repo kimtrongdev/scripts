@@ -4,6 +4,7 @@ const COMMENT_PERCENT = 0.0015
 const VIEW_SUB_PERCENT = 0  //0.002
 const SEARCH_SKIP = 0
 const CHANNEL_VIDEO_WATCH = 0
+const utils = require('./utils')
 
 async function userWatch(action){
     try{
@@ -482,6 +483,7 @@ async function watchingVideo(action){
             // action.is_like = false
             // await setActionData(action)
         }
+        
 
         if (action.is_comment && i > action.comment_time && i <= action.comment_time + interval) {
             console.log("is_commentis_commentis_commentis_comment");
@@ -501,6 +503,8 @@ async function watchingVideo(action){
 
         i += interval
     }
+
+    await utils.sleep(10000)
     return true
 }
 
