@@ -1100,16 +1100,18 @@ async function getReact(keyword,totalTime){
 
 async function LikeOrDisLikeYoutubeVideo(pid, isLike) {
     try {
-        const likeBtns = document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")
+        // const likeBtns = document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")
+        const likeBtn = document.querySelectorAll('.YtLikeButtonViewModelHost')[0];
+        const dislikeBtn = document.querySelectorAll('.YtDislikeButtonViewModelHost')[0];
         let index
         if(isLike) {
             index = 0
         }else {
             index = 1
         }
-        let likeBtn = likeBtns.item(index)
-        if (likeBtn) {
-            await userClick(action.pid, 'likeBtn', likeBtn)
+        let btnClick = isLike ? likeBtn : dislikeBtn;
+        if (btnClick) {
+            await userClick(action.pid, 'btnClick', btnClick)
         }
         // if(likeBtn.length > 1) {
         //     await userClick(pid,`#top-level-buttons ytd-toggle-button-renderer:nth-of-type(${index}) yt-icon-button#button.style-scope.ytd-toggle-button-renderer.style-text`)
