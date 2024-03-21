@@ -425,10 +425,6 @@ async function preWatchingVideo(action){
 async function watchingVideo(action){
     action.data_reported = document.querySelector('.view-count').innerText
     await setActionData(action)
-    console.log("watchingVideo is_like, coment", action.is_like, action.is_comment)
-
-    
-    
     let url = window.location.toString()
     let interval = 10000
     for(let i = 0; i < action.watch_time;){
@@ -478,7 +474,6 @@ async function watchingVideo(action){
         }
 
         if (action.is_like && i > action.like_time && i <= action.like_time + interval) {
-            console.log("is_likeis_likeis_likeis_likeis_like");
             await LikeOrDisLikeYoutubeVideo(action.pid, true)
             action.is_like = false
             await setActionData(action)
@@ -486,8 +481,6 @@ async function watchingVideo(action){
         
 
         if (action.is_comment && i > action.comment_time && i <= action.comment_time + interval) {
-            console.log("is_commentis_commentis_commentis_comment");
-
             await CommentYoutubeVideo(action.pid, action.comment)
             action.is_comment = false
             await setActionData(action)
