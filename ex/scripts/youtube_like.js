@@ -260,6 +260,7 @@ async function handleLikeYoutube (action, endScript = true) {
       await reportScript(action)
     }
   } else {
+    await reportScript(action, false)
     // if (document.querySelector('#subscribe-button-shape')) {
     //   await userClick(action.pid,'#subscribe-button-shape')
     //   await sleep(3000)
