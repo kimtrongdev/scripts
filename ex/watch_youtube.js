@@ -425,10 +425,6 @@ async function preWatchingVideo(action){
 async function watchingVideo(action){
     action.data_reported = document.querySelector('.view-count').innerText
     await setActionData(action)
-    console.log("watchingVideo is_like, coment", action.is_like, action.is_comment)
-
-    
-    
     let url = window.location.toString()
     let interval = 10000
     for(let i = 0; i < action.watch_time;){
@@ -469,9 +465,9 @@ async function watchingVideo(action){
         }
 
         if (action.is_sub && i > action.sub_time && i <= action.sub_time + interval) {
-            if (!document.querySelector('tp-yt-paper-button[subscribed]')) {
-                let subBtn = document.querySelector('#subscribe-button ytd-subscribe-button-renderer')
-                await userClick(action.pid,'#subscribe-button ytd-subscribe-button-renderer', subBtn)
+            if (!document.querySelector('#notification-preference-toggle-button')) {
+                let subBtn = document.querySelector('#subscribe-button-shape')
+                await userClick(action.pid,'#subscribe-button-shape', subBtn)
                 action.is_sub = false
                 await setActionData(action)
             }
@@ -482,6 +478,7 @@ async function watchingVideo(action){
             action.is_like = false
             await setActionData(action)
         }
+        
 
         if (action.is_comment && i > action.comment_time && i <= action.comment_time + interval) {
             await CommentYoutubeVideo(action.pid, action.comment)
@@ -499,6 +496,8 @@ async function watchingVideo(action){
 
         i += interval
     }
+
+    await utils.sleep(10000)
     return true
 }
 
@@ -580,6 +579,7 @@ async function afterWatchingVideo(action,finishVideo){
     } else {
         await reportScript(action, false)
     }
+
 }
 
 async function viewAds(action, onlyVideoType = false) {
@@ -1101,16 +1101,18 @@ async function getReact(keyword,totalTime){
 
 async function LikeOrDisLikeYoutubeVideo(pid, isLike) {
     try {
-        const likeBtns = document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")
+        // const likeBtns = document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")
+        const likeBtn = document.querySelectorAll('.YtLikeButtonViewModelHost')[0];
+        const dislikeBtn = document.querySelectorAll('.YtDislikeButtonViewModelHost')[0];
         let index
         if(isLike) {
             index = 0
         }else {
             index = 1
         }
-        let likeBtn = likeBtns.item(index)
-        if (likeBtn) {
-            await userClick(action.pid, 'likeBtn', likeBtn)
+        let btnClick = isLike ? likeBtn : dislikeBtn;
+        if (btnClick) {
+            await userClick(action.pid, 'btnClick', btnClick)
         }
         // if(likeBtn.length > 1) {
         //     await userClick(pid,`#top-level-buttons ytd-toggle-button-renderer:nth-of-type(${index}) yt-icon-button#button.style-scope.ytd-toggle-button-renderer.style-text`)
