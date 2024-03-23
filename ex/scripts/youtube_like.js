@@ -163,7 +163,7 @@ async function processSearchPageLike(action, preventGoToChannel = false) {
 
 async function getLikeData(action) {
   if (document.querySelector('[title="I like this"]')) {
-    action.data_reported = document.querySelector('[title="I like this"]').getAttribute('aria-label')
+    action.data_reported = document.querySelector('button[aria-label*="like this video"]').innerText
     await setActionData(action)
   }
 }
@@ -294,7 +294,7 @@ async function processWatchPageLike(action) {
   }
 
   try {
-    action.data_reported = document.querySelector('#top-row #owner-sub-count').textContent
+    action.data_reported = document.querySelector('button[aria-label*="like this video"]')?.innerText
     if (action.data_reported) {
       await setActionData(action)
     }
