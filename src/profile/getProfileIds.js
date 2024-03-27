@@ -6,7 +6,7 @@ function getProfileIds() {
     try {
         // Thay đổi đường dẫn dựa trên cấu trúc thư mục của dự án
         // let directoryPath = path.join(__dirname, '..', 'profiles');
-        const directoryPath = path.join(process.cwd(), 'profiles');
+        const directoryPath = path.join(process.cwd(), 'profilesquees');
 
         let files = fs.readdirSync(directoryPath);
 
