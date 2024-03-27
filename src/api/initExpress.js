@@ -10,7 +10,6 @@ const utils = require('../../utils');
 const { ids, isPauseAction, systemConfig , IS_REG_USER, BACKUP, ERROR_TYPE_1_MAP} = require('../settings');
 const { getScriptData } = require('../../main');
 const { runUpdateVps } = require('../execSync/runUpdateVps');
-const { ERROR_TYPE_1_MAP } = require('../settings');
 let addresses = require('../adress.json').addresses
 const request = require('request-promise')
 
