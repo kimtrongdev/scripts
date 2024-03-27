@@ -53,6 +53,7 @@ const { sendEnter } = require('./src/execSync/sendEnter')
 const { resetAllProfiles } = require('./src/profile/resetAllProfiles')
 const { setDisplay } = require('./src/execSync/setDisplay')
 const { startDisplay } = require('./src/execSync/startDisplay')
+const { initExpress } = require('./src/api/initExpress')
 
 let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 global.workingDir = utils.getScriptDir()
