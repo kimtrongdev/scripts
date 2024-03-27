@@ -638,14 +638,19 @@ async function start() {
         }
         // Kiểm tra và cập nhật phiên bản mới
         checkToUpdate()
+        console.log('try --- checkToUpdate ---');
         // Thực thi các hành động đang chờ xử lý
         execActionsRunning()
+        console.log('try --- execActionsRunning ---');
         // Khởi tạo các thư mục cần thiết
         initDir()
+        console.log('try --- initDir ---');
         // Khởi tạo cấu hình
         await initConfig()
+        console.log('try --- initConfig ---');
         // Khởi tạo máy chủ Express
         initExpress()
+        console.log('try --- initExpress ---');
         // Chạy các tác vụ chính
         running()
         console.log('--- Running ---')
@@ -1095,6 +1100,7 @@ async function logScreen() {
 
 // Hàm kiểm tra và cập nhật phiên bản mới
 async function checkToUpdate() {
+    console.log('checkToUpdate');
     try {
         setTimeout(async () => {
             utils.log('check to update')
