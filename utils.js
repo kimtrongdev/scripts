@@ -491,7 +491,7 @@ module.exports = {
         return result;
     },
     getScriptDir: function () {
-        utils.log('__dirname: ' + __dirname)
+        this.log('__dirname: ' + __dirname)
         return __dirname
     }
 }
