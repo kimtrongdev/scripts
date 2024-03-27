@@ -1,4 +1,5 @@
 const { getBrowserOfProfile } = require("./getBrowserOfProfile");
+const execSync = require('child_process').execSync;
 
 function closeChrome(pid, defaultBrowsers) {
     try {
