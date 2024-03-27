@@ -53,7 +53,7 @@ const { resetAllProfiles } = require('./src/profile/resetAllProfiles')
 const { setDisplay } = require('./src/execSync/setDisplay')
 const { startDisplay } = require('./src/execSync/startDisplay')
 const { initExpress } = require('./src/api/initExpress')
-const getScriptData = require('./src/api/getScriptData')
+const { getScriptData } = require('./src/api/getScriptData')
 const { loadSystemConfig } = require('./src/execSync/loadSystemConfig')
 
 global.workingDir = utils.getScriptDir()
@@ -109,7 +109,6 @@ async function handleForChangeShowUI() {
 }
 
 let runningPid = null
-let checkProfileTime
 let current_change_profile_time
 
 

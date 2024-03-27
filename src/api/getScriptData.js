@@ -221,4 +221,4 @@ async function getScriptData(pid, isNewProxy = false) {
     }
 }
 
-module.exports = getScriptData
+module.exports = { getScriptData }
