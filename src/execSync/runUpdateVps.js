@@ -1,9 +1,9 @@
-const { loadSystemConfig } = require("../../main");
 const { closeChrome } = require("../browser/closeChrome");
 const { getProfileIds } = require("../profile/getProfileIds");
 const { systemConfig } = require("../settings");
 const settings = require('../settings');
 const fs = require('fs');
+const { loadSystemConfig } = require("./loadSystemConfig");
 const execSync = require('child_process').execSync;
 
 /**
