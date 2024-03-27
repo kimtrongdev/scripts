@@ -95,6 +95,7 @@ function addOpenBrowserAction(action, browser) {
 async function execActionsRunning() {
     if (actionsData.length) {
         let action = actionsData.shift()
+        console.log('action', action)
         await handleAction(action)
     }
     await utils.sleep(1000)
