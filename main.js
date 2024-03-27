@@ -585,6 +585,7 @@ async function profileManage() {
 }
 
 async function running() {
+    console.log('--- Running ---');
     try {
         execSync(`sudo xrandr -s 1600x1200`)
     } catch (error) {
@@ -603,6 +604,8 @@ async function running() {
     runAutoRebootVm()
     // manage profile actions
     await profileManage()
+    console.log('--- end ---');
+
 }
 
 function initDir() {
