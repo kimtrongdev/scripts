@@ -7,7 +7,6 @@ let totalRoundForChangeProxy = 5
 let countRun = 0
 let isAfterReboot = false
 require('dotenv').config();
-let systemConfig = {}
 global.devJson = {
     hostIp: process.env.HOST_IP,
     maxProfile: Number(process.env.MAX_PROFILES) || 1,
