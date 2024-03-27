@@ -392,8 +392,8 @@ async function handleCapchaTiktok(data) {
     } else if (data.type == 'square') {
         // shot screen
         let capchaImgName = 'tiktokCapcha' + Date.now()
-        execSync(`${nircmdPath} savescreenshot ${path.resolve("logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
-        let imageBase64 = fs.readFileSync(`${path.resolve("logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
+        execSync(`${nircmdPath} savescreenshot ${path.join(process.cwd(),"logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
+        let imageBase64 = fs.readFileSync(`${path.join(process.cwd(),"logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
         job = await createJob({ type_job_id: 21, image_base64: imageBase64, width_view: data.image_width })
     }
     let result = { status: 'waiting' }
