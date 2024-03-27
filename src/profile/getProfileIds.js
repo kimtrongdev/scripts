@@ -5,7 +5,7 @@ const path = require('path');
 function getProfileIds() {
     try {
         // Thay đổi đường dẫn dựa trên cấu trúc thư mục của dự án
-        let directoryPath = path.resolve(__dirname, '..', 'profiles');
+        let directoryPath = path.resolve('profiles');
         let files = fs.readdirSync(directoryPath);
 
         if (files && Array.isArray(files)) {

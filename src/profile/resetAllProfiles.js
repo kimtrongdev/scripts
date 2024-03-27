@@ -30,7 +30,7 @@ async function resetAllProfiles() {
         await utils.sleep(4000)
         
         // Kiểm tra sự tồn tại của thư mục 'profiles'
-        if (fs.existsSync(path.resolve(__dirname, '..','profiles'))) {
+        if (fs.existsSync(path.resolve('profiles'))) {
             try {
                 // Xóa thư mục 'profiles'
                 execSync('rm -rf profiles')
