@@ -7,7 +7,8 @@ const request2 = require('request').defaults({ encoding: null });
 const del = require('del');
 const { stopDisplay } = require('../execSync/stopDisplay');
 const utils = require('../../utils');
-const { ids, isPauseAction, systemConfig, IS_REG_USER, BACKUP, ERROR_TYPE_1_MAP, actionsData } = require('../settings');
+const { ids, isPauseAction, systemConfig, IS_REG_USER, BACKUP, ERROR_TYPE_1_MAP } = require('../settings');
+const settings = require('../settings');
 const { getScriptData } = require('../../main');
 const { runUpdateVps } = require('../execSync/runUpdateVps');
 let addresses = require('../adress.json').addresses
@@ -30,7 +31,7 @@ function initExpress() {
     })
 
     app.get('/debug', (req, res) => {
-        isPauseAction = true
+        settings.isPauseAction = true
         res.send({ rs: 'ok' })
         return
     })
@@ -218,21 +219,21 @@ function initExpress() {
             }
 
             if (req.query.script_code == 'add_recovery_mail' && !req.query.data_reported.includes('p_not_found_code')) {
-                closeChrome(req.query.pid, systemConfig.browsers)
+                closeChrome(req.query.pid)
                 deleteProfile(req.query.pid)
-                ids = ids.filter(i => i != req.query.pid)
+                settings.ids = ids.filter(i => i != req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
                 return
             }
             if ([1, '1', 'true', true].includes(req.query.isBreak)) {
                 // execSync(`xdotool key Control_L+w && sleep 1`)
                 // browser will closed by background extention
-                closeChrome(req.query.pid, systemConfig.browsers)
+                closeChrome(req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
             } else {
                 let action = await getScriptData(req.query.pid)
                 if (req.query.script_code == action.script_code) {
-                    closeChrome(req.query.pid, systemConfig.browsers)
+                    closeChrome(req.query.pid)
                     runnings = runnings.filter(i => i.pid != req.query.pid)
                 } else {
                     runnings.forEach(running => {
@@ -290,7 +291,7 @@ function initExpress() {
         else if (req.query.id == 'logout') {
             utils.log(req.query.pid, 'logout ok')
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', 'disabled_logout')
-            ids = ids.filter(x => x != req.query.pid)
+            settings.ids = ids.filter(x => x != req.query.pid)
             deleteProfile(req.query.pid)
         }
         else if (req.query.id == 'confirm') {
@@ -324,7 +325,7 @@ function initExpress() {
         if (req.query.msg && req.query.msg == 'NOT_LOGIN') {
             utils.log('error', req.query.pid, 'NOT_LOGIN')
             deleteProfile(req.query.pid)
-            ids = ids.filter(x => x != req.query.pid)
+            settings.ids = ids.filter(x => x != req.query.pid)
             deleteBackup(req.query.pid)
         }
         res.send({ rs: 'ok' })
@@ -341,7 +342,7 @@ function initExpress() {
     })
 
     app.get('/input', async (req, res) => {
-        actionsData.push({ ...req.query, res })
+        settings.actionsData.push({ ...req.query, res })
     })
 
     app.listen(LOCAL_PORT, () => {
@@ -447,14 +448,14 @@ function removePidAddnew(pid, status) {
         }
         else {
             // login success
-            closeChrome(pid, systemConfig.browsers)
+            closeChrome(pid)
             if (!ids.filter(x => x == pid).length) {
-                ids.push(pid)
+                settings.ids.push(pid)
             }
         }
 
         if (IS_REG_USER) {
-            ids = ids.filter(x => x != pid)
+            settings.ids = ids.filter(x => x != pid)
         }
         utils.log(ids)
     }
@@ -464,11 +465,11 @@ function removePidAddnew(pid, status) {
 }
 
 async function deleteProfile(pid, retry = 0) {
-    ids = ids.filter(x => x != pid)
+    settings.ids = ids.filter(x => x != pid)
     runnings = runnings.filter(r => r.pid != pid)
     try {
         stopDisplay(pid)
-        closeChrome(pid, systemConfig.browsers)
+        closeChrome(pid)
         del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
     }
     catch (e) {

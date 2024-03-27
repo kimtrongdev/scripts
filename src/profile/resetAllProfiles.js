@@ -1,7 +1,7 @@
 const request_api = require("../../request_api")
 const utils = require("../../utils")
 const { closeChrome } = require("../browser/closeChrome")
-const { systemConfig, ids } = require("../settings")
+const settings = require("../settings")
 const { getProfileIds } = require("./getProfileIds")
 const fs = require('fs')
 const execSync = require('child_process').execSync;
@@ -11,14 +11,14 @@ const path = require("path")
  * Đặt lại tất cả các profile
  */
 async function resetAllProfiles() {
-    isSystemChecking = true
+    settings.isSystemChecking = true
     try {
         // Lấy danh sách các profile ID
         let pids = getProfileIds()
         
         // Đóng trình duyệt của tất cả các profile
         for (let pid of pids) {
-            closeChrome(pid, systemConfig.browsers)
+            closeChrome(pid)
         }
 
         // Cập nhật trạng thái của tất cả các profile thành 'RESET'
@@ -54,12 +54,12 @@ async function resetAllProfiles() {
 
         // Xóa danh sách các profile đang chạy và danh sách ID
         runnings = []
-        ids = []
+        settings.ids = []
     } catch (error) {
         // Không xử lý lỗi
     } finally {
         // Đánh dấu hệ thống không còn đang kiểm tra
-        isSystemChecking = false
+        settings.isSystemChecking = false
     }
 }
 

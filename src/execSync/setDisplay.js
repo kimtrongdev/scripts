@@ -1,5 +1,5 @@
 const { getBrowserOfProfile } = require("../browser/getBrowserOfProfile");
-const { systemConfig, MAX_CURRENT_ACC } = require("../settings");
+const { MAX_CURRENT_ACC } = require("../settings");
 const execSync = require('child_process').execSync;
 
 /**
@@ -13,7 +13,7 @@ function setDisplay(pid) {
             // Nếu số lượng tài khoản hiện tại lớn hơn 1
             if (MAX_CURRENT_ACC > 1) {
                 // Lấy tên trình duyệt tương ứng với profile
-                let browser = getBrowserOfProfile(pid, systemConfig.browsers);
+                let browser = getBrowserOfProfile(pid);
                 
                 // Thiết lập cửa sổ trình duyệt làm cửa sổ hiện tại
                 execSync(`wmctrl -x -a ${browser}`);

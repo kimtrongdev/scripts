@@ -1,6 +1,8 @@
-function getBrowserOfProfile(pid, defaultBrowsers) {
-    let selectedBrowser;
+const settings = require('../settings');
 
+function getBrowserOfProfile(pid) {
+    let selectedBrowser;
+    let defaultBrowsers = settings.systemConfig.browsers
     // Duyệt qua danh sách các trình duyệt
     for (const browser of defaultBrowsers) {
         // Kiểm tra xem pid có nằm trong map của trình duyệt này không

@@ -1,7 +1,8 @@
 const { loadSystemConfig } = require("../../main");
 const { closeChrome } = require("../browser/closeChrome");
 const { getProfileIds } = require("../profile/getProfileIds");
-const { systemConfig, isSystemChecking } = require("../settings");
+const { systemConfig } = require("../settings");
+const settings = require('../settings');
 const fs = require('fs');
 const execSync = require('child_process').execSync;
 
@@ -11,7 +12,7 @@ const execSync = require('child_process').execSync;
  */
 async function runUpdateVps() {
   try {
-    isSystemChecking = true;
+    settings.isSystemChecking = true;
     await loadSystemConfig();
     // Thực hiện báo cáo cập nhật
 
@@ -20,7 +21,7 @@ async function runUpdateVps() {
     
     // Đóng trình duyệt của các profile
     for (let pid of pids) {
-      closeChrome(pid, systemConfig.browsers);
+      closeChrome(pid);
     }
 
     try {
@@ -34,7 +35,7 @@ async function runUpdateVps() {
       execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull");
     } catch (error) {
       console.log(error);
-      isSystemChecking = false;
+      settings.isSystemChecking = false;
       return;
     }
 
@@ -56,7 +57,7 @@ async function runUpdateVps() {
   } catch (error) {
     console.log('Error while update vps, error: ', error);
   } finally {
-    isSystemChecking = false;
+    settings.isSystemChecking = false;
   }
 }
 

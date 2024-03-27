@@ -1,6 +1,7 @@
 const utils = require("../../utils");
 const { closeChrome } = require("../browser/closeChrome");
-const { isPauseAction, EXPIRED_TIME, ids, systemConfig, IS_REG_USER } = require("../settings")
+const settings = require("../settings");
+const { isPauseAction, EXPIRED_TIME, ids, IS_REG_USER } = require("../settings")
 const execSync = require('child_process').execSync;
 
 /**
@@ -26,13 +27,13 @@ async function checkRunningProfiles() {
                 utils.log('----- expired time -----', pid)
                 try {
                     // Đóng trình duyệt của tiến trình
-                    closeChrome(pid, systemConfig.browsers)
+                    closeChrome(pid)
                     // Nếu là hành động đăng nhập hoặc đăng ký người dùng
                     if (runnings[i].action == 'login' || IS_REG_USER) {
                         // Xóa thư mục profile của tiến trình
                         execSync('rm -rf profiles/' + pid)
                         // Xóa pid khỏi danh sách ids
-                        ids = ids.filter(id => id != pid)
+                        settings.ids = ids.filter(id => id != pid)
                     }
                 }
                 catch (e) {

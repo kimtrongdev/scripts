@@ -1,5 +1,3 @@
-let useProxy = true
-let isRunBAT = false
 const TIME_REPORT = 290000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
@@ -15,7 +13,8 @@ global.devJson = {
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
-let { ids, isPauseAction, systemConfig, IS_REG_USER, isSystemChecking, actionsData, EXPIRED_TIME, MAX_PROFILE, IP } = require('./src/settings')
+let { isRunBAT, useProxy, ids, isPauseAction, systemConfig, IS_REG_USER, isSystemChecking, actionsData, EXPIRED_TIME, MAX_PROFILE, IP, MAX_CURRENT_ACC } = require('./src/settings')
+let settings = require('./src/settings')
 const ROOT_RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 let RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
 
@@ -45,7 +44,7 @@ const del = require('del');
 const fs = require('fs')
 const { getBrowserOfProfile } = require('./src/browser/getBrowserOfProfile')
 const { closeChrome } = require('./src/browser/closeChrome')
-const { LOCAL_PORT, characters } = require('./src/constant')
+const { LOCAL_PORT, characters, PLAYLIST_ACTION, ADDNEW_ACTION } = require('./src/constant')
 const { getProfileIds } = require('./src/profile/getProfileIds')
 const { runUpdateVps } = require('./src/execSync/runUpdateVps')
 const { checkRunningProfiles } = require('./src/profile/checkRunningProfiles')
@@ -54,8 +53,9 @@ const { resetAllProfiles } = require('./src/profile/resetAllProfiles')
 const { setDisplay } = require('./src/execSync/setDisplay')
 const { startDisplay } = require('./src/execSync/startDisplay')
 const { initExpress } = require('./src/api/initExpress')
+const getScriptData = require('./src/api/getScriptData')
+const { loadSystemConfig } = require('./src/execSync/loadSystemConfig')
 
-let MAX_CURRENT_ACC = Number(devJson.maxProfile)
 global.workingDir = utils.getScriptDir()
 global.runnings = []
 global.usersPosition = []
@@ -68,21 +68,13 @@ global.fisrt_video = 0
 global.active_devices = []
 global.channelInfo = []
 
-
-const PLAYLIST_ACTION = {
-    WATCH: 0,
-    WATCH_TO_SUB: 1,
-    SUB: 2
-}
-const ADDNEW_ACTION = 3
-
 /**
  * Thêm hành động mở trình duyệt vào danh sách hành động
  * @param {Object} action - Hành động
  * @param {string} browser - Tên trình duyệt
  */
 function addOpenBrowserAction(action, browser) {
-    actionsData.push({
+    settings.actionsData.push({
         action: 'OPEN_BROWSER',
         data: action,
         browser: browser
@@ -94,7 +86,7 @@ function addOpenBrowserAction(action, browser) {
  */
 async function execActionsRunning() {
     if (actionsData.length) {
-        let action = actionsData.shift()
+        let action = settings.actionsData.shift()
         console.log('action', action)
         await handleAction(action)
     }
@@ -108,160 +100,19 @@ async function handleForChangeShowUI() {
     let _pids = getProfileIds()
 
     for await (let pid of _pids) {
-        closeChrome(pid, systemConfig.browsers)
+        closeChrome(pid)
         await utils.sleep(2000)
     }
     await utils.sleep(2000)
     runnings = []
-    ids = _pids
+    settings.ids = _pids
 }
 
 let runningPid = null
 let checkProfileTime
 let current_change_profile_time
-/**
- * Thay đổi profile đang chạy
- */
-function changeProfile() {
-    if (!Array.isArray(config.profileTimeLog)) {
-        config.profileTimeLog = []
-    }
 
-    let currentIds = getProfileIds()
-    config.profileTimeLog = config.profileTimeLog.filter(id => currentIds.includes(id))
-    let currentData = currentIds.filter(id => !config.profileTimeLog.includes(id))
-    currentData = [...currentData, ...config.profileTimeLog]
-    _profileRuning = currentData.shift()
-    currentData.push(_profileRuning)
-    runningPid = _profileRuning
-    config.profileTimeLog = currentData
-    fs.writeFileSync("vm_log.json", JSON.stringify(config))
-}
-/**
- * Tải cấu hình hệ thống */
-async function loadSystemConfig() {
-    let rs = await request_api.getSystemConfig();
-    if (rs && !rs.error) {
-        systemConfig = rs
-    }
 
-    if (Number(systemConfig.max_current_profiles)) {
-        MAX_CURRENT_ACC = Number(systemConfig.max_current_profiles)
-    }
-
-    if (systemConfig.max_total_profiles) {
-        MAX_PROFILE = DEBUG ? 1 : MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
-    }
-
-    // handle time change profile running
-    const change_profile_time = Number(systemConfig.change_profile_time)
-    if (MAX_CURRENT_ACC == 1 && change_profile_time && change_profile_time != current_change_profile_time) {
-        current_change_profile_time = change_profile_time
-        if (checkProfileTime) {
-            clearInterval(checkProfileTime)
-        }
-        changeProfile()
-        checkProfileTime = setInterval(() => {
-            changeProfile()
-        }, change_profile_time * 3600000)
-    }
-
-    if (DEBUG) {
-        IS_SHOW_UI = true
-    } else {
-        let newShowUIConfig = false
-        if (systemConfig.show_ui_config && systemConfig.show_ui_config != 'false') {
-            newShowUIConfig = true
-        }
-
-        if (IS_SHOW_UI != newShowUIConfig) {
-            if (IS_SHOW_UI != null) {
-                isSystemChecking = true
-                await handleForChangeShowUI()
-                isSystemChecking = false
-            }
-
-            IS_SHOW_UI = newShowUIConfig
-
-            if (IS_SHOW_UI) {
-                process.env.DISPLAY = ':0'
-            }
-        }
-    }
-
-    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') ||
-        (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
-        (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false') ||
-        (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') ||
-        (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') ||
-        (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') ||
-        (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
-        (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false') ||
-        (systemConfig.unsub_youtube && systemConfig.unsub_youtube != 'false')
-    if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
-        await resetAllProfiles()
-        IS_REG_USER = IS_REG_USER_new
-        if (IS_REG_USER) {
-            EXPIRED_TIME = 200000
-        }
-    }
-
-    if (DEBUG) {
-        EXPIRED_TIME = 400000
-    }
-    // handle browsers for centos and ubuntu
-    let browsers = []
-    if (systemConfig.browsers) {
-        systemConfig.browsers.forEach(br => {
-            if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
-                if (br == 'brave') {
-                    br = 'brave-browser'
-                }
-
-                if (br == 'microsoft-edge') {
-                    br = 'microsoft-edge-stable'
-                }
-
-                if (br == 'vivaldi-stable') {
-                    br = 'vivaldi'
-                }
-                browsers.push(br)
-            } else {
-                if (br != 'iridium-browser') {
-                    browsers.push(br)
-                }
-            }
-        })
-    } else {
-        browsers = ['brave-browser']
-    }
-    systemConfig.browsers = browsers
-
-    if (config.browser_map) {
-        Object.keys(config.browser_map).forEach(browserMaped => {
-            if (!systemConfig.browsers.includes(browserMaped)) {
-                config.browser_map[browserMaped].forEach(pid => {
-                    closeChrome(pid, systemConfig.browsers)
-                    execSync('rm -rf profiles/' + pid)
-                });
-                delete config.browser_map[browserMaped]
-            }
-        })
-    }
-
-    if (systemConfig.stop_tool == 1) {
-        execSync('pm2 stop all')
-    }
-
-    if (DEBUG) {
-        systemConfig.is_stop = false
-    }
-
-    if (systemConfig.not_allow_use_proxy) {
-        useProxy = false
-    }
-    utils.log('SYSTEMCONFIG--', systemConfig);
-}
 // Hàm quản lý các profile đang chạy
 async function profileRunningManage() {
     try {
@@ -275,20 +126,20 @@ async function profileRunningManage() {
 
             if (MAX_CURRENT_ACC > runnings.length) {
                 let currentIds = getProfileIds()
-                ids = ids.filter(id => {
+                settings.ids = settings.ids.filter(id => {
                     return currentIds.some(cid => cid == id)
                 })
                 currentIds.forEach(cID => {
-                    if (!ids.some(cid => cid == cID)) {
-                        ids.push(cID)
+                    if (!settings.ids.some(cid => cid == cID)) {
+                        settings.ids.push(cID)
                     }
                 });
 
-                utils.log('ids--', ids);
+                utils.log('ids--', settings.ids);
                 if (runnings.some(running => running.action == 'login')) {
                     return
                 }
-                if (ids.length < MAX_PROFILE && !IS_REG_USER) {
+                if (settings.ids.length < MAX_PROFILE && !IS_REG_USER) {
                     newProfileManage()
                 } else {
                     if (systemConfig.only_run_login) {
@@ -317,7 +168,7 @@ async function profileRunningManage() {
 async function startChromeAction(action, _browser) {
     let params = ''
     if (systemConfig.systemParams) {
-        let ss = systemConfig.systemParams.split('##')
+        let ss = settings.systemConfig.systemParams.split('##')
         if (ss.length) {
             let index = utils.getRndInteger(0, ss.length - 1)
             params = ss[index]
@@ -380,14 +231,14 @@ async function startChromeAction(action, _browser) {
         action.proxy_password = proxy[action.pid].password
     }
 
-    if (!useProxy) {
+    if (!settings.useProxy) {
         userProxy = ''
     }
 
     // handle flag data
     action.browser_name = _browser
-    if (isRunBAT) {
-        action.isRunBAT = isRunBAT
+    if (settings.isRunBAT) {
+        action.isRunBAT = settings.isRunBAT
     }
 
     let exs = ["ex"]
@@ -439,7 +290,7 @@ async function startChromeAction(action, _browser) {
         exec(`${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
-        closeChrome(action.pid, systemConfig.browsers)
+        closeChrome(action.pid)
         await utils.sleep(3000)
         utils.log('startDisplay')
         startDisplay(action.pid)
@@ -453,7 +304,7 @@ async function startChromeAction(action, _browser) {
             if (_browser == 'opera') {
                 exec(`${_browser}${userDataDir}${windowSize}`)
                 await utils.sleep(19000)
-                closeChrome(action.pid, systemConfig.browsers)
+                closeChrome(action.pid)
                 exec(`${_browser}${userDataDir}${windowSize}`)
             } else {
                 exec(cmdRun)
@@ -461,7 +312,7 @@ async function startChromeAction(action, _browser) {
 
             if (['opera', 'microsoft-edge', 'microsoft-edge-stable'].includes(_browser)) {
                 await utils.sleep(10000)
-                closeChrome(action.pid, systemConfig.browsers)
+                closeChrome(action.pid)
                 await utils.sleep(2000)
                 exec(cmdRun)
             } else {
@@ -548,7 +399,7 @@ async function loginProfileChrome(profile) {
             action.allow_verify = true
         }
 
-        systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
+        settings.systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
         systemConfig.browsers.some((browser) => {
             if (!config.browser_map[browser]) {
@@ -595,7 +446,7 @@ async function newProfileManage() {
             RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
             // copy main to clone profile
             let profile = newProfile.profile
-            if (proxy && useProxy) {
+            if (proxy && settings.useProxy) {
                 proxy[profile.id] = await request_api.getProfileProxy(profile.id, ADDNEW_ACTION)
                 utils.log('pid', profile.id, 'proxy', proxy[profile.id])
                 if (!proxy[profile.id]) {
@@ -618,17 +469,17 @@ async function newProfileManage() {
 }
 
 async function newRunProfile() {
-    utils.log('ids: ', ids)
+    utils.log('ids: ', settings.ids)
     let pid
     if (runningPid) {
-        let indexOfPid = ids.indexOf(runningPid)
+        let indexOfPid = settings.ids.indexOf(runningPid)
         if (indexOfPid > -1) {
-            pid = ids[indexOfPid]
-            ids.splice(indexOfPid, 1)
+            pid = settings.ids[indexOfPid]
+            settings.ids.splice(indexOfPid, 1)
         }
     }
     if (!pid) {
-        pid = ids.shift()
+        pid = settings.ids.shift()
     }
 
     if (pid || IS_REG_USER) {
@@ -649,15 +500,15 @@ async function newRunProfile() {
                 currentIds.forEach(id => {
                     try {
                         if (id != pid) {
-                            closeChrome(id, systemConfig.browsers)
+                            closeChrome(id)
                             execSync('rm -rf profiles/' + id)
-                            ids = ids.filter(_id => _id != id)
+                            settings.ids = settings.ids.filter(_id => _id != id)
                             runnings = runnings.filter(r => r.pid != id)
                         }
                     } catch (error) { console.log(error) }
                 });
             }
-            ids.push(pid)
+            settings.ids.push(pid)
         } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
             pid = Math.floor(Math.random() * 5000)
         }
@@ -679,222 +530,7 @@ async function newRunProfile() {
         }
     }
 }
-/**
- * Lấy dữ liệu script cho một profile
- * @param {string|number} pid - ID của profile
- * @param {boolean} [isNewProxy=false] - Cờ chỉ định có tải proxy mới hay không
- * @returns {Promise<Object|undefined>} - Promise trả về đối tượng action hoặc undefined nếu không tìm thấy dữ liệu
- */
-async function getScriptData(pid, isNewProxy = false) {
-    let action = {}
-    if (IS_REG_USER) {
-        if (systemConfig.unsub_youtube) {
-            // Lấy thông tin profile cho việc hủy đăng ký kênh YouTube
-            action = await request_api.getProfileForRegChannel()
-            if (action) {
-                action.pid = action.id
-                pid = action.pid
-                isNewProxy = true
-            } else {
-                console.log('Not found user data.');
-                return
-            }
-        }
-        else if (systemConfig.is_change_pass) {
-            // Lấy thông tin profile cho việc thay đổi mật khẩu
-            action = await request_api.getProfileForRegChannel(pid)
-            if (action) {
-                action.pid = action.id
-                pid = action.pid
-                isNewProxy = true
-            } else {
-                console.log('Not found reg user data.');
-                return
-            }
-        }
-        else if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
-            // Lấy thông tin profile cho việc đăng ký tài khoản Facebook mới
-            action = await request_api.getProfileForRegChannel(pid)
-            if (action) {
-                action.pid = utils.randomRanger(100, 400)
-                ids.push(action.pid)
-                ids = ids.map(String)
-                ids = [...new Set(ids)]
-                pid = action.pid
-                isNewProxy = true
-            } else {
-                console.log('Not found reg user data.');
-                return
-            }
-        }
-        else if (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') {
-            // Lấy profile mới cho việc kiểm tra email
-            let newProfile = await request_api.getNewProfile()
-            utils.log('newProfile: ', newProfile)
-            if (!newProfile.err && newProfile.profile) {
-                let profile = newProfile.profile
-                pid = profile.id
-                action = {
-                    ...profile,
-                    mail_type: systemConfig.check_mail_1_type,
-                    script_code: 'check_mail_1'
-                }
-            } else {
-                console.log('Not found profile');
-                return
-            }
-        }
-        else if (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') {
-            // Lấy profile mới cho việc đăng ký tài khoản Google
-            let newProfile = await request_api.getNewProfile()
-            utils.log('newProfile: ', newProfile)
-            if (!newProfile.err && newProfile.profile) {
-                let profile = newProfile.profile
-                pid = profile.id
-                action = {
-                    ...profile,
-                    script_code: 'reg_account',
-                    account_type: 'gmail',
-                    process_login: true
-                }
-            } else {
-                console.log('Not found profile');
-                return
-            }
-        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
-            // Thiết lập action cho việc đăng ký tài khoản Gmail
-            action = {
-                script_code: 'reg_account',
-                account_type: 'gmail'
-            }
-        } else {
-            // Lấy thông tin profile cho việc đăng ký kênh
-            if (ids.length < MAX_PROFILE) {
-                pid = 0
-            }
-            action = await request_api.getProfileForRegChannel(pid)
-            if (action && action.id) {
-                action.pid = action.id
-                ids.push(action.id)
-                ids = ids.map(String)
-                ids = [...new Set(ids)]
-                pid = action.id
-                isNewProxy = true
-            } else {
-                console.log('Not found reg user data.');
-                return
-            }
-        }
-    } else {
-        // Lấy script mới cho profile
-        action = await request_api.getNewScript(pid)
-    }
 
-    if (action) {
-        if (useProxy && isNewProxy) {
-            let isLoadNewProxy = true
-
-            if (isLoadNewProxy || action.is_ver_mail_type) {
-                // Lấy proxy mới cho profile
-                let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-
-                if (proxyV6) {
-                    proxy[pid] = proxyV6
-                }
-            } else {
-                // Lấy proxy hiện tại của profile
-                let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-                if (proxyV6 && proxyV6.server) {
-                    proxy[pid] = proxyV6
-                }
-            }
-        }
-
-        if (useProxy && (!proxy[pid] || !proxy[pid].server)) {
-            console.log('Not found proxy')
-            return
-        }
-        utils.log('Script data: ', action)
-
-        if (!runnings.some(i => i.pid == pid)) {
-            // Thêm profile vào danh sách đang chạy
-            let startTime = Date.now()
-            let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
-            runnings.push(actionRecord)
-        }
-
-        // Thiết lập các thông tin cho action
-        action.id = action.script_code
-        action.pid = pid
-        action.is_show_ui = IS_SHOW_UI
-        action.os_vm = process.env.OS
-        if (isRunBAT) {
-            action.isRunBAT = isRunBAT
-        }
-        if (systemConfig.is_fb) {
-            action.is_fb = true
-        }
-        if (systemConfig.is_tiktok) {
-            action.is_tiktok = true
-        }
-        Object.keys(systemConfig).forEach(key => {
-            if ((key + '').startsWith('client_config_')) {
-                action[key] = systemConfig[key]
-            }
-        });
-
-        // Khởi tạo dữ liệu cho action
-        if (action.mobile_percent === undefined || action.mobile_percent === null) {
-            // Thiết lập các thông số liên quan đến tỷ lệ thiết bị di động, tìm kiếm, quảng cáo, v.v.
-            if (systemConfig.total_rounds_for_change_proxy) {
-                totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
-            }
-            delete systemConfig.search_percent
-            delete systemConfig.direct_percent
-            delete systemConfig.suggest_percent
-            delete systemConfig.page_percent
-            Object.assign(action, systemConfig)
-            delete action.systemParams
-
-            action.mobile_percent = systemConfig.browser_mobile_percent
-            active_devices = systemConfig.active_devices || []
-            if (active_devices.length) {
-                action.mobile_percent = 100
-            }
-
-            if (systemConfig.ads_percent && !Number(action.ads_percent)) {
-                action.ads_percent = systemConfig.ads_percent
-            }
-
-            action.total_channel_created = Number(systemConfig.total_channel_created)
-
-            if (['youtube_sub', 'watch', 'watch_video', 'comment_youtube', 'like_fb_page', 'like_fb_post', 'like_youtube'].includes(action.id)) {
-                // Thiết lập vị trí kênh cho action
-                let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
-                if (oldUserPosition) {
-                    action.channel_position = Number(oldUserPosition.position)
-                } else {
-                    action.channel_position = -1
-                }
-            }
-
-            if (action.id == 'watch' || action.id == 'watch_video') {
-                // Thiết lập thông tin về playlist cho action xem video
-                action.total_loop_find_ads = systemConfig.total_loop_find_ads || 0
-
-                if (!action.playlist_url) {
-                    action.playlist_url = action.data
-                }
-                action.playlist_data = action.playlist_url
-            }
-        }
-
-        if (Number(systemConfig.is_clear_browser_data)) {
-            action.is_clear_browser_data = true
-        }
-        return action
-    }
-}
 
 async function updateVmStatus() {
     try {
@@ -911,7 +547,7 @@ async function updateVmStatus() {
 
         if (rs && rs.removePid) {
             let removePID = Number(rs.removePid)
-            closeChrome(removePID, systemConfig.browsers)
+            closeChrome(removePID)
             await utils.sleep(5000)
             try {
                 execSync("rm -rf profiles/" + removePID)
@@ -919,7 +555,7 @@ async function updateVmStatus() {
                 console.log(error);
             }
             runnings = runnings.filter(i => i.pid != removePID)
-            ids = ids.filter(i => i != removePID)
+            settings.ids = settings.ids.filter(i => i != removePID)
         }
 
         if (rs && rs.reset_all_profiles) {
@@ -961,9 +597,9 @@ async function running() {
         fs.mkdirSync('profiles')
     }
 
-    ids = getProfileIds()
-    utils.log('ids: ', ids)
-    ids.forEach(pid => startDisplay(pid))
+    settings.ids = getProfileIds()
+    utils.log('ids: ', settings.ids)
+    settings.ids.forEach(pid => startDisplay(pid))
 
     runAutoRebootVm()
     // manage profile actions
@@ -1019,7 +655,7 @@ async function start() {
     finally {
         let cleanup = async function () {
             utils.log('cleanup')
-            closeChrome("", systemConfig.browsers)
+            closeChrome("")
             process.exit()
         }
         process.on('SIGINT', cleanup);
@@ -1041,7 +677,7 @@ async function initConfig() {
         config.vm_id = utils.makeid(9)
     }
 
-    IP = config.vm_name
+    settings.IP = config.vm_name
 
     if (!config.browser_map) {
         config.browser_map = {}
@@ -1075,7 +711,7 @@ async function getRandomImagePath(returnFile = false) {
 }
 // Hàm xử lý hành động
 async function handleAction(actionData) {
-    if (isPauseAction) {
+    if (settings.isPauseAction) {
         res.send({ rs: 'ok' })
         return
     }
@@ -1424,13 +1060,13 @@ function runAutoRebootVm() {
 
         if (Number(systemConfig.reset_system_time) > 0 && hour == Number(systemConfig.reset_system_time)) {
             try {
-                isSystemChecking = true
+                settings.isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
                     await resetAllProfiles()
                 }
                 execSync('sudo systemctl reboot')
             } catch (error) {
-                isSystemChecking = false
+                settings.isSystemChecking = false
                 console.log(error);
             }
         }
@@ -1479,4 +1115,4 @@ async function checkToUpdate() {
 }
 start()
 
-module.exports = { getScriptData, loadSystemConfig }
+module.exports = { loadSystemConfig }

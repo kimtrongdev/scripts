@@ -4,9 +4,8 @@ const execSync = require('child_process').execSync;
 /**
  * Đóng trình duyệt Chrome cho một profile cụ thể
  * @param {string|number} pid - ID của profile
- * @param {string[]} defaultBrowsers - Danh sách các trình duyệt mặc định
  */
-function closeChrome(pid, defaultBrowsers) {
+function closeChrome(pid) {
     try {
         if (WIN_ENV) {
             // Nếu là môi trường Windows, sử dụng lệnh 'input CLOSE_CHROME' để đóng Chrome
@@ -18,7 +17,7 @@ function closeChrome(pid, defaultBrowsers) {
                 command = `pkill -f "profiles/${pid}"`;
             } else {
                 // Nếu không có pid, đóng Chrome dựa trên tên trình duyệt mặc định của profile
-                const browser = getBrowserOfProfile(pid, defaultBrowsers);
+                const browser = getBrowserOfProfile(pid);
                 command = `pkill ${browser}`;
             }
             // Thực thi lệnh đóng Chrome
