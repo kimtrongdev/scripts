@@ -25,7 +25,7 @@ function initExpress() {
     })
 
     app.get('/favicon.ico', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '..',"favicon.ico"))
+        res.sendFile(path.resolve("favicon.ico"))
         return
     })
 
@@ -392,8 +392,8 @@ async function handleCapchaTiktok(data) {
     } else if (data.type == 'square') {
         // shot screen
         let capchaImgName = 'tiktokCapcha' + Date.now()
-        execSync(`${nircmdPath} savescreenshot ${path.resolve(__dirname, '..',"logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
-        let imageBase64 = fs.readFileSync(`${path.resolve(__dirname, '..',"logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
+        execSync(`${nircmdPath} savescreenshot ${path.resolve("logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
+        let imageBase64 = fs.readFileSync(`${path.resolve("logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
         job = await createJob({ type_job_id: 21, image_base64: imageBase64, width_view: data.image_width })
     }
     let result = { status: 'waiting' }
@@ -469,7 +469,7 @@ async function deleteProfile(pid, retry = 0) {
     try {
         stopDisplay(pid)
         closeChrome(pid, systemConfig.browsers)
-        del.sync([path.resolve(__dirname, '..',"profiles", pid + '', '**')], { force: true })
+        del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
     }
     catch (e) {
         utils.log('error', 'deleteProfile', pid, retry)
