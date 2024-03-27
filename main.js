@@ -1115,4 +1115,3 @@ async function checkToUpdate() {
 }
 start()
 
-module.exports = { loadSystemConfig }
