@@ -1,19 +1,11 @@
-let ERROR_TYPE_1_MAP = {}
 let useProxy = true
 let isRunBAT = false
-let isSystemChecking = false
 const TIME_REPORT = 290000
 const TIME_TO_CHECK_UPDATE = 300000
 const isAutoEnableReward = true
-let EXPIRED_TIME = 400000
-const request = require('request-promise')
-const request2 = require('request').defaults({ encoding: null });
 let totalRoundForChangeProxy = 5
 let countRun = 0
-let isPauseAction = false
 let isAfterReboot = false
-let actionsData = []
-let addresses = require('./src/adress.json').addresses
 require('dotenv').config();
 let systemConfig = {}
 global.devJson = {
@@ -24,9 +16,7 @@ global.devJson = {
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
-const LOCAL_PORT = 2000
-let IP
-let IS_REG_USER = false
+let { ids, isPauseAction, systemConfig, IS_REG_USER, isSystemChecking, actionsData, EXPIRED_TIME, MAX_PROFILE, IP } = require('./src/settings')
 const ROOT_RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
 let RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
 
@@ -46,19 +36,27 @@ try {
 } catch (e) { trace = {} }
 
 require('log-timestamp')
+const request = require('request-promise')
 const utils = require('./utils')
 const execSync = require('child_process').execSync;
 const exec = require('child_process').exec;
 const request_api = require('./request_api')
-global.workingDir = getScriptDir()
-const publicIp = require('public-ip')
 const path = require('path')
 const del = require('del');
 const fs = require('fs')
-let MAX_CURRENT_ACC = Number(devJson.maxProfile)
-let MAX_PROFILE = 2
+const { getBrowserOfProfile } = require('./src/browser/getBrowserOfProfile')
+const { closeChrome } = require('./src/browser/closeChrome')
+const { LOCAL_PORT, characters } = require('./src/constant')
+const { getProfileIds } = require('./src/profile/getProfileIds')
+const { runUpdateVps } = require('./src/execSync/runUpdateVps')
+const { checkRunningProfiles } = require('./src/profile/checkRunningProfiles')
+const { sendEnter } = require('./src/execSync/sendEnter')
+const { resetAllProfiles } = require('./src/profile/resetAllProfiles')
+const { setDisplay } = require('./src/execSync/setDisplay')
+const { startDisplay } = require('./src/execSync/startDisplay')
 
-let ids = []
+let MAX_CURRENT_ACC = Number(devJson.maxProfile)
+global.workingDir = utils.getScriptDir()
 global.runnings = []
 global.usersPosition = []
 global.subRunnings = []
@@ -69,7 +67,7 @@ global.WIN_ENV = process.platform === "win32"
 global.fisrt_video = 0
 global.active_devices = []
 global.channelInfo = []
-let BACKUP = false
+
 
 const PLAYLIST_ACTION = {
     WATCH: 0,
@@ -78,7 +76,12 @@ const PLAYLIST_ACTION = {
 }
 const ADDNEW_ACTION = 3
 
-function addOpenBrowserAction (action, browser) {
+/**
+ * Thêm hành động mở trình duyệt vào danh sách hành động
+ * @param {Object} action - Hành động
+ * @param {string} browser - Tên trình duyệt
+ */
+function addOpenBrowserAction(action, browser) {
     actionsData.push({
         action: 'OPEN_BROWSER',
         data: action,
@@ -86,7 +89,10 @@ function addOpenBrowserAction (action, browser) {
     })
 }
 
-async function execActionsRunning () {
+/**
+ * Thực thi các hành động đang chờ xử lý
+ */
+async function execActionsRunning() {
     if (actionsData.length) {
         let action = actionsData.shift()
         await handleAction(action)
@@ -94,12 +100,14 @@ async function execActionsRunning () {
     await utils.sleep(1000)
     execActionsRunning()
 }
-
+/**
+ * Xử lý thay đổi giao diện người dùng
+ */
 async function handleForChangeShowUI() {
     let _pids = getProfileIds()
 
     for await (let pid of _pids) {
-        closeChrome(pid)
+        closeChrome(pid, systemConfig.browsers)
         await utils.sleep(2000)
     }
     await utils.sleep(2000)
@@ -110,7 +118,9 @@ async function handleForChangeShowUI() {
 let runningPid = null
 let checkProfileTime
 let current_change_profile_time
-
+/**
+ * Thay đổi profile đang chạy
+ */
 function changeProfile() {
     if (!Array.isArray(config.profileTimeLog)) {
         config.profileTimeLog = []
@@ -126,13 +136,14 @@ function changeProfile() {
     config.profileTimeLog = currentData
     fs.writeFileSync("vm_log.json", JSON.stringify(config))
 }
-
-async function loadSystemConfig () {
+/**
+ * Tải cấu hình hệ thống */
+async function loadSystemConfig() {
     let rs = await request_api.getSystemConfig();
     if (rs && !rs.error) {
         systemConfig = rs
     }
-    
+
     if (Number(systemConfig.max_current_profiles)) {
         MAX_CURRENT_ACC = Number(systemConfig.max_current_profiles)
     }
@@ -153,7 +164,7 @@ async function loadSystemConfig () {
             changeProfile()
         }, change_profile_time * 3600000)
     }
-    
+
     if (DEBUG) {
         IS_SHOW_UI = true
     } else {
@@ -168,24 +179,24 @@ async function loadSystemConfig () {
                 await handleForChangeShowUI()
                 isSystemChecking = false
             }
-    
+
             IS_SHOW_UI = newShowUIConfig
-    
+
             if (IS_SHOW_UI) {
                 process.env.DISPLAY = ':0'
             }
         }
     }
 
-    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') || 
-    (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
-    (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false') ||
-    (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') ||
-    (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') ||
-    (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') ||
-    (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
-    (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false') ||
-    (systemConfig.unsub_youtube && systemConfig.unsub_youtube != 'false')
+    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') ||
+        (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
+        (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false') ||
+        (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') ||
+        (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') ||
+        (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') ||
+        (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
+        (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false') ||
+        (systemConfig.unsub_youtube && systemConfig.unsub_youtube != 'false')
     if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         IS_REG_USER = IS_REG_USER_new
@@ -205,11 +216,11 @@ async function loadSystemConfig () {
                 if (br == 'brave') {
                     br = 'brave-browser'
                 }
-    
+
                 if (br == 'microsoft-edge') {
                     br = 'microsoft-edge-stable'
                 }
-    
+
                 if (br == 'vivaldi-stable') {
                     br = 'vivaldi'
                 }
@@ -229,11 +240,11 @@ async function loadSystemConfig () {
         Object.keys(config.browser_map).forEach(browserMaped => {
             if (!systemConfig.browsers.includes(browserMaped)) {
                 config.browser_map[browserMaped].forEach(pid => {
-                    closeChrome(pid)
-                    execSync('rm -rf profiles/'+pid)
+                    closeChrome(pid, systemConfig.browsers)
+                    execSync('rm -rf profiles/' + pid)
                 });
                 delete config.browser_map[browserMaped]
-            }  
+            }
         })
     }
 
@@ -250,7 +261,7 @@ async function loadSystemConfig () {
     }
     utils.log('SYSTEMCONFIG--', systemConfig);
 }
-
+// Hàm quản lý các profile đang chạy
 async function profileRunningManage() {
     try {
         if (!isSystemChecking) {
@@ -297,61 +308,11 @@ async function profileRunningManage() {
     }
 }
 
-async function runUpdateVps () {
-    try {
-        isSystemChecking = true
-        await loadSystemConfig()
-        // make for report upgrade
-
-        let pids = getProfileIds()
-        for (let pid of pids) {
-            closeChrome(pid)
-        }
-
-        try {
-            let gitKey = systemConfig.update_key
-            if (gitKey) {
-                execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`)
-            }
-
-            execSync("git config user.name kim && git config user.email kimtrong@gmail.com && git stash && git pull")
-        } catch (error) {
-            console.log(error);
-            isSystemChecking = false
-            return
-        }
-
-        fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }))
-
-        if (Number(systemConfig.reboot_on_update)) {
-            execSync('sudo systemctl reboot')
-        } else {
-            execSync('pm2 restart all')
-        }
-
-        await utils.sleep(15000)
-        runnings = []
-    } catch (error) {
-        console.log('Error while update vps, error: ', error);
-    } finally {
-        isSystemChecking = false
-    }
-}
-
-function getProfileIds() {
-    try {
-        let directoryPath = path.resolve("profiles")
-        let files = fs.readdirSync(directoryPath)
-        if (files && Array.isArray(files)) {
-            return files
-        }
-    } catch (error) {
-        console.log(error);
-    }
-    
-    return []
-}
-
+/**
+ * Khởi động trình duyệt Chrome với hành động được chỉ định
+ * @param {Object} action - Hành động
+ * @param {string} _browser - Tên trình duyệt
+ */
 async function startChromeAction(action, _browser) {
     let params = ''
     if (systemConfig.systemParams) {
@@ -377,21 +338,13 @@ async function startChromeAction(action, _browser) {
         action.is_setting_brave = true
     }
 
-    // try {
-    //     const ramdom1 = utils.getRndInteger(1000, 9000)
-    //     const ramdom2 = utils.getRndInteger(1000, 9000)
-    //     execSync(`export EZTUB_FINGERPRINT_KEY="17349330445822${ramdom2}${ramdom1}"`)
-    // } catch (error) {
-    //     console.log(error);
-    // }
-
     let widthSizes = [950, 1100, 1200]
     let positionSize = action.isNew ? 0 : utils.getRndInteger(0, 2)
     let screenWidth = 1400//widthSizes[positionSize]
     let screenHeight = 950 //action.isNew ? 950 : utils.getRndInteger(950, 1000)
 
     //handle userDataDir
-    let userDataDir =  ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
+    let userDataDir = ` --user-data-dir="${path.resolve("profiles", action.pid + '')}"`
 
     //handle browser size
     action['positionSize'] = positionSize
@@ -457,8 +410,8 @@ async function startChromeAction(action, _browser) {
             traceName = 'trace_ex/' + trace[action.pid]
         } else {
             if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
-                traceName = systemConfig.trace_names_ex[Math.floor(Math.random()*systemConfig.trace_names_ex.length)]
-                
+                traceName = systemConfig.trace_names_ex[Math.floor(Math.random() * systemConfig.trace_names_ex.length)]
+
                 if (traceName.includes('level_')) {
                     level_name = traceName
                     traceName = 'win_10_chrome'
@@ -469,7 +422,7 @@ async function startChromeAction(action, _browser) {
                 fs.writeFileSync("trace_config.json", JSON.stringify(trace))
             }
         }
-        
+
         exs.push(traceName)
         action.trace_name = level_name
         console.log('------action.trace_name', action.trace_name);
@@ -478,14 +431,14 @@ async function startChromeAction(action, _browser) {
 
     let param = new URLSearchParams({ data: JSON.stringify(action) }).toString();
     let startPage = `http://localhost:${LOCAL_PORT}/action?` + param
-    
+
     utils.log('--BROWSER--', _browser)
     utils.log('--PID--', action.pid)
-    if (WIN_ENV) {        
+    if (WIN_ENV) {
         exec(`${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
-        closeChrome(action.pid)
+        closeChrome(action.pid, systemConfig.browsers)
         await utils.sleep(3000)
         utils.log('startDisplay')
         startDisplay(action.pid)
@@ -499,7 +452,7 @@ async function startChromeAction(action, _browser) {
             if (_browser == 'opera') {
                 exec(`${_browser}${userDataDir}${windowSize}`)
                 await utils.sleep(19000)
-                closeChrome(action.pid)
+                closeChrome(action.pid, systemConfig.browsers)
                 exec(`${_browser}${userDataDir}${windowSize}`)
             } else {
                 exec(cmdRun)
@@ -507,7 +460,7 @@ async function startChromeAction(action, _browser) {
 
             if (['opera', 'microsoft-edge', 'microsoft-edge-stable'].includes(_browser)) {
                 await utils.sleep(10000)
-                closeChrome(action.pid)
+                closeChrome(action.pid, systemConfig.browsers)
                 await utils.sleep(2000)
                 exec(cmdRun)
             } else {
@@ -526,7 +479,7 @@ async function startChromeAction(action, _browser) {
                 if (_browser != 'iridium-browser') {
                     sendEnter(action.pid)
                 }
-                
+
                 await utils.sleep(8000)
             }
             utils.log('process login')
@@ -540,7 +493,7 @@ async function startChromeAction(action, _browser) {
                 setDisplay(action.pid)
                 sendEnter(action.pid)
             }
-            
+
             await utils.sleep(5000)
         }
     }
@@ -553,7 +506,7 @@ async function loginProfileChrome(profile) {
         } catch (error) {
             console.log(error);
         }
-        
+
         utils.log('loginProfileChrome', profile)
         let action = profile
         action.pid = profile.id
@@ -579,7 +532,7 @@ async function loginProfileChrome(profile) {
         if (systemConfig.is_tiktok) {
             action.is_tiktok = true
         }
-        
+
         Object.keys(systemConfig).forEach(key => {
             if ((key + '').startsWith('client_config_')) {
                 action[key] = systemConfig[key]
@@ -593,7 +546,7 @@ async function loginProfileChrome(profile) {
         if (systemConfig.allow_verify) {
             action.allow_verify = true
         }
-        
+
         systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
         let _browser = systemConfig.browsers[0]
         systemConfig.browsers.some((browser) => {
@@ -604,7 +557,7 @@ async function loginProfileChrome(profile) {
                 _browser = browser
             }
         })
-        
+
         if (!config.browser_map[_browser]) {
             config.browser_map[_browser] = []
         }
@@ -616,7 +569,7 @@ async function loginProfileChrome(profile) {
         if (isAutoEnableReward) {
             action.enableBAT = true
         }
-        
+
         addOpenBrowserAction(action, _browser)
     }
     catch (e) {
@@ -663,20 +616,6 @@ async function newProfileManage() {
     }
 }
 
-function getBrowserOfProfile (pid) {
-    let _browser
-    systemConfig.browsers.forEach((browser) => {
-        if (config.browser_map[browser] && config.browser_map[browser].some(id => id == pid)) {
-            _browser = browser
-        }
-    })
-
-    if (!_browser) {
-        return systemConfig.browsers[0]
-    }
-    return _browser
-}
-
 async function newRunProfile() {
     utils.log('ids: ', ids)
     let pid
@@ -709,8 +648,8 @@ async function newRunProfile() {
                 currentIds.forEach(id => {
                     try {
                         if (id != pid) {
-                            closeChrome(id)
-                            execSync('rm -rf profiles/'+id)
+                            closeChrome(id, systemConfig.browsers)
+                            execSync('rm -rf profiles/' + id)
                             ids = ids.filter(_id => _id != id)
                             runnings = runnings.filter(r => r.pid != id)
                         }
@@ -730,7 +669,7 @@ async function newRunProfile() {
             }
             if (action && action.script_code) {
                 // handle get browser loged
-                let _browser = getBrowserOfProfile(pid)
+                let _browser = getBrowserOfProfile(pid, config.browser_map, systemConfig.browsers);
                 addOpenBrowserAction(action, _browser)
             }
         }
@@ -739,7 +678,7 @@ async function newRunProfile() {
         }
     }
 }
-
+// Hàm lấy dữ liệu script cho một profile
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
     if (IS_REG_USER) {
@@ -842,29 +781,11 @@ async function getScriptData(pid, isNewProxy = false) {
     if (action) {
         if (useProxy && isNewProxy) {
             let isLoadNewProxy = true
-            // let totalRound = totalRoundForChangeProxy * MAX_PROFILE
-            // if (countRun % totalRound  > 0 &&  countRun % totalRound <= MAX_PROFILE && countRun > MAX_PROFILE) {
-            //     isLoadNewProxy = true
-            //     utils.log('Load new proxy for pid')
-            // }
+
 
             if (isLoadNewProxy || action.is_ver_mail_type) {
                 //let newProxy = await request_api.getProxyV4()
                 let proxyV6 = await request_api.getProfileProxy(pid, PLAYLIST_ACTION.WATCH, isLoadNewProxy)
-                // if (newProxy.server) {
-                //     proxy[pid] = {
-                //         server: newProxy.server
-                //     }
-                //     // let proxyInfo = newProxy.server.split(':')
-                //     // if (proxyInfo.length >= 2) {
-                //     //     execSync(`sudo gsettings set org.gnome.system.proxy.https host '${proxyInfo[0]}'`)
-                //     //     execSync(`sudo gsettings set org.gnome.system.proxy.https port ${proxyInfo[1]}`)
-                //     //     execSync(`sudo gsettings set org.gnome.system.proxy mode 'manual'`)
-                //     //     proxy[pid] = undefined
-                //     // }
-                // } else {
-                //     proxy[pid] = proxyV6
-                // }
 
                 if (proxyV6) {
                     proxy[pid] = proxyV6
@@ -889,7 +810,7 @@ async function getScriptData(pid, isNewProxy = false) {
             let actionRecord = { pid: pid, start: startTime, lastReport: startTime, browser: true, action: 'watch' }
             runnings.push(actionRecord)
         }
-        
+
         action.id = action.script_code
         action.pid = pid
         action.is_show_ui = IS_SHOW_UI
@@ -909,7 +830,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         });
         // init action data
-        if(action.mobile_percent === undefined || action.mobile_percent === null){
+        if (action.mobile_percent === undefined || action.mobile_percent === null) {
             if (systemConfig.total_rounds_for_change_proxy) {
                 totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
             }
@@ -919,19 +840,19 @@ async function getScriptData(pid, isNewProxy = false) {
             delete systemConfig.page_percent
             Object.assign(action, systemConfig)
             delete action.systemParams
-    
+
             action.mobile_percent = systemConfig.browser_mobile_percent
             active_devices = systemConfig.active_devices || []
             if (active_devices.length) {
                 action.mobile_percent = 100
             }
-    
-            if (systemConfig.ads_percent  && !Number(action.ads_percent)) {
+
+            if (systemConfig.ads_percent && !Number(action.ads_percent)) {
                 action.ads_percent = systemConfig.ads_percent
             }
-    
+
             action.total_channel_created = Number(systemConfig.total_channel_created)
-    
+
             if (['youtube_sub', 'watch', 'watch_video', 'comment_youtube', 'like_fb_page', 'like_fb_post', 'like_youtube'].includes(action.id)) {
                 let oldUserPosition = usersPosition.find(u => u.pid == action.pid)
                 if (oldUserPosition) {
@@ -943,19 +864,7 @@ async function getScriptData(pid, isNewProxy = false) {
 
             if (action.id == 'watch' || action.id == 'watch_video') {
                 action.total_loop_find_ads = systemConfig.total_loop_find_ads || 0
-                // if (systemConfig.total_times_next_video && !Number(action.total_times_next_video)) {
-                //     action.total_times_next_video = systemConfig.total_times_next_video
-                // }
-                // if (systemConfig.watching_time_non_ads && !Number(action.watching_time_non_ads)) {
-                //     action.watching_time_non_ads = systemConfig.watching_time_non_ads
-                // }
-                // if (systemConfig.watching_time_start_ads && !Number(action.watching_time_start_ads)) {
-                //     action.watching_time_start_ads = systemConfig.watching_time_start_ads
-                // }
-                // if (systemConfig.watching_time_end_ads && !Number(action.watching_time_end_ads)) {
-                //     action.watching_time_end_ads = systemConfig.watching_time_end_ads
-                // }
-    
+
                 if (!action.playlist_url) {
                     action.playlist_url = action.data
                 }
@@ -967,42 +876,6 @@ async function getScriptData(pid, isNewProxy = false) {
             action.is_clear_browser_data = true
         }
         return action
-    }
-}
-
-async function checkRunningProfiles () {
-    try {
-        if (isPauseAction) {
-            return
-        }
-        utils.log('runnings: ', runnings.length)
-        let watchingLength = runnings.length
-        for (let i = 0; i < watchingLength; i++) {
-            // calculate last report time
-            let timeDiff = Date.now() - runnings[i].lastReport
-            if (timeDiff > EXPIRED_TIME) {
-                let pid = runnings[i].pid
-                utils.log('----- expired time -----', pid)
-                try {
-                    closeChrome(pid)
-
-                    if (runnings[i].action == 'login' || IS_REG_USER) {
-                        execSync('rm -rf profiles/'+pid)
-                        ids = ids.filter(id => id != pid)
-                    }
-                }
-                catch (e) { }
-                finally {
-                    // delete in watching queue
-                    runnings = runnings.filter(x => x.pid != pid)
-                    watchingLength -= 1
-                    i -= 1
-                }
-            }
-        }
-    }
-    catch (e) {
-        utils.log('error', 'checkWatchingProfile err: ', e)
     }
 }
 
@@ -1021,7 +894,7 @@ async function updateVmStatus() {
 
         if (rs && rs.removePid) {
             let removePID = Number(rs.removePid)
-            closeChrome(removePID)
+            closeChrome(removePID, systemConfig.browsers)
             await utils.sleep(5000)
             try {
                 execSync("rm -rf profiles/" + removePID)
@@ -1043,13 +916,13 @@ async function updateVmStatus() {
         setTimeout(updateVmStatus, TIME_REPORT)
     }
 }
-
+// Hàm quản lý các profile
 async function profileManage() {
     try {
         if (!IS_SHOW_UI) {
             logScreen()
         }
-        
+
         updateVmStatus()
         profileRunningManage()
     }
@@ -1065,12 +938,12 @@ async function running() {
     } catch (error) {
         console.log(error);
     }
-    
+
     // get profile ids
     if (!fs.existsSync('profiles')) {
         fs.mkdirSync('profiles')
     }
-    
+
     ids = getProfileIds()
     utils.log('ids: ', ids)
     ids.forEach(pid => startDisplay(pid))
@@ -1085,9 +958,6 @@ function initDir() {
         fs.mkdirSync(path.resolve('logscreen'));
     }
 
-    // if (!fs.existsSync(path.resolve('logs'))) {
-    //     fs.mkdirSync(path.resolve('logs'));
-    // }
 
     if (!fs.existsSync('screen')) {
         fs.mkdirSync('screen');
@@ -1101,25 +971,28 @@ function initDir() {
         fs.mkdirSync('error');
     }
 
-    // if (!fs.existsSync('backup')) {
-    //     fs.mkdirSync('backup');
-    // }
 }
-
+// Hàm khởi động ứng dụng
 async function start() {
     try {
-        
+
         if (updateFlag && updateFlag.updating) {
             isAfterReboot = true
             await request_api.reportUpgrade()
             execSync('rm -rf update_flag.json')
             await utils.sleep(180000)
         }
+        // Kiểm tra và cập nhật phiên bản mới
         checkToUpdate()
+        // Thực thi các hành động đang chờ xử lý
         execActionsRunning()
+        // Khởi tạo các thư mục cần thiết
         initDir()
+        // Khởi tạo cấu hình
         await initConfig()
+        // Khởi tạo máy chủ Express
         initExpress()
+        // Chạy các tác vụ chính
         running()
         console.log('--- Running ---')
     }
@@ -1129,7 +1002,7 @@ async function start() {
     finally {
         let cleanup = async function () {
             utils.log('cleanup')
-            closeChrome()
+            closeChrome("", systemConfig.browsers)
             process.exit()
         }
         process.on('SIGINT', cleanup);
@@ -1137,59 +1010,9 @@ async function start() {
     }
 }
 
-function makeid(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
-   }
-   return result;
-}
+
 
 async function initConfig() {
-   /* execSync(`export EZTUB_CPU_ARCHITECTURE="x86" \
-        EZTUB_CPU_BITNESS="64" \
-        EZTUB_DEVICE_SCALE_FACTOR="1" \
-        EZTUB_FINGERPRINT_KEY="17349330445822630091" \
-        EZTUB_HARDWARE_CONCURRENCY="2" \
-        EZTUB_MAX_TOUCH_POINTS="0" \
-        EZTUB_NAVIGATOR_PLATFORM="Win32" \
-        EZTUB_NAVIGATOR_UA_DATA_PLATFORM="Windows" \
-        EZTUB_NAVIGATOR_VENDOR="Google Inc." \
-        EZTUB_PLATFORM_VERSION="10.0" \
-        EZTUB_SCREEN_DEPTH="24" \
-        EZTUB_SCREEN_HEIGHT="864" \
-        EZTUB_SCREEN_WIDTH="1536" \
-        EZTUB_USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36" \
-        EZTUB_WEBGL_RENDERER="ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)" \
-        EZTUB_WEBGL_VENDOR="Google Inc. (NVIDIA)"`)
-*/
-    // load configuration
-    //utils.log('config: ', config)
-    // let ip = ''
-    // while(!ip || ip.length > 50){
-    //     await utils.sleep(5000)
-    //     try {
-    //         if (fs.existsSync('./ip.log')) {
-    //             ip = fs.readFileSync('./ip.log', 'utf8')
-    //             if (ip.length > 50) {
-    //                 ip = await publicIp.v4()
-    //             }
-    //         }
-    //         else {
-    //             ip = await publicIp.v4()
-    //         }
-    //     }
-    //     catch (e) {
-    //         utils.log('error', 'get ip err')
-    //     }
-    // }
-
-    // utils.log('ip: ', ip)
-    // check config
-    //let ip = await publicIp.v4()
 
     if (process.env.VM_NAME && process.env.VM_NAME != '_VM_NAME') {
         config.vm_name = process.env.VM_NAME
@@ -1198,7 +1021,7 @@ async function initConfig() {
     }
 
     if (!config.vm_id) {
-        config.vm_id = makeid(9)
+        config.vm_id = utils.makeid(9)
     }
 
     IP = config.vm_name
@@ -1210,466 +1033,13 @@ async function initConfig() {
     if (config.usersPosition) {
         usersPosition = config.usersPosition
     }
-    
+
     fs.writeFileSync("vm_log.json", JSON.stringify(config))
 
     await loadSystemConfig()
     console.log(' -> SYSTEM CONFIG : ', systemConfig);
-    //utils.log('version: ', version)
 }
 
-function getScriptDir() {
-    utils.log('__dirname: ' + __dirname)
-    return __dirname
-}
-
-function handlePlaylistData (playlist) {
-    if (!playlist.total_times_next_video) {
-        delete playlist.total_times_next_video
-    }
-    if (!playlist.watching_time_non_ads) {
-        delete playlist.watching_time_non_ads
-    }
-    if (!playlist.watching_time_start_ads) {
-        delete playlist.watching_time_start_ads
-    }
-    if (!playlist.watching_time_end_ads) {
-        delete playlist.watching_time_end_ads
-    }
-}
-
-let TIKTOK_CAPCHA_API_KEY = 'tjRhRFTmV2MIcFyM6lkD8ChPkgmx3IGyx4FybO3Kovivs5V7vUhdTw5nGDxyM7VxsiMvRbZiY81s8Knj'
-async function createJob(capchaData) {
-    try {
-        const url = 'https://omocaptcha.com/api/createJob'
-        const requestData = {
-            api_token: TIKTOK_CAPCHA_API_KEY,
-            data: capchaData,
-        }
-
-        return new Promise((resolve, reject) => {
-            request['post']({
-                url,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                json: true,
-                body: requestData,
-            }, async (err, response, data) => {
-                console.log('--', data)
-                if (data.job_id) {
-                    return resolve({
-                        success: true,
-                        job_id: data.job_id
-                    })
-                }
-                return reject({ success: false, data, err })
-            })
-        })
-    } catch (err) {
-        console.log('Error while getRequest', err)
-    }
-}
-
-async function getJobResult(job_id) {
-    try {
-      const url = 'https://omocaptcha.com/api/getJobResult'
-      const requestData = {
-        api_token: TIKTOK_CAPCHA_API_KEY,
-        job_id
-      }
-      return new Promise((resolve, reject) => {
-        request['post']({
-          url,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          json: true,
-          body: requestData,
-        }, async (err, response, data) => {
-            return resolve(data)
-        })
-      })
-    } catch (err) {
-      console.log('Error while getResult', err)
-    }
-}
-
-const getBase64FromUrl = async (url) => {
-    return new Promise((resolve) => {
-        request2.get(url, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                resolve(body.toString('base64'))
-            }
-        })
-    })
-}
-
-async function handleCapchaTiktok (data) {
-    let job
-    if (data.type == 'cicle') {
-        let innerImage = ''
-        let outerImage = ''
-        await Promise.all([
-            getBase64FromUrl(data.innerImageURL),
-            getBase64FromUrl(data.outerImageURL)
-        ]).then(rs => {
-            innerImage = rs[0]
-            outerImage = rs[1]
-        })
-
-        // send data to api
-        job = await createJob( { type_job_id: 23, image_base64: innerImage + '|' + outerImage })
-    } else if (data.type == 'square') {
-        // shot screen
-        let capchaImgName = 'tiktokCapcha' + Date.now()
-        execSync(`${nircmdPath} savescreenshot ${path.resolve("logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
-        let imageBase64 = fs.readFileSync(`${path.resolve("logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
-        job = await createJob( { type_job_id: 21, image_base64: imageBase64, width_view: data.image_width })
-    }
-    let result = { status: 'waiting' }
-    while (result.status == 'waiting' || result.status == 'running') {
-        result = await getJobResult(job.job_id)
-        await utils.sleep(3000)
-    }
-    console.log('final res', result)
-    return result
-}
-
-function initExpress() {
-    const express = require('express')
-    const app = express()
-
-    app.get('/handle-capcha-tiktok', async (req, res) => {
-        let data = req.query
-        let result = await handleCapchaTiktok(data)
-        return res.json({ success: true, result })
-    })
-
-    app.get('/favicon.ico', (req, res) => {
-        res.sendFile(path.resolve("favicon.ico"))
-        return
-    })
-
-    app.get('/debug', (req, res) => {
-        isPauseAction = true
-        res.send({ rs: 'ok' })
-        return
-    })
-
-    app.get('/report-playlist-jct', async (req, res) => {
-        let rs = await request_api.reportPlaylistJCT(req.query)
-        return res.send(rs)
-    })
-
-    app.get('/reset-profile-by-pid', async (req, res) => {
-        const pid = req.query.pid
-        if (pid) {
-            console.log('--reset pid: ', pid)
-            let updateData = {
-                pid,
-                status: 'NEW',
-                description: 're_login',
-            }
-
-            removePidAddnew(pid, 0)
-            await utils.sleep(5000)
-            await request_api.updateProfileData(updateData)
-        }
-        return res.send({ success: true })
-    })
-
-    app.get('/get-comment', async (req, res) => {
-        let rs = await request_api.getComment()
-        return res.send(rs)
-    })
-
-    app.get('/get-phone', async (req, res) => {
-        let rs = await request_api.getPhone(req.query.re_phone)
-        res.send(rs)
-        return
-    })
-
-    app.get('/update-profile-data', async (req, res) => {
-        let data = req.query
-        request_api.updateProfileData(data)
-        res.send({})
-        return
-    })
-
-    app.get('/get-address-random', async (req, res) => {
-        console.log(addresses.length);
-        const randomAddress = addresses[Math.floor(Math.random() * addresses.length)]
-        console.log(randomAddress);
-        return res.send(randomAddress)
-    })
-    
-    app.get('/report-fb-group', async (req, res) => {
-        let groupLink = req.query.group_link
-        let groupTopic = req.query.fb_topic_code
-        console.log('---groupLink--', groupLink);
-        let rs = await request_api.reportFBGroup(groupLink, groupTopic)
-        res.send(rs)
-        return
-    })
-
-    app.get('/get-phone-code', async (req, res) => {
-        let order_id = req.query.order_id
-        let api_name = req.query.api_name
-        let rs = await request_api.getPhoneCode(order_id, api_name)
-        res.send(rs)
-        return
-    })
-
-    app.get('/get-mail-code', async (req, res) => {
-        let mail = req.query.mail
-        let rs = await request_api.getMailCode(mail)
-        res.send(rs)
-        return
-    })
-
-    app.get('/report-mail-code', async (req, res) => {
-        let data = req.query
-        let rs = await request_api.reportMailCode(data)
-        res.send(rs)
-        return
-    })
-
-    app.get('/get-reco-mails', async (req, res) => {
-        console.log('get reco mail');
-        let data = req.query
-        let rs = await request_api.getRecoMails(data)
-        console.log('get reco rs', rs);
-        res.send(rs)
-        return
-    })
-
-    app.get('/login', (req, res) => {
-        utils.log(req.query)
-        if (req.query.status == 1) {
-            utils.log(req.query.pid, 'login success')
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED')
-        }
-        else {
-            utils.log(req.query.pid, 'login error', req.query.msg)
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', req.query.msg)
-        }
-        removePidAddnew(req.query.pid, req.query.status)
-
-        res.send({ rs: 'ok' })
-    })
-
-    app.get('/get-new-playlist', async (req, res) => {
-        let rs = await request_api.getYTVideo()
-        let playlist = rs.playlist
-        handlePlaylistData(playlist)
-        res.send(playlist)
-    })
-
-    app.get('/report', async (req, res) => {
-        if (isPauseAction) {
-            //res.send({ rs: 'ok' })
-            return
-        }
-        utils.log(req.query)
-
-        if (req.query.id == 'reg_account' || req.query.id == 'change_pass') {
-            let action = req.query
-            
-            if (req.query.id == 'change_pass' && req.query.status == '0') {
-                if (req.query.msg.startsWith('UPDATE_FB_SUCCESS_TO_')) {
-                    req.query.msg = req.query.msg.replace('UPDATE_FB_SUCCESS_TO_', '')
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', password: req.query.msg, description: 'update_success', proxy_server: proxy[req.query.pid].server })
-                } else {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
-                }
-                return res.json({})
-            }
-
-            if (action.username && action.password) {
-                request_api.reportAccount({
-                    username: action.username,
-                    password: action.password,
-                    verify: action.verify,
-                    type: action.type,
-                    reg_ga_success: action.reg_ga_success,
-                    proxy_server: proxy[action.pid].server
-                })
-
-                if (req.query.id == 'change_pass') {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'TRASH', description: 'update_pass_to_' + action.password })
-                }
-            }
-
-            if (action.reg_ga_success) {
-                request_api.updateProfileData({ pid: Number(action.pid), status: 'ERROR', description: 'ga' })
-            }
-
-            if (action.stop && action.stop != 'false') {
-                removePidAddnew(req.query.pid, 0)
-            }
-        }
-        else if (req.query.id == 'total_created_channel') {
-            request_api.updateProfileData({ pid: req.query.pid, total_created_users: req.query.count })
-        }
-        else if (req.query.id == 'live_report') {
-            runnings.forEach(running => {
-                if (running.pid == req.query.pid) {
-                    running.lastReport = Date.now()
-                }
-            });
-        }
-        else if (req.query.isScriptReport) {
-            if (req.query.status == 'ERROR_TYPE_1') {
-                req.query.isBreak = true
-                let pid = req.query.pid
-                if (!ERROR_TYPE_1_MAP[pid]) {
-                    ERROR_TYPE_1_MAP[pid] = 1
-                }
-
-                ERROR_TYPE_1_MAP[pid]++
-                if (ERROR_TYPE_1_MAP[pid] > 3) {
-                    delete ERROR_TYPE_1_MAP[pid]
-                    removePidAddnew(pid, 0)
-                }
-                return
-            }
-
-            if (!['watch', 'create_playlist', 'search', 'end_script'].includes(req.query.script_code)) {
-                await request_api.reportScript(req.query.pid, req.query.service_id, req.query.status, req.query.data_reported)
-            }
-
-            if (req.query.script_code == 'add_recovery_mail' && !req.query.data_reported.includes('p_not_found_code')) {
-                closeChrome(req.query.pid)
-                deleteProfile(req.query.pid)
-                ids = ids.filter(i => i != req.query.pid)
-                runnings = runnings.filter(i => i.pid != req.query.pid)
-                return
-            }
-            if ([1, '1', 'true', true].includes(req.query.isBreak)) {
-               // execSync(`xdotool key Control_L+w && sleep 1`)
-                // browser will closed by background extention
-                closeChrome(req.query.pid)
-                runnings = runnings.filter(i => i.pid != req.query.pid)
-            } else {
-                let action = await getScriptData(req.query.pid)
-                if (req.query.script_code == action.script_code) {
-                    closeChrome(req.query.pid)
-                    runnings = runnings.filter(i => i.pid != req.query.pid)
-                } else {
-                    runnings.forEach(running => {
-                        if (running.pid == req.query.pid) {
-                            running.lastReport = Date.now()
-                        }
-                    });
-                    return res.json(action)
-                }
-            }
-        }
-        else if (req.query.id == 'channel-position') {
-            let channel = usersPosition.find(u => u.pid == req.query.pid)
-            if (channel) {
-                channel.position = req.query.position
-            } else {
-                usersPosition.push({
-                    pid: req.query.pid,
-                    position: req.query.position,
-                })
-            }
-
-            if (usersPosition) {
-                config.usersPosition = usersPosition
-                fs.writeFileSync("vm_log.json", JSON.stringify(config))
-            }
-        }
-        else if (req.query.id == 'watched'){
-            runnings.forEach(running => {
-                if (running.pid == req.query.pid) {
-                    running.lastReport = Date.now()
-                }
-            });
-            request_api.updateWatchedVideo(req.query.pid, req.query.viewedAds)
-        }
-        else if ((req.query.report_error_profile && req.query.report_error_profile != 'false') || req.query.id == 'login' || req.query.id == 'reg_user' || req.query.id == 'reg_user_youtube' || req.query.id == 'check_mail_1'|| req.query.id == 'recovery_mail') {
-            if (req.query.status == 1) {
-                utils.log(req.query.pid, 'login success')
-                if (req.query.id == 'reg_user') {
-                    request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR' })
-                } else {
-                    let params = { pid: req.query.pid, status: 'SYNCED' }
-                    if (systemConfig.is_fb) {
-                        params.proxy_server = proxy[req.query.pid].server
-                    }
-                    request_api.updateProfileData(params)
-                }
-            }
-            else {
-                utils.log(req.query.pid, 'login error', req.query.msg)
-                request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR', description: req.query.msg })
-            }
-            removePidAddnew(req.query.pid, req.query.status)
-        }
-        else if(req.query.id == 'logout'){
-            utils.log(req.query.pid, 'logout ok')
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', 'disabled_logout')
-            ids = ids.filter(x => x != req.query.pid)
-            deleteProfile(req.query.pid)
-        }
-        else if(req.query.id == 'confirm'){
-            utils.log(req.query.pid, 'confirm',req.query.status)
-            if (req.query.status == 1) {
-                utils.log(req.query.pid, 'confirm success')
-                request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', 'CONFIRM_SUCCESS')
-            }
-            else {
-                utils.log(req.query.pid, 'confirm error', req.query.msg)
-                request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-            }
-        }
-        else if(req.query.id == 'changepass'){
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-        }
-        else if(req.query.id == 'checkpremium' || req.query.id == 'checkcountry'){
-            request_api.updateProfileStatus(req.query.pid, config.vm_id, 'SYNCED', req.query.msg)
-        }
-        else if (req.query.id == 'watch') {
-            if (req.query.stop == 'true' || req.query.stop == true) {
-                runnings = runnings.filter(i => i.pid != req.query.pid)
-            }
-        }
-        else if (req.query.id == 'sub') {
-            if (req.query.stop == 'true' || req.query.stop == true) {
-                utils.log('remove pid from subRunnings', req.query.pid)
-                subRunnings = subRunnings.filter(x => x.pid != req.query.pid)
-            }
-        }
-        if (req.query.msg && req.query.msg == 'NOT_LOGIN') {
-            utils.log('error', req.query.pid, 'NOT_LOGIN')
-            deleteProfile(req.query.pid)
-            ids = ids.filter(x => x != req.query.pid)
-            deleteBackup(req.query.pid)
-        }
-        res.send({ rs: 'ok' })
-    })
-
-    app.get('/run-update-vps', (req, res) => {
-        runUpdateVps()
-        res.send({success: true})
-    })
-
-    app.get('/action', (req, res) => {
-        utils.log(req.query)
-        res.send(JSON.stringify(req.query))
-    })
-
-    app.get('/input', async (req, res) => {
-        actionsData.push({...req.query, res})
-    })
-
-    app.listen(LOCAL_PORT, () => {
-        utils.log('start app on', LOCAL_PORT)
-    })
-}
 
 async function getRandomImagePath(returnFile = false) {
     let fileName = Date.now() + '.jpg'
@@ -1686,8 +1056,8 @@ async function getRandomImagePath(returnFile = false) {
         return path.resolve('./images/' + fileName)
     }
 }
-
-async function handleAction (actionData) {
+// Hàm xử lý hành động
+async function handleAction(actionData) {
     if (isPauseAction) {
         res.send({ rs: 'ok' })
         return
@@ -1703,7 +1073,7 @@ async function handleAction (actionData) {
     utils.log(logStr)
 
     // copy str
-    if(actionData.str){
+    if (actionData.str) {
         console.log(actionData.str)
         try {
             const clipboardy = require('clipboardy');
@@ -1736,9 +1106,9 @@ async function handleAction (actionData) {
         execSync(`xdotool mousemove ${xTarget + 5} ${yTarget}`)
         execSync(`xdotool mousemove ${xTarget + -5} ${yTarget}`)
         execSync(`xdotool mousemove ${xTarget + 2} ${yTarget}`)
-        
+
         execSync(`xdotool mouseup 1`)
-        
+
         // robot.moveMouse(Number(actionData.x), Number(actionData.y))
         // robot.mouseToggle('down')
         // robot.dragMouse(Number(actionData.x) + Number(actionData.sx)/2, Number(actionData.sy))
@@ -1752,14 +1122,14 @@ async function handleAction (actionData) {
     else if (actionData.action == 'SELECT_AVATAR') {
         await utils.sleep(5000)
         del.sync([path.resolve('avatar.jpg')], { force: true })
-        let avatar = await request_api.getAvatar(actionData.pid,path.resolve('../'),actionData.str)
+        let avatar = await request_api.getAvatar(actionData.pid, path.resolve('../'), actionData.str)
 
-        if(true && avatar){
+        if (true && avatar) {
             await utils.sleep(5000)
             execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 2`)
             execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
         }
-        else{
+        else {
             execSync(`xdotool key Escape`)
         }
     }
@@ -1813,7 +1183,7 @@ async function handleAction (actionData) {
         let count = 0
         while (count < totalClick) {
             execSync(`xdotool key Tab && sleep 1`)
-            count ++
+            count++
         }
     }
     else if (actionData.action == 'SHOW_BRAVE_ADS') {
@@ -1825,9 +1195,9 @@ async function handleAction (actionData) {
         try {
             execSync(`xdotool key Control_L+c && sleep 1`)
         } catch (error) {
-            
+
         }
-        
+
         await utils.sleep(1000)
 
         let currentBat = ''
@@ -1835,7 +1205,7 @@ async function handleAction (actionData) {
         currentBat = clipboardy.readSync()
         utils.log('currentBat', currentBat)
         currentBat = Number(currentBat)
-        
+
         if (currentBat) {
             try {
                 let braveInfo = await request_api.getBraveInfo(actionData.pid)
@@ -1961,16 +1331,16 @@ async function handleAction (actionData) {
     else if (actionData.action == 'OPEN_MOBILE') {
         utils.log('open mobile simulator')
         let po = {
-            0: 4, 
-            1: 5, 
-            2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
+            0: 4,
+            1: 5,
+            2: 6,
+            3: 7,
+            4: 8,
+            5: 9,
+            6: 10,
             7: 11,
-            8: 12, 
-            9: 12, 
+            8: 12,
+            9: 12,
         }
         let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
         devicePo -= 1
@@ -1987,16 +1357,16 @@ async function handleAction (actionData) {
     else if (actionData.action == 'SELECT_MOBILE') {
         utils.log('open mobile simulator')
         let po = {
-            0: 4, 
-            1: 5, 
-            2: 6, 
-            3: 7, 
-            4: 8, 
-            5: 9, 
-            6: 10, 
+            0: 4,
+            1: 5,
+            2: 6,
+            3: 7,
+            4: 8,
+            5: 9,
+            6: 10,
             7: 11,
-            8: 12, 
-            9: 12, 
+            8: 12,
+            9: 12,
         }
         let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
         devicePo -= 1
@@ -2011,7 +1381,7 @@ async function handleAction (actionData) {
     }
     else if (actionData.action == 'SELECT_OPTION') {
         execSync(`xdotool key Page_Up && sleep 1`)
-        for(let i = 0; i < actionData.str*1; i++){
+        for (let i = 0; i < actionData.str * 1; i++) {
             execSync(`xdotool key Down && sleep 0.2`)
         }
         execSync(`xdotool key KP_Enter`)
@@ -2024,61 +1394,18 @@ async function handleAction (actionData) {
         actionData.res.json({ success: true })
     }
 }
-
-function removePidAddnew(pid, status) {
-    try {
-        runnings = runnings.filter(x => x.pid != pid)
-        if (status != 1 || IS_REG_USER) {
-            // login error
-            deleteProfile(pid)
-            utils.log('removePidAddnew', pid, status)
-        }
-        else {
-            // login success
-            closeChrome(pid)
-            if (!ids.filter(x => x == pid).length) {
-                ids.push(pid)
-            }
-        }
-
-        if (IS_REG_USER) {
-            ids = ids.filter(x => x != pid)
-        }
-        utils.log(ids)
-    }
-    catch (e) {
-        utils.log('error', 'removePidAddnew', pid, status, addnewRunnings, ids, e)
-    }
-}
-
-async function deleteProfile(pid, retry = 0) {
-    ids = ids.filter(x => x != pid)
-    runnings = runnings.filter(r => r.pid != pid)
-    try {
-        stopDisplay(pid)
-        closeChrome(pid)
-        del.sync([path.resolve("profiles", pid + '', '**')], { force: true })
-    }
-    catch (e) {
-        utils.log('error', 'deleteProfile', pid, retry)
-        if (retry < 3) {
-            await utils.sleep(3000)
-            await deleteProfile(pid, retry + 1)
-        }
-    }
-}
-
-function runAutoRebootVm () {
+// Hàm tự động khởi động lại máy ảo
+function runAutoRebootVm() {
     setInterval(async () => {
         let myDate = new Date()
-        let hour = Number(myDate.toLocaleTimeString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh", hour12: false}).split(':')[0])
+        let hour = Number(myDate.toLocaleTimeString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour12: false }).split(':')[0])
 
         let resetProfilesTimeInterval = Number(systemConfig.reset_profiles_time_interval)
         if (resetProfilesTimeInterval && hour % resetProfilesTimeInterval == 0) {
             await resetAllProfiles()
         }
-        
-        if (Number(systemConfig.reset_system_time) > 0 && hour == Number(systemConfig.reset_system_time)){
+
+        if (Number(systemConfig.reset_system_time) > 0 && hour == Number(systemConfig.reset_system_time)) {
             try {
                 isSystemChecking = true
                 if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
@@ -2093,167 +1420,7 @@ function runAutoRebootVm () {
     }, 3600000);
 }
 
-function closeChrome(pid) {
-    try {
-        if (WIN_ENV) {
-            execSync('input CLOSE_CHROME')
-        }
-        else {
-            if (pid) {
-                execSync(`pkill -f "profiles/${pid}"`)
-            }
-            else {
-                execSync(`pkill ${getBrowserOfProfile(pid)}`)
-            }
-        }
-    }
-    catch (e) {
-    }
-}
 
-function startDisplay(pid) {
-    try {
-        if (!WIN_ENV) {
-            exec(`Xvfb :${pid} -ac -screen 0, 1920x1040x24`)
-            // execSync(`unzip -o -P Trung@123456 ex.zip`)
-            // execSync(`unzip -o -P Trung@123456 quality.zip`)
-            let core = (pid % 4 + 1) * 2
-            let ram = core * (pid % 2 + 1) * 2
-            execSync(`sed -i '241 s/"value":.*/"value":${core}/' trace/js/background/prefs.js;sed -i '245 s/"value":.*/"value":${ram}/' trace/js/background/prefs.js`)
-            if (pid % 10 < 0) {
-                execSync(`sed -i '404 s/"enabled":.*/"enabled":false,/' trace/js/background/prefs.js`)
-            }
-            else {
-                execSync(`sed -i '404 s/"enabled":.*/"enabled":true,/' trace/js/background/prefs.js`)
-            }
-        }
-    }
-    catch (e) {
-    }
-}
-
-function stopDisplay(pid) {
-    try {
-        if (!WIN_ENV) {
-            execSync(`pkill -f "Xvfb :${pid}"`)
-        }
-    }
-    catch (e) {
-    }
-}
-
-function setDisplay(pid) {
-    try {
-        if (IS_SHOW_UI) {
-            if (MAX_CURRENT_ACC > 1) {
-                let browser = getBrowserOfProfile(pid)
-                execSync(`wmctrl -x -a ${browser}`)
-            }
-        } else {
-            if (!WIN_ENV) {
-                process.env.DISPLAY = ':' + pid
-            }
-        }
-    }
-    catch (e) {}
-}
-
-function sendEnter(pid) {
-    try {
-        if (!WIN_ENV ) {
-            utils.log('sendEnter', pid)
-            if (!IS_SHOW_UI) {
-                process.env.DISPLAY = ':' + pid
-            }
-            
-            execSync(`xdotool key KP_Enter && sleep 3`)// && xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040 && sleep 1`)
-        }
-    }
-    catch (e) {
-    }
-}
-
-function setChromeSize(pid) {
-    try {
-        if (!WIN_ENV) {
-            utils.log('setChromeSize', pid)
-            if (!IS_SHOW_UI) {
-                process.env.DISPLAY = ':' + pid
-            }
-            
-            //execSync(`xdotool windowsize $(xdotool search --onlyvisible --class chrome) 1920 1040`)
-            //execSync(`xdotool windowsize $(xdotool search --onlyvisible --pid $(pgrep -f "profiles/${pid}" | head -n 1) --class surf) 1920 1040`)
-        }
-    }
-    catch (e) {
-    }
-}
-
-function startupScript() {
-    try {
-        if(WIN_ENV) return
-        // if (fs.existsSync('ex.zip')) execSync('rm -rf *.js')
-        //execSync('rm -rf core.*;for i in /home/runuser/.forever/*.log; do cat /dev/null > $i; done;rm -rf ~/.ssh/known_hosts')
-    }
-    catch (e) {
-        utils.log('error', 'startupScript', e)
-    }
-}
-
-async function backup(pid,login,retry = 0) {
-    try {
-        return; 
-        utils.log('backup',pid,login)
-        if(!BACKUP || WIN_ENV || (execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') < 0 && !login)) return
-        let profileDir = `profiles/${pid}`
-        execSync(`cd /etc/dm; tar --exclude ${profileDir}/Default/Code* --exclude ${profileDir}/Default/Cache* --exclude ${profileDir}/Default/*Cache --exclude ${profileDir}/Default/History* --exclude ${profileDir}/Default/Extensions* --exclude ${profileDir}/Default/Storage --exclude "${profileDir}/Default/Service Worker/CacheStorage" -czvf backup/${pid}.tar ${profileDir}/Default`)
-        let result = execSync(`sshpass -p "DMYT@2020" scp -o "StrictHostKeyChecking=no" backup/${pid}.tar root@35.236.64.121:/home/pf.dominhit.pro/public_html/seo_6`).toString()
-        if(execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') >= 0) throw result
-    }
-    catch (e) {
-        utils.log('backup err: ', e)
-        if(retry < 5){
-            await utils.sleep(15000)
-            await backup(pid,login,retry+1)
-        }
-    }
-}
-
-async function createProfile(pid,retry = 0) {
-    try {
-        if(!BACKUP || WIN_ENV) return
-        utils.log('createProfile', pid,retry)
-        // execSync(`sshpass -p DMYT@2020 scp -o "StrictHostKeyChecking=no" root@root@pf.dominhit.pro:/home/pf.dominhit.pro/public_html/seo_6/${pid}.tar backup`)
-        // execSync(`sshpass -p "DMYT@2020" rsync -a -e "ssh -o StrictHostKeyChecking=no" root@35.236.64.121:/home/pf.dominhit.pro/public_html/seo_6/${pid} profiles/`)
-        execSync(`curl -o backup/${pid}.tar http://pf.dominhit.pro/seo_6/${pid}.tar`)
-        if(fs.statSync(`backup/${pid}.tar`).size < 10000) throw 'get file error'
-        execSync(`tar -xzvf backup/${pid}.tar`)
-    }
-    catch (e) {
-        utils.log('error','createProfile',e)
-        if(retry < 3){
-            await utils.sleep(10000)
-            await createProfile(pid,retry+1)
-        }
-    }
-}
-
-async function deleteBackup(pid,retry = 0) {
-    try {
-        return; 
-        if(!BACKUP || WIN_ENV) return
-        utils.log('deleteBackup', pid,retry)
-        execSync(`sshpass -p "DMYT@2020" ssh -o "StrictHostKeyChecking=no" root@35.236.64.121 'rm -f /home/pf.dominhit.pro/public_html/seo_6/${pid}.tar'`)
-        if(execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') < 0) throw 'DELETE_ERROR'
-    }
-    catch (e) {
-        utils.log('error','deleteBackup',e)
-        if(retry < 3){
-            await utils.sleep(10000)
-            await deleteBackup(pid,retry+1)
-        }
-    }
-}
 
 async function logScreen() {
     if (!IS_LOG_SCREEN) {
@@ -2272,41 +1439,8 @@ async function logScreen() {
     }
 }
 
-async function resetAllProfiles () {
-    isSystemChecking = true
-    try {
-        let pids = getProfileIds()
-        for (let pid of pids) {
-            closeChrome(pid)
-        }
-
-        for await (let pid of pids) {
-            await request_api.updateProfileData({ pid: Number(pid), status: 'RESET' })
-        }
-        await utils.sleep(4000)
-        if (fs.existsSync('profiles')) {
-            try {
-                execSync('rm -rf profiles')
-                execSync('mkdir profiles')
-                trace = {}
-                execSync('rm -rf trace_config.json')
-                config.browser_map = {}
-                fs.writeFileSync("vm_log.json", JSON.stringify(config))
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        runnings = []
-        ids = []
-    } catch (error) {
-        
-    } finally{
-        isSystemChecking = false
-    }
-}
-
-async function checkToUpdate () {
+// Hàm kiểm tra và cập nhật phiên bản mới
+async function checkToUpdate() {
     try {
         setTimeout(async () => {
             utils.log('check to update')
@@ -2327,3 +1461,5 @@ async function checkToUpdate () {
     }
 }
 start()
+
+module.exports = { getScriptData, loadSystemConfig }
