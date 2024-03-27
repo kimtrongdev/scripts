@@ -1,6 +1,6 @@
 const request_api = require("../../request_api");
 const { closeChrome } = require("../browser/closeChrome");
-const { changeProfile } = require("../profile/changeProfile");
+// const { changeProfile } = require("../profile/changeProfile");
 const { resetAllProfiles } = require("../profile/resetAllProfiles");
 const { systemConfig } = require("../settings");
 const settings = require('../settings');
@@ -30,10 +30,10 @@ async function loadSystemConfig() {
         if (settings.checkProfileTime) {
             clearInterval(settings.checkProfileTime)
         }
-        changeProfile()
-        settings.checkProfileTime = setInterval(() => {
-            changeProfile()
-        }, change_profile_time * 3600000)
+        // changeProfile()
+        // settings.checkProfileTime = setInterval(() => {
+        //     changeProfile()
+        // }, change_profile_time * 3600000)
     }
 
     if (DEBUG) {
