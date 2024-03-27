@@ -7,7 +7,7 @@ const request2 = require('request').defaults({ encoding: null });
 const del = require('del');
 const { stopDisplay } = require('../execSync/stopDisplay');
 const utils = require('../../utils');
-const { ids, isPauseAction, systemConfig , IS_REG_USER, BACKUP, ERROR_TYPE_1_MAP, actionsData} = require('../settings');
+const { ids, isPauseAction, systemConfig, IS_REG_USER, BACKUP, ERROR_TYPE_1_MAP, actionsData } = require('../settings');
 const { getScriptData } = require('../../main');
 const { runUpdateVps } = require('../execSync/runUpdateVps');
 let addresses = require('../adress.json').addresses
@@ -25,7 +25,7 @@ function initExpress() {
     })
 
     app.get('/favicon.ico', (req, res) => {
-        res.sendFile(path.resolve("favicon.ico"))
+        res.sendFile(path.join(process.cwd(), "favicon.ico"))
         return
     })
 
@@ -351,18 +351,18 @@ function initExpress() {
 
 function handlePlaylistData(playlist) {
     const properties = [
-      'total_times_next_video',
-      'watching_time_non_ads',
-      'watching_time_start_ads',
-      'watching_time_end_ads'
+        'total_times_next_video',
+        'watching_time_non_ads',
+        'watching_time_start_ads',
+        'watching_time_end_ads'
     ];
-  
+
     for (const prop of properties) {
-      if (!playlist[prop]) {
-        delete playlist[prop];
-      }
+        if (!playlist[prop]) {
+            delete playlist[prop];
+        }
     }
-  }
+}
 
 const getBase64FromUrl = async (url) => {
     return new Promise((resolve) => {
@@ -392,8 +392,8 @@ async function handleCapchaTiktok(data) {
     } else if (data.type == 'square') {
         // shot screen
         let capchaImgName = 'tiktokCapcha' + Date.now()
-        execSync(`${nircmdPath} savescreenshot ${path.join(process.cwd(),"logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
-        let imageBase64 = fs.readFileSync(`${path.join(process.cwd(),"logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
+        execSync(`${nircmdPath} savescreenshot ${path.join(process.cwd(), "logscreen")}/${capchaImgName}.png ${data.startImageX} ${data.startImageY} ${data.endImageX - data.startImageX} ${data.endImageY - data.startImageY}`)
+        let imageBase64 = fs.readFileSync(`${path.join(process.cwd(), "logscreen")}/${capchaImgName}.png`, { encoding: 'base64' })
         job = await createJob({ type_job_id: 21, image_base64: imageBase64, width_view: data.image_width })
     }
     let result = { status: 'waiting' }
@@ -459,7 +459,7 @@ function removePidAddnew(pid, status) {
         utils.log(ids)
     }
     catch (e) {
-        utils.log('error removePidAddnew',  e)
+        utils.log('error removePidAddnew', e)
     }
 }
 
