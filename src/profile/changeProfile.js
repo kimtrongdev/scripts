@@ -20,31 +20,3 @@ function changeProfile() {
 }
 
 module.exports = { changeProfile };
-
-const fs = require("fs");
-const { getProfileIds } = require("./getProfileIds");
-
-/**
- * Thay đổi profile đang chạy
- */
-function changeProfile() {
-    if (!Array.isArray(config.profileTimeLog)) {
-        config.profileTimeLog = [];
-    }
-
-    const currentIds = getProfileIds();
-    config.profileTimeLog = config.profileTimeLog.filter(id => currentIds.includes(id));
-    
-    const newProfileIds = currentIds.filter(id => !config.profileTimeLog.includes(id));
-    const updatedProfileTimeLog = [...newProfileIds, ...config.profileTimeLog];
-    
-    const nextProfile = updatedProfileTimeLog.shift();
-    updatedProfileTimeLog.push(nextProfile);
-    
-    runningPid = nextProfile;
-    config.profileTimeLog = updatedProfileTimeLog;
-    
-    fs.writeFileSync("vm_log.json", JSON.stringify(config));
-}
-
-module.exports = { changeProfile };
