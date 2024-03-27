@@ -626,7 +626,9 @@ function initDir() {
 }
 // Hàm khởi động ứng dụng
 async function start() {
+    console.log('--- Start ---');
     try {
+        console.log('try --- Start ---');
 
         if (updateFlag && updateFlag.updating) {
             isAfterReboot = true
