@@ -19,7 +19,7 @@ var newsNames = [
     "wsfa.com",
 ]
 
-async function runAction (action) {
+async function runAction(action) {
     if (!action.client_config_allow_change_fb_page) {
         action.selected_page = true
     }
@@ -95,7 +95,7 @@ async function runAction (action) {
         await checkMail1(action)
     }
     else if (action.id == 'reg_account') {
-        if (action.account_type == 'facebook'){
+        if (action.account_type == 'facebook') {
             await reqFacebook(action)
         } else {
             if (action.process_login) {
@@ -147,7 +147,7 @@ async function runAction (action) {
         action.is_sub = true
         await setActionData(action)
         await scriptYoutubeSub(action)
-    } 
+    }
     else if (action.id == 'reg_user_youtube') {
         await regUserYoutube(action)
     }
@@ -178,44 +178,44 @@ async function runAction (action) {
         console.log('checkcountry')
         await checkCountry(action)
     }
-    else if(action.id == 'watch' || action.id == 'watch_video') {
+    else if (action.id == 'watch' || action.id == 'watch_video') {
         console.log('watch')
         !action.mobile ? await userWatch(action) : await userWatchMobile(action)
     }
-    else if(action.id == 'sub'){
+    else if (action.id == 'sub') {
         console.log('sub')
         await userSub(action)
     }
-    else if(action.id == 'logout'){
-        if(window.location.toString().indexOf('https://accounts.google.com/ServiceLogin') == 0 || window.location.toString().indexOf('https://accounts.google.com/signin/v2/identifier') == 0){
+    else if (action.id == 'logout') {
+        if (window.location.toString().indexOf('https://accounts.google.com/ServiceLogin') == 0 || window.location.toString().indexOf('https://accounts.google.com/signin/v2/identifier') == 0) {
             await updateActionStatus(action.pid, action.id, LOGIN_STATUS.SUCCESS)
         }
     }
 }
 
 async function initActionData(action) {
-    let mobileRate = action.mobile_percent 
+    let mobileRate = action.mobile_percent
     action.mobile = (action.pid % 10) * 10 < mobileRate ? true : false;
 
     if (!action.client_config_allow_change_fb_page) {
         action.selected_page = true
     }
-    if(action.mobile){
+    if (action.mobile) {
         await setUserAgent(action.pid);
     }
-    
-    if(action.id=='watch' || action.id == 'watch_video'){
+
+    if (action.id == 'watch' || action.id == 'watch_video') {
         setWatchParam(action)
     }
 
-    if(action.id=='sub'){
+    if (action.id == 'sub') {
         setSubParam(action)
     }
 
     console.log(action)
     await setActionData(action)
 
-    if(action.mobile) await switchMobile(action)
+    if (action.mobile) await switchMobile(action)
 
     if (action.id == 'fb_create_story') {
         await goToLocation(action.pid, 'https://www.facebook.com/profile.php/')
@@ -375,7 +375,7 @@ async function initActionData(action) {
         } else {
             action.channel_position = -1
         }
-        
+
         await setActionData(action)
         await handleBraveSetting(action)
     }
@@ -383,12 +383,12 @@ async function initActionData(action) {
         await reportScript(action)
     }
     else if (action.id == 'add_video_playlist') {
-        await goToLocation(action.pid,'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
+        await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
     }
     else if (action.id == 'create_playlist') {
         action.fisrtStart = true
         await setActionData(action)
-        await goToLocation(action.pid,'https://www.youtube.com/')
+        await goToLocation(action.pid, 'https://www.youtube.com/')
     }
     else if (action.id == 'like_youtube') {
         if (action.selected_user) {
@@ -403,7 +403,7 @@ async function initActionData(action) {
         action.channel_ids = action.channel_ids.split(',')
         await setActionData(action)
         await goToLocation(action.pid, 'youtube.com/channel_switcher?next=%2Faccount&feature=settings')
-       // await goToLocation(action.pid, 'https://www.youtube.com/')
+        // await goToLocation(action.pid, 'https://www.youtube.com/')
     }
     else if (action.id == 'check_bat') {
 
@@ -423,7 +423,7 @@ async function initActionData(action) {
         await goToLocation(action.pid, 'https://www.google.com/')
     }
     else if (action.id == 'map') {
-        await goToLocation(action.pid,'google.com/maps')
+        await goToLocation(action.pid, 'google.com/maps')
     }
     else if (action.id == 'youtube_sub') {
         if (action.selected_user) {
@@ -434,16 +434,16 @@ async function initActionData(action) {
         //await goToLocation(action.pid, 'https://www.youtube.com//')
         //await goToLocation(action.pid,action.mobile?'m.youtube.com//':'youtube.com//')
     }
-    else if(action.id == 'login'){
-        await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+    else if (action.id == 'login') {
+        await updateUserInput(action.pid, 'GO_TO_FISRT_TAB', 0, 0, 0, 0, "", 'GO_TO_FISRT_TAB')
         if (action.browser_name == 'iridium-browser') {
-            await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+            await updateUserInput(action.pid, 'NEW_TAB', 0, 0, 0, 0, "", 'New TAB')
             await goToLocation(action.pid, `chrome://settings/cookies`)
             await sleep(4000)
 
-            await updateUserInput(action.pid,'IRIDIUM_SETTING', 8,0,0,0,"",'IRIDIUM_SETTING')
+            await updateUserInput(action.pid, 'IRIDIUM_SETTING', 8, 0, 0, 0, "", 'IRIDIUM_SETTING')
 
-            await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+            await updateUserInput(action.pid, 'GO_TO_FISRT_TAB', 0, 0, 0, 0, "", 'GO_TO_FISRT_TAB')
             await goToLocation(action.pid, 'accounts.google.com')
         } else {
             let continueLink = 'https://accounts.google.com'
@@ -462,21 +462,21 @@ async function initActionData(action) {
             }
         }
     }
-    else if(action.id == 'logout'){
-        await goToLocation(action.pid,'accounts.google.com/logout')
+    else if (action.id == 'logout') {
+        await goToLocation(action.pid, 'accounts.google.com/logout')
     }
-    else if(action.id == 'confirm'){
+    else if (action.id == 'confirm') {
         // await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
-        await goToLocation(action.pid,'families.google.com')
+        await goToLocation(action.pid, 'families.google.com')
     }
-    else if(action.id == 'changepass'){
-        await goToLocation(action.pid,'myaccount.google.com/security')
+    else if (action.id == 'changepass') {
+        await goToLocation(action.pid, 'myaccount.google.com/security')
     }
-    else if(action.id == 'checkpremium'){
-        await goToLocation(action.pid,'m.youtube.com//')
+    else if (action.id == 'checkpremium') {
+        await goToLocation(action.pid, 'm.youtube.com//')
     }
-    else if(action.id == 'checkcountry'){
-        await goToLocation(action.pid,'pay.google.com/gp/w/u/0/home/settings')
+    else if (action.id == 'checkcountry') {
+        await goToLocation(action.pid, 'pay.google.com/gp/w/u/0/home/settings')
     }
     else if (action.id == 'watch' || action.id == 'watch_video') {
         // await goToLocation(action.pid,'youtube.com/feed/history//')
@@ -496,12 +496,12 @@ async function initActionData(action) {
 }
 
 async function handleCapchaTiktok(data) {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/handle-capcha-tiktok', data}, function (response) {
+    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/handle-capcha-tiktok', data }, function (response) {
         resolve(response);
     }))
 }
 
-function reportAccount (action) {
+function reportAccount(action) {
     let isStop = false
     if (action.id == 'reg_account') {
         if (action.reg_ga_success || action.is_stop) {
@@ -513,19 +513,21 @@ function reportAccount (action) {
         isStop = true
     }
 
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {pid: action.pid, id: action.id, reg_ga_success: action.reg_ga_success, username: action.username, password: action.password, verify: action.verify, type: action.account_type, stop: isStop }}, function (response) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/report',
+        data: { pid: action.pid, id: action.id, reg_ga_success: action.reg_ga_success, username: action.username, password: action.password, verify: action.verify, type: action.account_type, stop: isStop }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function getComment () {
+function getComment() {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-comment', data: {} }, function (response) {
         resolve(response);
     }))
 }
 
-function getPhone (rePhone) {
+function getPhone(rePhone) {
     let data = {}
     if (rePhone) {
         data.re_phone = rePhone
@@ -535,72 +537,84 @@ function getPhone (rePhone) {
     }))
 }
 
-function resetProfile (action) {
+function resetProfile(action) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/reset-profile-by-pid', data: { pid: action.pid } }, function (response) {
         resolve(response);
     }))
 }
 
-function reportFBGroup (action) {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-fb-group',
-        data: { group_link: action.group_link, fb_topic_code: action.fb_topic_code }}, function (response) {
+function reportFBGroup(action) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        url: '/report-fb-group',
+        data: { group_link: action.group_link, fb_topic_code: action.fb_topic_code }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function getRecoMails (mail, pid) {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-reco-mails',
-        data: { mail, pid }}, function (response) {
+function getRecoMails(mail, pid) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        url: '/get-reco-mails',
+        data: { mail, pid }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function getMailCode (mail) {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-mail-code',
-        data: { mail }}, function (response) {
+function getMailCode(mail) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        url: '/get-mail-code',
+        data: { mail }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function reportMailCode (data) {
+function reportMailCode(data) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-mail-code', data }, function (response) {
         resolve(response);
     }))
 }
 
-async function userPasteImage(pid,selector,element,iframe){
-    console.log('userPasteImage',selector)
-    let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
+async function userPasteImage(pid, selector, element, iframe) {
+    console.log('userPasteImage', selector)
+    let el = element ? element : (iframe ? iframe.contentWindow.document.querySelector(selector) : document.querySelector(selector))
     el.scrollIntoViewIfNeeded()
-    let pos = getElementPosition(el,iframe)
-    await updateUserInput(pid,'PASTE_IMAGE',pos.x,pos.y,scrollX,scrollY,'',selector)
+    let pos = getElementPosition(el, iframe)
+    await updateUserInput(pid, 'PASTE_IMAGE', pos.x, pos.y, scrollX, scrollY, '', selector)
 }
 
-async function userDragRecapcha(pid,selector,element,toX, iframe){
-    console.log('userPasteImage',selector)
-    let el = element?element:(iframe?iframe.contentWindow.document.querySelector(selector):document.querySelector(selector))
+async function userDragRecapcha(pid, selector, element, toX, iframe) {
+    console.log('userPasteImage', selector)
+    let el = element ? element : (iframe ? iframe.contentWindow.document.querySelector(selector) : document.querySelector(selector))
     el.scrollIntoViewIfNeeded()
-    let pos = getElementPosition(el,iframe)
-    await updateUserInput(pid,'DRAG',pos.x,pos.y,toX,pos.y,'',selector)
+    let pos = getElementPosition(el, iframe)
+    await updateUserInput(pid, 'DRAG', pos.x, pos.y, toX, pos.y, '', selector)
 }
 
-function getPhoneCode (order_id, api_name) {
-    return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-phone-code',
-        data: { order_id: order_id, api_name: api_name }}, function (response) {
+function getPhoneCode(order_id, api_name) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        url: '/get-phone-code',
+        data: { order_id: order_id, api_name: api_name }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function updateTotalCreatedUsers (pid, count = 0) {
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {pid: pid, id: 'total_created_channel', count }}, function (response) {
+function updateTotalCreatedUsers(pid, count = 0) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/report',
+        data: { pid: pid, id: 'total_created_channel', count }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function clearBSData () {
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'CLEAR_BROWSER_DATA', url: '/report',
-        data: {}}, function (response) {
+function clearBSData() {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'CLEAR_BROWSER_DATA', url: '/report',
+        data: {}
+    }, function (response) {
         resolve(response);
     }))
 }
@@ -615,51 +629,55 @@ async function reportScript(action, status = true) {
         }
     }
 
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: { isScriptReport: true, script_code: action.id, service_id: action._id, pid: action.pid, isBreak: action.is_break, stop: isBreak, status, data_reported: action.data_reported }}, 
-    async function (response) {
-        if (response) {
-            if (action.watch_time) {
-                action.watch_time = 0
-            }
-            Object.assign(action, response)
-            action.data_reported = ''
-            //if (action.id != 'check_bat') {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/report',
+        data: { isScriptReport: true, script_code: action.id, service_id: action._id, pid: action.pid, isBreak: action.is_break, stop: isBreak, status, data_reported: action.data_reported }
+    },
+        async function (response) {
+            if (response) {
+                if (action.watch_time) {
+                    action.watch_time = 0
+                }
+                Object.assign(action, response)
+                action.data_reported = ''
+                //if (action.id != 'check_bat') {
                 //await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
                 //await scrollForViewAds(action)
-            //}
+                //}
 
-            await initActionData(action)
-            await runAction(action)
-        }
-        resolve()
-    }))
+                await initActionData(action)
+                await runAction(action)
+            }
+            resolve()
+        }))
 }
 
-function updateProfileData (data) {
+function updateProfileData(data) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/update-profile-data', data: data }, function (response) {
         resolve(response);
     }))
 }
 
-function reportPlaylistJCT (data) {
+function reportPlaylistJCT(data) {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/report-playlist-jct', data: data }, function (response) {
         resolve(response);
     }))
 }
 
-function reportLive(pid){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {id: 'live_report', pid}}, function (response) {
+function reportLive(pid) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/report',
+        data: { id: 'live_report', pid }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function getNewPlaylistData (action) {
+function getNewPlaylistData(action) {
     return new Promise(resolve => chrome.runtime.sendMessage({
-            url: '/get-new-playlist',
-            data: {}
-        }, function (response) {
+        url: '/get-new-playlist',
+        data: {}
+    }, function (response) {
         if (response && response.playlist_url) {
             action.playlist_data = response.playlist_url
             Object.assign(action, response)
@@ -668,65 +686,69 @@ function getNewPlaylistData (action) {
     }))
 }
 
-function closeTabs () {
+function closeTabs() {
     return new Promise(resolve => chrome.runtime.sendMessage({
-            type: 'CLOSE_OLD_TABS', 
-            url: '/report',
-        }, function (response) {
+        type: 'CLOSE_OLD_TABS',
+        url: '/report',
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function closeUnactiveTabs () {
+function closeUnactiveTabs() {
     return new Promise(resolve => chrome.runtime.sendMessage({
-            type: 'CLOSE_UNACTIVE_TABS', 
-            url: '/report',
-        }, function (response) {
+        type: 'CLOSE_UNACTIVE_TABS',
+        url: '/report',
+    }, function (response) {
         resolve(response);
     }))
 }
 
 function reportPositionChannel(pid, position) {
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: { id: 'channel-position', position, pid }}, function (response) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/report',
+        data: { id: 'channel-position', position, pid }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function getPlaylistData (action) {
+function getPlaylistData(action) {
     if (action.id == 'watch') {
         let items = action.playlist_data.split(',')
-        let playlist_id = items[Math.floor(Math.random()*items.length)];
+        let playlist_id = items[Math.floor(Math.random() * items.length)];
         let data = playlist_id.split('&list=')
         action.playlist_url = data[1]
         action.playlist_video = data[0]
     }
 }
 
-async function getActionData(){
-    return new Promise(resolve => chrome.storage.sync.get('getActionData action', function(data) {
-            resolve(data);
-        })
+async function getActionData() {
+    return new Promise(resolve => chrome.storage.sync.get('getActionData action', function (data) {
+        console.log('getActionData', data)
+
+        resolve(data);
+    })
     )
 }
 
-async function setActionData(data){
+async function setActionData(data) {
     if (Number(data.id)) {
         data.id = data.script_code
     }
-    return new Promise(resolve => chrome.storage.sync.set({action: data}, function() {
-            resolve();
-        })
+    return new Promise(resolve => chrome.storage.sync.set({ action: data }, function () {
+        resolve();
+    })
     )
 }
 
-async function sendUserAction(action){
+async function sendUserAction(action) {
     return new Promise(resolve => chrome.runtime.sendMessage(action, function (response) {
         resolve(response);
     }))
 }
 
-function updateWatchingTime(pid, action, readingTime, playlistTime, lastPlaylist){
+function updateWatchingTime(pid, action, readingTime, playlistTime, lastPlaylist) {
     // return new Promise(resolve => chrome.runtime.sendMessage({type: 'POST', url: '/profile/update-watch-time',
     //         data: {pid: pid, action: action, reading_time: readingTime, playlist_time: playlistTime, last_playlist: lastPlaylist}}, function (response) {
     //     resolve(response);
@@ -734,42 +756,52 @@ function updateWatchingTime(pid, action, readingTime, playlistTime, lastPlaylist
 }
 
 
-function updateWatchedVideo(viewedAds, pid){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {id: 'watched', viewedAds: viewedAds, pid}}, function (response) {
+function updateWatchedVideo(viewedAds, pid) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/report',
+        data: { id: 'watched', viewedAds: viewedAds, pid }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-function subStatusReport(pid, channelId, vmId, status, preSub, postSub, note){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'POST', url: '/profile/sub-update',
-        data: {pid: pid, vmId: vmId, channel_id: channelId, status: status, ip: '', pre_sub: preSub, post_sub: postSub, note: note}}, function (response) {
+function subStatusReport(pid, channelId, vmId, status, preSub, postSub, note) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'POST', url: '/profile/sub-update',
+        data: { pid: pid, vmId: vmId, channel_id: channelId, status: status, ip: '', pre_sub: preSub, post_sub: postSub, note: note }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-async function updateActionStatus(pid, action, status, msg, stop = true, report_error_profile = false){
-    console.log('updateActionStatus',pid,status)
+async function updateActionStatus(pid, action, status, msg, stop = true, report_error_profile = false) {
+    console.log('updateActionStatus', pid, status)
     if (action.includes('fb')) {
         report_error_profile = true
     }
 
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/report',
-        data: {pid: pid, id: action, status: status, stop: stop, msg: msg, report_error_profile}}, function (response) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/report',
+        data: { pid: pid, id: action, status: status, stop: stop, msg: msg, report_error_profile }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-async function getPublicDays(videoId){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'COMMENT', url: 'https://pll.dominhit.pro/playlist/api',
-        data: {action: 'get-public-time-day-ago',id: videoId}}, function (response) {
+async function getPublicDays(videoId) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'COMMENT', url: 'https://pll.dominhit.pro/playlist/api',
+        data: { action: 'get-public-time-day-ago', id: videoId }
+    }, function (response) {
         resolve(response);
     }))
 }
 
-async function getFirstVideo(pllId){
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'COMMENT', url: 'https://pll.dominhit.pro/playlist/api',
-        data: {action: 'get-video-of-playlist',id: pllId}}, function (response) {
+async function getFirstVideo(pllId) {
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'COMMENT', url: 'https://pll.dominhit.pro/playlist/api',
+        data: { action: 'get-video-of-playlist', id: pllId }
+    }, function (response) {
         resolve(response);
     }))
 }
@@ -782,14 +814,16 @@ async function getFirstVideo(pllId){
 //     }))
 // }
 
-function updateUserInput(pid, action, x, y, sx, sy, str, selector){
-    console.log('updateUserInput',pid,action)
-    return new Promise(resolve => chrome.runtime.sendMessage({type: 'REPORT', url: '/input',
-        data: {pid: pid, action: action, x: x, y: y, sx: sx, sy: sy,str: str, selector: selector}}, function (response) {
+function updateUserInput(pid, action, x, y, sx, sy, str, selector) {
+    console.log('updateUserInput', pid, action)
+    return new Promise(resolve => chrome.runtime.sendMessage({
+        type: 'REPORT', url: '/input',
+        data: { pid: pid, action: action, x: x, y: y, sx: sx, sy: sy, str: str, selector: selector }
+    }, function (response) {
         resolve(response);
     }))
 }
-function elementInViewport (el) {
+function elementInViewport(el) {
     if (typeof el == 'string') {
         el = document.querySelector(el)
     }
@@ -802,26 +836,26 @@ function elementInViewport (el) {
     return pos.x || pos.y || pos.width || pos.height
 }
 
-function getElementPosition(el,iframe){
-    if(el){
+function getElementPosition(el, iframe) {
+    if (el) {
         let screenX = window.screen.width - window.screen.availWidth
         let screenY = window.screen.height - window.screen.availHeight
         let pos = el.getBoundingClientRect()
-        let iframePost = iframe?iframe.getBoundingClientRect():undefined
+        let iframePost = iframe ? iframe.getBoundingClientRect() : undefined
         let menuBarHeight = mobileMenuBarHeight || (window.outerHeight - window.innerHeight)
         let menuLeftWith = (window.outerWidth - window.innerWidth)
-        let x = zoom*(pos.left + (pos.width*0.6) + (iframe?iframePost.left:0)) + screenX + menuLeftWith + (windowWide?(windowWide-zoom*window.innerWidth)/2:0) + widthCustom
-        let y = zoom*(pos.top + (pos.height*0.6) + (iframe?iframePost.top:0))  + screenY + menuBarHeight + heightCustom
+        let x = zoom * (pos.left + (pos.width * 0.6) + (iframe ? iframePost.left : 0)) + screenX + menuLeftWith + (windowWide ? (windowWide - zoom * window.innerWidth) / 2 : 0) + widthCustom
+        let y = zoom * (pos.top + (pos.height * 0.6) + (iframe ? iframePost.top : 0)) + screenY + menuBarHeight + heightCustom
         let scrollX = window.scrollX
         let scrollY = window.scrollY
-        console.log({x: x, y: y, scrollX: scrollX, scrollY: scrollY})
-        return {x: x, y: y, scrollX: scrollX, scrollY: scrollY}
+        console.log({ x: x, y: y, scrollX: scrollX, scrollY: scrollY })
+        return { x: x, y: y, scrollX: scrollX, scrollY: scrollY }
     }
 }
 
 function listenMsg() {
     chrome.runtime.onMessage.addListener(
-        function(request, sender, sendResponse) {
+        function (request, sender, sendResponse) {
             sendResponse('OK');
         });
 }
@@ -836,11 +870,11 @@ function randomRanger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-async function waitForSelector(selector,timeout = 30000, iframe){
-    let n = Math.ceil(timeout/1000)
-    for(let i = 0; i < n; i++){
+async function waitForSelector(selector, timeout = 30000, iframe) {
+    let n = Math.ceil(timeout / 1000)
+    for (let i = 0; i < n; i++) {
         let el = iframe ? iframe.contentWindow.document.querySelector(selector) : document.querySelector(selector)
-        if(el && el.getBoundingClientRect().width) return
+        if (el && el.getBoundingClientRect().width) return
         await sleep(1000)
     }
     throw selector + '_NOT_FOUND'
@@ -922,7 +956,7 @@ async function setUserAgent(pid) {
         'Mozilla/5.0 (Linux; Android 5.1.1; SM-J120M Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
         'Mozilla/5.0 (Linux; Android 7.0; SM-J710MN Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
         'Mozilla/5.0 (Linux; Android 6.0.1; SM-J700M Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.158 Mobile Safari/537.36',
-    
+
         'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1',
         'Mozilla/5.0 (iPhone; CPU iPhone OS 11_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1',
         'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1',
@@ -1016,7 +1050,7 @@ function getTotalTabs() {
     }))
 }
 
-async function randomFullName () {
+async function randomFullName() {
     let rs = await fetch('https://random-data-api.com/api/name/random_name').then(response => {
         return response.json()
     }).then(response => response).catch(error => {
@@ -1028,7 +1062,7 @@ async function randomFullName () {
     return rs.name
 }
 
-async function handleUsersSelection (action) {
+async function handleUsersSelection(action) {
     action.fisrtStart = false
     await setActionData(action)
     await sleep(4000)
@@ -1080,7 +1114,7 @@ async function handleUsersSelection (action) {
     await setActionData(action)
 
     let filteredChannels = [];
-      // Lặp qua danh sách các phần tử đã chọn
+    // Lặp qua danh sách các phần tử đã chọn
     channels.forEach(element => {
         // Kiểm tra xem phần tử có tồn tại children[3] không
         const children = element.children[0].children[3]
@@ -1106,34 +1140,34 @@ async function handleUsersSelection (action) {
         }
 
         //if (action.id == 'watch') {
-            getPlaylistData(action)
+        getPlaylistData(action)
         //}
         await userClick(action.pid, '', channel)
     } else {
-        isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0,'end playlist'))
+        isRunBAT ? (await reportScript(action)) : (await updateActionStatus(action.pid, action.id, 0, 'end playlist'))
     }
 }
 
-async function handleSelectExOption (action) {
+async function handleSelectExOption(action) {
     if (action.trace_name && action.trace_name.indexOf('level_') > -1) {
-        await updateUserInput(action.pid,'NEW_TAB', 0,0,0,0,"",'New TAB')
+        await updateUserInput(action.pid, 'NEW_TAB', 0, 0, 0, 0, "", 'New TAB')
         await goToLocation(action.pid, 'chrome-extension://njkmjblmcfiobddjgebnoeldkjcplfjb/html/settings.html')
 
         if (action.trace_name == 'level_minimum') {
-            await updateUserInput(action.pid,'CLICK', 219, 800,0,0,"",'click')
+            await updateUserInput(action.pid, 'CLICK', 219, 800, 0, 0, "", 'click')
         } else if (action.trace_name == 'level_standard') {
-            await updateUserInput(action.pid,'CLICK', 529, 800,0,0,"",'click')
+            await updateUserInput(action.pid, 'CLICK', 529, 800, 0, 0, "", 'click')
         } else if (action.trace_name == 'level_high') {
-            await updateUserInput(action.pid,'CLICK', 835, 800,0,0,"",'click')
+            await updateUserInput(action.pid, 'CLICK', 835, 800, 0, 0, "", 'click')
         } else if (action.trace_name == 'level_extreme') {
-            await updateUserInput(action.pid,'CLICK', 1136, 800,0,0,"",'click')
+            await updateUserInput(action.pid, 'CLICK', 1136, 800, 0, 0, "", 'click')
         }
 
-        await updateUserInput(action.pid,'GO_TO_FISRT_TAB',0,0,0,0,"",'GO_TO_FISRT_TAB')
+        await updateUserInput(action.pid, 'GO_TO_FISRT_TAB', 0, 0, 0, 0, "", 'GO_TO_FISRT_TAB')
     }
 }
 
-async function getRandomUSName () {
+async function getRandomUSName() {
     let rs = await fetch('https://randomuser.me/api/').then(response => {
         return response.json()
     }).then(response => {
@@ -1154,7 +1188,7 @@ async function getRandomUSName () {
     return rs
 }
 
-async function getRandomVietnamesName () {
+async function getRandomVietnamesName() {
     let rs = await fetch('https://story-shack-cdn-v2.glitch.me/generators/vietnamese-name-generator/male').then(response => {
         return response.json()
     }).then(response => {
@@ -1176,23 +1210,23 @@ async function getRandomVietnamesName () {
 }
 
 function makeid(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
-   }
-   return result;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
 }
 
-function getRandomAddress () {
+function getRandomAddress() {
     return new Promise(resolve => chrome.runtime.sendMessage({ url: '/get-address-random', data: {} }, function (response) {
         resolve(response);
     }))
 }
 
-async function checkLang (action) {
+async function checkLang(action) {
     let url = window.location.toString()
 
     if (action.updated_lang) {

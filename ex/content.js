@@ -95,7 +95,7 @@ async function initAction(){
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
 
-        console.log('initAction:',action)
+        console.log('initAction 11:',action)
 
         initSettingData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
@@ -116,9 +116,9 @@ async function initAction(){
     }
     else{
         let data = await getActionData()
-        console.log('initAction:',action)
-
+        
         action = data.action
+        console.log('initAction 22:',action)
 
         //DEBUG
         // action.id = "login"
