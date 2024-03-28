@@ -13,9 +13,8 @@ global.devJson = {
 global.IS_SHOW_UI = null
 global.IS_LOG_SCREEN = Boolean(Number(process.env.LOG_SCREEN))
 global.DEBUG = Boolean(Number(process.env.DEBUG))
-let { isRunBAT, useProxy, ids, isPauseAction, systemConfig, IS_REG_USER, isSystemChecking, actionsData, EXPIRED_TIME, MAX_PROFILE, IP, MAX_CURRENT_ACC } = require('./src/settings')
 let settings = require('./src/settings')
-const ROOT_RUNNING_CHECK_INTERVAL = IS_REG_USER ? 35000 : 20000
+const ROOT_RUNNING_CHECK_INTERVAL = settings.IS_REG_USER ? 35000 : 20000
 let RUNNING_CHECK_INTERVAL = ROOT_RUNNING_CHECK_INTERVAL
 
 global.config
@@ -85,7 +84,7 @@ function addOpenBrowserAction(action, browser) {
  * Thực thi các hành động đang chờ xử lý
  */
 async function execActionsRunning() {
-    if (actionsData.length) {
+    if (settings.actionsData.length) {
         let action = settings.actionsData.shift()
         console.log('action', action)
         await handleAction(action)
@@ -115,15 +114,15 @@ let current_change_profile_time
 // Hàm quản lý các profile đang chạy
 async function profileRunningManage() {
     try {
-        if (!isSystemChecking) {
+        if (!settings.isSystemChecking) {
             await checkRunningProfiles()
-            if (systemConfig.is_stop && systemConfig.is_stop != 'false') {
+            if (settings.systemConfig.is_stop && settings.systemConfig.is_stop != 'false') {
                 return
             }
 
             utils.log('profileRunningManage')
 
-            if (MAX_CURRENT_ACC > runnings.length) {
+            if (settings.MAX_CURRENT_ACC > runnings.length) {
                 let currentIds = getProfileIds()
                 settings.ids = settings.ids.filter(id => {
                     return currentIds.some(cid => cid == id)
@@ -138,10 +137,10 @@ async function profileRunningManage() {
                 if (runnings.some(running => running.action == 'login')) {
                     return
                 }
-                if (settings.ids.length < MAX_PROFILE && !IS_REG_USER) {
+                if (settings.ids.length < settings.MAX_PROFILE && !settings.IS_REG_USER) {
                     newProfileManage()
                 } else {
-                    if (systemConfig.only_run_login) {
+                    if (settings.systemConfig.only_run_login) {
                         // something
                     } else {
                         countRun++
@@ -166,7 +165,7 @@ async function profileRunningManage() {
  */
 async function startChromeAction(action, _browser) {
     let params = ''
-    if (systemConfig.systemParams) {
+    if (settings.systemConfig.systemParams) {
         let ss = settings.systemConfig.systemParams.split('##')
         if (ss.length) {
             let index = utils.getRndInteger(0, ss.length - 1)
@@ -185,7 +184,7 @@ async function startChromeAction(action, _browser) {
         }
     }
 
-    if (systemConfig.is_setting_brave) {
+    if (settings.systemConfig.is_setting_brave) {
         action.is_setting_brave = true
     }
 
@@ -245,23 +244,23 @@ async function startChromeAction(action, _browser) {
         exs.push('quality')
     }
 
-    if (systemConfig.use_adblock) {
+    if (settings.systemConfig.use_adblock) {
         exs.push('extensions/adblock')
     }
 
-    if (systemConfig.client_config_use_recaptcha_for_login && action.id == 'login') {
+    if (settings.systemConfig.client_config_use_recaptcha_for_login && action.id == 'login') {
         exs.push('AutocaptchaProExtension')
     }
 
     let level_name = ''
-    if (action.id != 'reg_user' && systemConfig.trace_names_ex.length) {
+    if (action.id != 'reg_user' && settings.systemConfig.trace_names_ex.length) {
         let traceName = 'trace'
 
-        if (trace[action.pid] && systemConfig.trace_names_ex.includes(trace[action.pid])) {
+        if (trace[action.pid] && settings.systemConfig.trace_names_ex.includes(trace[action.pid])) {
             traceName = 'trace_ex/' + trace[action.pid]
         } else {
-            if (systemConfig.trace_names_ex && systemConfig.trace_names_ex.length) {
-                traceName = systemConfig.trace_names_ex[Math.floor(Math.random() * systemConfig.trace_names_ex.length)]
+            if (settings.systemConfig.trace_names_ex && settings.systemConfig.trace_names_ex.length) {
+                traceName = settings.systemConfig.trace_names_ex[Math.floor(Math.random() * settings.systemConfig.trace_names_ex.length)]
 
                 if (traceName.includes('level_')) {
                     level_name = traceName
@@ -339,7 +338,7 @@ async function startChromeAction(action, _browser) {
             setDisplay(action.pid)
             let run = `${params} ${_browser}${userProxy} --lang=en-US,en --disable-quic${userDataDir} --load-extension="${exs}" "${startPage}"${windowPosition}${windowSize}`
             exec(run)
-            if (IS_REG_USER) {
+            if (settings.IS_REG_USER) {
                 await utils.sleep(10000)
                 setDisplay(action.pid)
                 sendEnter(action.pid)
@@ -367,40 +366,40 @@ async function loginProfileChrome(profile) {
         action.os_vm = process.env.OS
 
         // handle log browser for profile
-        if (systemConfig.scan_check_recovery) {
+        if (settings.systemConfig.scan_check_recovery) {
             action.scan_check_recovery = true
         }
 
         if (!config.browser_map) {
             config.browser_map = {}
         }
-        if (systemConfig.skip_pau_history) {
+        if (settings.systemConfig.skip_pau_history) {
             action.skip_pau_history = true
         }
-        if (systemConfig.is_fb) {
+        if (settings.systemConfig.is_fb) {
             action.is_fb = true
         }
-        if (systemConfig.is_tiktok) {
+        if (settings.systemConfig.is_tiktok) {
             action.is_tiktok = true
         }
 
-        Object.keys(systemConfig).forEach(key => {
+        Object.keys(settings.systemConfig).forEach(key => {
             if ((key + '').startsWith('client_config_')) {
-                action[key] = systemConfig[key]
+                action[key] = settings.systemConfig[key]
             }
         });
 
-        if (systemConfig.total_page_created) {
-            action.total_page_created = systemConfig.total_page_created
+        if (settings.systemConfig.total_page_created) {
+            action.total_page_created = settings.systemConfig.total_page_created
         }
 
-        if (systemConfig.allow_verify) {
+        if (settings.systemConfig.allow_verify) {
             action.allow_verify = true
         }
 
-        settings.systemConfig.browsers = utils.shuffleArray(systemConfig.browsers)
-        let _browser = systemConfig.browsers[0]
-        systemConfig.browsers.some((browser) => {
+        settings.systemConfig.browsers = utils.shuffleArray(settings.systemConfig.browsers)
+        let _browser = settings.systemConfig.browsers[0]
+        settings.systemConfig.browsers.some((browser) => {
             if (!config.browser_map[browser]) {
                 _browser = browser
                 return true
@@ -430,14 +429,12 @@ async function loginProfileChrome(profile) {
 
 async function newProfileManage() {
     try {
-        let ids = getProfileIds()
-        systemConfig.browsers.forEach((browser) => {
+        let idsNew = getProfileIds()
+        settings.systemConfig.browsers.forEach((browser) => {
             if (config.browser_map[browser]) {
-                config.browser_map[browser] = config.browser_map[browser].filter(pid => ids.some(id => id == pid))
+                config.browser_map[browser] = config.browser_map[browser].filter(pid => idsNew.some(id => id == pid))
             }
         })
-
-        //if (ids.length + addnewRunnings.length >= MAX_PROFILE) return
         // get new profile
         let newProfile = await request_api.getNewProfile()
         utils.log('newProfile: ', newProfile)
@@ -456,7 +453,7 @@ async function newProfileManage() {
             }
 
             runnings.push({ action: 'login', pid: profile.id, lastReport: Date.now() })
-            ids.push(profile.id)
+            idsNew.push(profile.id)
             await loginProfileChrome(profile)
         } else {
             RUNNING_CHECK_INTERVAL = utils.randomRanger(180000, 300000)
@@ -481,10 +478,10 @@ async function newRunProfile() {
         pid = settings.ids.shift()
     }
 
-    if (pid || IS_REG_USER) {
+    if (pid || settings.IS_REG_USER) {
         if (pid) {
             // handle remove undefined folder
-            if (pid == 'undefined' && !IS_REG_USER) {
+            if (pid == 'undefined' && !settings.IS_REG_USER) {
                 console.log('Handle remove undefined folder');
                 try {
                     execSync('rm -rf profiles/undefined')
@@ -494,8 +491,8 @@ async function newRunProfile() {
 
             let currentIds = getProfileIds()
             currentIds = currentIds.filter(cid => cid != pid)
-            if (currentIds.length > MAX_PROFILE - 1) {
-                currentIds.splice(0, MAX_PROFILE - 1)
+            if (currentIds.length > settings.MAX_PROFILE - 1) {
+                currentIds.splice(0, settings.MAX_PROFILE - 1)
                 currentIds.forEach(id => {
                     try {
                         if (id != pid) {
@@ -508,7 +505,7 @@ async function newRunProfile() {
                 });
             }
             settings.ids.push(pid)
-        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
+        } else if (settings.systemConfig.is_reg_account && settings.systemConfig.is_reg_account != 'false') {
             pid = Math.floor(Math.random() * 5000)
         }
 
@@ -520,7 +517,7 @@ async function newRunProfile() {
             }
             if (action && action.script_code) {
                 // handle get browser loged
-                let _browser = getBrowserOfProfile(pid, config.browser_map, systemConfig.browsers);
+                let _browser = getBrowserOfProfile(pid, config.browser_map, settings.systemConfig.browsers);
                 addOpenBrowserAction(action, _browser)
             }
         }
@@ -541,7 +538,7 @@ async function updateVmStatus() {
             vm_name: config.vm_name,
             running: runnings.length,
             pids,
-            IP
+            IP: settings.IP,
         })
 
         if (rs && rs.removePid) {
@@ -699,7 +696,7 @@ async function initConfig() {
     fs.writeFileSync("vm_log.json", JSON.stringify(config))
 
     await loadSystemConfig()
-    console.log(' -> SYSTEM CONFIG : ', systemConfig);
+    console.log(' -> SYSTEM CONFIG : ', settings.systemConfig);
 }
 
 
@@ -1062,15 +1059,15 @@ function runAutoRebootVm() {
         let myDate = new Date()
         let hour = Number(myDate.toLocaleTimeString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour12: false }).split(':')[0])
 
-        let resetProfilesTimeInterval = Number(systemConfig.reset_profiles_time_interval)
+        let resetProfilesTimeInterval = Number(settings.systemConfig.reset_profiles_time_interval)
         if (resetProfilesTimeInterval && hour % resetProfilesTimeInterval == 0) {
             await resetAllProfiles()
         }
 
-        if (Number(systemConfig.reset_system_time) > 0 && hour == Number(systemConfig.reset_system_time)) {
+        if (Number(settings.systemConfig.reset_system_time) > 0 && hour == Number(settings.systemConfig.reset_system_time)) {
             try {
                 settings.isSystemChecking = true
-                if (systemConfig.reset_profile_when_reset_system && systemConfig.reset_profile_when_reset_system != 'false') {
+                if (settings.systemConfig.reset_profile_when_reset_system && settings.systemConfig.reset_profile_when_reset_system != 'false') {
                     await resetAllProfiles()
                 }
                 execSync('sudo systemctl reboot')

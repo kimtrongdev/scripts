@@ -1,7 +1,6 @@
 const request_api = require("../../request_api")
 const utils = require("../../utils")
 const { PLAYLIST_ACTION } = require("../constant")
-const { IS_REG_USER, systemConfig, ids, MAX_PROFILE, useProxy, isRunBAT } = require("../settings")
 const settings = require('../settings');
 
 /**
@@ -12,8 +11,8 @@ const settings = require('../settings');
  */
 async function getScriptData(pid, isNewProxy = false) {
     let action = {}
-    if (IS_REG_USER) {
-        if (systemConfig.unsub_youtube) {
+    if (settings.IS_REG_USER) {
+        if (settings.systemConfig.unsub_youtube) {
             // Lấy thông tin profile cho việc hủy đăng ký kênh YouTube
             action = await request_api.getProfileForRegChannel()
             if (action) {
@@ -25,7 +24,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 return
             }
         }
-        else if (systemConfig.is_change_pass) {
+        else if (settings.systemConfig.is_change_pass) {
             // Lấy thông tin profile cho việc thay đổi mật khẩu
             action = await request_api.getProfileForRegChannel(pid)
             if (action) {
@@ -37,7 +36,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 return
             }
         }
-        else if (systemConfig.is_reg_account && systemConfig.new_account_type == 'facebook') {
+        else if (settings.systemConfig.is_reg_account && settings.systemConfig.new_account_type == 'facebook') {
             // Lấy thông tin profile cho việc đăng ký tài khoản Facebook mới
             action = await request_api.getProfileForRegChannel(pid)
             if (action) {
@@ -52,7 +51,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 return
             }
         }
-        else if (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') {
+        else if (settings.systemConfig.is_check_mail_1 && settings.systemConfig.is_check_mail_1 != 'false') {
             // Lấy profile mới cho việc kiểm tra email
             let newProfile = await request_api.getNewProfile()
             utils.log('newProfile: ', newProfile)
@@ -61,7 +60,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 pid = profile.id
                 action = {
                     ...profile,
-                    mail_type: systemConfig.check_mail_1_type,
+                    mail_type: settings.systemConfig.check_mail_1_type,
                     script_code: 'check_mail_1'
                 }
             } else {
@@ -69,7 +68,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 return
             }
         }
-        else if (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') {
+        else if (settings.systemConfig.is_reg_ga && settings.systemConfig.is_reg_ga != 'false') {
             // Lấy profile mới cho việc đăng ký tài khoản Google
             let newProfile = await request_api.getNewProfile()
             utils.log('newProfile: ', newProfile)
@@ -86,7 +85,7 @@ async function getScriptData(pid, isNewProxy = false) {
                 console.log('Not found profile');
                 return
             }
-        } else if (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') {
+        } else if (settings.systemConfig.is_reg_account && settings.systemConfig.is_reg_account != 'false') {
             // Thiết lập action cho việc đăng ký tài khoản Gmail
             action = {
                 script_code: 'reg_account',
@@ -94,7 +93,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         } else {
             // Lấy thông tin profile cho việc đăng ký kênh
-            if (ids.length < MAX_PROFILE) {
+            if (settings.ids.length < settings.MAX_PROFILE) {
                 pid = 0
             }
             action = await request_api.getProfileForRegChannel(pid)
@@ -116,7 +115,7 @@ async function getScriptData(pid, isNewProxy = false) {
     }
 
     if (action) {
-        if (useProxy && isNewProxy) {
+        if (settings.useProxy && isNewProxy) {
             let isLoadNewProxy = true
 
             if (isLoadNewProxy || action.is_ver_mail_type) {
@@ -135,7 +134,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
 
-        if (useProxy && (!proxy[pid] || !proxy[pid].server)) {
+        if (settings.useProxy && (!proxy[pid] || !proxy[pid].server)) {
             console.log('Not found proxy')
             return
         }
@@ -153,45 +152,45 @@ async function getScriptData(pid, isNewProxy = false) {
         action.pid = pid
         action.is_show_ui = IS_SHOW_UI
         action.os_vm = process.env.OS
-        if (isRunBAT) {
-            action.isRunBAT = isRunBAT
+        if (settings.isRunBAT) {
+            action.isRunBAT = settings.isRunBAT
         }
-        if (systemConfig.is_fb) {
+        if (settings.systemConfig.is_fb) {
             action.is_fb = true
         }
-        if (systemConfig.is_tiktok) {
+        if (settings.systemConfig.is_tiktok) {
             action.is_tiktok = true
         }
-        Object.keys(systemConfig).forEach(key => {
+        Object.keys(settings.systemConfig).forEach(key => {
             if ((key + '').startsWith('client_config_')) {
-                action[key] = systemConfig[key]
+                action[key] = settings.systemConfig[key]
             }
         });
 
         // Khởi tạo dữ liệu cho action
         if (action.mobile_percent === undefined || action.mobile_percent === null) {
             // Thiết lập các thông số liên quan đến tỷ lệ thiết bị di động, tìm kiếm, quảng cáo, v.v.
-            if (systemConfig.total_rounds_for_change_proxy) {
-                totalRoundForChangeProxy = Number(systemConfig.total_rounds_for_change_proxy)
+            if (settings.systemConfig.total_rounds_for_change_proxy) {
+                totalRoundForChangeProxy = Number(settings.systemConfig.total_rounds_for_change_proxy)
             }
             delete settings.systemConfig.search_percent
             delete settings.systemConfig.direct_percent
             delete settings.systemConfig.suggest_percent
             delete settings.systemConfig.page_percent
-            Object.assign(action, systemConfig)
+            Object.assign(action, settings.systemConfig)
             delete action.systemParams
 
-            action.mobile_percent = systemConfig.browser_mobile_percent
-            active_devices = systemConfig.active_devices || []
+            action.mobile_percent = settings.systemConfig.browser_mobile_percent
+            active_devices = settings.systemConfig.active_devices || []
             if (active_devices.length) {
                 action.mobile_percent = 100
             }
 
-            if (systemConfig.ads_percent && !Number(action.ads_percent)) {
-                action.ads_percent = systemConfig.ads_percent
+            if (settings.systemConfig.ads_percent && !Number(action.ads_percent)) {
+                action.ads_percent = settings.systemConfig.ads_percent
             }
 
-            action.total_channel_created = Number(systemConfig.total_channel_created)
+            action.total_channel_created = Number(settings.systemConfig.total_channel_created)
 
             if (['youtube_sub', 'watch', 'watch_video', 'comment_youtube', 'like_fb_page', 'like_fb_post', 'like_youtube'].includes(action.id)) {
                 // Thiết lập vị trí kênh cho action
@@ -205,7 +204,7 @@ async function getScriptData(pid, isNewProxy = false) {
 
             if (action.id == 'watch' || action.id == 'watch_video') {
                 // Thiết lập thông tin về playlist cho action xem video
-                action.total_loop_find_ads = systemConfig.total_loop_find_ads || 0
+                action.total_loop_find_ads = settings.systemConfig.total_loop_find_ads || 0
 
                 if (!action.playlist_url) {
                     action.playlist_url = action.data
@@ -214,7 +213,7 @@ async function getScriptData(pid, isNewProxy = false) {
             }
         }
 
-        if (Number(systemConfig.is_clear_browser_data)) {
+        if (Number(settings.systemConfig.is_clear_browser_data)) {
             action.is_clear_browser_data = true
         }
         return action

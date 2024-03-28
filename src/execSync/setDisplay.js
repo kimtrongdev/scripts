@@ -1,5 +1,5 @@
 const { getBrowserOfProfile } = require("../browser/getBrowserOfProfile");
-const { MAX_CURRENT_ACC } = require("../settings");
+const settings = require("../settings");
 const execSync = require('child_process').execSync;
 
 /**
@@ -11,7 +11,7 @@ function setDisplay(pid) {
         // Kiểm tra xem có hiển thị giao diện người dùng hay không
         if (IS_SHOW_UI) {
             // Nếu số lượng tài khoản hiện tại lớn hơn 1
-            if (MAX_CURRENT_ACC > 1) {
+            if (settings.MAX_CURRENT_ACC > 1) {
                 // Lấy tên trình duyệt tương ứng với profile
                 let browser = getBrowserOfProfile(pid);
                 

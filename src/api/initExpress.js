@@ -7,7 +7,6 @@ const request2 = require('request').defaults({ encoding: null });
 const del = require('del');
 const { stopDisplay } = require('../execSync/stopDisplay');
 const utils = require('../../utils');
-const { ids, isPauseAction, systemConfig, IS_REG_USER, BACKUP, ERROR_TYPE_1_MAP } = require('../settings');
 const settings = require('../settings');
 const { runUpdateVps } = require('../execSync/runUpdateVps');
 let addresses = require('../adress.json').addresses
@@ -146,7 +145,7 @@ function initExpress() {
     })
 
     app.get('/report', async (req, res) => {
-        if (isPauseAction) {
+        if (settings.isPauseAction) {
             //res.send({ rs: 'ok' })
             return
         }
@@ -202,13 +201,13 @@ function initExpress() {
             if (req.query.status == 'ERROR_TYPE_1') {
                 req.query.isBreak = true
                 let pid = req.query.pid
-                if (!ERROR_TYPE_1_MAP[pid]) {
-                    ERROR_TYPE_1_MAP[pid] = 1
+                if (!settings.ERROR_TYPE_1_MAP[pid]) {
+                    settings.ERROR_TYPE_1_MAP[pid] = 1
                 }
 
-                ERROR_TYPE_1_MAP[pid]++
-                if (ERROR_TYPE_1_MAP[pid] > 3) {
-                    delete ERROR_TYPE_1_MAP[pid]
+                settings.ERROR_TYPE_1_MAP[pid]++
+                if (settings.ERROR_TYPE_1_MAP[pid] > 3) {
+                    delete settings.ERROR_TYPE_1_MAP[pid]
                     removePidAddnew(pid, 0)
                 }
                 return
@@ -221,7 +220,7 @@ function initExpress() {
             if (req.query.script_code == 'add_recovery_mail' && !req.query.data_reported.includes('p_not_found_code')) {
                 closeChrome(req.query.pid)
                 deleteProfile(req.query.pid)
-                settings.ids = ids.filter(i => i != req.query.pid)
+                settings.ids = settings.ids.filter(i => i != req.query.pid)
                 runnings = runnings.filter(i => i.pid != req.query.pid)
                 return
             }
@@ -276,7 +275,7 @@ function initExpress() {
                     request_api.updateProfileData({ pid: req.query.pid, status: 'ERROR' })
                 } else {
                     let params = { pid: req.query.pid, status: 'SYNCED' }
-                    if (systemConfig.is_fb) {
+                    if (settings.systemConfig.is_fb) {
                         params.proxy_server = proxy[req.query.pid].server
                     }
                     request_api.updateProfileData(params)
@@ -291,7 +290,7 @@ function initExpress() {
         else if (req.query.id == 'logout') {
             utils.log(req.query.pid, 'logout ok')
             request_api.updateProfileStatus(req.query.pid, config.vm_id, 'ERROR', 'disabled_logout')
-            settings.ids = ids.filter(x => x != req.query.pid)
+            settings.ids = settings.ids.filter(x => x != req.query.pid)
             deleteProfile(req.query.pid)
         }
         else if (req.query.id == 'confirm') {
@@ -325,7 +324,7 @@ function initExpress() {
         if (req.query.msg && req.query.msg == 'NOT_LOGIN') {
             utils.log('error', req.query.pid, 'NOT_LOGIN')
             deleteProfile(req.query.pid)
-            settings.ids = ids.filter(x => x != req.query.pid)
+            settings.ids = settings.ids.filter(x => x != req.query.pid)
             deleteBackup(req.query.pid)
         }
         res.send({ rs: 'ok' })
@@ -441,7 +440,7 @@ async function createJob(capchaData) {
 function removePidAddnew(pid, status) {
     try {
         runnings = runnings.filter(x => x.pid != pid)
-        if (status != 1 || IS_REG_USER) {
+        if (status != 1 || settings.IS_REG_USER) {
             // login error
             deleteProfile(pid)
             utils.log('removePidAddnew', pid, status)
@@ -449,15 +448,15 @@ function removePidAddnew(pid, status) {
         else {
             // login success
             closeChrome(pid)
-            if (!ids.filter(x => x == pid).length) {
+            if (!settings.ids.filter(x => x == pid).length) {
                 settings.ids.push(pid)
             }
         }
 
-        if (IS_REG_USER) {
-            settings.ids = ids.filter(x => x != pid)
+        if (settings.IS_REG_USER) {
+            settings.ids = settings.ids.filter(x => x != pid)
         }
-        utils.log(ids)
+        utils.log(settings.ids)
     }
     catch (e) {
         utils.log('error removePidAddnew', e)
@@ -465,7 +464,7 @@ function removePidAddnew(pid, status) {
 }
 
 async function deleteProfile(pid, retry = 0) {
-    settings.ids = ids.filter(x => x != pid)
+    settings.ids = settings.ids.filter(x => x != pid)
     runnings = runnings.filter(r => r.pid != pid)
     try {
         stopDisplay(pid)
@@ -485,7 +484,7 @@ async function deleteProfile(pid, retry = 0) {
 async function deleteBackup(pid, retry = 0) {
     try {
         return;
-        if (!BACKUP || WIN_ENV) return
+        if (!settings.BACKUP || WIN_ENV) return
         utils.log('deleteBackup', pid, retry)
         execSync(`sshpass -p "DMYT@2020" ssh -o "StrictHostKeyChecking=no" root@35.236.64.121 'rm -f /home/pf.dominhit.pro/public_html/seo_6/${pid}.tar'`)
         if (execSync(`curl -Is http://pf.dominhit.pro/seo_6/${pid}.tar | head -1`).indexOf('404') < 0) throw 'DELETE_ERROR'

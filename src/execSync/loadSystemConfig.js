@@ -1,10 +1,10 @@
 const request_api = require("../../request_api");
+const utils = require("../../utils");
 const { closeChrome } = require("../browser/closeChrome");
 const { changeProfile } = require("../profile/changeProfile");
 const { resetAllProfiles } = require("../profile/resetAllProfiles");
 const { systemConfig } = require("../settings");
 const settings = require('../settings');
-const {IS_REG_USER} = require('../settings');
 const execSync = require('child_process').execSync;
 
 /**
@@ -68,10 +68,10 @@ async function loadSystemConfig() {
         (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
         (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false') ||
         (systemConfig.unsub_youtube && systemConfig.unsub_youtube != 'false')
-    if (IS_REG_USER_new != undefined && IS_REG_USER != IS_REG_USER_new) {
+    if (IS_REG_USER_new != undefined && settings.IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         settings.IS_REG_USER = IS_REG_USER_new
-        if (IS_REG_USER) {
+        if (settings.IS_REG_USER) {
             settings.EXPIRED_TIME = 200000
         }
     }
@@ -109,12 +109,13 @@ async function loadSystemConfig() {
 
     if (config.browser_map) {
         Object.keys(config.browser_map).forEach(browserMaped => {
-            if (!systemConfig.browsers.includes(browserMaped)) {
+
+            if (systemConfig && systemConfig.browsers && !systemConfig.browsers.includes(browserMaped)) {
                 config.browser_map[browserMaped].forEach(pid => {
-                    closeChrome(pid)
-                    execSync('rm -rf profiles/' + pid)
+                    closeChrome(pid);
+                    execSync('rm -rf profiles/' + pid);
                 });
-                delete config.browser_map[browserMaped]
+                delete config.browser_map[browserMaped];
             }
         })
     }
