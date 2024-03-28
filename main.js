@@ -702,340 +702,346 @@ async function getRandomImagePath(returnFile = false) {
 }
 // Hàm xử lý hành động
 async function handleAction(actionData) {
-    if (settings.isPauseAction) {
-        res.send({ rs: 'ok' })
-        return
-    }
+    try {
 
-    setDisplay(actionData.pid)
-    await utils.sleep(1000)
 
-    let logStr = '---> ' + actionData.action
-    if (actionData.x) {
-        logStr += '-' + actionData.x + '-' + actionData.y
-    }
-    utils.log(logStr)
-
-    // copy str
-    if (actionData.str) {
-        console.log(actionData.str)
-        try {
-            const clipboardy = require('clipboardy');
-            if (actionData.str == 'none') {
-                actionData.str = ''
-            }
-            clipboardy.writeSync(actionData.str)
-        } catch (error) {
-            console.log('----error:', error)
-        }
-    }
-
-    if (actionData.action == 'PASTE_IMAGE') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool click 1`)
-
-        let filePath = await getRandomImagePath()
-
-        execSync(`xclip -selection clipboard -t image/png -i ${filePath}`)
-        execSync(`xdotool key Control_L+v`)
-    }
-    else if (actionData.action == 'DRAG') {
-        let xTarget = Number(actionData.x) + Number(actionData.sx)
-        let yTarget = Number(actionData.sy)
-
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y}`)
-        execSync(`xdotool mousedown 1`)
-        execSync(`xdotool mousemove ${xTarget / 2} ${yTarget}`)
-        await utils.sleep(2000)
-        execSync(`xdotool mousemove ${xTarget + 10} ${yTarget}`)
-        execSync(`xdotool mousemove ${xTarget + 5} ${yTarget}`)
-        execSync(`xdotool mousemove ${xTarget + -5} ${yTarget}`)
-        execSync(`xdotool mousemove ${xTarget + 2} ${yTarget}`)
-
-        execSync(`xdotool mouseup 1`)
-
-        // robot.moveMouse(Number(actionData.x), Number(actionData.y))
-        // robot.mouseToggle('down')
-        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx)/2, Number(actionData.sy))
-        // await utils.sleep(2000)
-        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 10, Number(actionData.sy))
-        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 5, Number(actionData.sy))
-        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + -5, Number(actionData.sy))
-        // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 2, Number(actionData.sy))
-        // robot.mouseToggle('up')
-    }
-    else if (actionData.action == 'SELECT_AVATAR') {
-        await utils.sleep(5000)
-        del.sync([path.resolve('avatar.jpg')], { force: true })
-        let avatar = await request_api.getAvatar(actionData.pid, path.resolve('../'), actionData.str)
-
-        if (true && avatar) {
-            await utils.sleep(5000)
-            execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 2`)
-            execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
-        }
-        else {
-            execSync(`xdotool key Escape`)
-        }
-    }
-    else if (actionData.action == 'OPEN_BROWSER') {
-        await startChromeAction(actionData.data, actionData.browser)
-    }
-    else if (actionData.action == 'BRAVE_SETTINGS') {
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        //execSync(`xdotool key Shift+Tab`)//13
-
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-
-        execSync(`xdotool key Shift+Tab`)
-        execSync(`xdotool key Shift+Tab`)
-        //execSync(`xdotool key Shift+Tab`)
-
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-    }
-    else if (actionData.action == 'IRIDIUM_SETTING') {
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Up`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key Tab && sleep 1`)
-        execSync(`xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'CLOSE_BROWSER') {
-        execSync(`xdotool key Control_L+w && sleep 1`)
-    }
-    else if (actionData.action == 'TABS') {
-        let totalClick = Number(actionData.x)
-        let count = 0
-        while (count < totalClick) {
-            execSync(`xdotool key Tab && sleep 1`)
-            count++
-        }
-    }
-    else if (actionData.action == 'SHOW_BRAVE_ADS') {
-        execSync(`xdotool key Shift+Tab && sleep 1`)
-        execSync(`xdotool key Shift+Tab && sleep 1`)
-        execSync(`xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'COPY_BAT') {
-        try {
-            execSync(`xdotool key Control_L+c && sleep 1`)
-        } catch (error) {
-
+        if (settings.isPauseAction) {
+            res.send({ rs: 'ok' })
+            return
         }
 
+        setDisplay(actionData.pid)
         await utils.sleep(1000)
 
-        let currentBat = ''
-        const clipboardy = require('clipboardy');
-        currentBat = clipboardy.readSync()
-        utils.log('currentBat', currentBat)
-        currentBat = Number(currentBat)
+        let logStr = '---> ' + actionData.action
+        if (actionData.x) {
+            logStr += '-' + actionData.x + '-' + actionData.y
+        }
+        utils.log(logStr)
 
-        if (currentBat) {
+        // copy str
+        if (actionData.str) {
+            console.log(actionData.str)
             try {
-                let braveInfo = await request_api.getBraveInfo(actionData.pid)
-                if (braveInfo) {
-                    if (braveInfo.total_bat) {
-                        if (!braveInfo.is_disabled_ads) {
-                            if (braveInfo.total_bat == currentBat) {
-                                request_api.updateProfileData({ is_disabled_ads: true, pid: actionData.pid, count_brave_rounds: 0 })
-                                request_api.getProfileProxy(actionData.pid, PLAYLIST_ACTION.WATCH, true)
-                                return res.send({ disable_ads: true })
-                            }
-                        } else {
-                            if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
-                                request_api.updateProfileData({ is_disabled_ads: false, pid: actionData.pid })
-                                return res.send({ enable_ads: true })
+                const clipboardy = require('clipboardy');
+                if (actionData.str == 'none') {
+                    actionData.str = ''
+                }
+                clipboardy.writeSync(actionData.str)
+            } catch (error) {
+                console.log('----error:', error)
+            }
+        }
+
+        if (actionData.action == 'PASTE_IMAGE') {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool click 1`)
+
+            let filePath = await getRandomImagePath()
+
+            execSync(`xclip -selection clipboard -t image/png -i ${filePath}`)
+            execSync(`xdotool key Control_L+v`)
+        }
+        else if (actionData.action == 'DRAG') {
+            let xTarget = Number(actionData.x) + Number(actionData.sx)
+            let yTarget = Number(actionData.sy)
+
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y}`)
+            execSync(`xdotool mousedown 1`)
+            execSync(`xdotool mousemove ${xTarget / 2} ${yTarget}`)
+            await utils.sleep(2000)
+            execSync(`xdotool mousemove ${xTarget + 10} ${yTarget}`)
+            execSync(`xdotool mousemove ${xTarget + 5} ${yTarget}`)
+            execSync(`xdotool mousemove ${xTarget + -5} ${yTarget}`)
+            execSync(`xdotool mousemove ${xTarget + 2} ${yTarget}`)
+
+            execSync(`xdotool mouseup 1`)
+
+            // robot.moveMouse(Number(actionData.x), Number(actionData.y))
+            // robot.mouseToggle('down')
+            // robot.dragMouse(Number(actionData.x) + Number(actionData.sx)/2, Number(actionData.sy))
+            // await utils.sleep(2000)
+            // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 10, Number(actionData.sy))
+            // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 5, Number(actionData.sy))
+            // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + -5, Number(actionData.sy))
+            // robot.dragMouse(Number(actionData.x) + Number(actionData.sx) + 2, Number(actionData.sy))
+            // robot.mouseToggle('up')
+        }
+        else if (actionData.action == 'SELECT_AVATAR') {
+            await utils.sleep(5000)
+            del.sync([path.resolve('avatar.jpg')], { force: true })
+            let avatar = await request_api.getAvatar(actionData.pid, path.resolve('../'), actionData.str)
+
+            if (true && avatar) {
+                await utils.sleep(5000)
+                execSync(`xdotool mousemove 319 134 && sleep 1 && xdotool click 1 && sleep 2`)
+                execSync(`xdotool mousemove 623 158 && sleep 1 && xdotool click 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+            }
+            else {
+                execSync(`xdotool key Escape`)
+            }
+        }
+        else if (actionData.action == 'OPEN_BROWSER') {
+            await startChromeAction(actionData.data, actionData.browser)
+        }
+        else if (actionData.action == 'BRAVE_SETTINGS') {
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            //execSync(`xdotool key Shift+Tab`)//13
+
+            execSync(`xdotool key Up`)
+            execSync(`xdotool key Up`)
+            execSync(`xdotool key Up`)
+
+            execSync(`xdotool key Shift+Tab`)
+            execSync(`xdotool key Shift+Tab`)
+            //execSync(`xdotool key Shift+Tab`)
+
+            execSync(`xdotool key Up`)
+            execSync(`xdotool key Up`)
+        }
+        else if (actionData.action == 'IRIDIUM_SETTING') {
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key Up`)
+            execSync(`xdotool key Up`)
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key Tab && sleep 1`)
+            execSync(`xdotool key KP_Enter && sleep 1`)
+        }
+        else if (actionData.action == 'CLOSE_BROWSER') {
+            execSync(`xdotool key Control_L+w && sleep 1`)
+        }
+        else if (actionData.action == 'TABS') {
+            let totalClick = Number(actionData.x)
+            let count = 0
+            while (count < totalClick) {
+                execSync(`xdotool key Tab && sleep 1`)
+                count++
+            }
+        }
+        else if (actionData.action == 'SHOW_BRAVE_ADS') {
+            execSync(`xdotool key Shift+Tab && sleep 1`)
+            execSync(`xdotool key Shift+Tab && sleep 1`)
+            execSync(`xdotool key KP_Enter && sleep 1`)
+        }
+        else if (actionData.action == 'COPY_BAT') {
+            try {
+                execSync(`xdotool key Control_L+c && sleep 1`)
+            } catch (error) {
+
+            }
+
+            await utils.sleep(1000)
+
+            let currentBat = ''
+            const clipboardy = require('clipboardy');
+            currentBat = clipboardy.readSync()
+            utils.log('currentBat', currentBat)
+            currentBat = Number(currentBat)
+
+            if (currentBat) {
+                try {
+                    let braveInfo = await request_api.getBraveInfo(actionData.pid)
+                    if (braveInfo) {
+                        if (braveInfo.total_bat) {
+                            if (!braveInfo.is_disabled_ads) {
+                                if (braveInfo.total_bat == currentBat) {
+                                    request_api.updateProfileData({ is_disabled_ads: true, pid: actionData.pid, count_brave_rounds: 0 })
+                                    request_api.getProfileProxy(actionData.pid, PLAYLIST_ACTION.WATCH, true)
+                                    return res.send({ disable_ads: true })
+                                }
+                            } else {
+                                if (braveInfo.count_brave_rounds >= braveInfo.brave_replay_ads_rounds) {
+                                    request_api.updateProfileData({ is_disabled_ads: false, pid: actionData.pid })
+                                    return res.send({ enable_ads: true })
+                                }
                             }
                         }
                     }
+                    request_api.updateProfileData({ total_bat: currentBat, pid: actionData.pid, '$inc': { count_brave_rounds: 1 } })
+                } catch (error) {
+                    utils.log(error)
                 }
-                request_api.updateProfileData({ total_bat: currentBat, pid: actionData.pid, '$inc': { count_brave_rounds: 1 } })
-            } catch (error) {
-                utils.log(error)
             }
         }
-    }
-    else if (actionData.action == 'ESC') {
-        execSync(`xdotool key Escape && sleep 0.5`)
-    }
-    else if (actionData.action == 'GO_TO_FISRT_TAB') {
-        execSync(`xdotool key Control_L+1 && sleep 1`)
-    }
-    else if (actionData.action == 'DOUBLE_CLICK') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
-    }
-    else if (actionData.action == 'NEW_TAB') {
-        execSync(`xdotool key Control_L+t && sleep 1`)
-    } else if (actionData.action == 'RELOAD_PAGE') {
-        execSync(`xdotool key F5 && sleep 1`)
-    } else if (actionData.action == 'END_SCRIPT') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
-        await utils.sleep(5000)
-        runnings = runnings.filter(i => i.pid != actionData.pid)
-    }
-
-    //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
-    // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep brave-browser | head -n 1)) && sleep 1`)
-    else if (actionData.action == 'CTR_CLICK') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool keydown Control_L && xdotool click 1`)
-    }
-    else if (actionData.action == 'CLICK') {
-        if (actionData.x > 65) {
+        else if (actionData.action == 'ESC') {
+            execSync(`xdotool key Escape && sleep 0.5`)
+        }
+        else if (actionData.action == 'GO_TO_FISRT_TAB') {
+            execSync(`xdotool key Control_L+1 && sleep 1`)
+        }
+        else if (actionData.action == 'DOUBLE_CLICK') {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && xdotool click 1 && sleep 1`)
+        }
+        else if (actionData.action == 'NEW_TAB') {
+            execSync(`xdotool key Control_L+t && sleep 1`)
+        } else if (actionData.action == 'RELOAD_PAGE') {
+            execSync(`xdotool key F5 && sleep 1`)
+        } else if (actionData.action == 'END_SCRIPT') {
             execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+            await utils.sleep(5000)
+            runnings = runnings.filter(i => i.pid != actionData.pid)
         }
-    }
-    else if (actionData.action == 'TYPE') {
-        let repeat = 3
-        if (actionData.selector == 'input_post_fb') {
-            repeat = 2
-        }
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat ${repeat} 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
-    }
-    else if (actionData.action == 'KEY_ENTER') {
-        execSync(`xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'TYPE_ENTER') {
-        console.log('actionData.str', actionData.str);
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'TYPE_KEY_ENTER') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key E && xdotool key n && xdotool key g && sleep 1 && xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'ONLY_TYPE') {
-        execSync(`xdotool key Control_L+v sleep 1`)
-    }
-    else if (actionData.action == 'ONLY_TYPE_ENTER') {
-        execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'CLICK_ENTER') {
-        execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
-    }
-    else if (actionData.action == 'NEXT_VIDEO') {
-        execSync(`xdotool key Shift+n && sleep 1`)
-    }
-    else if (actionData.action == 'SCROLL') {
-        if (actionData.str == 6) {
-            execSync(`xdotool key Shift+Tab && sleep 1`)
-            execSync(`xdotool key Page_Down && sleep 1`)
-        } else {
-            if (actionData.str > 0) {
-                let pageNumber = Math.ceil(actionData.str / 5)
-                while (pageNumber > 0) {
-                    execSync(`xdotool key Page_Down && sleep 1`)
-                    pageNumber--
-                }
-            }
-            else {
-                let pageNumber = Math.ceil(actionData.str / -5)
-                while (pageNumber > 0) {
-                    execSync(`xdotool key Page_Up && sleep 1`)
-                    pageNumber--
-                }
-            }
-        }
-    }
-    else if (actionData.action == 'SEND_KEY') {
-        execSync(`xdotool type ${actionData.str}`)
-    }
-    else if (actionData.action == 'GO_ADDRESS') {
-        execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
-        if (actionData.str.length > 40) {
-            execSync(`xdotool key Control_L+v`)
-            await utils.sleep(2000)
-        } else {
-            execSync(`xdotool type "${actionData.str}"`)
-        }
-        await utils.sleep(1000)
-        execSync(`xdotool key KP_Enter`)
-        await utils.sleep(2000)
-    }
-    else if (actionData.action == 'OPEN_DEV') {
-        execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
-    }
-    else if (actionData.action == 'OPEN_MOBILE') {
-        utils.log('open mobile simulator')
-        let po = {
-            0: 4,
-            1: 5,
-            2: 6,
-            3: 7,
-            4: 8,
-            5: 9,
-            6: 10,
-            7: 11,
-            8: 12,
-            9: 12,
-        }
-        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
-        devicePo -= 1
-        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
-        utils.log('add custom mobile')
-        execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'REOPEN_MOBILE_CUSTOM') {
-        utils.log('add custom mobile')
-        execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SELECT_MOBILE') {
-        utils.log('open mobile simulator')
-        let po = {
-            0: 4,
-            1: 5,
-            2: 6,
-            3: 7,
-            4: 8,
-            5: 9,
-            6: 10,
-            7: 11,
-            8: 12,
-            9: 12,
-        }
-        let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
-        devicePo -= 1
-        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
-        utils.log('open mobile simulator')
-        execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
-    }
-    else if (actionData.action == 'SHOW_PAGE') {
-        execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
-    }
-    else if (actionData.action == 'SELECT_OPTION') {
-        execSync(`xdotool key Page_Up && sleep 1`)
-        for (let i = 0; i < actionData.str * 1; i++) {
-            execSync(`xdotool key Down && sleep 0.2`)
-        }
-        execSync(`xdotool key KP_Enter`)
-    }
-    else if (actionData.action == 'SCREENSHOT') {
-        utils.errorScreenshot(actionData.pid + '_input')
-    }
 
-    if (actionData.res) {
-        actionData.res.json({ success: true })
+        //if (actionData.action == 'GO_ADDRESS' || actionData.action == 'OPEN_DEV') setChromeSize(actionData.pid)
+        // execSync(`xdotool windowactivate $(xdotool search --onlyvisible --pid $(pgrep brave-browser | head -n 1)) && sleep 1`)
+        else if (actionData.action == 'CTR_CLICK') {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && xdotool keydown Control_L && xdotool click 1`)
+        }
+        else if (actionData.action == 'CLICK') {
+            if (actionData.x > 65) {
+                execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1`)
+            }
+        }
+        else if (actionData.action == 'TYPE') {
+            let repeat = 3
+            if (actionData.selector == 'input_post_fb') {
+                repeat = 2
+            }
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat ${repeat} 1 && sleep 1 && xdotool key Control_L+v && sleep 1`)
+        }
+        else if (actionData.action == 'KEY_ENTER') {
+            execSync(`xdotool key KP_Enter && sleep 1`)
+        }
+        else if (actionData.action == 'TYPE_ENTER') {
+            console.log('actionData.str', actionData.str);
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click --repeat 3 1 && sleep 1 && xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+        }
+        else if (actionData.action == 'TYPE_KEY_ENTER') {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key E && xdotool key n && xdotool key g && sleep 1 && xdotool key KP_Enter && sleep 1`)
+        }
+        else if (actionData.action == 'ONLY_TYPE') {
+            execSync(`xdotool key Control_L+v sleep 1`)
+        }
+        else if (actionData.action == 'ONLY_TYPE_ENTER') {
+            execSync(`xdotool key Control_L+v && sleep 3 && xdotool key KP_Enter && sleep 1`)
+        }
+        else if (actionData.action == 'CLICK_ENTER') {
+            execSync(`xdotool mousemove ${actionData.x} ${actionData.y} && sleep 1 && xdotool click 1 && sleep 1 && xdotool key KP_Enter && sleep 1`)
+        }
+        else if (actionData.action == 'NEXT_VIDEO') {
+            execSync(`xdotool key Shift+n && sleep 1`)
+        }
+        else if (actionData.action == 'SCROLL') {
+            if (actionData.str == 6) {
+                execSync(`xdotool key Shift+Tab && sleep 1`)
+                execSync(`xdotool key Page_Down && sleep 1`)
+            } else {
+                if (actionData.str > 0) {
+                    let pageNumber = Math.ceil(actionData.str / 5)
+                    while (pageNumber > 0) {
+                        execSync(`xdotool key Page_Down && sleep 1`)
+                        pageNumber--
+                    }
+                }
+                else {
+                    let pageNumber = Math.ceil(actionData.str / -5)
+                    while (pageNumber > 0) {
+                        execSync(`xdotool key Page_Up && sleep 1`)
+                        pageNumber--
+                    }
+                }
+            }
+        }
+        else if (actionData.action == 'SEND_KEY') {
+            execSync(`xdotool type ${actionData.str}`)
+        }
+        else if (actionData.action == 'GO_ADDRESS') {
+            execSync(`xdotool key Escape && sleep 0.5 && xdotool key Control_L+l && sleep 0.5`)
+            if (actionData.str.length > 40) {
+                execSync(`xdotool key Control_L+v`)
+                await utils.sleep(2000)
+            } else {
+                execSync(`xdotool type "${actionData.str}"`)
+            }
+            await utils.sleep(1000)
+            execSync(`xdotool key KP_Enter`)
+            await utils.sleep(2000)
+        }
+        else if (actionData.action == 'OPEN_DEV') {
+            execSync(`sleep 3;xdotool key Control_L+Shift+i;sleep 7;xdotool key Control_L+Shift+p;sleep 3;xdotool type "bottom";sleep 3;xdotool key KP_Enter`)
+        }
+        else if (actionData.action == 'OPEN_MOBILE') {
+            utils.log('open mobile simulator')
+            let po = {
+                0: 4,
+                1: 5,
+                2: 6,
+                3: 7,
+                4: 8,
+                5: 9,
+                6: 10,
+                7: 11,
+                8: 12,
+                9: 12,
+            }
+            let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+            devicePo -= 1
+            execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 1;xdotool click 1;sleep 1`)
+        }
+        else if (actionData.action == 'OPEN_MOBILE_CUSTOM') {
+            utils.log('add custom mobile')
+            execSync(`xdotool key Control_L+Shift+m;sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
+        }
+        else if (actionData.action == 'REOPEN_MOBILE_CUSTOM') {
+            utils.log('add custom mobile')
+            execSync(`sleep 2;xdotool key Control_L+Shift+p;sleep 1;xdotool type "show devices";sleep 1;xdotool key KP_Enter;sleep 1;xdotool key KP_Enter;xdotool type "custom";xdotool key Tab;xdotool type ${actionData.x};xdotool key Tab;xdotool type ${actionData.y};xdotool key Tab;xdotool key Tab;xdotool key Control_L+v;xdotool key Tab;xdotool key Tab;xdotool key KP_Enter;xdotool key Escape;xdotool mousemove 855 90;sleep 1;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 1;xdotool click 1;sleep 1`)
+        }
+        else if (actionData.action == 'SELECT_MOBILE') {
+            utils.log('open mobile simulator')
+            let po = {
+                0: 4,
+                1: 5,
+                2: 6,
+                3: 7,
+                4: 8,
+                5: 9,
+                6: 10,
+                7: 11,
+                8: 12,
+                9: 12,
+            }
+            let devicePo = Number(active_devices[Number(actionData.pid) % active_devices.length])
+            devicePo -= 1
+            execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 ${150 + 24 * devicePo};sleep 0.5;xdotool click 1;sleep 1`)
+        }
+        else if (actionData.action == 'SELECT_MOBILE_CUSTOM') {
+            utils.log('open mobile simulator')
+            execSync(`xdotool mousemove 855 90;sleep 0.5;xdotool click 1;sleep 1;xdotool mousemove 855 150;sleep 0.5;xdotool click 1;sleep 1`)
+        }
+        else if (actionData.action == 'SHOW_PAGE') {
+            execSync(`xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "elements";sleep 0.5;xdotool key KP_Enter;sleep 0.5;xdotool key Control_L+Shift+p;sleep 0.5;xdotool type "search";sleep 0.5;xdotool key KP_Enter`)
+        }
+        else if (actionData.action == 'SELECT_OPTION') {
+            execSync(`xdotool key Page_Up && sleep 1`)
+            for (let i = 0; i < actionData.str * 1; i++) {
+                execSync(`xdotool key Down && sleep 0.2`)
+            }
+            execSync(`xdotool key KP_Enter`)
+        }
+        else if (actionData.action == 'SCREENSHOT') {
+            utils.errorScreenshot(actionData.pid + '_input')
+        }
+
+        if (actionData.res) {
+            actionData.res.json({ success: true })
+        }
+    } catch (error) {
+        console.log("handleAction", error);
     }
 }
 // Hàm tự động khởi động lại máy ảo
