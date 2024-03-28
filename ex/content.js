@@ -94,6 +94,9 @@ async function initAction(){
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
+
+        console.log('initAction:',action)
+
         initSettingData(action)
         await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
 
@@ -132,7 +135,7 @@ async function initAction(){
 }
 
 function initSettingData (action) {
-    if (action.isRunBAT && ['brave-browser', 'brave', 'brave-browser-stable'].includes(action.browser_name)) {
+    if (action && action.isRunBAT && ['brave-browser', 'brave', 'brave-browser-stable'].includes(action.browser_name)) {
         isRunBAT = Boolean(action.isRunBAT)
     } else {
         isRunBAT = false
