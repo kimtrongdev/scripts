@@ -116,6 +116,8 @@ async function initAction(){
     }
     else{
         let data = await getActionData()
+        console.log('initAction:',action)
+
         action = data.action
 
         //DEBUG
