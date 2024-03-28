@@ -17,6 +17,7 @@ function closeChrome(pid) {
         }
     }
     catch (e) {
+        console.log("pkill fail" ,e)
     }
 }
 
