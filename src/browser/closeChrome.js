@@ -1,3 +1,4 @@
+const path = require("path");
 const { getBrowserOfProfile } = require("./getBrowserOfProfile");
 const execSync = require('child_process').execSync;
 
@@ -13,8 +14,9 @@ function closeChrome(pid) {
         } else {
             let command;
             if (pid) {
+                const profilesDir = path.join(process.cwd(), 'profiles');
                 // Nếu có pid, đóng Chrome dựa trên pid của profile
-                command = `pkill -f "profiles/${pid}"`;
+                command = `pkill -f "${profilesDir}/${pid}"`;
             } else {
                 // Nếu không có pid, đóng Chrome dựa trên tên trình duyệt mặc định của profile
                 const browser = getBrowserOfProfile(pid);
