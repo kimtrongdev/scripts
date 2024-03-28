@@ -485,6 +485,8 @@ async function startChromeAction(action, _browser) {
         exec(`${_browser}${userProxy} --lang=en-US,en${windowPosition}${windowSize}${userDataDir} --load-extension="${exs}" "${startPage}"`)
     }
     else {
+        console.log('start startChromeAction', action.pid)
+
         closeChrome(action.pid)
         await utils.sleep(3000)
         utils.log('startDisplay')
