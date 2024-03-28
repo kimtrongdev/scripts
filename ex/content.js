@@ -17,33 +17,33 @@ var widthCustom = 0
 var heightCustom = 0
 var IS_MOBILE = false
 var ALLOW_RUN_UPDATE_ACCOUNT_INFO = true
-async function loadPage(){
-    try{
+async function loadPage() {
+    try {
         await sleep(4000)
 
         await initAction()
 
         checkMiniPlayer(action)
 
-        console.log('loadPage',action.id, action.pid)
+        console.log('loadPage', action.id, action.pid)
 
         await dismissDialog(action.pid)
 
         await runAction(action)
     }
     catch (e) {
-        console.log('error',e)
+        console.log('error', e)
     }
     finally {
 
     }
 }
 
-async function dismissDialog(pid){
-    try{
+async function dismissDialog(pid) {
+    try {
     }
     catch (e) {
-        console.log('error',pid,'dismissDialog',e)
+        console.log('error', pid, 'dismissDialog', e)
     }
 }
 
@@ -66,36 +66,38 @@ window.addEventListener('load', _ => {
 })
 
 let oldURL = "";
-function checkURLchange(currentURL){
-    if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange > 3000 && !(oldURL.includes('google.com/maps') && currentURL.includes('google.com/maps/@'))){
-        console.log('oldURL:',oldURL,'currentURL:',currentURL,lastChange,Date.now())
-        console.log('url changed:',currentURL)
-        
+function checkURLchange(currentURL) {
+    if (currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange > 3000 && !(oldURL.includes('google.com/maps') && currentURL.includes('google.com/maps/@'))) {
+        console.log('oldURL:', oldURL, 'currentURL:', currentURL, lastChange, Date.now())
+        console.log('url changed:', currentURL)
+
         oldURL = currentURL;
         lastChange = Date.now()
         loadPage()
     }
-    else if(currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange < 3000){
+    else if (currentURL.split('#')[0] != oldURL.split('#')[0] && lastChange && Date.now() - lastChange < 3000) {
         oldURL = currentURL
         lastChange = Date.now()
     }
-    else{
+    else {
         oldURL = currentURL
     }
 }
 
-setInterval(function() {
+setInterval(function () {
     checkURLchange(window.location.href);
 }, 1000);
 
-async function initAction(){
-    if(window.location.toString().indexOf('localhost') > -1){
+async function initAction() {
+    if (window.location.toString().indexOf('localhost') > -1) {
         closeTabs()
         let url = new URL(window.location.href);
         action = JSON.parse(url.searchParams.get("data"))
         action.lastRequest = Date.now()
+        console.log('initAction 1:',action)
+
         initSettingData(action)
-        await updateUserInput(action.pid,'ESC', 0,0,0,0,"",'ESC')
+        await updateUserInput(action.pid, 'ESC', 0, 0, 0, 0, "", 'ESC')
 
         // if (window.location.toString().indexOf('refreshed_localhost') == -1) {
         //     window.open(window.location.toString() + '&refreshed_localhost=true')
@@ -108,12 +110,14 @@ async function initAction(){
         //     await initActionData(action)
         // }
         await initActionData(action)
-        
+
         await sleep(5000)
     }
-    else{
+    else {
         let data = await getActionData()
+
         action = data.action
+        console.log('initAction 2 :', action)
 
         //DEBUG
         // action.id = "login"
@@ -122,16 +126,16 @@ async function initAction(){
         // action.info_description = 'my name is'
 
 
-        initSettingData(action) 
+        initSettingData(action)
         //if (action.id != 'search' && window.location.toString().indexOf('www.google.com') > -1) {
         //    await initActionData(action)
         //}
 
-        console.log('action:',action)
+        console.log('action:', action)
     }
 }
 
-function initSettingData (action) {
+function initSettingData(action) {
     if (action.isRunBAT && ['brave-browser', 'brave', 'brave-browser-stable'].includes(action.browser_name)) {
         isRunBAT = Boolean(action.isRunBAT)
     } else {
@@ -154,7 +158,7 @@ function initSettingData (action) {
     if (action.browser_name == 'chromium-browser') {
         //heightCustom = 13
         if ((!action.is_show_ui || action.is_show_ui == 'false')) {
-           // heightCustom = 23
+            // heightCustom = 23
         } else {
             //heightCustom = 23
         }
@@ -163,12 +167,12 @@ function initSettingData (action) {
     if (navigator.platform == 'iPhone') {
         IS_MOBILE = true
     }
-   // mobileMenuBarHeight = barHeightMap[action.browser_name]
-   // windowWide = action.windowWide
-   // menuBarWidth = 27
+    // mobileMenuBarHeight = barHeightMap[action.browser_name]
+    // windowWide = action.windowWide
+    // menuBarWidth = 27
 }
 
-function setWatchParam(action){
+function setWatchParam(action) {
     // init watch params
     action.watch_time = Number(action.watch_time)
     if (action.watch_time && action.watch_time >= 30000) {
@@ -177,7 +181,7 @@ function setWatchParam(action){
         action.comment_time = randomRanger(5000, action.watch_time - 10000)
     } else {
         action.is_like = false
-        action.is_sub = false 
+        action.is_sub = false
         action.is_comment = false
     }
 
@@ -203,22 +207,22 @@ function setWatchParam(action){
     if (action.id == 'watch' && action.playlist_percent == 100) {
         action.view_playlist = true
     } else {
-        if(Math.random()<0.1){
-            if(Math.random()<0.5){
+        if (Math.random() < 0.1) {
+            if (Math.random() < 0.5) {
                 action.preview = "home"
             }
-            else{
+            else {
                 action.preview = "search"
             }
         }
-    
+
         let totalValue = action.home_percent +
-                         action.suggest_percent + 
-                         action.page_watch +
-                         action.direct_percent +
-                         action.google_percent +
-                         action.search_percent
-                         
+            action.suggest_percent +
+            action.page_watch +
+            action.direct_percent +
+            action.google_percent +
+            action.search_percent
+
         let watchTypeRand = randomRanger(0, totalValue)
         if (watchTypeRand < action.home_percent) {
             action.home = true
@@ -230,8 +234,8 @@ function setWatchParam(action){
         } else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent) {
             action.preview = false
             action.direct = true
-        //} else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
-        //    action.google = true
+            //} else if (watchTypeRand < action.home_percent + action.suggest_percent + action.page_watch + action.direct_percent + action.google_percent) {
+            //    action.google = true
         } else {
             // search
             action.search = true
@@ -250,14 +254,14 @@ function setWatchParam(action){
     action.video = ''//searchList[randomRanger(0,searchList.length-1)].trim()
     action.playlist_url = action.playlist_url && action.playlist_url.trim()
     action.url_type = action.url_type && action.url_type.trim().toLowerCase()
-    action.suggest_videos = action.suggest_videos?action.suggest_videos.trim():undefined
+    action.suggest_videos = action.suggest_videos ? action.suggest_videos.trim() : undefined
 }
 
-function setSubParam(action){
-    Object.assign(action,action.channels[0])
-    if(action.name && action.name.length){
+function setSubParam(action) {
+    Object.assign(action, action.channels[0])
+    if (action.name && action.name.length) {
         let searchList = action.name.split(";;")
-        action.name = searchList[randomRanger(0,searchList.length-1)]
+        action.name = searchList[randomRanger(0, searchList.length - 1)]
     }
 
     action.sub_in_video = undefined
@@ -266,52 +270,51 @@ function setSubParam(action){
     action.sub_in_videos_page = undefined
     action.pre_sub = undefined
     action.videoIds = undefined
-    action.search_keyword = action.keyword && action.keyword.length?action.keyword[randomRanger(0,action.keyword.length-1)]:undefined
+    action.search_keyword = action.keyword && action.keyword.length ? action.keyword[randomRanger(0, action.keyword.length - 1)] : undefined
 
-    if(Math.random() < 0.5){ // 0.5
+    if (Math.random() < 0.5) { // 0.5
         action.sub_from_suggest = true
     }
 
-    if(Math.random() < 0.7){
+    if (Math.random() < 0.7) {
         action.sub_in_video = true
     }
 
     // paste link direct
-    if(Math.random() < 0.05){
+    if (Math.random() < 0.05) {
         action.sub_direct = true
         action.watched_video = true
     }
 
     // percent not watch video before sub
-    if(Math.random() < 0.3){
+    if (Math.random() < 0.3) {
         action.watched_video = true
     }
 
     // percent sub in videos page
-    if(Math.random() < 0.3){
+    if (Math.random() < 0.3) {
         action.sub_in_videos_page = true
     }
 
     // percent go to channel from videos link
-    if(Math.random() < 0.7){
+    if (Math.random() < 0.7) {
         action.go_channel_from_search_videos = true
     }
 
     // percent to reset sub action
-    if(Math.random() < 0.2){
+    if (Math.random() < 0.2) {
         action.restart_sub = true
     }
 }
 
-function checkMiniPlayer(action){
-    if(!checkMiniPlayerRef){
-        console.log('INFO','checkMiniPlayer')
-        checkMiniPlayerRef = setInterval(pid =>
-            {
-                if(document.querySelector('ytd-miniplayer[active]')){
-                    sendKey(pid,"i")
-                }
+function checkMiniPlayer(action) {
+    if (!checkMiniPlayerRef) {
+        console.log('INFO', 'checkMiniPlayer')
+        checkMiniPlayerRef = setInterval(pid => {
+            if (document.querySelector('ytd-miniplayer[active]')) {
+                sendKey(pid, "i")
             }
-        ,5000,action.pid)
+        }
+            , 5000, action.pid)
     }
 }
