@@ -42,7 +42,7 @@ const path = require('path')
 const del = require('del');
 const fs = require('fs')
 const { getBrowserOfProfile } = require('./src/browser/getBrowserOfProfile')
-const { closeChrome } = require('./closeChrome')
+// const { closeChrome } = require('./closeChrome')
 const { LOCAL_PORT, characters, PLAYLIST_ACTION, ADDNEW_ACTION } = require('./src/constant')
 const { getProfileIds } = require('./src/profile/getProfileIds')
 const { runUpdateVps } = require('./src/execSync/runUpdateVps')
@@ -1105,6 +1105,24 @@ async function checkToUpdate() {
     }
     catch (e) {
         utils.log('check to update err: ', e)
+    }
+}
+
+function closeChrome(pid) {
+    try {
+        if (WIN_ENV) {
+            execSync('input CLOSE_CHROME')
+        }
+        else {
+            if (pid) {
+                execSync(`pkill -f "profiles/${pid}"`)
+            }
+            else {
+                execSync(`pkill ${getBrowserOfProfile(pid)}`)
+            }
+        }
+    }
+    catch (e) {
     }
 }
 start()
