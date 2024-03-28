@@ -2110,6 +2110,7 @@ function closeChrome(pid) {
         }
     }
     catch (e) {
+        console.log('error', 'closeChrome', pid, e)
     }
 }
 
