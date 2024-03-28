@@ -187,7 +187,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
 // check report time
 setInterval(_=> {
-    chrome.storage.sync.get('action', function(data) {
+    chrome.storage.sync.get('setInterval action', function(data) {
         try{
             if(Date.now() - data.action.lastReport > 5*60*1000){
                 let report = {pid: data.action.pid,id: data.action.id, status: 0, stop: true, msg: 'TIMEOUT'}
@@ -205,7 +205,7 @@ setInterval(_=> {
 chrome.webRequest.onAuthRequired.addListener(
     function(details, callbackFn) {
         console.log("onAuthRequired!", details, callbackFn);
-        chrome.storage.sync.get('action', function(data) {
+        chrome.storage.sync.get('setInterval action', function(data) {
             callbackFn({
                 authCredentials: {username: data.action.proxy_username, password: data.action.proxy_password}
             });

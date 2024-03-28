@@ -704,7 +704,7 @@ function getPlaylistData (action) {
 }
 
 async function getActionData(){
-    return new Promise(resolve => chrome.storage.sync.get('action', function(data) {
+    return new Promise(resolve => chrome.storage.sync.get('getActionData action', function(data) {
             resolve(data);
         })
     )
