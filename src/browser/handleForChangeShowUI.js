@@ -1,7 +1,7 @@
 const utils = require("../../utils")
 const { getProfileIds } = require("../profile/getProfileIds")
 const settings = require("../settings")
-const { closeChrome } = require("./closeChrome")
+const { closeChrome } = require("../../closeChrome")
 
 /**
  * Xử lý thay đổi giao diện người dùng

@@ -1,6 +1,6 @@
 const request_api = require("../../request_api")
 const utils = require("../../utils")
-const { closeChrome } = require("../browser/closeChrome")
+const { closeChrome } = require("../../closeChrome")
 const settings = require("../settings")
 const { getProfileIds } = require("./getProfileIds")
 const fs = require('fs')

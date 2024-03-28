@@ -1,6 +1,6 @@
 const path = require('path')
 const request_api = require('../../request_api')
-const { closeChrome } = require('../browser/closeChrome');
+const { closeChrome } = require('../../closeChrome');
 const { TIKTOK_CAPCHA_API_KEY, LOCAL_PORT } = require('../constant');
 const execSync = require('child_process').execSync;
 const request2 = require('request').defaults({ encoding: null });

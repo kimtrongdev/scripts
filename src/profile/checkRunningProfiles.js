@@ -1,5 +1,5 @@
 const utils = require("../../utils");
-const { closeChrome } = require("../browser/closeChrome");
+const { closeChrome } = require("../../closeChrome");
 const settings = require("../settings");
 const execSync = require('child_process').execSync;
 

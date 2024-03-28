@@ -1,6 +1,6 @@
 const request_api = require("../../request_api");
 const utils = require("../../utils");
-const { closeChrome } = require("../browser/closeChrome");
+const { closeChrome } = require("../../closeChrome");
 const { handleForChangeShowUI } = require("../browser/handleForChangeShowUI");
 const { changeProfile } = require("../profile/changeProfile");
 const { resetAllProfiles } = require("../profile/resetAllProfiles");
