@@ -703,7 +703,7 @@ async function getRandomImagePath(returnFile = false) {
 // Hàm xử lý hành động
 async function handleAction(actionData) {
     try {
-
+        console.log('handleAction', actionData.action )
 
         if (settings.isPauseAction) {
             res.send({ rs: 'ok' })
