@@ -1,9 +1,9 @@
 const request_api = require("../../request_api");
 const utils = require("../../utils");
 const { closeChrome } = require("../browser/closeChrome");
+const { handleForChangeShowUI } = require("../browser/handleForChangeShowUI");
 const { changeProfile } = require("../profile/changeProfile");
 const { resetAllProfiles } = require("../profile/resetAllProfiles");
-const { systemConfig } = require("../settings");
 const settings = require('../settings');
 const execSync = require('child_process').execSync;
 
@@ -15,16 +15,16 @@ async function loadSystemConfig() {
         settings.systemConfig = rs
     }
 
-    if (Number(systemConfig.max_current_profiles)) {
-        settings.MAX_CURRENT_ACC = Number(systemConfig.max_current_profiles)
+    if (Number(settings.systemConfig.max_current_profiles)) {
+        settings.MAX_CURRENT_ACC = Number(settings.systemConfig.max_current_profiles)
     }
 
-    if (systemConfig.max_total_profiles) {
-        settings.MAX_PROFILE = DEBUG ? 1 : settings.MAX_CURRENT_ACC * Number(systemConfig.max_total_profiles)
+    if (settings.systemConfig.max_total_profiles) {
+        settings.MAX_PROFILE = DEBUG ? 1 : settings.MAX_CURRENT_ACC * Number(settings.systemConfig.max_total_profiles)
     }
 
     // handle time change profile running
-    const change_profile_time = Number(systemConfig.change_profile_time)
+    const change_profile_time = Number(settings.systemConfig.change_profile_time)
     if (settings.MAX_CURRENT_ACC == 1 && change_profile_time && change_profile_time != current_change_profile_time) {
         current_change_profile_time = change_profile_time
         if (settings.checkProfileTime) {
@@ -40,7 +40,7 @@ async function loadSystemConfig() {
         IS_SHOW_UI = true
     } else {
         let newShowUIConfig = false
-        if (systemConfig.show_ui_config && systemConfig.show_ui_config != 'false') {
+        if (settings.systemConfig.show_ui_config && settings.systemConfig.show_ui_config != 'false') {
             newShowUIConfig = true
         }
 
@@ -59,15 +59,15 @@ async function loadSystemConfig() {
         }
     }
 
-    let IS_REG_USER_new = (systemConfig.is_reg_user && systemConfig.is_reg_user != 'false') ||
-        (systemConfig.is_ver_mail && systemConfig.is_ver_mail != 'false') ||
-        (systemConfig.is_rename_channel && systemConfig.is_rename_channel != 'false') ||
-        (systemConfig.is_reg_account && systemConfig.is_reg_account != 'false') ||
-        (systemConfig.is_reg_ga && systemConfig.is_reg_ga != 'false') ||
-        (systemConfig.is_check_mail_1 && systemConfig.is_check_mail_1 != 'false') ||
-        (systemConfig.is_change_pass && systemConfig.is_change_pass != 'false') ||
-        (systemConfig.is_recovery_mail && systemConfig.is_recovery_mail != 'false') ||
-        (systemConfig.unsub_youtube && systemConfig.unsub_youtube != 'false')
+    let IS_REG_USER_new = (settings.systemConfig.is_reg_user && settings.systemConfig.is_reg_user != 'false') ||
+        (settings.systemConfig.is_ver_mail && settings.systemConfig.is_ver_mail != 'false') ||
+        (settings.systemConfig.is_rename_channel && settings.systemConfig.is_rename_channel != 'false') ||
+        (settings.systemConfig.is_reg_account && settings.systemConfig.is_reg_account != 'false') ||
+        (settings.systemConfig.is_reg_ga && settings.systemConfig.is_reg_ga != 'false') ||
+        (settings.systemConfig.is_check_mail_1 && settings.systemConfig.is_check_mail_1 != 'false') ||
+        (settings.systemConfig.is_change_pass && settings.systemConfig.is_change_pass != 'false') ||
+        (settings.systemConfig.is_recovery_mail && settings.systemConfig.is_recovery_mail != 'false') ||
+        (settings.systemConfig.unsub_youtube && settings.systemConfig.unsub_youtube != 'false')
     if (IS_REG_USER_new != undefined && settings.IS_REG_USER != IS_REG_USER_new) {
         await resetAllProfiles()
         settings.IS_REG_USER = IS_REG_USER_new
@@ -81,8 +81,8 @@ async function loadSystemConfig() {
     }
     // handle browsers for centos and ubuntu
     let browsers = []
-    if (systemConfig.browsers) {
-        systemConfig.browsers.forEach(br => {
+    if (settings.systemConfig.browsers) {
+        settings.systemConfig.browsers.forEach(br => {
             if (process.env.OS == 'centos' || process.env.OS == 'centos_vps') {
                 if (br == 'brave') {
                     br = 'brave-browser'
@@ -110,7 +110,7 @@ async function loadSystemConfig() {
     if (config.browser_map) {
         Object.keys(config.browser_map).forEach(browserMaped => {
 
-            if (systemConfig && systemConfig.browsers && !systemConfig.browsers.includes(browserMaped)) {
+            if (settings.systemConfig && settings.systemConfig.browsers && !settings.systemConfig.browsers.includes(browserMaped)) {
                 config.browser_map[browserMaped].forEach(pid => {
                     closeChrome(pid);
                     execSync('rm -rf profiles/' + pid);
@@ -120,7 +120,7 @@ async function loadSystemConfig() {
         })
     }
 
-    if (systemConfig.stop_tool == 1) {
+    if (settings.systemConfig.stop_tool == 1) {
         execSync('pm2 stop all')
     }
 
@@ -128,10 +128,10 @@ async function loadSystemConfig() {
         settings.systemConfig.is_stop = false
     }
 
-    if (systemConfig.not_allow_use_proxy) {
+    if (settings.systemConfig.not_allow_use_proxy) {
         settings.useProxy = false
     }
-    utils.log('SYSTEMCONFIG--', systemConfig);
+    utils.log('SYSTEMCONFIG--', settings.systemConfig);
 }
 
 module.exports = { loadSystemConfig };

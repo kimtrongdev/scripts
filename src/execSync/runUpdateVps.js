@@ -1,6 +1,5 @@
 const { closeChrome } = require("../browser/closeChrome");
 const { getProfileIds } = require("../profile/getProfileIds");
-const { systemConfig } = require("../settings");
 const settings = require('../settings');
 const fs = require('fs');
 const { loadSystemConfig } = require("./loadSystemConfig");
@@ -26,7 +25,7 @@ async function runUpdateVps() {
 
     try {
       // Cấu hình remote repository với khóa bí mật
-      let gitKey = systemConfig.update_key;
+      let gitKey = settings.systemConfig.update_key;
       if (gitKey) {
         execSync(`git remote set-url origin https://kimtrongdev:${gitKey}@github.com/kimtrongdev/scripts.git`);
       }
@@ -43,7 +42,7 @@ async function runUpdateVps() {
     fs.writeFileSync("update_flag.json", JSON.stringify({ updating: true }));
 
     // Kiểm tra cấu hình khởi động lại VPS sau khi cập nhật
-    if (Number(systemConfig.reboot_on_update)) {
+    if (Number(settings.systemConfig.reboot_on_update)) {
       execSync('sudo systemctl reboot');
     } else {
       execSync('pm2 restart all');

@@ -92,24 +92,8 @@ async function execActionsRunning() {
     await utils.sleep(1000)
     execActionsRunning()
 }
-/**
- * Xử lý thay đổi giao diện người dùng
- */
-async function handleForChangeShowUI() {
-    let _pids = getProfileIds()
-
-    for await (let pid of _pids) {
-        closeChrome(pid)
-        await utils.sleep(2000)
-    }
-    await utils.sleep(2000)
-    runnings = []
-    settings.ids = _pids
-}
 
 let runningPid = null
-let current_change_profile_time
-
 
 // Hàm quản lý các profile đang chạy
 async function profileRunningManage() {
