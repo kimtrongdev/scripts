@@ -14,9 +14,11 @@ function closeChrome(pid) {
         } else {
             let command;
             if (pid) {
-                const profilesDir = path.join(process.cwd(), 'profiles');
-                // Nếu có pid, đóng Chrome dựa trên pid của profile
-                execSync(`pkill -f "profiles/${pid}"`)
+                // Xác định đường dẫn của thư mục profiles từ vị trí hiện tại của script
+                const profilesPath = path.relative(__dirname, path.join(process.cwd(), 'profiles'));
+                // Tạo lệnh pkill với đường dẫn tương đối
+                const command = `pkill -f "${profilesPath}/${pid}"`;
+                execSync(command);
             } else {
                 // Nếu không có pid, đóng Chrome dựa trên tên trình duyệt mặc định của profile
                 const browser = getBrowserOfProfile(pid);
