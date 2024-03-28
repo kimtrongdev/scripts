@@ -341,6 +341,8 @@ function initExpress() {
     })
 
     app.get('/input', async (req, res) => {
+
+        utils.log('input settings.actionsData', req.query)
         settings.actionsData.push({ ...req.query, res })
     })
 
